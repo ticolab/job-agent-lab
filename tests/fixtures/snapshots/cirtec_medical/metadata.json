@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Cirtec Medical",
+  "job_board_url": "https://cirteccareers.ttcportals.com/search/jobs/in/country/costa-rica",
+  "sample_job_url": "https://cirteccareers.ttcportals.com/jobs/18100382-sr-accountant",
+  "expected_unfiltered_count": 5,
+  "captured_at": "2026-08-15T19:35:31.434280+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

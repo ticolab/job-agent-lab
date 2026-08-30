@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "company_name": "Svitla",
+  "job_board_url": "https://svitla.com/career?country=10",
+  "sample_job_url": "https://svitla.com/career/job/senior-full-stack-engineer-with-cnet-1782992537",
+  "expected_unfiltered_count": 31,
+  "captured_at": "2026-08-05T21:51:51.276078+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pages": [
+    {
+      "file": "pages/page-2.html",
+      "url": "https://svitla.com/career/?country=10"
+    },
+    {
+      "file": "pages/page-3.html",
+      "url": "https://svitla.com/career/?country=10"
+    }
+  ]
+}

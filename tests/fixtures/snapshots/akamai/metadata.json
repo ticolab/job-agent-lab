@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Akamai",
+  "job_board_url": "https://jobs.akamai.com/en/sites/CX_1/jobs?lastSelectedFacet=LOCATIONS&selectedLocationsFacet=300000000469120",
+  "sample_job_url": "https://jobs.akamai.com/en/sites/CX_1/job/3387",
+  "expected_unfiltered_count": 14,
+  "captured_at": "2026-07-08T22:45:52.294610+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

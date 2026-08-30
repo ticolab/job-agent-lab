@@ -1,0 +1,9 @@
+[
+  {
+    "name": "<Company Name>",
+    "aliases": [],
+    "job_board_url": "https://<board-host>/<org>",
+    "sample_job_url": "https://<board-host>/<org>/<some-posting-id>",
+    "expected_jobs": null
+  }
+]

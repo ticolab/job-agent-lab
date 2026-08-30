@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Convera",
+  "job_board_url": "https://job-boards.eu.greenhouse.io/convera?offices%5B%5D=4010277101",
+  "sample_job_url": "https://job-boards.eu.greenhouse.io/convera/jobs/4851547101",
+  "expected_unfiltered_count": 3,
+  "captured_at": "2026-08-09T01:58:28.292871+00:00",
+  "captured_with_filters": false,
+  "notes": "Greenhouse-hosted board on the EU domain (job-boards.eu.greenhouse.io), shipped on the DOM path rather than strategy='greenhouse'. That choice is evidence-driven, and it is the mirror image of Varicent. Convera's public API is reachable at the ordinary boards-api.greenhouse.io host (there is no EU API host - boards-api.eu.greenhouse.io does not resolve) and returns all 63 postings, but every Costa Rica posting carries location.name = 'Santa Ana' with no country, so TargetRegion.matches finds zero and the API strategy would report an honest-looking 0 against a real 3. The board's own office facet is the reliable signal here: ?offices[]=4010277101 is labelled 'Costa Rica' and returns exactly the three Santa Ana postings. On Varicent the opposite held - the office facet was over-inclusive and the location field was right - so neither surface is trustworthy by default on Greenhouse and the pair has to be cross-checked per tenant. Note also that strategy='greenhouse' would be rejected at import here anyway: the schema's host allow-list covers job-boards.greenhouse.io and boards.greenhouse.io but not the EU domain. Derived prefix /convera/jobs is correct with no override. hooks.filter_already_applied=True is required rather than defensive: without it one run in three returned 0 after nine steps while the other two matched; with it, 4 of 4 match. expected_unfiltered_count=3 equals expected_jobs because the URL baseline IS the filtered view."
+}

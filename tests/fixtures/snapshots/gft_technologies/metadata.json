@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "company_name": "GFT Technologies",
+  "job_board_url": "https://jobs.gft.com/Costarica/go/costa-rica/4412301/",
+  "sample_job_url": "https://jobs.gft.com/Costarica/job/Heredia-DevOps-&-Network-Engineer-40101/1398973833/",
+  "expected_unfiltered_count": 7,
+  "captured_at": "2026-07-06T22:40:07.010723+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/Costarica/job"
+}

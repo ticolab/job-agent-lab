@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Experian",
+  "job_board_url": "https://jobs.experian.com/jobs?options=1008&size=100",
+  "sample_job_url": "https://jobs.experian.com/job/hr-operations-manager-in-heredia-costa-rica-jid-5417",
+  "expected_unfiltered_count": 24,
+  "captured_at": "2026-07-08T15:53:37.384063+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

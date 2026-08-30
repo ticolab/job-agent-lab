@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Growth Acceleration Partners",
+  "job_board_url": "https://careers.wearegap.com/jobs",
+  "sample_job_url": "https://careers.wearegap.com/jobs/7540236-senior-python-aws-software-engineer",
+  "expected_unfiltered_count": 3,
+  "captured_at": "2026-06-30T17:33:52.440552+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

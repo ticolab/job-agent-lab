@@ -1,0 +1,34 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.17.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [pydantic]
+        args: [--config-file=pyproject.toml]
+        exclude: '^\.(claude|tabnine)/.*/extractor_ground_truth\.py$'
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=5000]
+      - id: debug-statements
+
+  - repo: local
+    hooks:
+      - id: snapshot-regression
+        name: snapshot regression tests
+        entry: uv run --group test pytest tests/ -x -q
+        language: system
+        pass_filenames: false
+        files: '^(src/job_agent_lab/(extraction|navigation|domain)/.*|tests/.*)$'

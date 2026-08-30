@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Acquia",
+  "job_board_url": "https://job-boards.greenhouse.io/acquia",
+  "sample_job_url": "https://job-boards.greenhouse.io/acquia/jobs/7882461",
+  "expected_unfiltered_count": 17,
+  "captured_at": "2026-07-04T03:33:37.141959+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

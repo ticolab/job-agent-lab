@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "10Pearls",
+  "job_board_url": "https://10pearls.com/latin-america-job-openings/",
+  "sample_job_url": "https://10pearls.com/latin-america-job-openings/4688406005/",
+  "expected_unfiltered_count": 33,
+  "captured_at": "2026-06-30T17:42:01.805522+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

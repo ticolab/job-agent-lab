@@ -1,0 +1,1103 @@
+{
+ "refineSearch": {
+  "status": 200,
+  "hits": 12,
+  "totalHits": 12,
+  "data": {
+   "jobs": [
+    {
+     "subCategory": "IT Compliance",
+     "descriptionTeaser": "We are seeking a Senior Network Security Engineer for Edge Network Security to architect and implement robust cloud network security infrastructure. You will design multi-cloud solutions, manage Palo Alto security, and drive automation. Ideal candidates have significant experience with cloud security and advanced firewall technologies.",
+     "state": "San Jose",
+     "reqId": "202605-113325",
+     "grade": "SE6",
+     "latitude": "9.93027",
+     "address": "Sabana Norte, Sabana Norte, Costa Rica",
+     "ml_job_parser": {
+      "descriptionTeaser": "We are seeking a Senior Network Security Engineer for Edge Network Security to architect and implement robust cloud network security infrastructure. You will design multi-cloud solutions, manage Palo Alto security, and drive automation. Ideal candidates have significant experience with cloud security and advanced firewall technologies.",
+      "descriptionTeaser_first200": "The Opportunity. As a Senior Cybersecurity Engineer for Cloud & Edge Defense, you will be the primary architect and engineer responsible for the security of our global digital boundaries and multi-...",
+      "descriptionTeaser_keyword": "The Opportunity. As a Senior Cybersecurity Engineer for Cloud & Edge Defense, you will be the primary architect and engineer responsible for the security of our global digital boundaries and multi-clo...",
+      "descriptionTeaser_ats": "The Opportunity:As a Senior Cybersecurity Engineer for Cloud & Edge Defense, you will be the primary architect and engineer responsible for the security of our global digital boundaries and multi-clou"
+     },
+     "externalApply": false,
+     "cityState": "Sabana Norte, San Jose",
+     "country": "Costa Rica",
+     "locale": "en_GLOBAL",
+     "title": "Senior Network Security Engineer for Edge Network Security",
+     "cityStateCountry": "Sabana Norte, San Jose, Costa Rica",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Sabana Norte, San Jose, Costa Rica",
+     "ml_skills": [
+      "palo alto next-generation firewalls",
+      "cloud network infrastructure design",
+      "aws",
+      "terraform",
+      "gcp",
+      "azure",
+      "python",
+      "bgp",
+      "ospf",
+      "dns",
+      "tls/ssl",
+      "ansible",
+      "wildfire",
+      "threat prevention",
+      "ssl decryption",
+      "app-id enforcement",
+      "user-id enforcement",
+      "globalprotect",
+      "security policy management",
+      "automation workflow optimization",
+      "troubleshooting cloud-native routing",
+      "load balancing",
+      "firewall inspection",
+      "palo alto panorama",
+      "palo alto vm-series",
+      "zero trust architecture",
+      "github",
+      "go",
+      "api integration",
+      "regulatory compliance"
+     ],
+     "type": "Full time",
+     "siteType": "external",
+     "multi_category": [
+      "Information Technology"
+     ],
+     "city": "Sabana Norte",
+     "multi_location": [
+      "Sabana Norte, San Jose, Costa Rica"
+     ],
+     "applyUrl": "https://roche.wd3.myworkdayjobs.com/roche-ext/job/San-Jose-Costa-Rica/Senior-Network-Security-Engineer--Cloud----RDT-Information-Security_202605-113325/apply",
+     "visibilityType": "External",
+     "longitude": "-84.10097",
+     "jobId": "202605-113325",
+     "jobSeqNo": "ROCHGLOBAL202605113325EXTERNALENGLOBAL",
+     "postedDate": "2026-07-24T00:00:00.000+0000",
+     "dateCreated": "2026-05-27T09:16:41.344+0000",
+     "category": "Information Technology",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.10097,
+        "lat": 9.93027
+       },
+       "location": "Sabana Norte, San Jose, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Information Technology"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "IT Compliance",
+     "ml_skills": [
+      "cisco ise",
+      "network access control",
+      "palo alto next-generation firewalls",
+      "firewall configuration",
+      "ssl decryption",
+      "threat prevention",
+      "radius",
+      "tacacs+",
+      "core routing",
+      "switching",
+      "bgp",
+      "ospf",
+      "vlans",
+      "vxlans",
+      "ansible",
+      "terraform",
+      "github",
+      "ci/cd pipelines",
+      "python",
+      "powershell",
+      "bash",
+      "network segmentation",
+      "zero trust architecture",
+      "root-cause analysis",
+      "dashboard development",
+      "self-service tools",
+      "stakeholder management"
+     ],
+     "type": "Full time",
+     "descriptionTeaser": "Join our team as a Cybersecurity Engineer for Secure Access Network, where you will design and maintain enterprise network access control and segmentation systems. You will bridge security policy and technical execution, leveraging automation to scale controls. Ideal candidates have hands-on experience with Cisco ISE and Palo Alto NGFW, and a strong background in network security.",
+     "state": "San Jose",
+     "siteType": "external",
+     "multi_category": [
+      "Information Technology"
+     ],
+     "reqId": "202606-114188",
+     "grade": "SE6",
+     "city": "Sabana Norte",
+     "latitude": "9.93027",
+     "multi_location": [
+      "Sabana Norte, San Jose, Costa Rica"
+     ],
+     "address": "Sabana Norte, Sabana Norte, Costa Rica",
+     "applyUrl": "https://roche.wd3.myworkdayjobs.com/roche-ext/job/San-Jose-Costa-Rica/Cybersecurity-Analyst---Network-Security--Temporary--Fixed-Term-_202606-114188/apply",
+     "ml_job_parser": {
+      "descriptionTeaser": "Join our team as a Cybersecurity Engineer for Secure Access Network, where you will design and maintain enterprise network access control and segmentation systems. You will bridge security policy and technical execution, leveraging automation to scale controls. Ideal candidates have hands-on experience with Cisco ISE and Palo Alto NGFW, and a strong background in network security.",
+      "descriptionTeaser_keyword": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted an...",
+      "descriptionTeaser_ats": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections,  where you are valued, accepted a",
+      "descriptionTeaser_first200": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted..."
+     },
+     "externalApply": false,
+     "cityState": "Sabana Norte, San Jose",
+     "country": "Costa Rica",
+     "visibilityType": "External",
+     "longitude": "-84.10097",
+     "jobId": "202606-114188",
+     "locale": "en_GLOBAL",
+     "title": "Cybersecurity Engineer for Secure Access Network (Temporary, Fixed Term)",
+     "jobSeqNo": "ROCHGLOBAL202606114188EXTERNALENGLOBAL",
+     "postedDate": "2026-06-05T00:00:00.000+0000",
+     "dateCreated": "2026-06-04T23:12:49.384+0000",
+     "cityStateCountry": "Sabana Norte, San Jose, Costa Rica",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Sabana Norte, San Jose, Costa Rica",
+     "category": "Information Technology",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.10097,
+        "lat": 9.93027
+       },
+       "location": "Sabana Norte, San Jose, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Information Technology"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "General Regulatory Affairs",
+     "ml_skills": [
+      "regulatory compliance",
+      "regulatory affairs",
+      "stakeholder management",
+      "document management",
+      "regulatory standards"
+     ],
+     "type": "Full time",
+     "descriptionTeaser": "Embrace the opportunity to become a Regulatory Affairs Specialist I and play a key role in ensuring compliance with regulatory standards. This is an exciting opportunity to develop your expertise in regulatory affairs, support documentation, and collaborate with cross-functional teams. Grow your career in a dynamic environment focused on continuous improvement and professional development.",
+     "state": "San Jose",
+     "siteType": "external",
+     "multi_category": [
+      "Regulatory Affairs"
+     ],
+     "reqId": "202606-116462",
+     "grade": "SE5",
+     "city": "Sabana Norte",
+     "latitude": "9.93027",
+     "multi_location": [
+      "Sabana Norte, San Jose, Costa Rica"
+     ],
+     "address": "Sabana Norte, Sabana Norte, Costa Rica",
+     "applyUrl": "https://roche.wd3.myworkdayjobs.com/roche-ext/job/San-Jose-Costa-Rica/Regulatory-AI---Automation-Specialist_202606-116462/apply",
+     "ml_job_parser": {
+      "descriptionTeaser": "Embrace the opportunity to become a Regulatory Affairs Specialist I and play a key role in ensuring compliance with regulatory standards. This is an exciting opportunity to develop your expertise in regulatory affairs, support documentation, and collaborate with cross-functional teams. Grow your career in a dynamic environment focused on continuous improvement and professional development.",
+      "descriptionTeaser_ats": "Anchor Role . Regulatory Affairs Specialist I",
+      "descriptionTeaser_keyword": "Anchor Role. Regulatory Affairs Specialist I....",
+      "descriptionTeaser_first200": "Anchor Role. Regulatory Affairs Specialist I. ..."
+     },
+     "externalApply": false,
+     "cityState": "Sabana Norte, San Jose",
+     "country": "Costa Rica",
+     "visibilityType": "External",
+     "longitude": "-84.10097",
+     "jobId": "202606-116462",
+     "locale": "en_GLOBAL",
+     "title": "Regulatory AI & Automation Specialist",
+     "jobSeqNo": "ROCHGLOBAL202606116462EXTERNALENGLOBAL",
+     "postedDate": "2026-06-30T00:00:00.000+0000",
+     "dateCreated": "2026-06-24T19:15:18.562+0000",
+     "cityStateCountry": "Sabana Norte, San Jose, Costa Rica",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Sabana Norte, San Jose, Costa Rica",
+     "category": "Regulatory Affairs",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.10097,
+        "lat": 9.93027
+       },
+       "location": "Sabana Norte, San Jose, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Regulatory Affairs"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Administrative Support",
+     "ml_skills": [
+      "p-card administration",
+      "t-card administration",
+      "data integrity",
+      "customer service",
+      "excel proficiency",
+      "problem solving",
+      "data visualization",
+      "operational accounting",
+      "citimanager",
+      "servicenow",
+      "sap",
+      "ticketing systems",
+      "spanish fluency",
+      "english fluency"
+     ],
+     "type": "Full time",
+     "descriptionTeaser": "We are recruiting a Travel & Expense Corporate Credit Card Administrator to manage the administration of corporate credit card programmes for Roche Services & Solutions Americas in Costa Rica. Key responsibilities include processing card applications and maintaining compliance. Ideal candidates will have strong organisational skills and experience in customer service or credit card administration.",
+     "state": "San Jose",
+     "siteType": "external",
+     "multi_category": [
+      "Business Services & Support"
+     ],
+     "reqId": "202607-118842",
+     "grade": "BU4",
+     "city": "Sabana Norte",
+     "latitude": "9.93027",
+     "multi_location": [
+      "Sabana Norte, San Jose, Costa Rica"
+     ],
+     "address": "Sabana Norte, Sabana Norte, Costa Rica",
+     "applyUrl": "https://roche.wd3.myworkdayjobs.com/roche-ext/job/San-Jose-Costa-Rica/Travel---Expense-Corporate-Credit-Card-Administrator_202607-118842-1/apply",
+     "ml_job_parser": {
+      "descriptionTeaser": "We are recruiting a Travel & Expense Corporate Credit Card Administrator to manage the administration of corporate credit card programmes for Roche Services & Solutions Americas in Costa Rica. Key responsibilities include processing card applications and maintaining compliance. Ideal candidates will have strong organisational skills and experience in customer service or credit card administration.",
+      "descriptionTeaser_first200": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted...",
+      "descriptionTeaser_keyword": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted an...",
+      "descriptionTeaser_ats": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted a"
+     },
+     "externalApply": false,
+     "cityState": "Sabana Norte, San Jose",
+     "country": "Costa Rica",
+     "visibilityType": "External",
+     "longitude": "-84.10097",
+     "jobId": "202607-118842",
+     "locale": "en_GLOBAL",
+     "title": "Travel & Expense Corporate Credit Card Administrator",
+     "jobSeqNo": "ROCHGLOBAL202607118842EXTERNALENGLOBAL",
+     "postedDate": "2026-08-10T00:00:00.000+0000",
+     "dateCreated": "2026-07-21T17:14:23.312+0000",
+     "cityStateCountry": "Sabana Norte, San Jose, Costa Rica",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Sabana Norte, San Jose, Costa Rica",
+     "category": "Business Services & Support",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.10097,
+        "lat": 9.93027
+       },
+       "location": "Sabana Norte, San Jose, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Business Services & Support"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "IT Infrastructure and End-User Services",
+     "ml_skills": [
+      "aws",
+      "terraform",
+      "aws cdk",
+      "devops",
+      "gitlab",
+      "github",
+      "ci/cd",
+      "python",
+      "bash",
+      "sdlc",
+      "problem solving",
+      "stakeholder management",
+      "collaboration"
+     ],
+     "type": "Full time",
+     "descriptionTeaser": "Join us as a Customer Integration Engineer, bridging Roche’s advanced Business Units with our AWS Cloud Platform. Lead integration efforts, resolve complex technical issues, and ensure seamless cloud adoption. Ideal for candidates with strong AWS expertise, DevOps experience, and a background in platform engineering.",
+     "state": "San Jose",
+     "siteType": "external",
+     "multi_category": [
+      "Information Technology"
+     ],
+     "reqId": "202607-117923",
+     "grade": "SE6",
+     "city": "Sabana Norte",
+     "latitude": "9.93027",
+     "multi_location": [
+      "Sabana Norte, San Jose, Costa Rica"
+     ],
+     "address": "Sabana Norte, Sabana Norte, Costa Rica",
+     "applyUrl": "https://roche.wd3.myworkdayjobs.com/roche-ext/job/San-Jose-Costa-Rica/Customer-Integration-Engineer---Roche-Cloud-Platform-AWS_202607-117923-1/apply",
+     "ml_job_parser": {
+      "descriptionTeaser": "Join us as a Customer Integration Engineer, bridging Roche’s advanced Business Units with our AWS Cloud Platform. Lead integration efforts, resolve complex technical issues, and ensure seamless cloud adoption. Ideal for candidates with strong AWS expertise, DevOps experience, and a background in platform engineering.",
+      "descriptionTeaser_ats": "The PositionAs part of the Roche Cloud Platform (RCP) AWS team, we provide the enterprise cloud foundation that empowers Roche's cutting-edge business units to innovate safely, efficiently, and at sca",
+      "descriptionTeaser_keyword": "The Position. As part of the Roche Cloud Platform (RCP) AWS team, we provide the enterprise cloud foundation that empowers Roche's cutting-edge business units to innovate safely, efficiently, and at s...",
+      "descriptionTeaser_first200": "The Position. As part of the Roche Cloud Platform (RCP) AWS team, we provide the enterprise cloud foundation that empowers Roche's cutting-edge business units to innovate safely, efficiently, and a..."
+     },
+     "externalApply": false,
+     "cityState": "Sabana Norte, San Jose",
+     "country": "Costa Rica",
+     "visibilityType": "External",
+     "longitude": "-84.10097",
+     "jobId": "202607-117923",
+     "locale": "en_GLOBAL",
+     "title": "Customer Integration Engineer - Roche Cloud Platform AWS",
+     "jobSeqNo": "ROCHGLOBAL202607117923EXTERNALENGLOBAL",
+     "postedDate": "2026-07-28T00:00:00.000+0000",
+     "dateCreated": "2026-07-10T01:13:36.855+0000",
+     "cityStateCountry": "Sabana Norte, San Jose, Costa Rica",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Sabana Norte, San Jose, Costa Rica",
+     "category": "Information Technology",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.10097,
+        "lat": 9.93027
+       },
+       "location": "Sabana Norte, San Jose, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Information Technology"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "IT Compliance",
+     "ml_skills": [
+      "pbac",
+      "identity & access management",
+      "xacml",
+      "decentralized policy management",
+      "zero trust",
+      "saml",
+      "oauth",
+      "oidc",
+      "single sign-on",
+      "identity governance",
+      "java",
+      "python",
+      "ci/cd pipelines",
+      "restful apis",
+      "sql",
+      "jdbc",
+      "ldap",
+      "itil",
+      "stakeholder management",
+      "agile methodologies",
+      "data privacy regulations",
+      "vendor management",
+      "root cause analysis",
+      "mentoring"
+     ],
+     "type": "Full time",
+     "descriptionTeaser": "We are seeking a Senior Cybersecurity Engineer to lead the design and implementation of PBAC infrastructure, ensuring secure and scalable access control across a global landscape. You will architect policy-based access, drive automation, and consult with global teams. Ideal candidates bring extensive IAM expertise and advanced technical mastery.",
+     "state": "San Jose",
+     "siteType": "external",
+     "multi_category": [
+      "Information Technology"
+     ],
+     "reqId": "202607-117916",
+     "grade": "SE6",
+     "city": "Sabana Norte",
+     "latitude": "9.93027",
+     "multi_location": [
+      "Sabana Norte, San Jose, Costa Rica"
+     ],
+     "address": "Sabana Norte, Sabana Norte, Costa Rica",
+     "applyUrl": "https://roche.wd3.myworkdayjobs.com/roche-ext/job/San-Jose-Costa-Rica/PBAC-Operations-Engineer---RDT-Identity---Access-Management_202607-117916/apply",
+     "ml_job_parser": {
+      "descriptionTeaser": "We are seeking a Senior Cybersecurity Engineer to lead the design and implementation of PBAC infrastructure, ensuring secure and scalable access control across a global landscape. You will architect policy-based access, drive automation, and consult with global teams. Ideal candidates bring extensive IAM expertise and advanced technical mastery.",
+      "descriptionTeaser_first200": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted...",
+      "descriptionTeaser_keyword": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted an...",
+      "descriptionTeaser_ats": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections,  where you are valued, accepted a"
+     },
+     "externalApply": false,
+     "cityState": "Sabana Norte, San Jose",
+     "country": "Costa Rica",
+     "visibilityType": "External",
+     "longitude": "-84.10097",
+     "jobId": "202607-117916",
+     "locale": "en_GLOBAL",
+     "title": "PBAC Operations Engineer - RDT Identity & Access Management",
+     "jobSeqNo": "ROCHGLOBAL202607117916EXTERNALENGLOBAL",
+     "postedDate": "2026-07-13T00:00:00.000+0000",
+     "dateCreated": "2026-07-09T23:15:12.525+0000",
+     "cityStateCountry": "Sabana Norte, San Jose, Costa Rica",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Sabana Norte, San Jose, Costa Rica",
+     "category": "Information Technology",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.10097,
+        "lat": 9.93027
+       },
+       "location": "Sabana Norte, San Jose, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Information Technology"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "IT Infrastructure and End-User Services",
+     "ml_skills": [
+      "aws",
+      "terraform",
+      "aws cdk",
+      "cloud architecture",
+      "aws iam",
+      "cloud networking",
+      "gitlab",
+      "github",
+      "ci/cd pipelines",
+      "python",
+      "bash",
+      "agile methodologies",
+      "stakeholder management",
+      "mentoring",
+      "problem solving",
+      "vendor management",
+      "technical curiosity"
+     ],
+     "type": "Full time",
+     "descriptionTeaser": "Take on the role of Senior Customer Integration Engineer to bridge Roche’s advanced Business Units with the AWS Cloud Platform. Lead end-to-end cloud integration, resolve complex technical issues, and partner with stakeholders to optimise platform features. Ideal for experienced professionals with deep AWS expertise and strong leadership in enterprise cloud solutions.",
+     "state": "San Jose",
+     "siteType": "external",
+     "multi_category": [
+      "Information Technology"
+     ],
+     "reqId": "202607-117922",
+     "grade": "SE7",
+     "city": "Sabana Norte",
+     "latitude": "9.93027",
+     "multi_location": [
+      "Sabana Norte, San Jose, Costa Rica"
+     ],
+     "address": "Sabana Norte, Sabana Norte, Costa Rica",
+     "applyUrl": "https://roche.wd3.myworkdayjobs.com/roche-ext/job/San-Jose-Costa-Rica/Senior-Customer-Integration-Engineer---Roche-Cloud-Platform-AWS_202607-117922-1/apply",
+     "ml_job_parser": {
+      "descriptionTeaser": "Take on the role of Senior Customer Integration Engineer to bridge Roche’s advanced Business Units with the AWS Cloud Platform. Lead end-to-end cloud integration, resolve complex technical issues, and partner with stakeholders to optimise platform features. Ideal for experienced professionals with deep AWS expertise and strong leadership in enterprise cloud solutions.",
+      "descriptionTeaser_ats": "As part of the Roche Cloud Platform (RCP) AWS team, we provide the enterprise cloud foundation that empowers Roche's cutting-edge business units to innovate safely, efficiently, and at scale.The Oppor",
+      "descriptionTeaser_keyword": "As part of the Roche Cloud Platform (RCP) AWS team, we provide the enterprise cloud foundation that empowers Roche's cutting-edge business units to innovate safely, efficiently, and at scale. The Oppo...",
+      "descriptionTeaser_first200": "As part of the Roche Cloud Platform (RCP) AWS team, we provide the enterprise cloud foundation that empowers Roche's cutting-edge business units to innovate safely, efficiently, and at scale. The O..."
+     },
+     "externalApply": false,
+     "cityState": "Sabana Norte, San Jose",
+     "country": "Costa Rica",
+     "visibilityType": "External",
+     "longitude": "-84.10097",
+     "jobId": "202607-117922",
+     "locale": "en_GLOBAL",
+     "title": "Senior Customer Integration Engineer - Roche Cloud Platform AWS",
+     "jobSeqNo": "ROCHGLOBAL202607117922EXTERNALENGLOBAL",
+     "postedDate": "2026-07-28T00:00:00.000+0000",
+     "dateCreated": "2026-07-10T01:13:36.855+0000",
+     "cityStateCountry": "Sabana Norte, San Jose, Costa Rica",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Sabana Norte, San Jose, Costa Rica",
+     "category": "Information Technology",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.10097,
+        "lat": 9.93027
+       },
+       "location": "Sabana Norte, San Jose, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Information Technology"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Business Services",
+     "ml_skills": [
+      "sap s/4hana",
+      "sap authorization",
+      "financial compliance",
+      "project management",
+      "change management",
+      "business process assessment",
+      "stakeholder management",
+      "workshop facilitation",
+      "testing (uat, sat, ut)",
+      "template governance",
+      "change control management",
+      "agile methodologies",
+      "english proficiency",
+      "business partner management",
+      "communication skills"
+     ],
+     "type": "Full time",
+     "descriptionTeaser": "We are currently hiring a SAP Financial Compliance & Authorisations Deployment Specialist to lead the assessment and deployment of financial compliance and authorisation processes. You will coordinate with finance stakeholders and manage project activities. Ideal candidates have significant SAP authorisation experience and strong project management skills.",
+     "state": "Pest",
+     "siteType": "external",
+     "multi_category": [
+      "Business Services & Support"
+     ],
+     "reqId": "202607-117361",
+     "grade": "SE6",
+     "city": "Budapest",
+     "latitude": "47.49835",
+     "multi_location": [
+      "Budapest, Pest, Hungary",
+      "San José, Costa Rica"
+     ],
+     "address": "Budapest, Budapest, 1007, Hungary",
+     "applyUrl": "https://roche.wd3.myworkdayjobs.com/roche-ext/job/Budapest/SAP-Financial-Compliance---Authorizations-Deployment-Specialist--2-years-fixed-term-_202607-117361-1/apply",
+     "ml_job_parser": {
+      "descriptionTeaser": "We are currently hiring a SAP Financial Compliance & Authorisations Deployment Specialist to lead the assessment and deployment of financial compliance and authorisation processes. You will coordinate with finance stakeholders and manage project activities. Ideal candidates have significant SAP authorisation experience and strong project management skills.",
+      "descriptionTeaser_ats": "ASPIRE is a multi-year program that will define, design, and deploy Future ERP solutions based on SAP S/4 HANA and other cloud/on-premise technology platforms. The program will enable simplified, stan",
+      "descriptionTeaser_keyword": "ASPIRE is a multi-year program that will define, design, and deploy Future ERP solutions based on SAP S/4 HANA and other cloud/on-premise technology platforms. The program will enable simplified, stan...",
+      "descriptionTeaser_first200": "ASPIRE is a multi-year program that will define, design, and deploy Future ERP solutions based on SAP S/4 HANA and other cloud/on-premise technology platforms. The program will enable simplified, s..."
+     },
+     "externalApply": false,
+     "cityState": "Budapest, Pest",
+     "country": "Hungary",
+     "visibilityType": "External",
+     "longitude": "19.04045",
+     "jobId": "202607-117361",
+     "locale": "en_GLOBAL",
+     "title": "SAP Financial Compliance & Authorizations Deployment Specialist (2 years fixed term)",
+     "jobSeqNo": "ROCHGLOBAL202607117361EXTERNALENGLOBAL",
+     "postedDate": "2026-07-10T00:00:00.000+0000",
+     "dateCreated": "2026-07-08T15:13:43.695+0000",
+     "cityStateCountry": "Budapest, Pest, Hungary",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Budapest, Pest, Hungary",
+     "category": "Business Services & Support",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": 19.04045,
+        "lat": 47.49835
+       },
+       "location": "Budapest, Pest, Hungary"
+      },
+      {
+       "latlong": {
+        "lon": -84.08333,
+        "lat": 9.93333
+       },
+       "location": "San José, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Business Services & Support"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "HR Operations & Services",
+     "ml_skills": [
+      "instructional design",
+      "e-content authoring tools",
+      "articulate presenter",
+      "articulate storyline",
+      "lectora",
+      "vyond",
+      "adobe creative suite",
+      "adobe premiere",
+      "adobe after effects",
+      "scorm",
+      "customer service",
+      "aicc",
+      "addie",
+      "problem solving",
+      "collaboration",
+      "stakeholder engagement",
+      "creative mind",
+      "analytical skills"
+     ],
+     "type": "Full time",
+     "descriptionTeaser": "Join our team as a Instructional Designer Advisor to deliver high-quality eLearning courses and support global learning systems. You will analyse learning needs, develop training content, and provide customer service. Ideal for candidates with experience in instructional design and e-content authoring tools.",
+     "state": "San Jose",
+     "siteType": "external",
+     "multi_category": [
+      "People & Culture"
+     ],
+     "reqId": "202607-118557",
+     "grade": "SE5",
+     "city": "Sabana Norte",
+     "latitude": "9.93027",
+     "multi_location": [
+      "Sabana Norte, San Jose, Costa Rica"
+     ],
+     "address": "Sabana Norte, Sabana Norte, Costa Rica",
+     "applyUrl": "https://roche.wd3.myworkdayjobs.com/roche-ext/job/San-Jose-Costa-Rica/Instructional-Designer-Advisor_202607-118557/apply",
+     "ml_job_parser": {
+      "descriptionTeaser": "Join our team as a Instructional Designer Advisor to deliver high-quality eLearning courses and support global learning systems. You will analyse learning needs, develop training content, and provide customer service. Ideal for candidates with experience in instructional design and e-content authoring tools.",
+      "descriptionTeaser_first200": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted...",
+      "descriptionTeaser_keyword": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted an...",
+      "descriptionTeaser_ats": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted a"
+     },
+     "externalApply": false,
+     "cityState": "Sabana Norte, San Jose",
+     "country": "Costa Rica",
+     "visibilityType": "External",
+     "longitude": "-84.10097",
+     "jobId": "202607-118557",
+     "locale": "en_GLOBAL",
+     "title": "Instructional Designer Advisor (Temporary position)",
+     "jobSeqNo": "ROCHGLOBAL202607118557EXTERNALENGLOBAL",
+     "postedDate": "2026-08-07T00:00:00.000+0000",
+     "dateCreated": "2026-07-20T19:14:12.273+0000",
+     "cityStateCountry": "Sabana Norte, San Jose, Costa Rica",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Sabana Norte, San Jose, Costa Rica",
+     "category": "People & Culture",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.10097,
+        "lat": 9.93027
+       },
+       "location": "Sabana Norte, San Jose, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "People & Culture"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "HR Operations & Services",
+     "ml_skills": [
+      "payroll tax administration",
+      "microsoft excel",
+      "data analysis",
+      "stakeholder management",
+      "problem solving",
+      "root cause analysis",
+      "customer service",
+      "change management",
+      "hr policies",
+      "servicenow",
+      "data integrity"
+     ],
+     "type": "Full time",
+     "descriptionTeaser": "Exciting opportunity for a Payroll Tax Analyst to provide professional payroll and tax administration services for Roche’s North America Shared Services. Key responsibilities include ensuring compliance with payroll tax regulations and supporting data-driven decision-making. Ideal for candidates with HR and payroll expertise and strong analytical skills.",
+     "state": "Indiana",
+     "siteType": "external",
+     "multi_category": [
+      "People & Culture"
+     ],
+     "reqId": "202608-120466",
+     "grade": "SE5",
+     "city": "Indianapolis",
+     "latitude": "39.95087",
+     "multi_location": [
+      "Indianapolis, Indiana, United States of America",
+      "Sabana Norte, San Jose, Costa Rica"
+     ],
+     "address": "123 Main St., Indianapolis, IN 46077, United States of America",
+     "applyUrl": "https://roche.wd3.myworkdayjobs.com/roche-ext/job/Indianapolis/Payroll-Tax-Analyst_202608-120466-1/apply",
+     "ml_job_parser": {
+      "descriptionTeaser": "Exciting opportunity for a Payroll Tax Analyst to provide professional payroll and tax administration services for Roche’s North America Shared Services. Key responsibilities include ensuring compliance with payroll tax regulations and supporting data-driven decision-making. Ideal for candidates with HR and payroll expertise and strong analytical skills.",
+      "descriptionTeaser_ats": "North America Payroll Tax AnalystCompany: RocheJob Family Group: Human ResourcesJob Family: HR Operations & ServicesLocation: Indianapolis, IN or San Jose, CAFLSA Status: ExemptAbout RocheRoche foster",
+      "descriptionTeaser_keyword": "North America Payroll Tax Analyst. Company: Roche. Job Family Group: Human Resources. Job Family: HR Operations & Services. Location: Indianapolis, IN or San Jose, CA. FLSA Status: Exempt. About Roche...",
+      "descriptionTeaser_first200": "North America Payroll Tax Analyst. Company: Roche. Job Family Group: Human Resources. Job Family: HR Operations & Services. Location: Indianapolis, IN or San Jose, CA. FLSA Status: Exempt. About Ro..."
+     },
+     "externalApply": false,
+     "cityState": "Indianapolis, Indiana",
+     "country": "United States of America",
+     "visibilityType": "External",
+     "longitude": "-86.26194",
+     "jobId": "202608-120466",
+     "locale": "en_GLOBAL",
+     "title": "Payroll Tax Analyst",
+     "jobSeqNo": "ROCHGLOBAL202608120466EXTERNALENGLOBAL",
+     "postedDate": "2026-08-11T00:00:00.000+0000",
+     "dateCreated": "2026-08-06T21:14:05.595+0000",
+     "cityStateCountry": "Indianapolis, Indiana, United States of America",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Indianapolis, Indiana, United States of America",
+     "category": "People & Culture",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -86.26194,
+        "lat": 39.95087
+       },
+       "location": "Indianapolis, Indiana, United States of America"
+      },
+      {
+       "latlong": {
+        "lon": -84.10097,
+        "lat": 9.93027
+       },
+       "location": "Sabana Norte, San Jose, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "People & Culture"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Quality Compliance & Audit",
+     "descriptionTeaser": "We are expanding our team: As a Publication Data Entry Specialist, you will ensure the accurate and timely entry, validation, and maintenance of publication-related data. You will support scientific communications and contribute to quality assurance and reporting. Ideal for candidates with strong attention to detail and up to five years’ experience or recent graduates.",
+     "state": "Pest",
+     "reqId": "202605-113728",
+     "grade": "SE5",
+     "latitude": "47.49835",
+     "address": "Budapest, Budapest, 1007, Hungary",
+     "ml_job_parser": {
+      "descriptionTeaser": "We are expanding our team: As a Publication Data Entry Specialist, you will ensure the accurate and timely entry, validation, and maintenance of publication-related data. You will support scientific communications and contribute to quality assurance and reporting. Ideal for candidates with strong attention to detail and up to five years’ experience or recent graduates.",
+      "descriptionTeaser_first200": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted...",
+      "descriptionTeaser_keyword": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted an...",
+      "descriptionTeaser_ats": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections,  where you are valued, accepted a"
+     },
+     "externalApply": false,
+     "cityState": "Budapest, Pest",
+     "country": "Hungary",
+     "locale": "en_GLOBAL",
+     "title": "Publication Data Entry Specialist",
+     "cityStateCountry": "Budapest, Pest, Hungary",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Budapest, Pest, Hungary",
+     "ml_skills": [
+      "data entry",
+      "scientific communications",
+      "quality assurance",
+      "metadata validation",
+      "attention to detail",
+      "communication skills",
+      "time management",
+      "it systems",
+      "data migration",
+      "cross-functional collaboration",
+      "keyboarding speed"
+     ],
+     "type": "Full time",
+     "siteType": "external",
+     "multi_category": [
+      "Quality"
+     ],
+     "city": "Budapest",
+     "multi_location": [
+      "Budapest, Pest, Hungary",
+      "Sabana Norte, San Jose, Costa Rica"
+     ],
+     "applyUrl": "https://roche.wd3.myworkdayjobs.com/roche-ext/job/Budapest/Publication-Data-Entry-Specialist_202605-113728/apply",
+     "visibilityType": "External",
+     "longitude": "19.04045",
+     "jobId": "202605-113728",
+     "jobSeqNo": "ROCHGLOBAL202605113728EXTERNALENGLOBAL",
+     "postedDate": "2026-08-05T00:00:00.000+0000",
+     "dateCreated": "2026-06-01T09:11:50.887+0000",
+     "category": "Quality",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": 19.04045,
+        "lat": 47.49835
+       },
+       "location": "Budapest, Pest, Hungary"
+      },
+      {
+       "latlong": {
+        "lon": -84.10097,
+        "lat": 9.93027
+       },
+       "location": "Sabana Norte, San Jose, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Quality"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "HR Operations & Services",
+     "descriptionTeaser": "We are expanding our team: Lead and manage the Payroll, Time & Benefits Operations team, overseeing end-to-end payroll and benefits processes. Drive service excellence, ensure compliance, and foster a growth mindset. Ideal for experienced HR professionals with strong leadership and payroll/time/benefits expertise.",
+     "state": "San Jose",
+     "reqId": "202606-116597",
+     "grade": "PL6",
+     "latitude": "9.93027",
+     "address": "Sabana Norte, Sabana Norte, Costa Rica",
+     "ml_job_parser": {
+      "descriptionTeaser": "We are expanding our team: Lead and manage the Payroll, Time & Benefits Operations team, overseeing end-to-end payroll and benefits processes. Drive service excellence, ensure compliance, and foster a growth mindset. Ideal for experienced HR professionals with strong leadership and payroll/time/benefits expertise.",
+      "descriptionTeaser_first200": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted...",
+      "descriptionTeaser_keyword": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted an...",
+      "descriptionTeaser_ats": "At Roche you can show up as yourself, embraced for the unique qualities you bring. Our culture encourages personal expression, open dialogue, and genuine connections, where you are valued, accepted a"
+     },
+     "externalApply": false,
+     "cityState": "Sabana Norte, San Jose",
+     "country": "Costa Rica",
+     "locale": "en_GLOBAL",
+     "title": "Payroll Time Benefits Lead",
+     "cityStateCountry": "Sabana Norte, San Jose, Costa Rica",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Sabana Norte, San Jose, Costa Rica",
+     "ml_skills": [
+      "payroll administration",
+      "time and benefits administration",
+      "hr systems",
+      "workday",
+      "process improvement",
+      "data analytics",
+      "vendor management",
+      "performance management",
+      "change management",
+      "regulatory compliance",
+      "stakeholder management",
+      "team leadership",
+      "customer service",
+      "google workspace",
+      "resource planning",
+      "service delivery",
+      "cross-functional collaboration",
+      "analytical thinking",
+      "problem solving",
+      "training administration",
+      "personnel administration",
+      "request management software"
+     ],
+     "type": "Full time",
+     "siteType": "external",
+     "multi_category": [
+      "People & Culture"
+     ],
+     "city": "Sabana Norte",
+     "multi_location": [
+      "Sabana Norte, San Jose, Costa Rica"
+     ],
+     "applyUrl": "https://roche.wd3.myworkdayjobs.com/roche-ext/job/San-Jose-Costa-Rica/Payroll-Time-Benefits-Lead_202606-116597-1/apply",
+     "visibilityType": "External",
+     "longitude": "-84.10097",
+     "jobId": "202606-116597",
+     "jobSeqNo": "ROCHGLOBAL202606116597EXTERNALENGLOBAL",
+     "postedDate": "2026-08-14T00:00:00.000+0000",
+     "dateCreated": "2026-06-26T01:15:34.104+0000",
+     "category": "People & Culture",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.10097,
+        "lat": 9.93027
+       },
+       "location": "Sabana Norte, San Jose, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "People & Culture"
+      }
+     ],
+     "badge": ""
+    }
+   ],
+   "aggregations": [
+    {
+     "field": "country",
+     "value": {
+      "Argentina": 9,
+      "Australia": 5,
+      "Austria": 11,
+      "Azerbaijan": 1,
+      "Bangladesh": 1,
+      "Belgium": 1,
+      "Bosnia and Herzegovina": 2,
+      "Brazil": 12,
+      "Bulgaria": 1,
+      "Canada": 14,
+      "Chile": 5,
+      "China's Mainland": 244,
+      "Colombia": 2,
+      "Costa Rica": 12,
+      "Croatia": 1,
+      "Czechia": 4,
+      "Ecuador": 5,
+      "Estonia": 1,
+      "France": 24,
+      "Germany": 99,
+      "Greece": 2,
+      "Hong Kong": 6,
+      "Hungary": 55,
+      "India": 48,
+      "Indonesia": 3,
+      "Ireland": 3,
+      "Israel": 4,
+      "Italy": 1,
+      "Japan": 20,
+      "Jordan": 1,
+      "Kazakhstan": 8,
+      "Korea, Republic of": 7,
+      "Latvia": 9,
+      "Lithuania": 4,
+      "Malaysia": 57,
+      "Mexico": 9,
+      "Morocco": 1,
+      "Netherlands": 3,
+      "Nigeria": 1,
+      "Norway": 1,
+      "Pakistan": 6,
+      "Paraguay": 1,
+      "Peru": 8,
+      "Philippines": 8,
+      "Poland": 93,
+      "Romania": 5,
+      "Singapore": 27,
+      "Slovakia": 2,
+      "Slovenia": 1,
+      "Spain": 143,
+      "Switzerland": 138,
+      "Taiwan": 14,
+      "Thailand": 8,
+      "Tunisia": 1,
+      "Türkiye": 6,
+      "Ukraine": 3,
+      "United Kingdom": 38,
+      "United States of America": 87,
+      "Uruguay": 1,
+      "Vietnam": 8
+     }
+    },
+    {
+     "field": "city",
+     "value": {
+      "Budapest": 2,
+      "Indianapolis": 1,
+      "Sabana Norte": 11,
+      "San José": 1
+     }
+    },
+    {
+     "field": "company",
+     "value": {
+      "1311": 9,
+      "1390": 2,
+      "6019": 1
+     }
+    },
+    {
+     "field": "jobType",
+     "value": {
+      "Regular / Permanent": 9,
+      "Temporary / Fixed Term": 3
+     }
+    },
+    {
+     "field": "type",
+     "value": {
+      "Full time": 12
+     }
+    },
+    {
+     "field": "category",
+     "value": {
+      "Business Services & Support": 2,
+      "Information Technology": 5,
+      "People & Culture": 3,
+      "Quality": 1,
+      "Regulatory Affairs": 1
+     }
+    }
+   ],
+   "SEARCH_CONFIG": {
+    "contextualSearch": false,
+    "isSuggestionsEnabled": true
+   },
+   "suggestions": {},
+   "ui_skills_selection": null,
+   "ui_selections": {
+    "country": [
+     "Costa Rica"
+    ]
+   },
+   "locationData": {}
+  },
+  "eid": {
+   "trialIndex": -1,
+   "eid": "6a80be113923a4f5fbcc22a1",
+   "searchType": "location",
+   "isMultiLingualVectorApplied": false,
+   "query": "Costa Rica",
+   "variant": 0,
+   "banditId": "",
+   "keywordLanguage": "en"
+  }
+ }
+}

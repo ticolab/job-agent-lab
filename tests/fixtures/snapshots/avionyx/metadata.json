@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "company_name": "Avionyx",
+  "job_board_url": "https://careers-avionyx.icims.com/jobs/search?ss=1&hashed=-625979065",
+  "sample_job_url": "https://careers-avionyx.icims.com/jobs/5224/hardware-design-engineer-pcb-designer/job",
+  "expected_unfiltered_count": 16,
+  "captured_at": "2026-07-17T23:58:38.462005+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/jobs",
+  "min_depth": 2,
+  "frames": [
+    {
+      "file": "frames/1-icims_content_iframe.html",
+      "url": "https://careers-avionyx.icims.com/jobs/search?ss=1&hashed=-625979065&in_iframe=1&mobile=false&width=1216&height=500&bga=true&needsRedirect=false&jan1offset=-360&jun1offset=-360"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "AireSpring",
+  "job_board_url": "https://jobs.smartrecruiters.com/AireSpring1?locationType=REMOTE",
+  "sample_job_url": "https://jobs.smartrecruiters.com/AireSpring1/744000136109539-network-engineer-juniper-focused-remote",
+  "expected_unfiltered_count": 12,
+  "captured_at": "2026-08-15T18:30:33.618387+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pre_filter_urls": [
+    "https://jobs.smartrecruiters.com/AireSpring1?locationType=REMOTE"
+  ],
+  "top_url": "https://jobs.smartrecruiters.com/AireSpring1?locationType=REMOTE"
+}

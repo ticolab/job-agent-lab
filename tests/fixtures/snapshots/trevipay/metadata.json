@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "TreviPay",
+  "job_board_url": "https://www.careers.trevipay.com/career-openings",
+  "sample_job_url": "https://www.careers.trevipay.com/career-description/9793c3d0-f2fe-4f68-90bf-fd5e96db2d54",
+  "expected_unfiltered_count": 12,
+  "captured_at": "2026-07-08T17:27:01.578461+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

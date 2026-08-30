@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "OfficeSpace Software",
+  "job_board_url": "https://job-boards.greenhouse.io/officespacesoftware",
+  "sample_job_url": "https://job-boards.greenhouse.io/officespacesoftware/jobs/5257001008",
+  "expected_unfiltered_count": 10,
+  "captured_at": "2026-07-08T19:23:29.282589+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

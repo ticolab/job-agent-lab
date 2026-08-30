@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "company_name": "GreenSlate",
+  "job_board_url": "https://gslate.applytojob.com/apply",
+  "sample_job_url": "https://gslate.applytojob.com/apply/uRedT4R3qU/Accounting-Success-Specialist",
+  "expected_unfiltered_count": 10,
+  "captured_at": "2026-08-15T16:15:50.408029+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/apply"
+}

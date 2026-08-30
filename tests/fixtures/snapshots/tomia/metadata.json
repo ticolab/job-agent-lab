@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "company_name": "TOMIA",
+  "job_board_url": "https://luminegrp.wd3.myworkdayjobs.com/en-US/TOMIA?locations=8aa2197b5d571001aa59c2b0b57e0000",
+  "sample_job_url": "https://luminegrp.wd3.myworkdayjobs.com/en-US/TOMIA/details/Operations-Support-Engineer_JR107533",
+  "expected_unfiltered_count": 1,
+  "captured_at": "2026-08-09T01:43:18.320141+00:00",
+  "captured_with_filters": false,
+  "notes": "Workday board (luminegrp.wd3.myworkdayjobs.com), second Workday tenant after Babel but using the OTHER Workday location parameter. Babel and Cloudera model Costa Rica as a country facet and take ?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5, which is platform-wide; TOMIA models it as a named remote location ('Remote, Costa Rica') and takes ?locations=<uuid>, which is per-tenant. Passing the country UUID here is silently ignored - it returns the full 7-posting board, indistinguishable from no filter - so the two forms are not interchangeable and the tenant's own facet must be read to learn which applies. The uuid used here is the facet checkbox's element id, read off the rendered Location facet. path_prefix is pinned to the /job route because the sample_job_url uses Workday's /details/ form, whose derivation (/en-US/TOMIA/details) matches zero anchors. hooks.filter_already_applied=True is required, not defensive: without it the agent cleared the facet on 3 of 3 runs and returned the full board (verdict=over, +6); with it, 3 of 3 match. Note the single Costa Rica posting's URL slug reads Remote-Colombia - Workday puts only the primary location in the slug, and this posting spans several locations, so the slug is not evidence of the region.",
+  "path_prefix": "/en-US/TOMIA/job"
+}

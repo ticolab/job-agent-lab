@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "company_name": "DXC Technology",
+  "job_board_url": "https://careers.dxc.com/job-search-results/?compliment=Costa%20Rica",
+  "sample_job_url": "https://careers.dxc.com/job/23651366/software-engineer-assure-commercialization-platform-san-jose-cr/",
+  "expected_unfiltered_count": 3,
+  "captured_at": "2026-08-15T19:44:21.851297+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/job",
+  "frames": [
+    {
+      "file": "frames/1-xchat.html",
+      "url": "https://careers.dxc.com/recruiter-chat/"
+    }
+  ]
+}

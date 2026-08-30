@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "REAP",
+  "job_board_url": "https://careers.reap.global/jobs",
+  "sample_job_url": "https://careers.reap.global/jobs/8123152-compliance-officer-and-money-laundering-reporting-officer-hong-kong",
+  "expected_unfiltered_count": 6,
+  "captured_at": "2026-08-09T02:39:59.382690+00:00",
+  "captured_with_filters": false,
+  "notes": "Teamtailor board. Three region taxonomies on this company disagree, and only one is usable. The marketing careers page (reap.global/hk/resources/company/careers) carries a Teamtailor widget whose 'All regions' select has a Latin America option returning 10 - but every job anchor it renders points at careers.reap.global, a different origin from the page, so the same-origin matcher returns 0 there regardless of filter (C5 shape). job_board_url therefore has to be the ATS itself, where the location select offers both 'Latin America (6)' and 'Costa Rica (1)' as URL-addressable values. 6 is the in-region set the ATS knows about and the closest honest equivalent of the marketing page's 10. Shipped on the agent-less pre_filter_urls path rather than a plain pre-filter URL: GOAL_PROMPT Case B prefers Costa Rica over Latin America when both are offered, so the agent re-picked Costa Rica and narrowed the result to 1 on 3 of 3 runs even with hooks.filter_already_applied=True set. Removing the LLM from the loop is the only way to hold the LATAM selection. Note also that careers.reap.global/ (the root) exposes no filter controls at all - the selects live on /jobs - so probing the root alone reads as a filterless Case A board and is misleading. Derived prefix /jobs is correct with no override; the id-in-path bucket is non-empty so the board's own ?location= self-link never reaches the id-in-query bucket.",
+  "pre_filter_urls": [
+    "https://careers.reap.global/jobs?location=Latin+America"
+  ],
+  "top_url": "https://careers.reap.global/jobs?location=Latin+America"
+}

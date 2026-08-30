@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "company_name": "Jobsity",
+  "job_board_url": "https://careers.jobsity.com/",
+  "sample_job_url": "https://careers.jobsity.com/opportunities/live-receptionist",
+  "expected_unfiltered_count": 6,
+  "captured_at": "2026-08-13T00:43:44.818829+00:00",
+  "captured_with_filters": false,
+  "notes": "Svelte careers site, and the corpus's first opt-in for hooks.expand_selector. The board shows one opportunity by default; the other five are injected into the DOM only when a 'See All' control is clicked, so this is the C4 reveal shape rather than a hidden-anchor one - before the click there is literally one anchor in the document (eligible-including-hidden = 1), which is why pre_extract_css cannot help and an expansion click is required. The expand control and the three category tabs (Contact Center / Internal / IT Positions) are all <a href=\"javascript:void(0)\" role=\"link\"> click handlers with no URL, so none of them is reachable by a pre-filter URL either. The selector targets 'See All' alone via its border-solid class; the bare a[href=\"javascript:void(0)\"] form would match all four and clicking the category tabs would filter to a category instead of showing everything. job_board_url is corrected from the queue's /opportunities, which 302s to a single job detail page (/opportunities/live-receptionist) and yields exactly one anchor - that redirect is what makes the queue URL look like a one-job board. The root is the real listing. No location filter exists (Case A); Jobsity is a LATAM-only staffing company - its own title reads 'Remote Tech Jobs in Latin America' - so the whole board is in region. The /opportunities self-link never contaminates the result: it carries no query string, so it misses the id-in-query bucket, and it has no deeper segment, so it misses the id-in-path bucket. expected_unfiltered_count=6 equals expected_jobs because there is no filter to apply.",
+  "expand_selector": "a[href=\"javascript:void(0)\"].border-solid"
+}

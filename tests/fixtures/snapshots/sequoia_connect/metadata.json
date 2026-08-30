@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "company_name": "Sequoia Connect",
+  "job_board_url": "https://sequoia-connect.com/careers-results/",
+  "sample_job_url": "https://sequoia-connect.com/job-description-details?id=3A.951-84.301&t=Golang%20Developer&st=Senior&i=https%3A%2F%2Fcomeet-euw-app.s3.amazonaws.com%2F1348%2F2d13261c9b51ea49fba770097817ed542bacc26a",
+  "expected_unfiltered_count": 121,
+  "captured_at": "2026-07-12T03:08:39.519341+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/job-description-details"
+}

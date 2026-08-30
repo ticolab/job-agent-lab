@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "company_name": "Intel",
+  "job_board_url": "https://intel.wd1.myworkdayjobs.com/External?locations=1e4a4eb3adf101888ff41a77bf81a2cf",
+  "sample_job_url": "https://intel.wd1.myworkdayjobs.com/en-US/External/details/Server-Quality-and-Reliability-Intern_JR0284940?locations=1e4a4eb3adf101888ff41a77bf81a2cf",
+  "expected_unfiltered_count": 4,
+  "captured_at": "2026-07-08T19:26:52.612420+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/en-US/External/job"
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "Progress",
+  "job_board_url": "https://www.progress.com/company/careers/open-positions?location=Costa+Rica",
+  "sample_job_url": "https://www.progress.com/company/careers/open-positions/principal-cloud-security-engineer-oaykafwm",
+  "expected_unfiltered_count": 4,
+  "captured_at": "2026-08-15T21:57:58.705060+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pre_filter_urls": [
+    "https://www.progress.com/company/careers/open-positions?location=Costa+Rica"
+  ],
+  "top_url": "https://www.progress.com/company/careers/open-positions?location=Costa+Rica"
+}

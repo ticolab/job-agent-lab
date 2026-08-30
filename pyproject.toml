@@ -1,0 +1,83 @@
+[project]
+name = "job-agent-lab"
+version = "0.1.0"
+description = "Agentic browser-based job listing extraction — research sandbox for testing robustness across many career sites"
+authors = [{ name = "Ronald Rodriguez", email = "ronald.rodriguez@luxor.tech" }]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.12"
+
+dependencies = [
+    "browser-use>=0.12.0",
+    "httpx>=0.27.0",
+    "litellm>=1.80.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.12.9",
+    "mypy>=1.17.0",
+    "pre-commit>=4.3.0",
+]
+
+[dependency-groups]
+test = [
+    "pytest>=8.0",
+    "pytest-playwright>=0.5",
+    "respx>=0.21.1",
+]
+
+[project.scripts]
+job-agent-lab = "job_agent_lab.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/job_agent_lab"]
+# Ship the deterministic-matcher JS asset inside the wheel. This is the
+# single source of truth loaded by extraction.dom via importlib.resources;
+# without an explicit include, hatchling would skip non-Python files under
+# the package tree.
+include = ["src/job_agent_lab/extraction/dom/assets/*.js"]
+
+# ===== RUFF (Linting & Formatting) =====
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+src = ["src"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B", "C4", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+# ``GOAL_PROMPT`` is a byte-exact LLM instruction template whose content
+# is not human-authored source code. Splitting the string at 88 columns
+# to satisfy E501 would either require fragile backslash-newline
+# continuations (one accidental space breaks the runtime string) or
+# word-boundary splits that silently drift the prompt. SYS-6 will
+# refactor this file into region-parametrised clauses.
+"src/job_agent_lab/navigation/prompt.py" = ["E501"]
+# ``test_prompt_render.py`` embeds the pre-SYS-4 ``GOAL_PROMPT`` and
+# Case C tool description as byte-identical golden literals. Each
+# paragraph of the golden is one physical line by design (mirroring
+# the runtime payload); splitting them would defeat the point of the
+# golden and is precisely the drift the test exists to catch.
+"tests/unit/test_prompt_render.py" = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["job_agent_lab"]
+
+# ===== MYPY (Type Checking) =====
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true

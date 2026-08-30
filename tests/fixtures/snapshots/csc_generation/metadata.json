@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "CSC Generation",
+  "job_board_url": "https://jobs.lever.co/cscgeneration-2?location=Costa%20Rica",
+  "sample_job_url": "https://jobs.lever.co/cscgeneration-2/dc1c9985-49b6-444d-a431-632df72b535a",
+  "expected_unfiltered_count": 7,
+  "captured_at": "2026-08-15T16:27:08.030057+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pre_filter_urls": [
+    "https://jobs.lever.co/cscgeneration-2?location=Costa%20Rica"
+  ],
+  "top_url": "https://jobs.lever.co/cscgeneration-2?location=Costa%20Rica"
+}

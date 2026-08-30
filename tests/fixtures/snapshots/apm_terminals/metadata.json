@@ -1,0 +1,33 @@
+{
+  "schema_version": 2,
+  "company_name": "APM Terminals",
+  "job_board_url": "https://maersk.wd3.myworkdayjobs.com/en-US/APMT_Careers",
+  "sample_job_url": "https://maersk.wd3.myworkdayjobs.com/en-US/APMT_Careers/job/Costa-Rica-Limon-70101/Terminal-Operations-Supervisor_R185972-1",
+  "expected_unfiltered_count": 104,
+  "captured_at": "2026-07-19T02:40:36.722407+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/en-US/APMT_Careers/job",
+  "pages": [
+    {
+      "file": "pages/page-2.html",
+      "url": "https://maersk.wd3.myworkdayjobs.com/en-US/APMT_Careers"
+    },
+    {
+      "file": "pages/page-3.html",
+      "url": "https://maersk.wd3.myworkdayjobs.com/en-US/APMT_Careers"
+    },
+    {
+      "file": "pages/page-4.html",
+      "url": "https://maersk.wd3.myworkdayjobs.com/en-US/APMT_Careers"
+    },
+    {
+      "file": "pages/page-5.html",
+      "url": "https://maersk.wd3.myworkdayjobs.com/en-US/APMT_Careers"
+    },
+    {
+      "file": "pages/page-6.html",
+      "url": "https://maersk.wd3.myworkdayjobs.com/en-US/APMT_Careers"
+    }
+  ]
+}

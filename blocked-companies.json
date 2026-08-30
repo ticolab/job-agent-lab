@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Luflox",
+    "job_board_url": "https://www.luflox.com/career",
+    "sample_job_url": "https://www.luflox.com/career/details/7jXebHANg4LaqahCnhLt",
+    "expected_jobs": 3
+  },
+  {
+    "name": "Deel",
+    "job_board_url": "https://www.deel.com/careers/",
+    "sample_job_url": "https://www.deel.com/careers/job/?ats_id=76d092b7-423d-4cfc-819a-02f5584348ea",
+    "expected_jobs": 6
+  }
+]

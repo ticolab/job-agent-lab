@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Kraken",
+  "job_board_url": "https://jobs.ashbyhq.com/kraken.com?locationId=3ddcfd63-cdf6-4bd1-9d9e-7cb14dd721a2",
+  "sample_job_url": "https://jobs.ashbyhq.com/kraken.com/055adaf0-a15b-40f3-89ab-dc5ab4fa719e?locationId=3ddcfd63-cdf6-4bd1-9d9e-7cb14dd721a2",
+  "expected_unfiltered_count": 4,
+  "captured_at": "2026-07-08T01:52:20.540855+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

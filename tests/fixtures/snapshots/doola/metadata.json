@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "doola",
+  "job_board_url": "https://jobs.lever.co/doola",
+  "sample_job_url": "https://jobs.lever.co/doola/395aff9d-b0c2-453a-a3f6-4fab4ef710b4",
+  "expected_unfiltered_count": 6,
+  "captured_at": "2026-08-09T01:24:13.677953+00:00",
+  "captured_with_filters": false,
+  "notes": "Lever board shipped on the agent-less pre_filter_urls path with a single URL, the board's own ?location=Remote%20in%20Latin%20America view. Two independent reasons, both measured. First, the agent cannot be trusted here: Lever renders a visible filter bar and the agent interacts with it even under filter_already_applied, producing 8/1/1 without the hook and 1/6/4 with it. The agent-less path removes the LLM entirely so the shipped filter is exactly the one in the URL. Second, and the reason expected_jobs is deliberately unset: Lever's filtered view is NOT deterministic. Byte-identical plain-httpx requests (no browser, no JavaScript, no agent) return 4 or 6 - sampled [4,4,4,4,6,4] in one run and 6 repeatedly an hour earlier, while the unfiltered board stays rock stable at 8. The two postings that come and go are FP&A Analyst and Tax Team Lead; both still advertise 'Remote in Latin America' on the unfiltered board, and what separates them from the four stable ones is position - the stable four list Latin America FIRST, these two list it LAST after other countries. Pinning expected_jobs would make verdict flip between match and under at random, so the entry carries None (verdict=unverified) by design: the LATAM filter is the contract, whatever it returns is accepted. This snapshot freezes one state; replaying frozen HTML is deterministic, so the regression test does not inherit the live instability.",
+  "pre_filter_urls": [
+    "https://jobs.lever.co/doola?location=Remote%20in%20Latin%20America"
+  ],
+  "top_url": "https://jobs.lever.co/doola?location=Remote%20in%20Latin%20America"
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Envista",
+  "job_board_url": "https://careers.envistaco.com/jobs?location=Costa%2BRica",
+  "sample_job_url": "https://careers.envistaco.com/job/karlskoga-sweden-director-of-innovation-engineering-r5026642",
+  "expected_unfiltered_count": 7,
+  "captured_at": "2026-07-08T18:09:21.776446+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

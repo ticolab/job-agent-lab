@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "TradeStation",
+  "job_board_url": "https://careers.tradestation.com/positions",
+  "sample_job_url": "https://careers.tradestation.com/positions/principal-sdet-3300",
+  "expected_unfiltered_count": 24,
+  "captured_at": "2026-07-08T22:14:17.648889+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

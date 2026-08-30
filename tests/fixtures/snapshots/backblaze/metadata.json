@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Backblaze",
+  "job_board_url": "https://job-boards.greenhouse.io/backblaze?offices%5B%5D=4034410008",
+  "sample_job_url": "https://job-boards.greenhouse.io/backblaze/jobs/5215611008",
+  "expected_unfiltered_count": 25,
+  "captured_at": "2026-07-08T22:31:21.608872+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

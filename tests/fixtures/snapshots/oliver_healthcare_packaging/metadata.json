@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "Oliver Healthcare Packaging",
+  "job_board_url": "https://oliver1.csod.com/ux/ats/careersite/1/home?c=oliver1&lq=Costa%20Rica&pl=ChIJJcmsIWLlko8RK5qBNSX3VGI",
+  "sample_job_url": "https://oliver1.csod.com/ux/ats/careersite/1/home/requisition/342?c=oliver1",
+  "expected_unfiltered_count": 1,
+  "captured_at": "2026-08-15T19:22:31.650610+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pre_filter_urls": [
+    "https://oliver1.csod.com/ux/ats/careersite/1/home?c=oliver1&lq=Costa%20Rica&pl=ChIJJcmsIWLlko8RK5qBNSX3VGI"
+  ],
+  "top_url": "https://oliver1.csod.com/ux/ats/careersite/1/home?c=oliver1&lq=Costa%20Rica&pl=ChIJJcmsIWLlko8RK5qBNSX3VGI"
+}

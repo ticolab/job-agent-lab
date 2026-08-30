@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "company_name": "Babel",
+  "job_board_url": "https://babelgroup.wd103.myworkdayjobs.com/es/REC_External_Career_Site?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+  "sample_job_url": "https://babelgroup.wd103.myworkdayjobs.com/es/REC_External_Career_Site/details/QA-Analyst-Salesforce_JR108342?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+  "expected_unfiltered_count": 5,
+  "captured_at": "2026-08-08T01:05:17.548756+00:00",
+  "captured_with_filters": false,
+  "notes": "Workday board (babelgroup.wd103.myworkdayjobs.com). job_board_url carries Workday's global Costa Rica facet, ?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5 - the same UUID Cloudera already uses in this corpus, since Workday's country ids are platform-wide rather than per-tenant. path_prefix is pinned to the /job route following the Cloudera / Intel / World Kinect / APM Terminals precedent: the queue's sample_job_url uses Workday's newer /details/ route, so derivation yields /es/REC_External_Career_Site/details which matches zero anchors, while the rendered board links postings as /job/<location>/<title>_<id> at depth 3 under the site path. Locale is /es/ rather than /en-US/ because that is the path this tenant serves. All five postings are SAN-JOS (San Jose). No hooks: three live runs preserved the URL pre-filter without re-toggling the facet, so this board does not show the C11 shape and matches the inert-hooks posture of the other four Workday entries. expected_unfiltered_count=5 equals expected_jobs because the URL baseline IS the filtered view.",
+  "path_prefix": "/es/REC_External_Career_Site/job"
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Golabs Tech",
+  "job_board_url": "https://recruitcrm.io/jobs/Golabs_Tech_jobs",
+  "sample_job_url": "https://recruitcrm.io/apply/17760976583210110395Pmz",
+  "expected_unfiltered_count": 16,
+  "captured_at": "2026-06-30T17:41:12.636549+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

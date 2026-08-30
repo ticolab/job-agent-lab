@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Teramind",
+  "job_board_url": "https://jobs.lever.co/teramind",
+  "sample_job_url": "https://jobs.lever.co/teramind/66afc89f-d2af-4360-a18f-749502478e8e",
+  "expected_unfiltered_count": 20,
+  "captured_at": "2026-07-18T00:31:06.113577+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "3Pillar",
+  "job_board_url": "https://jobs.lever.co/3pillarglobal",
+  "sample_job_url": "https://jobs.lever.co/3pillarglobal/3a8611ed-6048-49e1-9601-9fa564a61da7",
+  "expected_unfiltered_count": 92,
+  "captured_at": "2026-07-18T00:42:12.059376+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

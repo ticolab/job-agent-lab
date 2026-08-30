@@ -1,0 +1,12 @@
+{
+  "schema_version": 2,
+  "company_name": "Databricks",
+  "job_board_url": "https://www.databricks.com/company/careers/open-positions?location=Costa%20Rica",
+  "sample_job_url": "https://www.databricks.com/company/careers/it/executive-assistant-8229672002",
+  "expected_unfiltered_count": 4,
+  "captured_at": "2026-07-17T19:20:35.108606+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/company/careers",
+  "min_depth": 2
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Launchpad Technologies",
+  "job_board_url": "https://job-boards.greenhouse.io/launchpadtechnologiesinc",
+  "sample_job_url": "https://job-boards.greenhouse.io/launchpadtechnologiesinc/jobs/4269481006",
+  "expected_unfiltered_count": 9,
+  "captured_at": "2026-07-01T01:38:18.600370+00:00",
+  "captured_with_filters": false,
+  "notes": "Greenhouse board; cross-origin from golaunchpad.io/company/careers marketing page. 9 jobs unfiltered, no location/office filter on the board itself. Page lazy-renders listings after ~5-6s; the deterministic snapshot capture waits 8s and scrolls, and the browser-use agent is 2/3-reliable \u2014 occasional early-render race can cause 0-count runs, resolved by re-running."
+}

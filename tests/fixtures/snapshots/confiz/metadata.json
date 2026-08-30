@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "company_name": "Confiz",
+  "job_board_url": "https://confiz.simplicant.com/?country=CR",
+  "sample_job_url": "https://confiz.simplicant.com/jobs/61335-backend-engineer-level-iii-java-springboot/detail",
+  "expected_unfiltered_count": 7,
+  "captured_at": "2026-07-03T17:34:14.515483+00:00",
+  "captured_with_filters": false,
+  "notes": "Pre-filtered URL (?country=CR). Confiz is Simplicant/Select2, native <select> hidden 1x1px behind a JS overlay; the country filter is URL-parameterised so we point job_board_url at the filtered view directly (same pattern as 10Pearls' /latin-america-job-openings/). Uses path_prefix=/jobs to bypass the default derivation heuristic because Simplicant URLs are /jobs/<id-slug>/detail with a fixed suffix.",
+  "path_prefix": "/jobs"
+}

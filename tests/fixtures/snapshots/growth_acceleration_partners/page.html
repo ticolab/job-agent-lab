@@ -1,0 +1,2816 @@
+<!DOCTYPE html><html lang="en-GB" dir="ltr" class="h-screen fontawesome-i2svg-active fontawesome-i2svg-complete"><head><style type="text/css">:root, :host {
+  --fa-font-solid: normal 900 1em/1 "Font Awesome 6 Solid";
+  --fa-font-regular: normal 400 1em/1 "Font Awesome 6 Regular";
+  --fa-font-light: normal 300 1em/1 "Font Awesome 6 Light";
+  --fa-font-thin: normal 100 1em/1 "Font Awesome 6 Thin";
+  --fa-font-duotone: normal 900 1em/1 "Font Awesome 6 Duotone";
+  --fa-font-sharp-solid: normal 900 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-sharp-regular: normal 400 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-sharp-light: normal 300 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-sharp-thin: normal 100 1em/1 "Font Awesome 6 Sharp";
+  --fa-font-brands: normal 400 1em/1 "Font Awesome 6 Brands";
+}
+
+svg:not(:root).svg-inline--fa, svg:not(:host).svg-inline--fa {
+  overflow: visible;
+  box-sizing: content-box;
+}
+
+.svg-inline--fa {
+  display: var(--fa-display, inline-block);
+  height: 1em;
+  overflow: visible;
+  vertical-align: -0.125em;
+}
+.svg-inline--fa.fa-2xs {
+  vertical-align: 0.1em;
+}
+.svg-inline--fa.fa-xs {
+  vertical-align: 0em;
+}
+.svg-inline--fa.fa-sm {
+  vertical-align: -0.0714285705em;
+}
+.svg-inline--fa.fa-lg {
+  vertical-align: -0.2em;
+}
+.svg-inline--fa.fa-xl {
+  vertical-align: -0.25em;
+}
+.svg-inline--fa.fa-2xl {
+  vertical-align: -0.3125em;
+}
+.svg-inline--fa.fa-pull-left {
+  margin-right: var(--fa-pull-margin, 0.3em);
+  width: auto;
+}
+.svg-inline--fa.fa-pull-right {
+  margin-left: var(--fa-pull-margin, 0.3em);
+  width: auto;
+}
+.svg-inline--fa.fa-li {
+  width: var(--fa-li-width, 2em);
+  top: 0.25em;
+}
+.svg-inline--fa.fa-fw {
+  width: var(--fa-fw-width, 1.25em);
+}
+
+.fa-layers svg.svg-inline--fa {
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.fa-layers-counter, .fa-layers-text {
+  display: inline-block;
+  position: absolute;
+  text-align: center;
+}
+
+.fa-layers {
+  display: inline-block;
+  height: 1em;
+  position: relative;
+  text-align: center;
+  vertical-align: -0.125em;
+  width: 1em;
+}
+.fa-layers svg.svg-inline--fa {
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+
+.fa-layers-text {
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+
+.fa-layers-counter {
+  background-color: var(--fa-counter-background-color, #ff253a);
+  border-radius: var(--fa-counter-border-radius, 1em);
+  box-sizing: border-box;
+  color: var(--fa-inverse, #fff);
+  line-height: var(--fa-counter-line-height, 1);
+  max-width: var(--fa-counter-max-width, 5em);
+  min-width: var(--fa-counter-min-width, 1.5em);
+  overflow: hidden;
+  padding: var(--fa-counter-padding, 0.25em 0.5em);
+  right: var(--fa-right, 0);
+  text-overflow: ellipsis;
+  top: var(--fa-top, 0);
+  -webkit-transform: scale(var(--fa-counter-scale, 0.25));
+          transform: scale(var(--fa-counter-scale, 0.25));
+  -webkit-transform-origin: top right;
+          transform-origin: top right;
+}
+
+.fa-layers-bottom-right {
+  bottom: var(--fa-bottom, 0);
+  right: var(--fa-right, 0);
+  top: auto;
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: bottom right;
+          transform-origin: bottom right;
+}
+
+.fa-layers-bottom-left {
+  bottom: var(--fa-bottom, 0);
+  left: var(--fa-left, 0);
+  right: auto;
+  top: auto;
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: bottom left;
+          transform-origin: bottom left;
+}
+
+.fa-layers-top-right {
+  top: var(--fa-top, 0);
+  right: var(--fa-right, 0);
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: top right;
+          transform-origin: top right;
+}
+
+.fa-layers-top-left {
+  left: var(--fa-left, 0);
+  right: auto;
+  top: var(--fa-top, 0);
+  -webkit-transform: scale(var(--fa-layers-scale, 0.25));
+          transform: scale(var(--fa-layers-scale, 0.25));
+  -webkit-transform-origin: top left;
+          transform-origin: top left;
+}
+
+.fa-1x {
+  font-size: 1em;
+}
+
+.fa-2x {
+  font-size: 2em;
+}
+
+.fa-3x {
+  font-size: 3em;
+}
+
+.fa-4x {
+  font-size: 4em;
+}
+
+.fa-5x {
+  font-size: 5em;
+}
+
+.fa-6x {
+  font-size: 6em;
+}
+
+.fa-7x {
+  font-size: 7em;
+}
+
+.fa-8x {
+  font-size: 8em;
+}
+
+.fa-9x {
+  font-size: 9em;
+}
+
+.fa-10x {
+  font-size: 10em;
+}
+
+.fa-2xs {
+  font-size: 0.625em;
+  line-height: 0.1em;
+  vertical-align: 0.225em;
+}
+
+.fa-xs {
+  font-size: 0.75em;
+  line-height: 0.0833333337em;
+  vertical-align: 0.125em;
+}
+
+.fa-sm {
+  font-size: 0.875em;
+  line-height: 0.0714285718em;
+  vertical-align: 0.0535714295em;
+}
+
+.fa-lg {
+  font-size: 1.25em;
+  line-height: 0.05em;
+  vertical-align: -0.075em;
+}
+
+.fa-xl {
+  font-size: 1.5em;
+  line-height: 0.0416666682em;
+  vertical-align: -0.125em;
+}
+
+.fa-2xl {
+  font-size: 2em;
+  line-height: 0.03125em;
+  vertical-align: -0.1875em;
+}
+
+.fa-fw {
+  text-align: center;
+  width: 1.25em;
+}
+
+.fa-ul {
+  list-style-type: none;
+  margin-left: var(--fa-li-margin, 2.5em);
+  padding-left: 0;
+}
+.fa-ul > li {
+  position: relative;
+}
+
+.fa-li {
+  left: calc(var(--fa-li-width, 2em) * -1);
+  position: absolute;
+  text-align: center;
+  width: var(--fa-li-width, 2em);
+  line-height: inherit;
+}
+
+.fa-border {
+  border-color: var(--fa-border-color, #eee);
+  border-radius: var(--fa-border-radius, 0.1em);
+  border-style: var(--fa-border-style, solid);
+  border-width: var(--fa-border-width, 0.08em);
+  padding: var(--fa-border-padding, 0.2em 0.25em 0.15em);
+}
+
+.fa-pull-left {
+  float: left;
+  margin-right: var(--fa-pull-margin, 0.3em);
+}
+
+.fa-pull-right {
+  float: right;
+  margin-left: var(--fa-pull-margin, 0.3em);
+}
+
+.fa-beat {
+  -webkit-animation-name: fa-beat;
+          animation-name: fa-beat;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, ease-in-out);
+          animation-timing-function: var(--fa-animation-timing, ease-in-out);
+}
+
+.fa-bounce {
+  -webkit-animation-name: fa-bounce;
+          animation-name: fa-bounce;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.28, 0.84, 0.42, 1));
+          animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.28, 0.84, 0.42, 1));
+}
+
+.fa-fade {
+  -webkit-animation-name: fa-fade;
+          animation-name: fa-fade;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+          animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+}
+
+.fa-beat-fade {
+  -webkit-animation-name: fa-beat-fade;
+          animation-name: fa-beat-fade;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+          animation-timing-function: var(--fa-animation-timing, cubic-bezier(0.4, 0, 0.6, 1));
+}
+
+.fa-flip {
+  -webkit-animation-name: fa-flip;
+          animation-name: fa-flip;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, ease-in-out);
+          animation-timing-function: var(--fa-animation-timing, ease-in-out);
+}
+
+.fa-shake {
+  -webkit-animation-name: fa-shake;
+          animation-name: fa-shake;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, linear);
+          animation-timing-function: var(--fa-animation-timing, linear);
+}
+
+.fa-spin {
+  -webkit-animation-name: fa-spin;
+          animation-name: fa-spin;
+  -webkit-animation-delay: var(--fa-animation-delay, 0s);
+          animation-delay: var(--fa-animation-delay, 0s);
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 2s);
+          animation-duration: var(--fa-animation-duration, 2s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, linear);
+          animation-timing-function: var(--fa-animation-timing, linear);
+}
+
+.fa-spin-reverse {
+  --fa-animation-direction: reverse;
+}
+
+.fa-pulse,
+.fa-spin-pulse {
+  -webkit-animation-name: fa-spin;
+          animation-name: fa-spin;
+  -webkit-animation-direction: var(--fa-animation-direction, normal);
+          animation-direction: var(--fa-animation-direction, normal);
+  -webkit-animation-duration: var(--fa-animation-duration, 1s);
+          animation-duration: var(--fa-animation-duration, 1s);
+  -webkit-animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+          animation-iteration-count: var(--fa-animation-iteration-count, infinite);
+  -webkit-animation-timing-function: var(--fa-animation-timing, steps(8));
+          animation-timing-function: var(--fa-animation-timing, steps(8));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fa-beat,
+.fa-bounce,
+.fa-fade,
+.fa-beat-fade,
+.fa-flip,
+.fa-pulse,
+.fa-shake,
+.fa-spin,
+.fa-spin-pulse {
+    -webkit-animation-delay: -1ms;
+            animation-delay: -1ms;
+    -webkit-animation-duration: 1ms;
+            animation-duration: 1ms;
+    -webkit-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+    -webkit-transition-delay: 0s;
+            transition-delay: 0s;
+    -webkit-transition-duration: 0s;
+            transition-duration: 0s;
+  }
+}
+@-webkit-keyframes fa-beat {
+  0%, 90% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  45% {
+    -webkit-transform: scale(var(--fa-beat-scale, 1.25));
+            transform: scale(var(--fa-beat-scale, 1.25));
+  }
+}
+@keyframes fa-beat {
+  0%, 90% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  45% {
+    -webkit-transform: scale(var(--fa-beat-scale, 1.25));
+            transform: scale(var(--fa-beat-scale, 1.25));
+  }
+}
+@-webkit-keyframes fa-bounce {
+  0% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  10% {
+    -webkit-transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+            transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+  }
+  30% {
+    -webkit-transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+            transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+  }
+  50% {
+    -webkit-transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+            transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+  }
+  57% {
+    -webkit-transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+            transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+  }
+  64% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  100% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+}
+@keyframes fa-bounce {
+  0% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  10% {
+    -webkit-transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+            transform: scale(var(--fa-bounce-start-scale-x, 1.1), var(--fa-bounce-start-scale-y, 0.9)) translateY(0);
+  }
+  30% {
+    -webkit-transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+            transform: scale(var(--fa-bounce-jump-scale-x, 0.9), var(--fa-bounce-jump-scale-y, 1.1)) translateY(var(--fa-bounce-height, -0.5em));
+  }
+  50% {
+    -webkit-transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+            transform: scale(var(--fa-bounce-land-scale-x, 1.05), var(--fa-bounce-land-scale-y, 0.95)) translateY(0);
+  }
+  57% {
+    -webkit-transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+            transform: scale(1, 1) translateY(var(--fa-bounce-rebound, -0.125em));
+  }
+  64% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+  100% {
+    -webkit-transform: scale(1, 1) translateY(0);
+            transform: scale(1, 1) translateY(0);
+  }
+}
+@-webkit-keyframes fa-fade {
+  50% {
+    opacity: var(--fa-fade-opacity, 0.4);
+  }
+}
+@keyframes fa-fade {
+  50% {
+    opacity: var(--fa-fade-opacity, 0.4);
+  }
+}
+@-webkit-keyframes fa-beat-fade {
+  0%, 100% {
+    opacity: var(--fa-beat-fade-opacity, 0.4);
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: scale(var(--fa-beat-fade-scale, 1.125));
+            transform: scale(var(--fa-beat-fade-scale, 1.125));
+  }
+}
+@keyframes fa-beat-fade {
+  0%, 100% {
+    opacity: var(--fa-beat-fade-opacity, 0.4);
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    -webkit-transform: scale(var(--fa-beat-fade-scale, 1.125));
+            transform: scale(var(--fa-beat-fade-scale, 1.125));
+  }
+}
+@-webkit-keyframes fa-flip {
+  50% {
+    -webkit-transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+            transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+  }
+}
+@keyframes fa-flip {
+  50% {
+    -webkit-transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+            transform: rotate3d(var(--fa-flip-x, 0), var(--fa-flip-y, 1), var(--fa-flip-z, 0), var(--fa-flip-angle, -180deg));
+  }
+}
+@-webkit-keyframes fa-shake {
+  0% {
+    -webkit-transform: rotate(-15deg);
+            transform: rotate(-15deg);
+  }
+  4% {
+    -webkit-transform: rotate(15deg);
+            transform: rotate(15deg);
+  }
+  8%, 24% {
+    -webkit-transform: rotate(-18deg);
+            transform: rotate(-18deg);
+  }
+  12%, 28% {
+    -webkit-transform: rotate(18deg);
+            transform: rotate(18deg);
+  }
+  16% {
+    -webkit-transform: rotate(-22deg);
+            transform: rotate(-22deg);
+  }
+  20% {
+    -webkit-transform: rotate(22deg);
+            transform: rotate(22deg);
+  }
+  32% {
+    -webkit-transform: rotate(-12deg);
+            transform: rotate(-12deg);
+  }
+  36% {
+    -webkit-transform: rotate(12deg);
+            transform: rotate(12deg);
+  }
+  40%, 100% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+}
+@keyframes fa-shake {
+  0% {
+    -webkit-transform: rotate(-15deg);
+            transform: rotate(-15deg);
+  }
+  4% {
+    -webkit-transform: rotate(15deg);
+            transform: rotate(15deg);
+  }
+  8%, 24% {
+    -webkit-transform: rotate(-18deg);
+            transform: rotate(-18deg);
+  }
+  12%, 28% {
+    -webkit-transform: rotate(18deg);
+            transform: rotate(18deg);
+  }
+  16% {
+    -webkit-transform: rotate(-22deg);
+            transform: rotate(-22deg);
+  }
+  20% {
+    -webkit-transform: rotate(22deg);
+            transform: rotate(22deg);
+  }
+  32% {
+    -webkit-transform: rotate(-12deg);
+            transform: rotate(-12deg);
+  }
+  36% {
+    -webkit-transform: rotate(12deg);
+            transform: rotate(12deg);
+  }
+  40%, 100% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+}
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+.fa-rotate-90 {
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+}
+
+.fa-rotate-180 {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.fa-rotate-270 {
+  -webkit-transform: rotate(270deg);
+          transform: rotate(270deg);
+}
+
+.fa-flip-horizontal {
+  -webkit-transform: scale(-1, 1);
+          transform: scale(-1, 1);
+}
+
+.fa-flip-vertical {
+  -webkit-transform: scale(1, -1);
+          transform: scale(1, -1);
+}
+
+.fa-flip-both,
+.fa-flip-horizontal.fa-flip-vertical {
+  -webkit-transform: scale(-1, -1);
+          transform: scale(-1, -1);
+}
+
+.fa-rotate-by {
+  -webkit-transform: rotate(var(--fa-rotate-angle, none));
+          transform: rotate(var(--fa-rotate-angle, none));
+}
+
+.fa-stack {
+  display: inline-block;
+  vertical-align: middle;
+  height: 2em;
+  position: relative;
+  width: 2.5em;
+}
+
+.fa-stack-1x,
+.fa-stack-2x {
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: var(--fa-stack-z-index, auto);
+}
+
+.svg-inline--fa.fa-stack-1x {
+  height: 1em;
+  width: 1.25em;
+}
+.svg-inline--fa.fa-stack-2x {
+  height: 2em;
+  width: 2.5em;
+}
+
+.fa-inverse {
+  color: var(--fa-inverse, #fff);
+}
+
+.sr-only,
+.fa-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:not(:focus),
+.fa-sr-only-focusable:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.svg-inline--fa .fa-primary {
+  fill: var(--fa-primary-color, currentColor);
+  opacity: var(--fa-primary-opacity, 1);
+}
+
+.svg-inline--fa .fa-secondary {
+  fill: var(--fa-secondary-color, currentColor);
+  opacity: var(--fa-secondary-opacity, 0.4);
+}
+
+.svg-inline--fa.fa-swap-opacity .fa-primary {
+  opacity: var(--fa-secondary-opacity, 0.4);
+}
+
+.svg-inline--fa.fa-swap-opacity .fa-secondary {
+  opacity: var(--fa-primary-opacity, 1);
+}
+
+.svg-inline--fa mask .fa-primary,
+.svg-inline--fa mask .fa-secondary {
+  fill: black;
+}
+
+.fad.fa-inverse,
+.fa-duotone.fa-inverse {
+  color: var(--fa-inverse, #fff);
+}</style><style type="text/css">.turbo-progress-bar {
+  position: fixed;
+  display: block;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: #0076ff;
+  z-index: 2147483647;
+  transition:
+    width 300ms ease-out,
+    opacity 150ms 150ms ease-in;
+  transform: translate3d(0, 0, 0);
+}
+</style>
+    <script type="text/javascript" async="" src="https://www.googletagmanager.com/gtag/js?id=G-37XNSJXFJJ&amp;cx=c&amp;gtm=4e66t0" nonce=""></script><script async="" src="https://www.googletagmanager.com/gtm.js?id=GTM-PRFJ9XM9"></script><script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/cookies-a135f52d0a68c93f4012.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" defer="defer" integrity="sha384-0sL6GTF8sTKsSFPNxAGm6429n1teKKhy573MDp74v/UIVHe/z//4JrnBZWLBIJZQ"></script>
+<script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/601-7d3383e7a375dc1aaa1b.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" defer="defer" integrity="sha384-l5I801Pjg1EBg2KQZqeHOLGUzdhI7+PBvRsMqdEOUrzi+WANH250/E7d/ntAKPkC"></script>
+<script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/8559-d931dd583b4bb79d0e2a.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" defer="defer" integrity="sha384-9pmZ0INZG4vdr7arMaCamElHv26NrYEKOvqhf9yjMS5zyzkA40w7ExDWqxGcv2vE"></script>
+<script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/7107-2c8b0452b1096d40d889.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" defer="defer" integrity="sha384-F6jpFzRjsKwuSo3AQM4sFVxNTUvURcCz99PinP+Ioe6ku9FF/btyL6hHI9n3qsl9"></script>
+<script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/7328-a90e9b50bbe4ad94fa86.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" defer="defer" integrity="sha384-Pflrvh82gtE0Snhhc4LDPCFmxwCnfndAZbEL7+P8QKqp1cR2/u+OnWeg1erI6CWc"></script>
+<script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/3065-658a27fe7dfb724e2abb.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" defer="defer" integrity="sha384-DRnyjvRo7odNvZ/k150P6/b8sxm5DETKHoqtFHtGds7eFnuiTLO1a8sCO+FZFRDB"></script>
+<script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/careersite-af60eeae26a18dc4738b.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" defer="defer" integrity="sha384-hiSw0iD3dyTAeLhBASSQ7nEKWttZ/ckiE9I0WKSLeW4lLnBfd7OsW3M+TvRe0xBN"></script>
+<script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/4254-c45eea0ea8a6e7fbe408.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" defer="defer" integrity="sha384-apFmoAEVdGUqGEoR1Nm41DSwOTXZzwghwLCdRgTnXOu0tfFK3Fa/hBBCV7G0v2h8"></script>
+<script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/8454-dccd058d74072b7a960a.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" defer="defer" integrity="sha384-3flMoFAWlGXh7oeBBIqHSD2xPfhX7G4umVK2RaedwXQyOt7fyDuzz/TxkVmjmTgO"></script>
+<script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/font-awesome-145f74e601b47a3e23cc.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" defer="defer" integrity="sha384-1rbhckhq8TFzpPe3ZngylJAXQbZiU8vFxsSZ4140VRxrwwF1m6UwmlIelHSdM4we"></script>
+<script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/runtime-b23bb512c87ec4b4288d.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" integrity="sha384-DAhBlx2ZQB+pJmFOZTIuxMX27KLC3Z+iXbP/BFnM9+eg+tU719DSBGxiL3k875DN"></script>
+<script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/5217-d722161248a86ef021eb.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" integrity="sha384-3uhEwc9uRPhLRiFZuyE1+fXG2cPfzR9U79Emaqi+mAfXU4IoMzhLyJlcm/7r1wQE"></script>
+<script src="https://assets-aws.teamtailor-cdn.com/assets/packs/js/google-tag-manager-672e757ebfd51b27b116.js" crossorigin="anonymous" data-turbo-track="reload" nonce="" integrity="sha384-zK5UsZvpmIooHdW107KWtdUaBxiK2LeYM7IOl81Sv1yYLWsTrUZxtJG1//cLnFu4"></script>
+
+    <link rel="stylesheet" crossorigin="anonymous" href="https://assets-aws.teamtailor-cdn.com/assets/packs/css/careersite-8c47b0d2.css" data-turbo-track="reload" media="all" integrity="sha384-Ea+m9HhH8uZRIe9lMEanp+wtzs3xflnBnAxvgjru8Czc+6Kd+eFFjf22J7DUUR/T">
+
+      <script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PRFJ9XM9');
+</script>
+
+      <script nonce="" type="text/plain" data-cookie-type="marketing" async="" src="https://www.googletagmanager.com/gtag/js?id=G-37XNSJXFJJ"></script>
+<script nonce="">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-37XNSJXFJJ');
+</script>
+<script type="module" nonce="">
+  let isInitialLoad = true;
+  document.addEventListener('turbo:load', () => {
+    if (isInitialLoad){isInitialLoad = false; return;}
+    gtag('config', 'G-37XNSJXFJJ', {
+      page_path: window.location.pathname,
+    });
+  });
+</script>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="turbo-cache-control" content="">
+
+    <meta name="turbo-prefetch" content="false">
+
+    <title>
+      Jobs - Growth Acceleration Partners
+    </title>
+
+    <meta name="csrf-param" content="authenticity_token">
+<meta name="csrf-token" content="nETDDHF86YhYOws9OMHdXbyLY25OMB99B_9jHPJd4hG21zz4exTJspdoO7Q5VFpRdu2fJ5uTrguyoIfIMiQ21Q">
+
+
+
+    <link rel="icon" type="image/png" href="https://images.teamtailor-cdn.com/images/s3/teamtailor-production/favicon-v3/image_uploads/bd0e471b-0383-443d-81a8-038f07aef740/original.png"><link rel="apple-touch-icon" href="https://images.teamtailor-cdn.com/images/s3/teamtailor-production/favicon_apple-v3/image_uploads/bd0e471b-0383-443d-81a8-038f07aef740/original.png" sizes="180x180">
+    <meta name="description" content="Remote jobs for software developers and data engineers interested in developing their careers while experiencing an excellent work environment.">
+    <meta name="keywords" content="Job opportunities, Jobs, Career, Career site">
+
+    <meta name="content-signal" content="search=yes, ai-train=no, ai-input=yes">
+
+
+    <link rel="alternate" type="application/rss+xml" title="Blog Posts" href="/blog/posts.rss"><link rel="alternate" type="application/rss+xml" title="Jobs" href="/jobs.rss">
+
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Jobs - Growth Acceleration Partners">
+    <meta property="og:site_name" content="Growth Acceleration Partners">
+    <meta property="og:url" content="https://careers.wearegap.com/jobs">
+    <meta property="og:description" content="Remote jobs for software developers and data engineers interested in developing their careers while experiencing an excellent work environment.">
+
+        <meta property="og:image" content="https://screenshots.teamtailor-cdn.com/e8784f76-9500-4ec0-bf92-a0a52c20df5a-facebook.png?update=1723054631">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:image" content="https://screenshots.teamtailor-cdn.com/e8784f76-9500-4ec0-bf92-a0a52c20df5a-twitter.png?update=1723054631">
+        <meta name="twitter:title" content="Jobs - Growth Acceleration Partners">
+        <meta name="twitter:description" content="Remote jobs for software developers and data engineers interested in developing their careers while experiencing an excellent work environment.">
+
+
+
+
+    <style media="all">
+  :root {
+    --company-primary-bg-color: 255, 255, 255;
+    --company-primary-bg-contrast-color: #000000;
+    --company-secondary-bg-color: 0, 100, 137;
+    --company-secondary-bg-light-5-color: 0, 119, 162;
+    --company-secondary-bg-fallback-color: 0, 100, 137;
+    --company-primary-text-color: 119, 115, 115;
+    --company-primary-text-dark-5-color: 106, 102, 102;
+    --company-primary-text-dark-10-color: 93, 90, 90;
+    --company-primary-text-light-50-color: 245, 244, 244;
+    --company-primary-text-light-77-color: 255, 255, 255;
+    --company-secondary-text-color: 255, 255, 255;
+    --company-secondary-text-light-5-color: 255, 255, 255;
+    --company-secondary-text-light-15-color: 255, 255, 255;
+    --company-link-color: 0, 100, 137;
+    --company-link-color-on-white: 0, 100, 137;
+    --company-color: 0, 100, 137;
+
+    --company-button-text-color: 255, 255, 255;
+    --company-button-bg-color: 0, 100, 137;
+
+    --company-button-bg-light-5-color: 0, 119, 162;
+    --company-button-bg-light-15-color: 0, 156, 213;
+
+    --company-button-bg-color-on-white: 0, 100, 137;
+    --company-secondary-text-color-on-white: 77, 77, 77;
+
+    --company-border-radius: 40px;
+
+    --company-header-font-family: "Inter";
+    --company-header-font-weight: 900;
+    --company-body-font-family: "Inter";
+    --company-body-font-weight: 400;
+  }
+    /* Custom CSS */
+
+.bg-cover {
+    background-size: cover;
+}
+.bg-center {
+    background-position: center;
+}
+
+.block-cover-bg {
+
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+header .mx-auto {
+    margin-left: auto!important;
+    margin-right: auto!important;
+    max-width: var(--max-width, 180px);
+    width: 100%!important;
+}
+
+img.mx-auto.max-w-\[180px\].sm\:max-w-\[200px\].max-h-\[90\%\] {
+    margin-left: auto!important;
+    margin-right: auto!important;
+}
+
+.custom-wrapper--coversection .block-cover-text {
+    color: #white !important;
+}
+
+
+.custom-wrapper--coversection .lg\:min-h-\[700px\] {
+    min-height: 500px!important;
+}
+
+#section-25362090.block-padding {
+    padding-top: 0 !important;
+}
+#section-25362393.block-padding {
+    padding-top: 0!important;
+}
+
+.w-full.px-4.pt-12.mx-auto.rounded.pb-18.block-max-w--lg.bg-company-secondary.text-company-secondary.block-shadow {
+    width: 100%;
+    /* text-align: center; */
+margin-right: auto!important;
+margin-left: auto!important;
+}
+
+#section-25362414.block-max-w--lg {
+    max-width: none!important;
+    width: 100%!important;
+}
+
+#section-25362414.block-padding {
+    padding-top: 30!important;
+    padding-bottom: 0!important;
+}
+
+#section-25362414 .wrapper.block-max-w--lg.mx-auto {
+    margin-left: 15px!important;
+    margin-right: 60px!important;
+    max-width: none;
+    width: 100%;
+}
+
+.mx-auto{
+margin-left: 15px!important;
+    margin-right: 60px!important;
+    max-width: none;
+    width: 100%;
+}
+
+.custom-section--id-25822615 .wrapper.block-max-w--lg.mx-auto {
+    margin-left: 15px!important;
+    margin-right: 60px!important;
+    max-width: none;
+    width: 100%;
+}
+
+.custom-section--id-25822636.wrapper.block-max-w--lg.mx-auto {
+    margin-right: 60px;
+    margin-left: 15px;
+    max-width: none;
+    width: 100%;
+}
+
+section#section-25822615 {
+    padding-top: 60px!important;
+}
+
+.block-px {
+    padding-left: 35px !important;
+    padding-right: 60px !important;
+}
+
+.block-padding{
+padding-top: 60px!important;
+padding-bottom: 60px!important;
+}
+
+.careersite-button {
+font-size: 20px;
+background-color: #18C1E5;
+transition: 0.3s ease-in-out;
+}
+
+h2 {
+font-weight: 800 !important;
+
+}
+
+.careersite-button:hover {
+background-color: #febd12;
+}
+
+
+section#section-25822636 {
+    padding-top: 30;
+    padding-bottom: 0;
+}
+
+#section-25305782.block-padding {
+    padding-top: 30 !important;
+}
+
+.custom-wrapper--Values-CTA {
+    transition: background-color 0.3s ease-in-out;
+}
+
+.custom-wrapper--Values-CTA:hover {
+    background-color: #006489!important;
+}
+
+.custom-section--id-25336240 .block-px {
+    padding-left: 0!important;
+    padding-right: 0!important;
+}
+
+
+.custom-wrapper--coversection h1 {
+    color: #ffffff;
+    text-align: center;
+    text-shadow: 0px
+3.1956310272216797px 3.1956310272216797px rgba(0, 0, 0, 0.45);
+    font-family: 'lato';
+    font-style: bold;
+    font-weight: 1000;
+    line-height: 69.026px;
+    -webkit-text-stroke: 5px white;  /* Adjust stroke width as needed */
+    text-stroke: 0px white;  /* For future browser support */
+}
+
+button[data-action="click->blocks--cover--default#handleScrollDown"] {
+    display: none;
+}
+
+
+#section-auto-join h2 {
+    color: #ffffff !important;
+}
+
+footer.justify-self-end.block-px,
+#section-auto-join {
+background-color:#d0e6f2;
+
+}
+
+.mt-15 {
+    padding-top: 60px;
+    padding-bottom: 25px;
+    margin-top: 0;
+}
+
+.custom-wrapper--gap-gives-imgs {
+    padding: 20px 30px;
+background: #A5CAD6;
+}
+
+.custom-wrapper--gap-gives-imgs figure {
+    margin: 0 15px;
+    border-radius: 20.772px;
+    overflow: hidden;
+
+}
+
+.custom-wrapper--gap-gives-imgs img {
+    display: block;
+    width: 100%;
+    background-blend-mode: hard-light, normal;
+    background: linear-gradient(0deg, rgba(175, 229, 242, 0.25) 0%, rgba(175, 229, 242, 0.25) 100%), url('path-to-image'), lightgray;
+}
+
+.custom-wrapper--gap-gives{
+padding-bottom: 0px;
+}
+
+#section-25333692.block-padding {
+    padding-top: 20px!important;
+    padding-bottom: 45px!important;
+    background-color: #a5cad6!important;
+}
+
+
+.custom-wrapper--values{
+padding-bottom: 0;
+}
+
+
+.custom-wrapper--button-values{
+padding-top: 0;
+}
+
+#section-25305783.block-padding,
+.custom-section--id-25305783 .block-padding {
+    padding-top: 0;
+}
+
+.custom-wrapper--values li figure img {
+    box-shadow: 0px 1.59782px 21.57051px -7.98908px rgba(0, 0, 0, 0.25) !important;
+}
+
+
+
+/* End of Custom CSS */
+
+
+
+section.hero .hero-inner {
+   margin-top: 100px;
+}
+
+
+.custom-wrapper--coversection section.block-cover-bg {
+    height: 500px;  /* or any height you prefer */
+}
+
+
+.jobsite-layout .header__main {
+    background-color: white;
+}
+h2{
+    font-size: 30px;
+    font-weight: 300;
+    color: #7AE8FF;
+}
+.section-block.section-padding{
+padding:20px 0;
+}
+.text-section--left-image .text-section__holder-header h2:after{
+    position: relative;
+    left: 10px;
+    bottom: 0px;
+    top: 10px;
+    content: "";
+    display: block;
+    width: 100%;
+    height: 5px;
+    background: #f37467;
+}
+.jobs-section-inner .jobs-section-header:after, .text-section--no-image .text-section__holder-header:after, .values-section h2:after{
+    position: relative;
+    margin: 0 auto;
+    bottom: 0;
+    content: "";
+    width: 100%;
+    display: block;
+    height: 5px;
+    background: #f37467;
+margin-bottom: 20px;
+}
+.jobsite-layout .header__main.background {
+    background-color:#ffffff;
+box-shadow:-webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.33);
+-moz-box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.33);
+box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.33);
+}
+
+.header__main .burger-wrapper span{
+text-shadow:none;
+color:#18C1E5;
+}
+.header__main .burger{
+border-bottom: 0px solid black
+;
+}
+.header__main .sliding-menu-button.is-visible .burger{
+border-bottom: 2px solid white
+;
+}
+
+.section.hero + div{
+display: none;
+}
+
+.box-list sharing{
+padding:0;
+}
+
+.u-primary-button-text-color, .u-primary-button-text-color:hover, .u-primary-button-text-color:focus {
+    color: #white;
+    text-shadow: 0px 0px 0px rgb(0 0 0 / 20%);
+}
+
+.value-items .value-item__graphics img {
+    display: block;
+    -webkit-filter: brightness(100%);
+    filter: brightness(100%);
+}
+.text-section--left-image .text-section__image, .text-section--left-image .text-section__holder, .text-section--right-image .text-section__image, .text-section--right-image .text-section__holder {
+    -ms-flex-item-align: normal;
+    align-self: left;
+    justify-self: left;
+}
+.text-section .text-section-inner .responsive-video__wrapper, .text-section .text-section-inner iframe:not(.responsive-video__item), .text-section .text-section-inner img{
+    margin:2px auto 10px;
+}
+.hero-section.custom-wrapper--benefitshero {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    background-position: center center;
+    background-size: cover;
+    min-height: 50vh;
+    height: 400px;
+    vertical-align: middle;
+}
+.custom-wrapper--benefitshero .hero-section__header{
+margin-top:60px;
+margin-bottom:0;
+text-align: left;
+}
+.custom-wrapper--benefitshero
+.hero-section__body{
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.custom-wrapper--carusel .owl-dots{
+display:none;
+}
+section.hero .video-thumbnail {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    margin-left: -65px;
+}
+
+@media only screen and (max-width: 100%) {
+  /* For mobile phones: */
+
+.custom-wrapper--benefitshero .hero-section__header{
+    margin: 10px0;
+}
+.hero-section.custom-wrapper--benefitshero {
+    min-height: 20vh;
+    height: 100px;
+}
+
+section.hero .video-thumbnail {
+    margin-top: 2.25em;
+    position: relative;
+    z-index: 3;
+    left: initial;
+    margin: 0 0 0 0;
+}
+
+.flex.flex-col.justify-center {
+    padding: 0px;
+}
+
+.px-2 {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.block--gallery .sm:grid {
+    grid-template-columns: 2fr; /* This sets the grid to have only one column on small screens */
+    grid-auto-rows: auto; /* This ensures that each row height is set automatically based on its content */
+  }
+
+  .block--gallery figure {
+    width: 100%; /* This ensures that each figure takes the full width */
+    margin: 0px; /* This adds some vertical space between the images */
+  }
+
+#section-auto-join span.textFitted {
+    font-size: 10px!important;
+}
+
+} /* End of mobile breakpoint */
+
+ul.flex.flex-wrap.md\:-mx-6.overflow-hidden {
+    padding: 0 25px;
+}
+
+
+
+section#section-25821720 {
+    padding-top: 0!important;
+}
+
+section#section-25821817 {
+    padding-top: 0!important;
+}
+
+
+
+
+</style>
+
+  <meta name="theme-color" content="#006489">
+
+      <link rel="preload" href="https://assets-aws.teamtailor-cdn.com/assets/careersite/Inter-latin-basic-489518744403b52ed52e9a4f6cf7a50d62b62daf4c6443c3a4015169dc52e622.woff2" as="font" type="font/woff2" crossorigin="true">
+
+  <style>
+      @font-face {
+        font-family: "Inter";
+        src: url("https://assets-aws.teamtailor-cdn.com/assets/careersite/Inter-latin-basic-489518744403b52ed52e9a4f6cf7a50d62b62daf4c6443c3a4015169dc52e622.woff2") format("woff2");
+        unicode-range: U+0020-007F,U+2000-206F;
+      }
+
+      @font-face {
+        font-family: "Inter";
+        src: url("https://assets-aws.teamtailor-cdn.com/assets/careersite/Inter-latin-supplement-45357258adee2412721bf717a9560910e5fc0c14607a2fae48fee415863c0e67.woff2") format("woff2");
+        unicode-range: U+00A0-00FF;
+      }
+
+      @font-face {
+        font-family: "Inter";
+        src: url("https://assets-aws.teamtailor-cdn.com/assets/careersite/Inter-other-2003ab3ea3c24f30390f2c0bd6bfbfbf4a469b3d6149e498c6be8bd62bc49faf.woff2") format("woff2");
+        unicode-range: U+0100-1FFF,U+2070-E007F;
+      }
+  </style>
+
+
+  <link rel="stylesheet" type="text/css" href="//assets-aws.teamtailor-cdn.com/assets/packs/css/8324-f4ddf491.css" crossorigin="anonymous"><link rel="stylesheet" type="text/css" href="//assets-aws.teamtailor-cdn.com/assets/packs/css/6042-e0a4d540.css" crossorigin="anonymous"><link rel="stylesheet" type="text/css" href="//assets-aws.teamtailor-cdn.com/assets/packs/css/1377-5cbfc514.css" crossorigin="anonymous"></head>
+
+  <body class="font-company-body min-h-dvh flex flex-col text-company-primary bg-company-primary overflow-x-clip @container company-link-style--underline jobs index ready" data-controller="careersite--ready careersite--referrer-cookie careersite--preload" data-careersite--referrer-cookie-disabled-value="false" data-careersite--ready-in-editor-value="false" data-block-scripts="true" style="overflow: hidden;">
+
+
+
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PRFJ9XM9"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+
+      <dialog data-controller="common--cookies--alert" data-common--cookies--alert-block-scripts-value="true" data-common--cookies--alert-takeover-modal-value="true" data-common--cookies--alert-show-cookie-widget-value="true" class="company-links fixed shadow-form w-auto items-center rounded p-4 bg-company-primary text-company-primary overflow-y-auto border-none max-h-[80vh] z-cookie-alert lg:gap-x-6 lg:max-h-[calc(100vh-40px)] flex-col mb-4 lg:mb-auto lg:px-8 lg:py-12 lg:w-[650px] backdrop:bg-[rgba(0,0,0,0.6)] flex" open="">
+      <div class="h-16 mb-5 text-center">
+        <img alt="Growth Acceleration Partners logotype" loading="lazy" class="h-auto max-w-[200px] max-h-[64px]" src="https://images.teamtailor-cdn.com/images/s3/teamtailor-production/logotype-v3/image_uploads/47eec9d0-1a26-4a0b-903d-349d62cfecbf/original.png">
+      </div>
+
+    <div class="w-full max-w-screen-xl overflow-y-auto mb-6">
+      <h2 class="font-bold block text-md mb-2">This website uses cookies to ensure you get the best experience.</h2>
+
+      <p class="mb-2">
+        Growth Acceleration Partners and our selected partners use cookies and similar technologies (together “cookies”) that are necessary to present this website, and to ensure you get the best experience of it.
+
+          If you consent to it, we will also use cookies for analytics and marketing purposes.
+      </p>
+
+      <p class="mb-2">See our <a class="company-link" href="https://careers.wearegap.com/cookie-policy" target="_blank" rel="noopener noreferrer">Cookie Policy</a> to read more about the cookies we set.</p>
+
+      <p>You can withdraw and manage your consent at any time, by clicking “Manage cookies” at the bottom of each website page.</p>
+</div>
+    <div class="
+        flex flex-col items-center gap-[10px] mt-6 flex-shrink-0 mb-2 w-full
+        md:flex-row md:w-auto lg:flex-col
+      ">
+      <button class="careersite-button w-full" aria-label="Accept all cookies" data-action="click-&gt;common--cookies--alert#acceptAll">Accept all cookies</button>
+
+        <button class="careersite-button w-full" aria-label="Decline all non-necessary cookies" data-action="click-&gt;common--cookies--alert#disableAll">Decline all non-necessary cookies</button>
+
+      <button class="careersite-button w-full" aria-label="Cookie preferences" data-action="click-&gt;common--cookies--alert#openPreferences">Cookie preferences</button>
+    </div>
+</dialog>
+
+      <dialog data-controller="common--cookies--preferences" data-common--cookies--preferences-checked-categories-value="[]" data-action="open-cookie-preferences@window-&gt;common--cookies--preferences#open" class="company-links bg-company-primary text-company-primary shadow-form inset-x-4 mb-4 rounded max-w-screen-sm p-4 overflow-auto max-h-[80vh] z-cookie-alert backdrop:bg-[rgba(0,0,0,0.6)] sm:p-10 sm:mb-auto fixed top-2">
+  <div class="mb-5 text-center;">
+    <h2 class="font-bold mb-2 text-lg">Select which cookies you accept</h2>
+    <p class="text-left mb-2">On this site, we always set cookies that are strictly necessary, meaning they are necessary for the site to function properly.</p>
+    <p class="text-left mb-2">If you consent to it, we will also set other types of cookies. You can provide or withdraw your consent to the different types of cookies using the toggles below. You can change or withdraw your consent at any time, by clicking the link “Manage Cookies”, which is always available at the bottom of the site.</p>
+    <p class="text-left">To learn more about what the different types of cookies do, how your data is used when they are set etc, see our <a href="https://careers.wearegap.com/cookie-policy" target="_blank" rel="noopener noreferrer">Cookie Policy</a>.</p>
+  </div>
+
+  <div class="mb-10 text-sm leading-snug">
+    <div class="flex mb-3 items-start @sm:mb-5 cursor-default" data-preference-type="strictly_necessary">
+  <div class="label-switch label-switch--disabled">
+    <input type="checkbox" disabled="disabled" id="strictly_necessary" checked="checked" class="peer">
+
+    <div class="checkbox peer-focus:ring-2 peer-focus:ring-blue-600"></div>
+</div>
+  <div class="ml-4 flex flex-col">
+    <label class="font-semibold" for="strictly_necessary">Strictly necessary</label>
+
+    <p>These cookies are necessary to make the site work properly, and are always set when you visit the site.</p>
+
+      <span>
+        <strong>Vendors</strong>
+        <span>Teamtailor</span>
+      </span>
+</div></div>
+
+    <div class="flex mb-3 items-start @sm:mb-5" data-preference-type="analytics">
+  <div class="label-switch">
+    <input type="checkbox" id="analytics" class="peer" data-common--cookies--preferences-target="categoryInput" data-action="input-&gt;common--cookies--preferences#handleCategoryToggle">
+
+    <div class="checkbox peer-focus:ring-2 peer-focus:ring-blue-600"></div>
+</div>
+  <div class="ml-4 flex flex-col">
+    <label class="font-semibold cursor-pointer" for="analytics">Analytics</label>
+
+    <p>These cookies collect information to help us understand how the site is being used.</p>
+
+      <span>
+        <strong>Vendors</strong>
+        <span>Teamtailor</span>
+      </span>
+</div></div>
+
+
+
+    <div class="flex mb-3 items-start @sm:mb-5" data-preference-type="marketing">
+  <div class="label-switch">
+    <input type="checkbox" id="marketing" class="peer" data-common--cookies--preferences-target="categoryInput" data-action="input-&gt;common--cookies--preferences#handleCategoryToggle">
+
+    <div class="checkbox peer-focus:ring-2 peer-focus:ring-blue-600"></div>
+</div>
+  <div class="ml-4 flex flex-col">
+    <label class="font-semibold cursor-pointer" for="marketing">Marketing</label>
+
+    <p>These cookies are used to make advertising messages more relevant to you. In some cases, they also deliver additional functions on the site.</p>
+
+      <span>
+        <strong>Vendors</strong>
+        <span>Youtube</span>
+      </span>
+</div></div>
+  </div>
+
+  <div class="flex flex-col items-center gap-6">
+    <button class="careersite-button w-full" data-action="click-&gt;common--cookies--preferences#handleAccept">Accept these cookies</button>
+
+    <button class="careersite-button w-full" data-action="click-&gt;common--cookies--preferences#handleDecline">Decline all non-necessary cookies</button>
+  </div>
+</dialog>
+
+
+    <a href="#main-content" class="careersite-button min-w-[13.75rem] group
+          absolute top-0 left-0 py-2 px-4 z-[50] transform
+          -translate-y-full -translate-x-full focus:translate-y-2 focus:translate-x-2 transition">
+  <span class="flex items-center justify-center gap-x-3">
+
+    <span class="truncate">Skip to main content</span>
+
+      <svg class="svg-inline--fa fa-chevron-right transition duration-200 transform mt-[-1px] group-hover:translate-x-1 rtl:group-hover:-translate-x-1 rtl:-scale-x-100" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"></path></svg>
+  </span>
+</a>
+
+
+  <header class="header z-career-header flex w-full h-20   hover:after:top-0 !relative" data-section-model="header" style="--header-background-color: #006489;">
+    <div class="absolute top-0 w-full h-full ltr:left-0 rtl:right-0">
+              <div class="flex items-center h-full ltr:ml-2 rtl:mr-2" data-controller="common--header--menu" data-common--header--menu-open-value="false" data-test="header-menu">
+  <button class="
+      relative flex items-center gap-4 px-4 no-underline cursor-pointer h-14
+      @sm:w-auto bg-opacity-80 @sm:bg-transparent z-career-header-menu-button
+      focus-visible-header
+    " aria-expanded="false" data-action="click-&gt;common--header--menu#toggle" data-common--header--menu-target="button">
+    <span class="header-menu-burger" data-common--header--menu-target="burger">
+        <span class="header-menu-burger__item"></span>
+        <span class="header-menu-burger__item"></span>
+        <span class="header-menu-burger__item"></span>
+        <span class="header-menu-burger__item"></span>
+    </span>
+
+    <span class="sr-only @sm:not-sr-only text-sm leading-normal tracking-wider uppercase !whitespace-nowrap">Career menu</span>
+  </button>
+
+  <div class="
+      absolute flex-col @sm:flex-row inset-0 hidden w-full h-screen m-0 overflow-y-auto overscroll-contain pt-20 pb-8 @sm:py-20
+      bottom header__nav z-career-header-menu-content
+    " data-common--header--menu-target="menu">
+    <nav class="w-full main-nav-menu @sm:h-full">
+      <ul class="w-full @sm:pb-20">
+          <li>
+            <a class="text-xl @sm:text-4xl py-3 px-8 @sm:px-[20%] block font-bold w-full no-underline hover:bg-gradient-header focus-visible:outline-none focus-visible:bg-gradient-header rtl:degree-[90deg]" href="https://careers.wearegap.com/">Start</a>
+</li>          <li>
+            <a class="text-xl @sm:text-4xl py-3 px-8 @sm:px-[20%] block font-bold w-full no-underline hover:bg-gradient-header focus-visible:outline-none focus-visible:bg-gradient-header rtl:degree-[90deg]" href="https://careers.wearegap.com/jobs">Jobs</a>
+</li>          <li>
+            <a class="text-xl @sm:text-4xl py-3 px-8 @sm:px-[20%] block font-bold w-full no-underline hover:bg-gradient-header focus-visible:outline-none focus-visible:bg-gradient-header rtl:degree-[90deg]" href="https://careers.wearegap.com/pages/gap-jobs-for-software-and-data-engineers-0f08b078-a8be-43a2-92dd-5babb381cd60">Culture</a>
+</li>          <li>
+            <a class="text-xl @sm:text-4xl py-3 px-8 @sm:px-[20%] block font-bold w-full no-underline hover:bg-gradient-header focus-visible:outline-none focus-visible:bg-gradient-header rtl:degree-[90deg]" href="https://careers.wearegap.com/pages/gap-jobs-for-software-and-data-engineers-7100dc9e-181d-47ce-a0f0-d975a80a444b">Benefits</a>
+</li>          <li>
+            <a class="text-xl @sm:text-4xl py-3 px-8 @sm:px-[20%] block font-bold w-full no-underline hover:bg-gradient-header focus-visible:outline-none focus-visible:bg-gradient-header rtl:degree-[90deg]" href="https://careers.wearegap.com/pages/gap-jobs-for-software-and-data-engineers">Hiring Process</a>
+</li>          <li>
+            <a class="text-xl @sm:text-4xl py-3 px-8 @sm:px-[20%] block font-bold w-full no-underline hover:bg-gradient-header focus-visible:outline-none focus-visible:bg-gradient-header rtl:degree-[90deg]" href="https://careers.wearegap.com/pages/insights">Insights</a>
+</li>      </ul>
+    </nav>
+
+    <div class="header-menu__secondary flex flex-col items-start @sm:items-end py-9 px-8 @md:max-h-full @sm:text-right ltr:pr-8 rtl:pl-8 @sm:px-0 @sm:pt-4">
+      <span class="text-lg font-bold">
+        Employee
+      </span>
+
+      <a class="hover:underline focus-visible-header whitespace-nowrap" href="https://careers.wearegap.com/sso_login">Log in as employee</a>
+
+
+        <span class="mt-12 text-lg font-bold">
+          Candidate
+        </span>
+        <a class="hover:underline focus-visible-header whitespace-nowrap" href="https://careers.wearegap.com/connect/login">Log in to Connect</a>
+
+        <span class="mt-12 text-lg font-bold">Homepage</span>
+        <a class="hover:underline focus-visible-header" href="https://www.growthaccelerationpartners.com">growthaccelerationpartners.com</a>
+</div>  </div>
+</div>
+
+</div>
+
+<div class="header__logo flex items-center mx-auto">
+<a class="relative h-[72px] flex items-center justify-center text-center focus-visible-header" id="e3caee7ac658c66ed1dd53262b1150ecd" data-test="company-logo" data-turbo-permanent="true" href="https://careers.wearegap.com/">
+    <img alt="Growth Acceleration Partners career site" class="mx-auto max-w-[180px] @sm:max-w-[200px] max-h-[90%]" src="https://images.teamtailor-cdn.com/images/s3/teamtailor-production/logotype-v3/image_uploads/3781d5a9-2db8-4e43-ad46-3a65ba2bd9e9/original.png">
+</a>
+</div>
+
+  <div class="absolute top-0 flex items-center h-full mx-3 ltr:right-0 rtl:left-0">
+              <div data-controller="common--share" data-common--share-url-value="https://careers.wearegap.com/jobs" data-test="share-button">
+  <div class="relative" data-controller="common--dropdown" data-common--dropdown-use-stimulus-click-outside-value="false" data-common--dropdown-right-aligned-class="ltr:right-0 rtl:left-0" data-common--dropdown-validation-error-value="You must select an option">
+
+
+  <button type="button" role="button" id="trigger-dropdown-50275530" aria-required="false" aria-label="Share page" aria-haspopup="menu" aria-expanded="false" aria-controls="dropdown-50275530" class="text-current px-4 pt-[15px] pb-[17px] block flex items-center justify-center focus-visible-header" data-common--dropdown-target="button" data-action="click-&gt;common--dropdown#toggle">
+    <span class="sr-only">Share page</span>
+
+          <svg class="svg-inline--fa fa-arrow-up-from-bracket size-6" aria-hidden="true" focusable="false" data-prefix="far" data-icon="arrow-up-from-bracket" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M241 7c-9.4-9.4-24.6-9.4-33.9 0L79 135c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l87-87V328c0 13.3 10.7 24 24 24s24-10.7 24-24V81.9l87 87c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9L241 7zM48 344c0-13.3-10.7-24-24-24s-24 10.7-24 24v80c0 48.6 39.4 88 88 88H360c48.6 0 88-39.4 88-88V344c0-13.3-10.7-24-24-24s-24 10.7-24 24v80c0 22.1-17.9 40-40 40H88c-22.1 0-40-17.9-40-40V344z"></path></svg>
+
+</button>
+  <div id="dropdown-50275530" role="menu" aria-labelledby="trigger-dropdown-50275530" class="absolute flex-col hidden -mt-1 bg-white rounded min-w-[175px] shadow-form animate__animated animate__faster z-dropdown max-h-[70vh] overflow-y-auto ltr:right-0 rtl:left-0  p-2 top-full" data-common--dropdown-target="dropdown">
+
+
+        <button type="button" role="menuitem" class="block no-underline px-3 py-3 sm:py-1 text-gray-800 focus-visible:outline-company-button hover:bg-company-secondary hover:text-company-secondary last:mb-0 text-unset mb-1 rounded-xs" data-common--dropdown-target="menuItem" data-action="click-&gt;common--share#handleClick" data-provider="Facebook">
+                <span class="flex items-center">
+        <svg class="svg-inline--fa fa-square-facebook size-6" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="square-facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64h98.2V334.2H109.4V256h52.8V222.3c0-87.1 39.4-127.5 125-127.5c16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1c-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H255V480H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"></path></svg>
+        <span class="mx-3">Facebook</span>
+      </span>
+
+</button>        <button type="button" role="menuitem" class="block no-underline px-3 py-3 sm:py-1 text-gray-800 focus-visible:outline-company-button hover:bg-company-secondary hover:text-company-secondary last:mb-0 text-unset mb-1 rounded-xs" data-common--dropdown-target="menuItem" data-action="click-&gt;common--share#handleClick" data-provider="Twitter">
+                <span class="flex items-center">
+        <svg class="svg-inline--fa fa-square-x-twitter size-6" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="square-x-twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm297.1 84L257.3 234.6 379.4 396H283.8L209 298.1 123.3 396H75.8l111-126.9L69.7 116h98l67.7 89.5L313.6 116h47.5zM323.3 367.6L153.4 142.9H125.1L296.9 367.6h26.3z"></path></svg>
+        <span class="mx-3">X</span>
+      </span>
+
+</button>        <button type="button" role="menuitem" class="block no-underline px-3 py-3 sm:py-1 text-gray-800 focus-visible:outline-company-button hover:bg-company-secondary hover:text-company-secondary last:mb-0 text-unset mb-1 rounded-xs" data-common--dropdown-target="menuItem" data-action="click-&gt;common--share#handleClick" data-provider="LinkedIn">
+                <span class="flex items-center">
+        <svg class="svg-inline--fa fa-linkedin size-6" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="linkedin" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg>
+        <span class="mx-3">LinkedIn</span>
+      </span>
+
+</button>
+
+
+
+</div></div></div>
+
+  </div>
+</header>
+
+<main class="flex flex-col flex-grow" id="main-content">
+
+
+  <section id="section-32724918" style="--block-base-text-color: 159, 156, 156;--block-base-link-color: 69, 63, 62;--block-base-background-color: 255, 255, 255;--block-base-highlight-color: 0, 100, 137;--block-background-color: #ffffff;--block-title-color: #453f3e;--block-text-color: 159, 156, 156;--block-link-color: #453f3e;--block-image-background: #006489;" class="block--jobs  jobs-page block-padding bg-block-preset-custom bg-block-background text-block-text" data-section-route="section" data-section-model="32724918" data-section-name="jobs" data-section-label="Jobs">
+    <turbo-frame id="jobs_list">
+
+
+
+
+
+  <div class="w-full text-lg relative -mt-12 @sm:-mt-16 @lg:-mt-20" data-layout="card" data-controller="blocks--jobs" data-blocks--jobs-show-map-value="false" data-blocks--jobs-split-view-value="false" data-blocks--jobs-language-code-value="en-GB" data-blocks--jobs-first-block-value="true" data-blocks--jobs-overflow-auto-class="@lg:overflow-auto" data-blocks--jobs-overflow-hidden-class="@lg:overflow-hidden" data-blocks--jobs-sibling-element-padding-class="@lg:[&amp;.bg-block-preset-primary:not(.keep-block-padding)]:!pt-20" data-blocks--jobs-disabled-map-view-toggle-class="cursor-not-allowed" id="jobs">
+      <div class="block-px jobs-text">
+        <div class="mb-15 @md:mb-18 @lg:mb-20 mx-auto block-max-w--sm pt-15 @md:pt-18 @lg:pt-20">
+            <h1 class="text-4xl text-center font-company-header text-block-title">Take the first step to becoming a GAPster</h1>
+
+</div></div>
+    <div class="relative" data-blocks--jobs-target="jobsContainer">
+          <form id="blocks-jobs-filters-form" class="flex text-block-text flex-row block-px @lg:py-3 @lg:items-start @lg:border-b @lg:border-t @lg:border-block-base-text @lg:border-opacity-15 @lg:bg-company-primary col-span-2 sticky z-[20] top-4 @lg:top-0" data-turbo-frame="jobs_list" data-turbo-action="replace" data-controller="blocks--jobs--filters" data-action="submit-&gt;blocks--jobs--filters#handleBefore jobs-map-changed@window-&gt;blocks--jobs--filters#handleMapChange jobs-filters-mobile-submit@window-&gt;blocks--jobs--filters#handleExternalSubmit" data-blocks--jobs--filters-common--options-widget-outlet=".options-widget" data-blocks--jobs--filters-using-map-value="false" data-blocks--jobs--filters-has-search-value="true" data-blocks--jobs--filters-visible-mobile-filters-value="{&quot;country&quot;:&quot;Countries&quot;,&quot;main-technology&quot;:&quot;Main Technology&quot;}" data-blocks--jobs--filters-default-mobile-filters-value="{&quot;country&quot;:&quot;Countries&quot;,&quot;main-technology&quot;:&quot;Main Technology&quot;}" data-blocks--jobs--filters-more-count-text-value="nbr more" data-blocks--jobs--filters-desktop-dropdown-options-divider-class="w-full bg-zinc-200 pb-px mb-1" data-blocks--jobs-target="filtersForm" action="/jobs" accept-charset="UTF-8" method="get">
+
+      <div data-blocks--jobs--filters-target="searchContainer" class="hidden @lg:flex items-center pl-2 pr-3 rounded text-opacity-85 focus-within:company-colors-dependant-outline bg-block-background flex items-center pl-2 pr-3 rounded text-opacity-85 w-fit border border-block-base-text border-opacity-15">
+        <svg class="svg-inline--fa fa-magnifying-glass text-xs text-opacity-85" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path></svg>
+
+        <label for="query" class="sr-only">
+          Search
+</label>
+        <input role="search" placeholder="Search" class="bg-transparent !outline-none !ring-0 border-none text-sm text-opacity-85 pl-2 pr-0 leading-[19px] font-medium placeholder-block-base-text" data-name="query" data-action="input-&gt;blocks--jobs--filters#handleSearchInputChange" data-blocks--jobs--filters-target="searchInput" data-turbo-permanent="true" type="text" name="query" id="query">
+</div>
+    <input type="submit" value="search" class="sr-only hidden" inert="inert" data-blocks--jobs--filters-target="submitButton" data-disable-with="search">
+
+    <fieldset class="w-full @lg:flex @lg:flex-row @lg:flex-row @lg:items-center @lg:justify-end @lg:flex-wrap hidden gap-3">
+  <legend class="sr-only">
+    Job filters
+</legend>
+
+
+
+
+    <div class="relative focus-within:company-colors-dependant-outline common-select" data-controller="common--select" data-common--select-null-value="Countries" data-common--select-options-value="[{&quot;value&quot;:&quot;United States&quot;,&quot;label&quot;:&quot;United States&quot;},{&quot;value&quot;:&quot;Costa Rica&quot;,&quot;label&quot;:&quot;Costa Rica&quot;},{&quot;value&quot;:&quot;Colombia&quot;,&quot;label&quot;:&quot;Colombia&quot;}]">
+  <label for="country-select" class="sr-only">
+    Countries
+</label>
+  <select class="opacity-[0.0001] absolute [inline-size:100%]" id="country-select" data-name="country" data-action="change-&gt;common--select#handleChange change-&gt;blocks--jobs--filters#handleChange" data-turbo-permanent="true">
+
+                  <option value="">
+      All
+</option><option value="Costa Rica">
+        Costa Rica
+ (3)</option><option value="Colombia">
+        Colombia
+ (3)</option><option value="United States" disabled="true">
+        United States
+</option></select>
+  <button type="button" inert="inert" class="rounded leading-[19px] text-sm font-medium py-2 px-3 flex items-center gap-3 border border-solid border-block-base-text border-opacity-15 bg-white text-gray-800">
+    <span class="truncate inline-block max-w-[200px]" data-common--select-target="buttonText">
+      Countries
+</span>
+    <svg class="svg-inline--fa fa-chevron-down size-3 opacity-50" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"></path></svg>
+</button></div>
+
+
+
+
+
+
+
+      <div class="relative focus-within:company-colors-dependant-outline common-select" data-controller="common--select" data-common--select-null-value="Main Technology" data-common--select-options-value="[{&quot;value&quot;:&quot;.NET&quot;,&quot;label&quot;:&quot;.NET&quot;},{&quot;value&quot;:&quot;AI&quot;,&quot;label&quot;:&quot;AI&quot;},{&quot;value&quot;:&quot;AI \u0026 Machine Learning&quot;,&quot;label&quot;:&quot;AI \u0026 Machine Learning&quot;},{&quot;value&quot;:&quot;Android&quot;,&quot;label&quot;:&quot;Android&quot;},{&quot;value&quot;:&quot;Angular&quot;,&quot;label&quot;:&quot;Angular&quot;},{&quot;value&quot;:&quot;Azure&quot;,&quot;label&quot;:&quot;Azure&quot;},{&quot;value&quot;:&quot;Azure \u0026 .NET&quot;,&quot;label&quot;:&quot;Azure \u0026 .NET&quot;},{&quot;value&quot;:&quot;C++&quot;,&quot;label&quot;:&quot;C++&quot;},{&quot;value&quot;:&quot;Data Analytics&quot;,&quot;label&quot;:&quot;Data Analytics&quot;},{&quot;value&quot;:&quot;Data Engineering&quot;,&quot;label&quot;:&quot;Data Engineering&quot;},{&quot;value&quot;:&quot;Data Science&quot;,&quot;label&quot;:&quot;Data Science&quot;},{&quot;value&quot;:&quot;Delivery Manager&quot;,&quot;label&quot;:&quot;Delivery Manager&quot;},{&quot;value&quot;:&quot;Dev Ops&quot;,&quot;label&quot;:&quot;Dev Ops&quot;},{&quot;value&quot;:&quot;Drupal&quot;,&quot;label&quot;:&quot;Drupal&quot;},{&quot;value&quot;:&quot;Flutter&quot;,&quot;label&quot;:&quot;Flutter&quot;},{&quot;value&quot;:&quot;Go&quot;,&quot;label&quot;:&quot;Go&quot;},{&quot;value&quot;:&quot;Graphic Designer&quot;,&quot;label&quot;:&quot;Graphic Designer&quot;},{&quot;value&quot;:&quot;HR&quot;,&quot;label&quot;:&quot;HR&quot;},{&quot;value&quot;:&quot;IT Recruiting&quot;,&quot;label&quot;:&quot;IT Recruiting&quot;},{&quot;value&quot;:&quot;IT Support&quot;,&quot;label&quot;:&quot;IT Support&quot;},{&quot;value&quot;:&quot;Infraestructure&quot;,&quot;label&quot;:&quot;Infraestructure&quot;},{&quot;value&quot;:&quot;Java&quot;,&quot;label&quot;:&quot;Java&quot;},{&quot;value&quot;:&quot;Javascript&quot;,&quot;label&quot;:&quot;Javascript&quot;},{&quot;value&quot;:&quot;Marketing&quot;,&quot;label&quot;:&quot;Marketing&quot;},{&quot;value&quot;:&quot;Mulesoft&quot;,&quot;label&quot;:&quot;Mulesoft&quot;},{&quot;value&quot;:&quot;NodeJS&quot;,&quot;label&quot;:&quot;NodeJS&quot;},{&quot;value&quot;:&quot;Other&quot;,&quot;label&quot;:&quot;Other&quot;},{&quot;value&quot;:&quot;PHP&quot;,&quot;label&quot;:&quot;PHP&quot;},{&quot;value&quot;:&quot;Product Owner&quot;,&quot;label&quot;:&quot;Product Owner&quot;},{&quot;value&quot;:&quot;Program Manager&quot;,&quot;label&quot;:&quot;Program Manager&quot;},{&quot;value&quot;:&quot;Project Manager&quot;,&quot;label&quot;:&quot;Project Manager&quot;},{&quot;value&quot;:&quot;Python&quot;,&quot;label&quot;:&quot;Python&quot;},{&quot;value&quot;:&quot;Python and React&quot;,&quot;label&quot;:&quot;Python and React&quot;},{&quot;value&quot;:&quot;QA Automation&quot;,&quot;label&quot;:&quot;QA Automation&quot;},{&quot;value&quot;:&quot;QA Manual&quot;,&quot;label&quot;:&quot;QA Manual&quot;},{&quot;value&quot;:&quot;QA Performance&quot;,&quot;label&quot;:&quot;QA Performance&quot;},{&quot;value&quot;:&quot;QA Secuirty&quot;,&quot;label&quot;:&quot;QA Secuirty&quot;},{&quot;value&quot;:&quot;React&quot;,&quot;label&quot;:&quot;React&quot;},{&quot;value&quot;:&quot;React Native&quot;,&quot;label&quot;:&quot;React Native&quot;},{&quot;value&quot;:&quot;Ruby&quot;,&quot;label&quot;:&quot;Ruby&quot;},{&quot;value&quot;:&quot;Sales&quot;,&quot;label&quot;:&quot;Sales&quot;},{&quot;value&quot;:&quot;Salesforce&quot;,&quot;label&quot;:&quot;Salesforce&quot;},{&quot;value&quot;:&quot;Scala&quot;,&quot;label&quot;:&quot;Scala&quot;},{&quot;value&quot;:&quot;Scrum Master&quot;,&quot;label&quot;:&quot;Scrum Master&quot;},{&quot;value&quot;:&quot;UX/UI&quot;,&quot;label&quot;:&quot;UX/UI&quot;},{&quot;value&quot;:&quot;Vue.js&quot;,&quot;label&quot;:&quot;Vue.js&quot;},{&quot;value&quot;:&quot;Web Content&quot;,&quot;label&quot;:&quot;Web Content&quot;},{&quot;value&quot;:&quot;Wordpress&quot;,&quot;label&quot;:&quot;Wordpress&quot;},{&quot;value&quot;:&quot;iOS&quot;,&quot;label&quot;:&quot;iOS&quot;}]">
+  <label for="main-technology-select" class="sr-only">
+    Main Technology
+</label>
+  <select class="opacity-[0.0001] absolute [inline-size:100%]" id="main-technology-select" data-name="main-technology" data-action="change-&gt;common--select#handleChange change-&gt;blocks--jobs--filters#handleChange" data-turbo-permanent="true">
+    <option value="">
+      All
+</option>
+      <option value=".NET">
+        .NET
+</option>      <option value="AI">
+        AI
+</option>      <option value="AI &amp; Machine Learning">
+        AI &amp; Machine Learning
+</option>      <option value="Android">
+        Android
+</option>      <option value="Angular">
+        Angular
+</option>      <option value="Azure">
+        Azure
+</option>      <option value="Azure &amp; .NET">
+        Azure &amp; .NET
+</option>      <option value="C++">
+        C++
+</option>      <option value="Data Analytics">
+        Data Analytics
+</option>      <option value="Data Engineering">
+        Data Engineering
+</option>      <option value="Data Science">
+        Data Science
+</option>      <option value="Delivery Manager">
+        Delivery Manager
+</option>      <option value="Dev Ops">
+        Dev Ops
+</option>      <option value="Drupal">
+        Drupal
+</option>      <option value="Flutter">
+        Flutter
+</option>      <option value="Go">
+        Go
+</option>      <option value="Graphic Designer">
+        Graphic Designer
+</option>      <option value="HR">
+        HR
+</option>      <option value="IT Recruiting">
+        IT Recruiting
+</option>      <option value="IT Support">
+        IT Support
+</option>      <option value="Infraestructure">
+        Infraestructure
+</option>      <option value="Java">
+        Java
+</option>      <option value="Javascript">
+        Javascript
+</option>      <option value="Marketing">
+        Marketing
+</option>      <option value="Mulesoft">
+        Mulesoft
+</option>      <option value="NodeJS">
+        NodeJS
+</option>      <option value="Other">
+        Other
+</option>      <option value="PHP">
+        PHP
+</option>      <option value="Product Owner">
+        Product Owner
+</option>      <option value="Program Manager">
+        Program Manager
+</option>      <option value="Project Manager">
+        Project Manager
+</option>      <option value="Python">
+        Python
+</option>      <option value="Python and React">
+        Python and React
+</option>      <option value="QA Automation">
+        QA Automation
+</option>      <option value="QA Manual">
+        QA Manual
+</option>      <option value="QA Performance">
+        QA Performance
+</option>      <option value="QA Secuirty">
+        QA Secuirty
+</option>      <option value="React">
+        React
+</option>      <option value="React Native">
+        React Native
+</option>      <option value="Ruby">
+        Ruby
+</option>      <option value="Sales">
+        Sales
+</option>      <option value="Salesforce">
+        Salesforce
+</option>      <option value="Scala">
+        Scala
+</option>      <option value="Scrum Master">
+        Scrum Master
+</option>      <option value="UX/UI">
+        UX/UI
+</option>      <option value="Vue.js">
+        Vue.js
+</option>      <option value="Web Content">
+        Web Content
+</option>      <option value="Wordpress">
+        Wordpress
+</option>      <option value="iOS">
+        iOS
+</option></select>
+  <button type="button" inert="inert" class="rounded leading-[19px] text-sm font-medium py-2 px-3 flex items-center gap-3 border border-solid border-block-base-text border-opacity-15 bg-white text-gray-800">
+    <span class="truncate inline-block max-w-[200px]" data-common--select-target="buttonText">
+      Main Technology
+</span>
+    <svg class="svg-inline--fa fa-chevron-down size-3" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"></path></svg>
+</button></div>
+</fieldset>
+
+      <div id="filters-mobile-modal" data-controller="common--modal" data-common--modal-turbo-value="true" data-common--modal-modal-name-value="filters-mobile-turbo-modal" style="" class="@lg:hidden w-full">
+  <div data-common--modal-target="linkContainer">
+        <button type="button" class="bg-gray-300 bg-opacity-50 w-full px-5 py-3 mb-0 @lg:mb-4 flex items-center text-left rounded-full backdrop-blur-2xl">
+          <svg class="svg-inline--fa fa-magnifying-glass text-md text-gray-800" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path></svg>
+
+          <div class="ml-4 w-full">
+            <span class="mb-1 text-base font-semibold text-gray-800">Looking for</span>
+
+            <div class="text-sm text-gray-600 flex gap-1">
+              <span class="max-w-[70%] text-ellipsis overflow-hidden whitespace-nowrap activeFiltersContent max-w-[90%]">Countries · Main Technology</span>
+              <span class="extraActiveFiltersCount"></span>
+</div>          </div>
+</button>
+
+</div>
+
+  <template data-common--modal-target="spinnerTemplate">
+    <div class="flex items-center justify-center h-full" id="spinner">
+  <div class="animate-[spin_3s_linear_infinite] inline-block size-6 border-6 border-current border-t-transparent text-neutral-weak rounded-full " role="status" aria-label="Loading"></div>
+</div>
+
+  </template>
+
+
+  <template data-common--modal-target="template">
+    <dialog class="text-company-primary bg-company-primary company-links company-links-on-white overflow-y-auto border-0 p-0 backdrop:bg-black/50 backdrop:backdrop-blur-md h-screen w-screen max-w-full max-h-full">
+      <div class="relative w-full h-full py-12 px-4 bg-[rgba(var(--company-link-color),0.03)]">
+                  <div class="flex justify-between items-center pb-4" data-controller="blocks--jobs--filters-mobile">
+            <button tabindex="0" type="button" class="
+                company-link cursor-pointer focus-visible:outline-offset-2
+                focus-within:outline-company-secondary-bg
+              " data-action="click-&gt;blocks--jobs--filters-mobile#resetAllWidgets">
+              Clear all
+            </button>
+
+            <button type="button" class="
+                company-link bg-company-link bg-opacity-15 size-8
+                rounded-full flex items-center justify-center cursor-pointer
+              " data-close="close">
+              <i class="text-xl fas fa-regular fa-xmark"></i>
+            </button>
+          </div>
+
+
+        <div class="modal-content default-style">
+                    <div id="jobs-filters-mobile" class="h-full" data-controller="blocks--jobs--filters-mobile" data-blocks--jobs--filters-mobile-common--modal-outlet="#filters-mobile-modal" data-blocks--jobs--filters-mobile-blocks--jobs--filters-outlet="#blocks-jobs-filters-form">
+  <div class="flex flex-col gap-5 pb-50">
+      <div class="bg-company-primary flex items-center px-4 py-5 rounded w-full cursor-pointer shadow-option">
+        <i class="text-sm fas fa-search text-company-primary"></i>
+
+        <input placeholder="Search" class="placeholder:opacity-50 placeholder:text-company-primary text-company-primary bg-company-primary !outline-none border-none font-medium focus:ring-0 p-0 pl-2 text-[16px] w-full" data-blocks--jobs--filters-mobile-target="searchField" data-action="input-&gt;blocks--jobs--filters-mobile#handleSearchInputChange jobs-filters-mobile-reset-all@window-&gt;blocks--jobs--filters-mobile#resetSearchField" type="text" name="query[]" id="query_">
+</div>
+
+
+
+
+
+
+
+      <div class="options-widget py-5 text-md text-company-primary rounded bg-company-primary cursor-pointer shadow-option" tabindex="0" data-common--options-widget-blocks--jobs--filters-outlet="#blocks-jobs-filters-form" data-common--options-widget-target-field-value="country" data-controller="common--options-widget" data-action="click-&gt;common--options-widget#toggleWidget keydown.enter-&gt;common--options-widget#toggleWidget keydown.space-&gt;common--options-widget#toggleWidget jobs-filters-mobile-reset-all@window-&gt;common--options-widget#reset options-widget-open@window-&gt;common--options-widget#handleToggleOpenedEvent" data-common--options-widget-default-label-value="Any" data-common--options-widget-is-geobound-filter-present-value="false" data-common--options-widget-map-area-translation-value="(Map area)">
+  <div class="hidden labels flex flex-col gap-3" data-common--options-widget-target="labels">
+    <div class="font-semibold px-5">Countries</div>
+
+    <div class="flex gap-3 overflow-auto scrollbar-hide p-1 px-5">
+        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="United States" data-common--options-widget-value-param="United States">
+          United States
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Costa Rica" data-common--options-widget-value-param="Costa Rica">
+          Costa Rica
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Colombia" data-common--options-widget-value-param="Colombia">
+          Colombia
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>    </div>
+  </div>
+
+  <div class="headline flex justify-between px-5" data-common--options-widget-target="headline">
+    <div class="title font-normal text-sm leading-5 text-company-primary opacity-50">
+      Countries
+    </div>
+
+    <div class="value font-normal text-sm leading-5 text-company-primary" data-common--options-widget-target="selectedOptionLabelContainer"></div>
+  </div>
+</div>
+
+
+
+
+        <div class="options-widget py-5 text-md text-company-primary rounded bg-company-primary cursor-pointer shadow-option" tabindex="0" data-common--options-widget-blocks--jobs--filters-outlet="#blocks-jobs-filters-form" data-common--options-widget-target-field-value="main-technology" data-controller="common--options-widget" data-action="click-&gt;common--options-widget#toggleWidget keydown.enter-&gt;common--options-widget#toggleWidget keydown.space-&gt;common--options-widget#toggleWidget jobs-filters-mobile-reset-all@window-&gt;common--options-widget#reset options-widget-open@window-&gt;common--options-widget#handleToggleOpenedEvent" data-common--options-widget-default-label-value="Any" data-common--options-widget-is-geobound-filter-present-value="false" data-common--options-widget-map-area-translation-value="(Map area)">
+  <div class="hidden labels flex flex-col gap-3" data-common--options-widget-target="labels">
+    <div class="font-semibold px-5">Main Technology</div>
+
+    <div class="flex gap-3 overflow-auto scrollbar-hide p-1 px-5">
+        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value=".NET" data-common--options-widget-value-param=".NET">
+          .NET
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="AI" data-common--options-widget-value-param="AI">
+          AI
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="AI &amp; Machine Learning" data-common--options-widget-value-param="AI &amp; Machine Learning">
+          AI &amp; Machine Learning
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Android" data-common--options-widget-value-param="Android">
+          Android
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Angular" data-common--options-widget-value-param="Angular">
+          Angular
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Azure" data-common--options-widget-value-param="Azure">
+          Azure
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Azure &amp; .NET" data-common--options-widget-value-param="Azure &amp; .NET">
+          Azure &amp; .NET
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="C++" data-common--options-widget-value-param="C++">
+          C++
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Data Analytics" data-common--options-widget-value-param="Data Analytics">
+          Data Analytics
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Data Engineering" data-common--options-widget-value-param="Data Engineering">
+          Data Engineering
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Data Science" data-common--options-widget-value-param="Data Science">
+          Data Science
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Delivery Manager" data-common--options-widget-value-param="Delivery Manager">
+          Delivery Manager
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Dev Ops" data-common--options-widget-value-param="Dev Ops">
+          Dev Ops
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Drupal" data-common--options-widget-value-param="Drupal">
+          Drupal
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Flutter" data-common--options-widget-value-param="Flutter">
+          Flutter
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Go" data-common--options-widget-value-param="Go">
+          Go
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Graphic Designer" data-common--options-widget-value-param="Graphic Designer">
+          Graphic Designer
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="HR" data-common--options-widget-value-param="HR">
+          HR
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="IT Recruiting" data-common--options-widget-value-param="IT Recruiting">
+          IT Recruiting
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="IT Support" data-common--options-widget-value-param="IT Support">
+          IT Support
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Infraestructure" data-common--options-widget-value-param="Infraestructure">
+          Infraestructure
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Java" data-common--options-widget-value-param="Java">
+          Java
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Javascript" data-common--options-widget-value-param="Javascript">
+          Javascript
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Marketing" data-common--options-widget-value-param="Marketing">
+          Marketing
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Mulesoft" data-common--options-widget-value-param="Mulesoft">
+          Mulesoft
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="NodeJS" data-common--options-widget-value-param="NodeJS">
+          NodeJS
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Other" data-common--options-widget-value-param="Other">
+          Other
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="PHP" data-common--options-widget-value-param="PHP">
+          PHP
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Product Owner" data-common--options-widget-value-param="Product Owner">
+          Product Owner
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Program Manager" data-common--options-widget-value-param="Program Manager">
+          Program Manager
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Project Manager" data-common--options-widget-value-param="Project Manager">
+          Project Manager
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Python" data-common--options-widget-value-param="Python">
+          Python
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Python and React" data-common--options-widget-value-param="Python and React">
+          Python and React
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="QA Automation" data-common--options-widget-value-param="QA Automation">
+          QA Automation
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="QA Manual" data-common--options-widget-value-param="QA Manual">
+          QA Manual
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="QA Performance" data-common--options-widget-value-param="QA Performance">
+          QA Performance
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="QA Secuirty" data-common--options-widget-value-param="QA Secuirty">
+          QA Secuirty
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="React" data-common--options-widget-value-param="React">
+          React
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="React Native" data-common--options-widget-value-param="React Native">
+          React Native
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Ruby" data-common--options-widget-value-param="Ruby">
+          Ruby
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Sales" data-common--options-widget-value-param="Sales">
+          Sales
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Salesforce" data-common--options-widget-value-param="Salesforce">
+          Salesforce
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Scala" data-common--options-widget-value-param="Scala">
+          Scala
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Scrum Master" data-common--options-widget-value-param="Scrum Master">
+          Scrum Master
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="UX/UI" data-common--options-widget-value-param="UX/UI">
+          UX/UI
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Vue.js" data-common--options-widget-value-param="Vue.js">
+          Vue.js
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Web Content" data-common--options-widget-value-param="Web Content">
+          Web Content
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Wordpress" data-common--options-widget-value-param="Wordpress">
+          Wordpress
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="iOS" data-common--options-widget-value-param="iOS">
+          iOS
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <i class="fa-regular fa-xmark"></i>
+</div></button>    </div>
+  </div>
+
+  <div class="headline flex justify-between px-5" data-common--options-widget-target="headline">
+    <div class="title font-normal text-sm leading-5 text-company-primary opacity-50">
+      Main Technology
+    </div>
+
+    <div class="value font-normal text-sm leading-5 text-company-primary" data-common--options-widget-target="selectedOptionLabelContainer"></div>
+  </div>
+</div>
+  </div>
+
+  <button name="button" type="submit" class="careersite-button rounded shadow-button p-4 fixed left-1/2 -translate-x-1/2 bottom-5" data-action="click-&gt;blocks--jobs--filters-mobile#handleSubmit">Show jobs</button>
+</div>
+
+</div></div></dialog>  </template>
+</div></form>
+
+
+        <div class="bg-block-background relative z-career-jobs-list @lg:col-span-2 pt-4 @lg:pt-8 block-px" data-blocks--jobs-target="jobsListContainer">
+            <div class="px-2 @lg:px-0 mx-auto mb-8 flex justify-center @lg:justify-start block-max-w--md">
+
+              <p>
+                <span class="text-lg font-medium">
+                  3 jobs
+                </span>
+
+                <span class="text-md opacity-50">
+
+                </span>
+              </p>
+</div>
+          <div>
+              <div class="mx-auto text-lg block-max-w--md">
+    <ul class="block-grid" id="jobs_list_container">
+        <li class="
+    group transition-opacity duration-150 border rounded block-grid-item overflow-hidden
+    border-block-base-text border-opacity-15
+  ">
+  <a class="min-h-[11.25rem] h-full w-full p-4 flex flex-col justify-center text-center no-company-style transition group-hover:text-company-primary-text group-hover:bg-primary-text-background" data-turbo="false" href="https://careers.wearegap.com/jobs/7960490-senior-fullstack-python-react-software-engineer">
+    <span class="
+        text-block-base-link company-link-style hyphens-auto
+        group-hover:text-company-primary-text
+      " title="Senior Fullstack Python/React Software Engineer">
+      Senior Fullstack Python/React Software Engineer
+    </span>
+
+    <div class="mt-1 text-md">
+<span>Development</span>
+
+  <span class="mx-[2px]">·</span>
+
+    <span>Colombia, Costa Rica</span>
+
+    <span class="mx-[2px]">·</span>
+  <span class="inline-flex items-center gap-x-2">
+    Hybrid
+    <svg class="svg-inline--fa fa-wifi w-4 h-5 text-xs" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="wifi" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" data-fa-i2svg=""><path fill="currentColor" d="M54.2 202.9C123.2 136.7 216.8 96 320 96s196.8 40.7 265.8 106.9c12.8 12.2 33 11.8 45.2-.9s11.8-33-.9-45.2C549.7 79.5 440.4 32 320 32S90.3 79.5 9.8 156.7C-2.9 169-3.3 189.2 8.9 202s32.5 13.2 45.2 .9zM320 256c56.8 0 108.6 21.1 148.2 56c13.3 11.7 33.5 10.4 45.2-2.8s10.4-33.5-2.8-45.2C459.8 219.2 393 192 320 192s-139.8 27.2-190.5 72c-13.3 11.7-14.5 31.9-2.8 45.2s31.9 14.5 45.2 2.8c39.5-34.9 91.3-56 148.2-56zm64 160a64 64 0 1 0 -128 0 64 64 0 1 0 128 0z"></path></svg>
+</span></div>
+</a></li>
+
+        <li class="
+    group transition-opacity duration-150 border rounded block-grid-item overflow-hidden
+    border-block-base-text border-opacity-15
+  ">
+  <a class="min-h-[11.25rem] h-full w-full p-4 flex flex-col justify-center text-center no-company-style transition group-hover:text-company-primary-text group-hover:bg-primary-text-background" data-turbo="false" href="https://careers.wearegap.com/jobs/7924540-senior-ai-python-software-engineer">
+    <span class="
+        text-block-base-link company-link-style hyphens-auto
+        group-hover:text-company-primary-text
+      " title="Senior AI Python Software Engineer">
+      Senior AI Python Software Engineer
+    </span>
+
+    <div class="mt-1 text-md">
+<span>Development</span>
+
+  <span class="mx-[2px]">·</span>
+
+    <span>Colombia, Costa Rica, Latam</span>
+
+    <span class="mx-[2px]">·</span>
+  <span class="inline-flex items-center gap-x-2">
+    Hybrid
+    <svg class="svg-inline--fa fa-wifi w-4 h-5 text-xs" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="wifi" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" data-fa-i2svg=""><path fill="currentColor" d="M54.2 202.9C123.2 136.7 216.8 96 320 96s196.8 40.7 265.8 106.9c12.8 12.2 33 11.8 45.2-.9s11.8-33-.9-45.2C549.7 79.5 440.4 32 320 32S90.3 79.5 9.8 156.7C-2.9 169-3.3 189.2 8.9 202s32.5 13.2 45.2 .9zM320 256c56.8 0 108.6 21.1 148.2 56c13.3 11.7 33.5 10.4 45.2-2.8s10.4-33.5-2.8-45.2C459.8 219.2 393 192 320 192s-139.8 27.2-190.5 72c-13.3 11.7-14.5 31.9-2.8 45.2s31.9 14.5 45.2 2.8c39.5-34.9 91.3-56 148.2-56zm64 160a64 64 0 1 0 -128 0 64 64 0 1 0 128 0z"></path></svg>
+</span></div>
+</a></li>
+
+        <li class="
+    group transition-opacity duration-150 border rounded block-grid-item overflow-hidden
+    border-block-base-text border-opacity-15
+  ">
+  <a class="min-h-[11.25rem] h-full w-full p-4 flex flex-col justify-center text-center no-company-style transition group-hover:text-company-primary-text group-hover:bg-primary-text-background" data-turbo="false" href="https://careers.wearegap.com/jobs/7831437-senior-data-engineer">
+    <span class="
+        text-block-base-link company-link-style hyphens-auto
+        group-hover:text-company-primary-text
+      " title="Senior Data Engineer">
+      Senior Data Engineer
+    </span>
+
+    <div class="mt-1 text-md">
+<span>Analytics</span>
+
+  <span class="mx-[2px]">·</span>
+
+    <span>Colombia, Costa Rica</span>
+
+    <span class="mx-[2px]">·</span>
+  <span class="inline-flex items-center gap-x-2">
+    Hybrid
+    <svg class="svg-inline--fa fa-wifi w-4 h-5 text-xs" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="wifi" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" data-fa-i2svg=""><path fill="currentColor" d="M54.2 202.9C123.2 136.7 216.8 96 320 96s196.8 40.7 265.8 106.9c12.8 12.2 33 11.8 45.2-.9s11.8-33-.9-45.2C549.7 79.5 440.4 32 320 32S90.3 79.5 9.8 156.7C-2.9 169-3.3 189.2 8.9 202s32.5 13.2 45.2 .9zM320 256c56.8 0 108.6 21.1 148.2 56c13.3 11.7 33.5 10.4 45.2-2.8s10.4-33.5-2.8-45.2C459.8 219.2 393 192 320 192s-139.8 27.2-190.5 72c-13.3 11.7-14.5 31.9-2.8 45.2s31.9 14.5 45.2 2.8c39.5-34.9 91.3-56 148.2-56zm64 160a64 64 0 1 0 -128 0 64 64 0 1 0 128 0z"></path></svg>
+</span></div>
+</a></li>
+
+</ul></div>
+
+          </div>
+
+
+</div>
+</div></div></turbo-frame>
+</section>
+
+
+  <section id="section-4550956" style="--block-base-text-color: var(--company-primary-text-color);--block-base-link-color: var(--company-link-color);--block-base-background-color: var(--company-primary-bg-color);--block-base-highlight-color: var(--company-color);--block-title-color: rgba(var(--block-base-text-color), 1);--block-image-background: #006489;" class="block--custom  jobs-page bg-company-primary text-company-primary" data-section-route="section" data-section-model="4550956" data-section-sub-type="ContentBlock::Custom" data-section-name="custom" data-section-label="Custom HTML &amp; CSS">
+    <div class="custom-section--id-4550956">
+  <style>
+
+  </style>
+
+  <div class="wrapper">
+</div></div>
+</section>
+
+
+
+</main>
+  <div class="" data-section-model="footer">
+
+
+
+    <footer class="bg-company-primary text-company-primary block-px">
+        <div class="text-lg block-px block-padding @sm:text-base">
+  <div class="flex flex-col items-center mx-auto block-max-w--lg">
+      <ul class="
+          flex flex-col flex-wrap mb-10 text-center footer-nav-menu
+          @sm:flex-row justify-center gap-x-6 gap-y-4
+        ">
+          <li>
+            <a class="block py-1 my-1 @sm:my-0 @sm:py-0 px-4 company-link" href="https://careers.wearegap.com/">Start</a>
+          </li>
+          <li>
+            <a class="block py-1 my-1 @sm:my-0 @sm:py-0 px-4 company-link" href="https://careers.wearegap.com/jobs">Jobs</a>
+          </li>
+          <li>
+            <a class="block py-1 my-1 @sm:my-0 @sm:py-0 px-4 company-link" href="https://careers.wearegap.com/pages/gap-jobs-for-software-and-data-engineers-0f08b078-a8be-43a2-92dd-5babb381cd60">Culture</a>
+          </li>
+          <li>
+            <a class="block py-1 my-1 @sm:my-0 @sm:py-0 px-4 company-link" href="https://careers.wearegap.com/pages/gap-jobs-for-software-and-data-engineers-7100dc9e-181d-47ce-a0f0-d975a80a444b">Benefits</a>
+          </li>
+          <li>
+            <a class="block py-1 my-1 @sm:my-0 @sm:py-0 px-4 company-link" href="https://careers.wearegap.com/pages/gap-jobs-for-software-and-data-engineers">Hiring Process</a>
+          </li>
+          <li>
+            <a class="block py-1 my-1 @sm:my-0 @sm:py-0 px-4 company-link" href="https://careers.wearegap.com/pages/insights">Insights</a>
+          </li>
+          <li>
+            <a class="block py-1 my-1 @sm:my-0 @sm:py-0 px-4 company-link" href="/data-privacy">Data &amp; privacy</a>
+          </li>
+
+          <li>
+            <button data-controller="cookie-preferences" data-action="click-&gt;cookie-preferences#openCookiePreferences" aria-label="Manage cookies" class="company-link font-company-body py-1 my-1 @sm:my-0 @sm:py-0 px-4">Manage cookies</button>
+          </li>
+      </ul>
+
+
+    <a class="text-company-primary hover:text-company-link" href="https://www.growthaccelerationpartners.com">growthaccelerationpartners.com</a>
+
+  </div>
+</div>
+
+
+      <div class="
+          flex flex-col py-4 mx-auto text-center border-t @sm:text-unset
+          block-max-w--lg border-company-primary-text border-opacity-15
+          @sm:justify-between @sm:flex-row
+        ">
+        <div class="flex justify-center w-full @sm:w-auto">
+    <a class="text-company-primary hover:text-company-link" href="/sso_login">Employee login</a>
+</div>
+
+
+        <div class="flex justify-center w-full @sm:w-auto">
+            <a class="text-company-primary hover:text-company-link" href="/connect/login">Candidate Connect login</a>
+
+        </div>
+      </div>
+</footer></div>
+<section class="relative block-px mt-15 z-career-autojoin mb-[27px] @md:mb-[35px]" id="section-auto-join">
+  <div class="w-full px-4 pt-12 mx-auto rounded pb-18 block-max-w--lg bg-company-secondary text-company-secondary block-shadow">
+    <h2 class="text-center font-company-header text-4xl text-shadow">Already working at Growth Acceleration Partners?</h2>
+    <p class="text-center text-xl text-opacity-80 text-company-secondary text-shadow">Let’s recruit together and find your next colleague.</p>
+
+      <form class="flex w-full mt-6" data-turbo="false" action="/auto_join" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="SAhs92fGEYhop9BjIVVfBVWi3MdcWwyA8YkCO72enYzjDfasLbG7QNht13XcMJlN7hOB56YNRv6ZtQNIkt2hjw" autocomplete="off">
+  <button type="submit" class="careersite-button careersite-button--secondary mx-auto min-w-[12.5rem]" data-event-tracking="click" data-event-category="Account" data-event-name="Auto Joined: Create" data-event-label="Click">
+    Log in
+</button></form>
+
+</div>
+
+</section>
+
+  <div class="
+    relative z-career-footer flex items-center justify-center flex-shrink-0
+    font-sans font-normal bg-company-primary h-[152px] text-company-primary
+  " style="display: flex !important; visibility: visible !important;" id="e162ec8011db24f3a72bfc6883befb4fa" data-turbo-permanent="">
+  <a rel="noopener" target="_blank" class="flex flex-col items-center group p-1" style="display: flex !important; visibility: visible !important;" href="https://www.teamtailor.com/?utm_campaign=poweredby&amp;utm_content=careers.wearegap.com&amp;utm_medium=referral&amp;utm_source=career-site">
+    <svg xmlns="http://www.w3.org/2000/svg" width="115" height="26">
+      <path fill="currentColor" d="M115 10.727a1.815 1.815 0 0 0-.684-.954 3.443 3.443 0 0 0-1.12-.549 3.8 3.8 0 0 0-1.163-.148c-.374.014-.647.064-.819.148-.517.282-1.243.831-2.175 1.649a56.033 56.033 0 0 0-3.06 2.916 88.146 88.146 0 0 0-3.382 3.657 64.336 64.336 0 0 0-3.145 3.867 64.947 64.947 0 0 1 2.585-3.699 71.089 71.089 0 0 1 2.456-3.086 39.674 39.674 0 0 1 2.089-2.303 198.2 198.2 0 0 1 1.4-1.395c.172-.141.172-.31 0-.507-.172-.198-.417-.388-.732-.571a6.412 6.412 0 0 0-.991-.465c-.344-.127-.618-.19-.818-.19-.23 0-.646.29-1.249.867-.603.577-1.278 1.324-2.025 2.24a77.721 77.721 0 0 0-2.348 3.043 60.298 60.298 0 0 0-2.24 3.255 32.222 32.222 0 0 0-1.659 2.875c-.43.86-.646 1.5-.646 1.923 0 .197.108.458.323.782.216.324.459.62.732.888.272.268.545.451.819.55.272.098.48.035.624-.19l.173-.34c.545-.872 1.256-1.865 2.132-2.98a105.902 105.902 0 0 1 5.709-6.656 48.75 48.75 0 0 1 2.671-2.663c-.201.338-.502.76-.904 1.268-.403.507-.797 1.014-1.186 1.521-.387.507-.732.987-1.034 1.437-.301.452-.452.776-.452.973 0 .197.072.408.216.633.144.226.337.437.582.634.243.197.501.366.775.507.273.141.538.211.797.211.23 0 .502-.09.819-.274a6.57 6.57 0 0 0 .969-.698c.33-.28.66-.591.991-.93a9.63 9.63 0 0 0 .84-.972c.2-.253.258-.394.172-.423-.086-.028-.23-.013-.431.043-.201.056-.402.12-.602.19-.202.07-.317.092-.345.064-.059-.057.043-.225.301-.507.258-.282.588-.634.991-1.057.401-.423.847-.873 1.335-1.352.489-.48.94-.937 1.357-1.375.416-.436.755-.824 1.012-1.162.195-.255.308-.445.34-.572v-.123ZM98.14 11.358a6.737 6.737 0 0 0-1.444-1.14 8.05 8.05 0 0 0-1.702-.762c-.59-.183-1.114-.233-1.573-.148-.631.141-1.328.493-2.089 1.057a16.207 16.207 0 0 0-2.283 2.092 24.276 24.276 0 0 0-2.176 2.769 27.779 27.779 0 0 0-1.788 3c-.502.988-.883 1.918-1.141 2.791-.259.873-.33 1.606-.216 2.198.057.282.302.584.732.909.431.324.911.62 1.444.888.53.268 1.062.479 1.594.633.531.155.926.218 1.185.19.603-.084 1.285-.393 2.046-.93.761-.534 1.536-1.204 2.326-2.007a27.437 27.437 0 0 0 2.306-2.684 28.124 28.124 0 0 0 1.938-2.895c.545-.944.97-1.832 1.27-2.664.302-.83.41-1.5.323-2.007-.084-.423-.337-.852-.752-1.29Zm-2.047 1.1c-.317.718-.79 1.578-1.422 2.578-.632 1-1.35 2.057-2.154 3.17a56.881 56.881 0 0 1-2.348 3.043c-.761.916-1.436 1.648-2.024 2.198-.59.55-.97.755-1.142.613-.202-.141-.137-.577.193-1.31.33-.733.805-1.599 1.422-2.6.618-1 1.32-2.05 2.112-3.149A55.734 55.734 0 0 1 93.034 14c.747-.901 1.415-1.62 2.004-2.155.588-.536.997-.747 1.228-.635.2.113.142.53-.173 1.248Z"></path>
+
+      <path fill="currentColor" d="M93.128 0h-.01a.826.826 0 0 0-.127.01c-.258.056-.696.394-1.314 1.014-.618.62-1.35 1.423-2.197 2.409a94.751 94.751 0 0 0-2.757 3.381 163.559 163.559 0 0 0-5.837 7.968 81.501 81.501 0 0 0-2.435 3.741 37.377 37.377 0 0 0-1.702 3.064c-.43.888-.646 1.53-.646 1.923 0 .198.072.417.215.656.144.24.33.458.56.656.23.197.489.366.776.507.287.14.56.211.819.211.23 0 .502-.09.819-.275.315-.183.638-.415.969-.697.329-.28.66-.598.99-.951.33-.352.61-.683.84-.994.2-.253.259-.394.172-.422-.086-.028-.23-.014-.43.042-.202.057-.41.127-.625.211-.216.085-.338.113-.367.085-.086-.085.05-.465.41-1.141.358-.677.883-1.558 1.572-2.642a92.766 92.766 0 0 1 2.499-3.7c.976-1.38 2.032-2.817 3.166-4.31a141.137 141.137 0 0 1 3.554-4.482 117.076 117.076 0 0 1 3.663-4.226c.23-.254.25-.507.064-.76a2.76 2.76 0 0 0-.796-.698 3.952 3.952 0 0 0-1.12-.465A3.32 3.32 0 0 0 93.128 0ZM78.645 9.985c-.603.592-1.286 1.352-2.046 2.282a68.44 68.44 0 0 0-2.37 3.086 71.05 71.05 0 0 0-2.263 3.297 34.032 34.032 0 0 0-1.701 2.916c-.446.874-.668 1.522-.668 1.944 0 .198.072.417.216.656.143.24.337.458.58.656.244.197.503.366.777.507.272.141.538.211.796.211.23 0 .502-.09.82-.275.315-.182.646-.415.99-.697.345-.28.675-.598.99-.951.316-.352.604-.683.862-.994.2-.253.251-.394.15-.422-.1-.028-.25-.014-.451.042a5.261 5.261 0 0 0-.603.211c-.201.085-.317.113-.345.085-.115-.112-.022-.45.28-1.015.301-.563.71-1.247 1.228-2.05a49.603 49.603 0 0 1 1.787-2.578c.675-.916 1.329-1.79 1.961-2.621a131.25 131.25 0 0 1 1.702-2.198c.502-.634.84-1.05 1.013-1.247.143-.169.136-.353-.022-.55a2.42 2.42 0 0 0-.667-.549 5.827 5.827 0 0 0-.948-.444c-.345-.127-.618-.19-.819-.19-.23 0-.646.296-1.25.888Zm5.127-1.987c.43-.282.861-.606 1.293-.972.43-.366.81-.74 1.141-1.12.33-.381.496-.684.496-.91 0-.28-.094-.52-.28-.718a2.184 2.184 0 0 0-.711-.486 3.922 3.922 0 0 0-.926-.274c-.33-.057-.64-.07-.927-.043-.2.029-.446.163-.732.401-.288.24-.597.516-.926.825-.33.31-.654.641-.97.993-.316.353-.602.67-.861.951-.23.254-.273.501-.13.74.143.24.374.444.69.613.316.168.653.303 1.013.4.358.1.638.121.84.065.228-.028.558-.183.99-.465ZM72.053 10.407c-.171-.169-.38-.36-.624-.57a9.114 9.114 0 0 0-.733-.57 3.563 3.563 0 0 0-.754-.402 1.217 1.217 0 0 0-.732-.063c-.919.168-1.86.599-2.822 1.29a19.599 19.599 0 0 0-2.8 2.471 30.759 30.759 0 0 0-2.564 3.108 40.548 40.548 0 0 0-2.111 3.212c-.603 1.03-1.078 1.96-1.422 2.79-.344.832-.517 1.445-.517 1.839 0 .197.072.416.216.655.143.24.337.459.581.656.244.197.502.366.776.507.273.141.538.211.797.211.115 0 .337-.127.667-.38.33-.254.719-.592 1.164-1.015a72.943 72.943 0 0 0 3.21-3.254c-.317.564-.56 1.071-.732 1.521-.172.451-.259.818-.259 1.099 0 .197.072.416.216.655.143.24.338.459.582.656.243.197.501.366.775.507.273.141.539.211.797.211.23 0 .502-.09.819-.274.316-.183.646-.416.99-.698.345-.28.676-.598.991-.95.316-.352.603-.684.862-.995.2-.252.25-.394.15-.422-.1-.028-.251-.013-.452.042a5.253 5.253 0 0 0-.603.211c-.2.085-.316.114-.344.085-.116-.112-.044-.436.215-.972.259-.535.632-1.176 1.12-1.924a81.853 81.853 0 0 1 1.659-2.43c.617-.873 1.213-1.697 1.787-2.473a71.05 71.05 0 0 1 1.573-2.05c.474-.592.811-1 1.012-1.226.144-.169.136-.352-.021-.55-.158-.196-.388-.38-.69-.548a7.169 7.169 0 0 0-.948-.444c-.33-.127-.596-.19-.796-.19-.231-.002-.576.224-1.035.674ZM61.692 21.313c.301-.62.739-1.36 1.314-2.22a46.153 46.153 0 0 1 1.982-2.726 30.495 30.495 0 0 1 2.305-2.642c.79-.803 1.55-1.464 2.283-1.986.733-.521 1.358-.754 1.875-.697a42.055 42.055 0 0 0-2.348 2.768 53.132 53.132 0 0 0-2.52 3.487c-.603.649-1.207 1.283-1.81 1.902a240.14 240.14 0 0 1-1.637 1.67c-.489.493-.89.88-1.207 1.162-.316.282-.488.409-.516.38-.116-.111-.022-.478.279-1.098Z"></path>
+
+      <path fill="currentColor" d="M60.723 5.715c-.46 0-.826.106-1.098.317a3.942 3.942 0 0 0-.755.782 4.01 4.01 0 0 0-.496.951c-.1.296.05.444.452.444h1.38a146.63 146.63 0 0 0-3.362 4.523 119.979 119.979 0 0 0-3.144 4.607c-.948 1.466-1.724 2.762-2.327 3.888-.603 1.127-.905 1.89-.905 2.283 0 .198.072.416.215.656.144.239.337.458.582.655.244.197.502.366.776.507.272.141.538.212.797.212.23 0 .502-.091.819-.275.315-.183.646-.416.99-.698a8.8 8.8 0 0 0 .991-.95c.316-.352.604-.684.862-.994.2-.253.251-.395.15-.423-.1-.028-.25-.013-.451.042a5.261 5.261 0 0 0-.603.211c-.201.085-.317.114-.345.085-.144-.112.028-.613.517-1.5.488-.888 1.17-2.008 2.047-3.36a96.296 96.296 0 0 1 3.123-4.503 158.358 158.358 0 0 1 3.791-4.966h1.55c.431 0 .798-.134 1.1-.402.3-.268.58-.556.84-.866.229-.31.409-.592.538-.846.129-.253-.037-.38-.496-.38h-1.465l1.034-1.142c.144-.169.137-.352-.02-.55-.16-.196-.389-.38-.69-.549a7.367 7.367 0 0 0-.948-.444c-.33-.127-.596-.19-.797-.19-.23 0-.625.26-1.185.782s-1.214 1.22-1.96 2.092h-1.507v.001ZM47.41 16.663a57.558 57.558 0 0 0-1.852 2.81c-.546.889-.99 1.692-1.335 2.41-.345.72-.517 1.262-.517 1.627 0 .198.071.417.215.656.144.24.337.458.581.655.244.198.502.367.776.508.273.141.539.211.797.211.23 0 .502-.09.819-.275.316-.183.646-.415.99-.697.346-.28.675-.598.992-.951.315-.352.602-.683.861-.994.2-.253.251-.394.151-.423-.1-.027-.252-.013-.452.043a5.21 5.21 0 0 0-.603.211c-.201.085-.316.113-.345.085-.115-.112-.021-.45.28-1.015a30.48 30.48 0 0 1 1.228-2.05 49.333 49.333 0 0 1 1.788-2.578c.675-.916 1.32-1.79 1.94-2.621a88.056 88.056 0 0 1 1.679-2.198c.502-.634.854-1.05 1.055-1.247.144-.141.136-.31-.021-.508a2.75 2.75 0 0 0-.668-.57 5.231 5.231 0 0 0-.926-.465c-.33-.128-.597-.19-.797-.19h-.043c-.345 0-1.006.394-1.982 1.183-.977.789-2.076 1.804-3.295 3.043a81.609 81.609 0 0 0-3.77 4.121 74.05 74.05 0 0 0-3.49 4.375 48.627 48.627 0 0 1 2.671-3.868 95.502 95.502 0 0 1 2.585-3.233 51.945 51.945 0 0 1 2.154-2.43 67.481 67.481 0 0 1 1.422-1.459c.173-.14.173-.31 0-.507a2.905 2.905 0 0 0-.732-.571 6.399 6.399 0 0 0-.991-.465c-.345-.127-.618-.19-.819-.19-.345 0-1.005.395-1.981 1.183-.977.79-2.076 1.804-3.296 3.043a81.562 81.562 0 0 0-3.77 4.122 73.967 73.967 0 0 0-3.49 4.375 48.624 48.624 0 0 1 2.672-3.868 95.497 95.497 0 0 1 2.585-3.234 52.014 52.014 0 0 1 2.154-2.43 67.663 67.663 0 0 1 1.422-1.459c.172-.14.172-.31 0-.507a2.906 2.906 0 0 0-.733-.57 6.372 6.372 0 0 0-.99-.466c-.346-.127-.619-.19-.82-.19-.23 0-.64.29-1.227.867-.59.577-1.265 1.325-2.025 2.24a56.903 56.903 0 0 0-2.348 3.043A68.398 68.398 0 0 0 33.69 18.5a36.966 36.966 0 0 0-1.68 2.875c-.445.86-.668 1.5-.668 1.923 0 .198.108.459.323.782.215.324.466.62.754.888.287.268.566.451.84.55.273.098.466.035.582-.19a.99.99 0 0 1 .172-.254 39.175 39.175 0 0 1 1.831-2.663 91.352 91.352 0 0 1 2.348-3.023 65.668 65.668 0 0 1 2.563-2.98 66.15 66.15 0 0 1 2.478-2.578 88.8 88.8 0 0 0-2.047 2.79 48.642 48.642 0 0 0-1.809 2.747 27.004 27.004 0 0 0-1.293 2.347c-.33.69-.495 1.219-.495 1.585 0 .197.107.458.322.782.216.323.46.62.733.888.273.268.545.45.819.55.272.098.48.035.625-.191l.345-.591a51.573 51.573 0 0 1 1.852-2.622 75.367 75.367 0 0 1 2.306-2.916 82.214 82.214 0 0 1 2.498-2.874 60.774 60.774 0 0 1 2.391-2.494c-.69.902-1.38 1.846-2.07 2.832ZM33.753 10.407a13.56 13.56 0 0 0-.624-.57 8.895 8.895 0 0 0-.733-.57 3.564 3.564 0 0 0-.754-.402 1.215 1.215 0 0 0-.732-.063c-.92.168-1.86.599-2.822 1.29a19.566 19.566 0 0 0-2.8 2.471 30.745 30.745 0 0 0-2.564 3.108 40.52 40.52 0 0 0-2.11 3.212c-.604 1.03-1.078 1.96-1.423 2.79-.344.832-.517 1.445-.517 1.839 0 .197.072.416.216.655.143.24.337.459.581.656.244.197.502.366.776.507.273.141.538.211.797.211.115 0 .337-.127.668-.38.33-.254.717-.592 1.163-1.015a73.06 73.06 0 0 0 1.508-1.48 69.014 69.014 0 0 0 1.702-1.774c-.316.564-.56 1.071-.733 1.521-.172.451-.258.818-.258 1.099 0 .197.071.416.215.655.143.24.337.459.581.656.244.197.503.366.776.507.272.141.538.211.797.211.23 0 .502-.09.819-.274.315-.183.646-.416.99-.698.346-.28.675-.598.992-.95.315-.352.602-.684.861-.995.2-.252.251-.394.15-.422-.1-.028-.25-.013-.451.042a5.251 5.251 0 0 0-.604.211c-.2.085-.316.114-.344.085-.115-.112-.043-.436.215-.972.259-.535.632-1.176 1.12-1.924a80.544 80.544 0 0 1 1.66-2.43c.616-.873 1.212-1.697 1.787-2.473a69.995 69.995 0 0 1 1.573-2.05c.474-.592.811-1 1.012-1.226.144-.169.136-.352-.021-.55-.158-.196-.388-.38-.69-.548a7.168 7.168 0 0 0-.947-.444c-.33-.127-.597-.19-.798-.19-.23-.002-.575.224-1.034.674ZM23.392 21.313c.301-.62.74-1.36 1.314-2.22a46.2 46.2 0 0 1 1.982-2.726 30.398 30.398 0 0 1 2.305-2.642c.79-.803 1.55-1.464 2.283-1.986.732-.521 1.357-.754 1.874-.697a42.085 42.085 0 0 0-2.348 2.768 53.13 53.13 0 0 0-2.52 3.487c-.603.649-1.206 1.283-1.81 1.902-.603.62-1.149 1.177-1.637 1.67-.49.493-.89.88-1.206 1.162-.317.282-.489.409-.517.38-.115-.111-.021-.478.28-1.098ZM15.594 10.492c-.79.592-1.566 1.29-2.326 2.092a23.47 23.47 0 0 0-2.154 2.642 18.182 18.182 0 0 0-1.68 2.896c-.446.971-.77 1.93-.97 2.874-.2.944-.2 1.811 0 2.6.086.31.287.591.603.845.316.253.675.472 1.077.655.402.184.819.317 1.25.401.43.085.775.113 1.033.085.373-.028.833-.17 1.38-.423a11.822 11.822 0 0 0 1.68-.972 18.22 18.22 0 0 0 1.701-1.331c.56-.493 1.07-1.007 1.53-1.543.287-.338.38-.55.28-.633-.1-.085-.338.014-.711.296-.575.395-1.142.775-1.702 1.14a23.22 23.22 0 0 1-1.573.952c-.488.268-.926.48-1.314.634-.387.155-.696.232-.926.232-.747-.056-1.034-.556-.861-1.5.172-.944.616-2.093 1.335-3.446.401.31.854.6 1.357.867.502.268.984.346 1.444.232.718-.169 1.479-.62 2.283-1.353a20.62 20.62 0 0 0 2.262-2.43 18.292 18.292 0 0 0 1.745-2.6c.459-.845.704-1.479.732-1.902.028-.338-.144-.69-.517-1.057a5.267 5.267 0 0 0-1.379-.95 7.263 7.263 0 0 0-1.744-.592c-.618-.127-1.142-.12-1.573.02-.718.254-1.472.677-2.262 1.269Zm-.581 5.98c.517-.633 1.07-1.26 1.659-1.88.588-.62 1.184-1.19 1.788-1.712a19.651 19.651 0 0 1 1.637-1.29c.373-.225.575-.31.603-.253.028.057-.043.24-.215.549-.403.676-.92 1.388-1.551 2.134a24.63 24.63 0 0 1-1.939 2.05 16.67 16.67 0 0 1-1.874 1.543c-.59.409-1.055.628-1.4.656.344-.563.775-1.162 1.292-1.796Z"></path>
+
+      <path fill="currentColor" d="M3.107 26c.223-.078.544-.253.964-.524.589-.38 1.135-.788 1.637-1.226.502-.436.855-.81 1.056-1.12.2-.31.028-.395-.517-.253-.546.141-.74-.219-.582-1.078.158-.86.604-2.008 1.336-3.446.732-1.437 1.723-3.064 2.972-4.882 1.25-1.818 2.721-3.642 4.417-5.474.143-.17.2-.352.172-.55a1.637 1.637 0 0 0-.237-.612 2.88 2.88 0 0 0-.517-.613 4.467 4.467 0 0 0-.667-.507 59.045 59.045 0 0 1 4.179.063c1.35.07 2.57.176 3.662.317.287.029.538-.14.754-.507a4.54 4.54 0 0 0 .496-1.31 6.012 6.012 0 0 0 .15-1.5c-.014-.494-.122-.852-.323-1.079-.173-.168-.69-.274-1.551-.317a40.362 40.362 0 0 0-3.21 0 59.424 59.424 0 0 0-4.157.297 82.308 82.308 0 0 0-4.373.57 40.034 40.034 0 0 0-3.9.804C3.69 3.363 2.8 3.7 2.197 4.067c-.172.084-.301.31-.387.676a2.579 2.579 0 0 0-.022 1.1c.071.366.23.661.474.887.243.226.61.254 1.099.085.89-.31 2.01-.55 3.36-.719 1.35-.169 2.8-.281 4.351-.337-.603.479-1.292 1.197-2.067 2.155a52.201 52.201 0 0 0-2.413 3.255 59.028 59.028 0 0 0-2.413 3.825 97.528 97.528 0 0 0-2.11 3.826C1.435 20.031.933 21.117.56 22.075c-.374.957-.56 1.662-.56 2.112 0 .085.093.233.28.444.186.212.423.423.71.634.288.211.604.395.949.55.19.085.37.147.543.185h.625Z"></path>
+    </svg>
+
+    <span class="mt-2 text-sm print:hidden">
+      <span class="mt-2 text-sm underline group-hover:text-teamtailor-pink">Applicant tracking system</span>
+
+      by Teamtailor
+    </span>
+</a></div>
+
+
+
+
+    <script nonce="">
+  function trackPageView(url) {
+    var searchParams = new URLSearchParams(window.location.search);
+    var utmSource = searchParams.get('utm_source');
+    window.referrer = window.referrer || utmSource || document.referrer
+    var payload = {
+      ed: 'iHQhPtauDYTFQpMl2wTW3IQg1ZI3LATGIKa4fkEHsCtWSzjXGQn4eSjle0PbXSdgHCLpDxlPmtEfZMg4ySGhEgBNmvljfBnQtsfUUzynJgbnv7RYWWDIVJDG3K8Q03X9URY+T3Y0O7TXDPDqq0Z+f8VQhcBVEoHIB/T2fodKNHlS4Lxd9Qj3Ytqa7Bp1mFrMNuw4hveWLwUYBMooSVdyX7/Z2u72TRHhc7Kh/fdiB9LyEP0by3KX82lSRXx16/agoIT6RUvsNGVKz2V9--fxcdhcjcQ/NiILYO--gcZ0OxjfKt+6RoGTTMXZnQ==',
+      visitor_uuid: window.visitor_uuid,
+      referrer: window.referrer,
+      data: {
+        ua: navigator.userAgent,
+        referrer: document.referrer,
+      },
+      url: url,
+    };
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open('POST', '/pageview', true);
+    xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xmlhttp.withCredentials = true;
+    xmlhttp.addEventListener('readystatechange', function () {
+      if (xmlhttp.readyState === XMLHttpRequest.DONE) {
+        const status = xmlhttp.status;
+        if (status === 0 || (status >= 200 && status < 400)) {
+          window.visitor_uuid = xmlhttp.responseText;
+        }
+      }
+    })
+
+    xmlhttp.send(JSON.stringify(payload));
+  }
+
+  window.trackPageView = trackPageView;
+
+  if (!window.analyticsPageviewCallback) {
+    window.analyticsPageviewCallback = true;
+    window.addEventListener('turbo:load', function(data){
+      window.trackPageView();
+    });
+  }
+</script>
+
+
+
+
+      <div class="transition-opacity duration-100 ease-in-out z-candidate-chat" data-controller="common--chat" data-common--chat-subdomain-host-value="careers.wearegap.com">
+
+      <div>
+        <iframe id="messenger-frame" loading="lazy" class="hidden" data-src="https://careers.wearegap.com/messenger?page_id=4718261" data-url="https://careers.wearegap.com" frameborder="0" allowtransparency="true" translations="{&quot;awesome&quot;:&quot;Awesome&quot;,&quot;error&quot;:&quot;Something went wrong&quot;,&quot;email_is_taken&quot;:&quot;Email address is taken.&quot;}" src="https://careers.wearegap.com/messenger?page_id=4718261"></iframe>
+        <iframe id="messenger-launcher-frame" loading="lazy" tabindex="-1" class=" print:hidden" data-src="https://careers.wearegap.com/messenger/launcher?inverted_colors=true&amp;page_id=4718261&amp;show_video=false" frameborder="0" allowtransparency="true" src="https://careers.wearegap.com/messenger/launcher?inverted_colors=true&amp;page_id=4718261&amp;show_video=false" style="height: 233px; width: 220px;"></iframe>
+      </div>
+
+</div>
+
+<dialog class="text-company-primary bg-company-primary company-links company-links-on-white overflow-y-auto border-0 p-0 backdrop:bg-black/50 backdrop:backdrop-blur-md h-screen w-screen max-w-full max-h-full" id="filters-mobile-turbo-modal">
+      <div class="relative w-full h-full py-12 px-4 bg-[rgba(var(--company-link-color),0.03)]">
+                  <div class="flex justify-between items-center pb-4" data-controller="blocks--jobs--filters-mobile">
+            <button tabindex="0" type="button" class="
+                company-link cursor-pointer focus-visible:outline-offset-2
+                focus-within:outline-company-secondary-bg
+              " data-action="click-&gt;blocks--jobs--filters-mobile#resetAllWidgets">
+              Clear all
+            </button>
+
+            <button type="button" class="
+                company-link bg-company-link bg-opacity-15 size-8
+                rounded-full flex items-center justify-center cursor-pointer
+              " data-close="close">
+              <svg class="svg-inline--fa fa-xmark text-xl" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+            </button>
+          </div>
+
+
+        <div class="modal-content default-style">
+                    <div id="jobs-filters-mobile" class="h-full" data-controller="blocks--jobs--filters-mobile" data-blocks--jobs--filters-mobile-common--modal-outlet="#filters-mobile-modal" data-blocks--jobs--filters-mobile-blocks--jobs--filters-outlet="#blocks-jobs-filters-form">
+  <div class="flex flex-col gap-5 pb-50">
+      <div class="bg-company-primary flex items-center px-4 py-5 rounded w-full cursor-pointer shadow-option">
+        <svg class="svg-inline--fa fa-magnifying-glass text-sm text-company-primary" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path></svg>
+
+        <input placeholder="Search" class="placeholder:opacity-50 placeholder:text-company-primary text-company-primary bg-company-primary !outline-none border-none font-medium focus:ring-0 p-0 pl-2 text-[16px] w-full" data-blocks--jobs--filters-mobile-target="searchField" data-action="input-&gt;blocks--jobs--filters-mobile#handleSearchInputChange jobs-filters-mobile-reset-all@window-&gt;blocks--jobs--filters-mobile#resetSearchField" type="text" name="query[]" id="query_">
+</div>
+
+
+
+
+
+
+
+      <div class="options-widget py-5 text-md text-company-primary rounded bg-company-primary cursor-pointer shadow-option" tabindex="0" data-common--options-widget-blocks--jobs--filters-outlet="#blocks-jobs-filters-form" data-common--options-widget-target-field-value="country" data-controller="common--options-widget" data-action="click-&gt;common--options-widget#toggleWidget keydown.enter-&gt;common--options-widget#toggleWidget keydown.space-&gt;common--options-widget#toggleWidget jobs-filters-mobile-reset-all@window-&gt;common--options-widget#reset options-widget-open@window-&gt;common--options-widget#handleToggleOpenedEvent" data-common--options-widget-default-label-value="Any" data-common--options-widget-is-geobound-filter-present-value="false" data-common--options-widget-map-area-translation-value="(Map area)">
+  <div class="hidden labels flex flex-col gap-3" data-common--options-widget-target="labels">
+    <div class="font-semibold px-5">Countries</div>
+
+    <div class="flex gap-3 overflow-auto scrollbar-hide p-1 px-5">
+                <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Costa Rica" data-common--options-widget-value-param="Costa Rica">
+          Costa Rica
+          <span class="opacity-50 ml-1 pointer-events-none">(3)</span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Colombia" data-common--options-widget-value-param="Colombia">
+          Colombia
+          <span class="opacity-50 ml-1 pointer-events-none">(3)</span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>    <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent opacity-50" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="United States" data-common--options-widget-value-param="United States" disabled="true">
+          United States
+          <span class="ml-1 pointer-events-none">(0)</span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button></div>
+  </div>
+
+  <div class="headline flex justify-between px-5" data-common--options-widget-target="headline">
+    <div class="title font-normal text-sm leading-5 text-company-primary opacity-50">
+      Countries
+    </div>
+
+    <div class="value font-normal text-sm leading-5 text-company-primary" data-common--options-widget-target="selectedOptionLabelContainer">Any</div>
+  </div>
+</div>
+
+
+
+
+        <div class="options-widget py-5 text-md text-company-primary rounded bg-company-primary cursor-pointer shadow-option" tabindex="0" data-common--options-widget-blocks--jobs--filters-outlet="#blocks-jobs-filters-form" data-common--options-widget-target-field-value="main-technology" data-controller="common--options-widget" data-action="click-&gt;common--options-widget#toggleWidget keydown.enter-&gt;common--options-widget#toggleWidget keydown.space-&gt;common--options-widget#toggleWidget jobs-filters-mobile-reset-all@window-&gt;common--options-widget#reset options-widget-open@window-&gt;common--options-widget#handleToggleOpenedEvent" data-common--options-widget-default-label-value="Any" data-common--options-widget-is-geobound-filter-present-value="false" data-common--options-widget-map-area-translation-value="(Map area)">
+  <div class="hidden labels flex flex-col gap-3" data-common--options-widget-target="labels">
+    <div class="font-semibold px-5">Main Technology</div>
+
+    <div class="flex gap-3 overflow-auto scrollbar-hide p-1 px-5">
+        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value=".NET" data-common--options-widget-value-param=".NET">
+          .NET
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="AI" data-common--options-widget-value-param="AI">
+          AI
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="AI &amp; Machine Learning" data-common--options-widget-value-param="AI &amp; Machine Learning">
+          AI &amp; Machine Learning
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Android" data-common--options-widget-value-param="Android">
+          Android
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Angular" data-common--options-widget-value-param="Angular">
+          Angular
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Azure" data-common--options-widget-value-param="Azure">
+          Azure
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Azure &amp; .NET" data-common--options-widget-value-param="Azure &amp; .NET">
+          Azure &amp; .NET
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="C++" data-common--options-widget-value-param="C++">
+          C++
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Data Analytics" data-common--options-widget-value-param="Data Analytics">
+          Data Analytics
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Data Engineering" data-common--options-widget-value-param="Data Engineering">
+          Data Engineering
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Data Science" data-common--options-widget-value-param="Data Science">
+          Data Science
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Delivery Manager" data-common--options-widget-value-param="Delivery Manager">
+          Delivery Manager
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Dev Ops" data-common--options-widget-value-param="Dev Ops">
+          Dev Ops
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Drupal" data-common--options-widget-value-param="Drupal">
+          Drupal
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Flutter" data-common--options-widget-value-param="Flutter">
+          Flutter
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Go" data-common--options-widget-value-param="Go">
+          Go
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Graphic Designer" data-common--options-widget-value-param="Graphic Designer">
+          Graphic Designer
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="HR" data-common--options-widget-value-param="HR">
+          HR
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="IT Recruiting" data-common--options-widget-value-param="IT Recruiting">
+          IT Recruiting
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="IT Support" data-common--options-widget-value-param="IT Support">
+          IT Support
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Infraestructure" data-common--options-widget-value-param="Infraestructure">
+          Infraestructure
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Java" data-common--options-widget-value-param="Java">
+          Java
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Javascript" data-common--options-widget-value-param="Javascript">
+          Javascript
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Marketing" data-common--options-widget-value-param="Marketing">
+          Marketing
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Mulesoft" data-common--options-widget-value-param="Mulesoft">
+          Mulesoft
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="NodeJS" data-common--options-widget-value-param="NodeJS">
+          NodeJS
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Other" data-common--options-widget-value-param="Other">
+          Other
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="PHP" data-common--options-widget-value-param="PHP">
+          PHP
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Product Owner" data-common--options-widget-value-param="Product Owner">
+          Product Owner
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Program Manager" data-common--options-widget-value-param="Program Manager">
+          Program Manager
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Project Manager" data-common--options-widget-value-param="Project Manager">
+          Project Manager
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Python" data-common--options-widget-value-param="Python">
+          Python
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Python and React" data-common--options-widget-value-param="Python and React">
+          Python and React
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="QA Automation" data-common--options-widget-value-param="QA Automation">
+          QA Automation
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="QA Manual" data-common--options-widget-value-param="QA Manual">
+          QA Manual
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="QA Performance" data-common--options-widget-value-param="QA Performance">
+          QA Performance
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="QA Secuirty" data-common--options-widget-value-param="QA Secuirty">
+          QA Secuirty
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="React" data-common--options-widget-value-param="React">
+          React
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="React Native" data-common--options-widget-value-param="React Native">
+          React Native
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Ruby" data-common--options-widget-value-param="Ruby">
+          Ruby
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Sales" data-common--options-widget-value-param="Sales">
+          Sales
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Salesforce" data-common--options-widget-value-param="Salesforce">
+          Salesforce
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Scala" data-common--options-widget-value-param="Scala">
+          Scala
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Scrum Master" data-common--options-widget-value-param="Scrum Master">
+          Scrum Master
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="UX/UI" data-common--options-widget-value-param="UX/UI">
+          UX/UI
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Vue.js" data-common--options-widget-value-param="Vue.js">
+          Vue.js
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Web Content" data-common--options-widget-value-param="Web Content">
+          Web Content
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="Wordpress" data-common--options-widget-value-param="Wordpress">
+          Wordpress
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>        <button name="button" type="submit" class="flex align-center rounded py-2 px-3 font-normal text-smcompany-link bg-company-link bg-opacity-3 shrink-0 border border-transparent" data-action="click-&gt;common--options-widget#toggleOption" data-label-value="iOS" data-common--options-widget-value-param="iOS">
+          iOS
+          <span class="opacity-50 ml-1 pointer-events-none"></span>
+
+          <div class="icon-wrapper ml-2 hidden">
+            <svg class="svg-inline--fa fa-xmark" aria-hidden="true" focusable="false" data-prefix="far" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M345 137c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-119 119L73 103c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l119 119L39 375c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l119-119L311 409c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-119-119L345 137z"></path></svg>
+</div></button>    </div>
+  </div>
+
+  <div class="headline flex justify-between px-5" data-common--options-widget-target="headline">
+    <div class="title font-normal text-sm leading-5 text-company-primary opacity-50">
+      Main Technology
+    </div>
+
+    <div class="value font-normal text-sm leading-5 text-company-primary" data-common--options-widget-target="selectedOptionLabelContainer">Any</div>
+  </div>
+</div>
+  </div>
+
+  <button name="button" type="submit" class="careersite-button rounded shadow-button p-4 fixed left-1/2 -translate-x-1/2 bottom-5" data-action="click-&gt;blocks--jobs--filters-mobile#handleSubmit">Show jobs</button>
+</div>
+
+</div></div></dialog></body></html>

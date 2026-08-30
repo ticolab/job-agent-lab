@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Tebra",
+  "job_board_url": "https://job-boards.greenhouse.io/tebra",
+  "sample_job_url": "https://job-boards.greenhouse.io/tebra/jobs/4678340005",
+  "expected_unfiltered_count": 23,
+  "captured_at": "2026-07-08T18:52:34.363432+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

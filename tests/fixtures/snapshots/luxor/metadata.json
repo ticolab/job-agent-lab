@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Luxor",
+  "job_board_url": "https://jobs.ashbyhq.com/luxor?locationId=2a8d4786-5dcc-4e7c-a4c5-d35d8d0ad90f",
+  "sample_job_url": "https://jobs.ashbyhq.com/luxor/710287ed-5596-47a1-b0bc-3fb44ba720b0",
+  "expected_unfiltered_count": 1,
+  "captured_at": "2026-07-19T15:33:21.067541+00:00",
+  "captured_with_filters": false,
+  "notes": "Pre-filtered URL (?locationId=2a8d4786-5dcc-4e7c-a4c5-d35d8d0ad90f, the LATAM, Remote option that matches TargetRegion COSTA_RICA_LATAM). Luxor is Ashby-hosted (jobs.ashbyhq.com); the location filter is a native select[name=locationId] whose options are country/region-level with no explicit Costa Rica entry (available options: APAC, Argentina, Brazil, LATAM, Mexico, Philippines, Uruguay, Worldwide, all Remote). SYS-6's C3 discovery clause identifies the select correctly, but browser-use's select_dropdown action is documented to fail at the CDP layer on Ashby's Preact SPA due to subtree rerender invalidating the captured node reference (see C15 in spike/INTEGRATION_BLOCKERS_R2.md, SimSpace entry). Ashby exposes the same filter via a URL query parameter, so job_board_url points at the filtered view directly (same workaround as SimSpace, Confiz's ?country=CR, and 10Pearls' path-based /latin-america-job-openings/). The live run's agent recognised LATAM was already selected under GOAL_PROMPT Step 1c and did not attempt to re-apply it via select_dropdown, so C15 did not reproduce. Consequence: expected_unfiltered_count=1 pins the LATAM-filtered subset rather than the full 2-anchor unfiltered board; the snapshot validates the matcher against the filtered state as the Confiz/SimSpace-precedent trade-off."
+}

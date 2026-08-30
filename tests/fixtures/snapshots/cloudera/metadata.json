@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "company_name": "Cloudera",
+  "job_board_url": "https://cloudera.wd5.myworkdayjobs.com/External_Career?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+  "sample_job_url": "https://cloudera.wd5.myworkdayjobs.com/en-US/External_Career/job/Costa-Rica--Remote/Senior-Data-Architect_260706-1?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+  "expected_unfiltered_count": 3,
+  "captured_at": "2026-07-08T21:41:38.147253+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/en-US/External_Career/job"
+}

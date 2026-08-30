@@ -1,0 +1,80 @@
+[
+  {
+    "name": "Coloplast",
+    "job_board_url": "https://careers.coloplast.com/search",
+    "sample_job_url": "https://careers.coloplast.com/job/San-Jose-Medical-Records-Specialist/1427113633/",
+    "expected_jobs": 20
+  },
+  {
+    "name": "Pythian",
+    "job_board_url": "https://ats.rippling.com/en-GB/pythian/jobs",
+    "sample_job_url": "https://ats.rippling.com/en-GB/pythian/jobs/9cd647df-0857-4768-954e-9d71468c311b",
+    "expected_jobs": 3
+  },
+  {
+    "name": "Acuity Analytics",
+    "job_board_url": "https://acuitykp.darwinbox.com/ms/candidatev2/main/careers/allJobs",
+    "sample_job_url": "https://acuitykp.darwinbox.com/ms/candidatev2/main/careers/jobDetails/a6a7501a2c20d4",
+    "expected_jobs": 5
+  },
+  {
+    "name": "Terumo Blood and Cell Technologies",
+    "job_board_url": "https://careers.terumobct.com/search",
+    "sample_job_url": "https://careers.terumobct.com/job/Pinares-Sr-Software-Systems-Engineer-R&D/1361772900/",
+    "expected_jobs": 5
+  },
+  {
+    "name": "Concentrix",
+    "job_board_url": "https://jobs.concentrix.com/job-search/",
+    "sample_job_url": "https://jobs.concentrix.com/job/?id=R1750118",
+    "expected_jobs": 18
+  },
+  {
+    "name": "Medtronic",
+    "job_board_url": "https://medtronic.wd1.myworkdayjobs.com/es/MedtronicCareers",
+    "sample_job_url": "https://medtronic.wd1.myworkdayjobs.com/es/MedtronicCareers/details/Machine-Operator-I_R74658-1?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+    "expected_jobs": 8
+  },
+  {
+    "name": "Moody's Corporation",
+    "job_board_url": "https://careers.moodys.com/en/search-jobs",
+    "sample_job_url": "https://careers.moodys.com/en/job/heredia/fin-rptg-and-acct-policy-accountant/49841/99229266848",
+    "expected_jobs": 30
+  },
+  {
+    "name": "Philips",
+    "job_board_url": "https://www.careers.philips.com/global/en/search-results",
+    "sample_job_url": "https://www.careers.philips.com/global/en/job/583860/Finance-Controller-Assistant",
+    "expected_jobs": 3
+  },
+  {
+    "name": "Zimmer Biomet",
+    "job_board_url": "https://careers.zimmerbiomet.com/us/en/search-results",
+    "sample_job_url": "https://careers.zimmerbiomet.com/us/en/job/11373/Operations-Project-Manager",
+    "expected_jobs": 16
+  },
+  {
+    "name": "Boston Scientific",
+    "job_board_url": "https://jobs.bostonscientific.com/search",
+    "sample_job_url": "https://jobs.bostonscientific.com/job/Propark-Free-Zone%2C-Coyol-de-Al-Quality-Assurance-Engineer-III-Temporary-12-months-A/1410268200/",
+    "expected_jobs": 8
+  },
+  {
+    "name": "Viant Medical",
+    "job_board_url": "https://jobs.dayforcehcm.com/es-MX/medplast/COSTARICA",
+    "sample_job_url": "https://jobs.dayforcehcm.com/es-MX/medplast/COSTARICA/jobs/30358",
+    "expected_jobs": 8
+  },
+  {
+    "name": "Heraeus",
+    "job_board_url": "https://jobs.heraeus.com/en/search-jobs",
+    "sample_job_url": "https://jobs.heraeus.com/en/job/cartago/npi-engineering-section-lead/3105/40978227712",
+    "expected_jobs": 20
+  },
+  {
+    "name": "Auxis",
+    "job_board_url": "https://jobs-auxis.icims.com/jobs/search",
+    "sample_job_url": "https://jobs-auxis.icims.com/jobs/4659/forward-deployed-engineer/job",
+    "expected_jobs": 16
+  }
+]

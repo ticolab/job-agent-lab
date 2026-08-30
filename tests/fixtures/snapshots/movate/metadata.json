@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Movate",
+  "job_board_url": "https://www.movate.com/careers-at-movate-costa-rica/?search_keywords=&selected_location=costa-rica&selected_job_level=-1",
+  "sample_job_url": "https://www.movate.com/jobs/outbound-sales-representative-2/",
+  "expected_unfiltered_count": 8,
+  "captured_at": "2026-08-15T14:52:51.969120+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

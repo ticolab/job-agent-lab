@@ -1,0 +1,53 @@
+{
+  "schema_version": 2,
+  "company_name": "Hire With Near",
+  "job_board_url": "https://jobs.hirewithnear.com/#/",
+  "sample_job_url": "https://jobs.hirewithnear.com/jobs/4140",
+  "expected_unfiltered_count": 214,
+  "captured_at": "2026-08-15T15:12:53.468046+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pages": [
+    {
+      "file": "pages/page-2.html",
+      "url": "https://jobs.hirewithnear.com/#/"
+    },
+    {
+      "file": "pages/page-3.html",
+      "url": "https://jobs.hirewithnear.com/#/"
+    },
+    {
+      "file": "pages/page-4.html",
+      "url": "https://jobs.hirewithnear.com/#/"
+    },
+    {
+      "file": "pages/page-5.html",
+      "url": "https://jobs.hirewithnear.com/#/"
+    },
+    {
+      "file": "pages/page-6.html",
+      "url": "https://jobs.hirewithnear.com/#/"
+    },
+    {
+      "file": "pages/page-7.html",
+      "url": "https://jobs.hirewithnear.com/#/"
+    },
+    {
+      "file": "pages/page-8.html",
+      "url": "https://jobs.hirewithnear.com/#/"
+    },
+    {
+      "file": "pages/page-9.html",
+      "url": "https://jobs.hirewithnear.com/#/"
+    },
+    {
+      "file": "pages/page-10.html",
+      "url": "https://jobs.hirewithnear.com/#/"
+    },
+    {
+      "file": "pages/page-11.html",
+      "url": "https://jobs.hirewithnear.com/#/"
+    }
+  ],
+  "next_control_selector": "button.\\!bg-primary"
+}

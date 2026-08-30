@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "company_name": "Find Job Latam",
+  "job_board_url": "https://find-job-latam.careers-page.com/?countries=Costa+Rica",
+  "sample_job_url": "https://find-job-latam.careers-page.com/jobs/776500f3-8093-4dfc-bc33-60871a01a4bc",
+  "expected_unfiltered_count": 2,
+  "captured_at": "2026-08-07T21:19:01.939731+00:00",
+  "captured_with_filters": false,
+  "notes": "careers-page.com tenant board. job_board_url is corrected off the queue's marketing host (www.findjoblatam.com/careers renders zero job anchors) onto the ATS tenant subdomain, and carries the ?countries=Costa+Rica pre-filter: the location facet is a checkbox group inside a GET form, so it is URL-addressable, but it sits behind a hidden dropdown toggle which is why the probe's visible-control census reports zero checkbox facets. hooks.filter_already_applied=True guards the pre-filter against agent re-toggle. suppress_ancestor_selector drops the per-posting /refer and /apply anchors: every posting renders three anchors under the derived /jobs prefix (itself plus those two), so the raw matcher count is exactly 3x the real posting count and min_depth cannot separate them - the real postings are the SHALLOW ones, and there is no max_depth by design. Board is 9 postings total (2 Costa Rica in San Jose, 4 Colombia, 1 Bolivia, 1 Argentina, 1 Brazil); expected_unfiltered_count=2 equals expected_jobs because the URL baseline IS the filtered view. The tenant sits behind Cloudflare and intermittently serves a 'Just a moment...' challenge to plain httpx; a real browser passes every time, so the DOM path is unaffected but no API-adapter route is available here.",
+  "suppress_ancestor_selector": "a[href$=\"/apply\"], a[href$=\"/refer\"]"
+}

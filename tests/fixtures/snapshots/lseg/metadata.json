@@ -1,0 +1,15 @@
+{
+  "schema_version": 2,
+  "company_name": "LSEG",
+  "job_board_url": "https://lseg.wd3.myworkdayjobs.com/en-US/Careers?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+  "sample_job_url": "https://lseg.wd3.myworkdayjobs.com/en-US/Careers/details/Sales-Order-Specialist_R0121803",
+  "expected_unfiltered_count": 7,
+  "captured_at": "2026-08-15T19:15:09.314757+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/en-US/Careers/job",
+  "pre_filter_urls": [
+    "https://lseg.wd3.myworkdayjobs.com/en-US/Careers?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5"
+  ],
+  "top_url": "https://lseg.wd3.myworkdayjobs.com/en-US/Careers?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5"
+}

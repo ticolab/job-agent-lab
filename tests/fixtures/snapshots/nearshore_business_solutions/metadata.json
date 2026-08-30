@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "company_name": "Nearshore Business Solutions",
+  "job_board_url": "https://www.careers-page.com/nearshore-business-solutions?page=1",
+  "sample_job_url": "https://www.careers-page.com/nearshore-business-solutions/job/5W93YR63",
+  "expected_unfiltered_count": 60,
+  "captured_at": "2026-07-19T00:46:49.885263+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pages": [
+    {
+      "file": "pages/page-2.html",
+      "url": "https://www.careers-page.com/nearshore-business-solutions?page=2"
+    },
+    {
+      "file": "pages/page-3.html",
+      "url": "https://www.careers-page.com/nearshore-business-solutions?page=3"
+    }
+  ]
+}

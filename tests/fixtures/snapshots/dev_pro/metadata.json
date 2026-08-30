@@ -1,0 +1,24 @@
+{
+  "schema_version": 2,
+  "company_name": "Dev.Pro",
+  "job_board_url": "https://career.dev.pro/open-positions/",
+  "sample_job_url": "https://career.dev.pro/vacancy/4f6939/",
+  "expected_unfiltered_count": 33,
+  "captured_at": "2026-08-06T03:41:28.013656+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pages": [
+    {
+      "file": "pages/page-2.html",
+      "url": "https://career.dev.pro/open-positions/page/2/"
+    },
+    {
+      "file": "pages/page-3.html",
+      "url": "https://career.dev.pro/open-positions/page/3/"
+    },
+    {
+      "file": "pages/page-4.html",
+      "url": "https://career.dev.pro/open-positions/page/4/"
+    }
+  ]
+}

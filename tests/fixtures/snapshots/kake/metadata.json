@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Kake",
+  "job_board_url": "https://kake.co/jobs",
+  "sample_job_url": "https://kake.co/jobs/senior-web-player-engineer-dcfa7568a8b7",
+  "expected_unfiltered_count": 46,
+  "captured_at": "2026-07-07T02:38:04.655183+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

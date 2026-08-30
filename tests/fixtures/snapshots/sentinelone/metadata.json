@@ -1,0 +1,13 @@
+{
+  "schema_version": 2,
+  "company_name": "SentinelOne",
+  "job_board_url": "https://www.sentinelone.com/jobs/?l=Costa+Rica",
+  "sample_job_url": "https://www.sentinelone.com/jobs/?gh_jid=7766270003",
+  "expected_unfiltered_count": 7,
+  "captured_at": "2026-08-07T02:16:03.251459+00:00",
+  "captured_with_filters": false,
+  "notes": "C17 responsive dual-render: every real posting anchor lives inside a mobile-only md:hidden block, while the desktop rendition of the same posting is non-anchor divs with the click handler bound through React. At the runtime viewport the visibility gate correctly drops the whole anchored rendition, so the matcher sees 0 without hooks.pre_extract_css and 217 (all locations) with it. job_board_url is the ?l=Costa+Rica pre-filter: the Locations filter IS URL-addressable, but its control is a readonly sr-only checkbox behind a styled span, which the native-select filter census does not see; hooks.filter_already_applied=True guards the pre-filter against agent re-toggle. suppress_ancestor_selector='a[href^=\"#\"]' drops fragment-only in-page anchors (#, #main-content, #grnhse_app): once the page URL carries a query string they collapse to the board URL itself after fragment stripping and land in the id-in-query bucket alongside the real postings. expected_unfiltered_count=7 therefore equals expected_jobs because the URL baseline IS the filtered view.",
+  "path_prefix": "/jobs",
+  "suppress_ancestor_selector": "a[href^=\"#\"]",
+  "pre_extract_css": ".md\\:hidden{display:block!important}"
+}

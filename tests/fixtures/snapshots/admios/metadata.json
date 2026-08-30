@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Admios",
+  "job_board_url": "https://job-boards.greenhouse.io/admios",
+  "sample_job_url": "https://job-boards.greenhouse.io/admios/jobs/5322920002",
+  "expected_unfiltered_count": 3,
+  "captured_at": "2026-06-30T20:20:18.357238+00:00",
+  "captured_with_filters": false,
+  "notes": "Greenhouse board; cross-origin from admios.com/careers marketing page. 3 jobs unfiltered, no location filter on the board itself."
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "BAC",
+  "job_board_url": "https://talento360.csod.com/ux/ats/careersite/4/home?c=talento360&lang=es-MX",
+  "sample_job_url": "https://talento360.csod.com/ux/ats/careersite/4/home/requisition/26974?c=talento360&lang=es-MX",
+  "expected_unfiltered_count": 25,
+  "captured_at": "2026-07-04T13:09:00.320207+00:00",
+  "captured_with_filters": false,
+  "notes": "Cornerstone OnDemand board (talento360.csod.com). Page 1 shows 25 of 76 total unfiltered postings across six Central American countries (paginated); the snapshot freezes page 1 as the deterministic matcher target. On-page 'País' checkbox filter offers a 'Costa Rica (9)' option; live agent applies it to reach expected_jobs=9. The current default model (gpt-4.1-mini) selects the checkbox correctly and returns the 9 postings in 4 steps; the previous default (gpt-4o-mini) failed on this specific UI by repeatedly clicking the panel's Expand/Collapse header instead of the checkbox and falling back to Case A, which was one of the reasons the project moved off it."
+}

@@ -1,0 +1,647 @@
+{
+ "meta": {
+  "totalCount": 32
+ },
+ "result": [
+  {
+   "id": "125",
+   "jobOpeningName": "PCIe ASIC Design Engineer",
+   "departmentId": "18609",
+   "departmentLabel": "ASIC Engineering",
+   "employmentStatusLabel": "Full-Time (U.S. Benefit Eligible)",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "California",
+    "province": null,
+    "city": "San Jose"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "162",
+   "jobOpeningName": "Principal ASIC Verification Engineer",
+   "departmentId": "18609",
+   "departmentLabel": "ASIC Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "Massachusetts",
+    "province": null,
+    "city": "Boston"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "188",
+   "jobOpeningName": "Signal Integrity Engineer ",
+   "departmentId": "18590",
+   "departmentLabel": "Platform Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": "Wayne",
+    "state": "Pennsylvania"
+   },
+   "atsLocation": {
+    "country": null,
+    "state": null,
+    "province": null,
+    "city": null
+   },
+   "isRemote": null,
+   "locationType": "2"
+  },
+  {
+   "id": "193",
+   "jobOpeningName": "Senior System Software Engineer for Kubernetes Fabric Integration",
+   "departmentId": "18594",
+   "departmentLabel": "Software Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "Massachusetts",
+    "province": null,
+    "city": "Boston"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "202",
+   "jobOpeningName": "Senior Technical Program Manager",
+   "departmentId": "18588",
+   "departmentLabel": "PM and Solutions Delivery",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "Texas",
+    "province": null,
+    "city": "Austin"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "204",
+   "jobOpeningName": "Director of Product Management - High Performance Networking",
+   "departmentId": "18781",
+   "departmentLabel": "Product Engineering",
+   "employmentStatusLabel": "Full-Time (U.S. Benefit Eligible)",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "California",
+    "province": null,
+    "city": "San Francisco"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "206",
+   "jobOpeningName": "Senior Software Engineer – AI Middleware",
+   "departmentId": "18594",
+   "departmentLabel": "Software Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "Texas",
+    "province": null,
+    "city": "Austin"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "208",
+   "jobOpeningName": "Senior Software Engineer - SAI/SDK",
+   "departmentId": "18594",
+   "departmentLabel": "Software Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "Texas",
+    "province": null,
+    "city": "Austin"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "212",
+   "jobOpeningName": "Senior Software Engineer, NOS Platform Engineer",
+   "departmentId": "18594",
+   "departmentLabel": "Software Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "Texas",
+    "province": null,
+    "city": "Austin"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "223",
+   "jobOpeningName": "Senior ASIC Design Engineer",
+   "departmentId": "18609",
+   "departmentLabel": "ASIC Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "California",
+    "province": null,
+    "city": "San Jose"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "232",
+   "jobOpeningName": "Senior ASIC Verification Engineer",
+   "departmentId": "18609",
+   "departmentLabel": "ASIC Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "California",
+    "province": null,
+    "city": "San Francisco"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "236",
+   "jobOpeningName": "ASIC Design Engineer",
+   "departmentId": "18609",
+   "departmentLabel": "ASIC Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "Costa Rica",
+    "state": null,
+    "province": "Costa Rica",
+    "city": "San Jose"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "238",
+   "jobOpeningName": "Senior Manager, ASIC Design Engineering",
+   "departmentId": "18609",
+   "departmentLabel": "ASIC Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "Texas",
+    "province": null,
+    "city": "Austin"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "240",
+   "jobOpeningName": "Technical Product Marketing Manager (AI & HPC Networking)",
+   "departmentId": "18662",
+   "departmentLabel": "Marketing",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "Washington",
+    "province": null,
+    "city": "Seattle"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "246",
+   "jobOpeningName": "AI Platform Engineer ",
+   "departmentId": "18594",
+   "departmentLabel": "Software Engineering",
+   "employmentStatusLabel": "Full-Time (U.S. Benefit Eligible)",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "Texas",
+    "province": null,
+    "city": "Austin"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "247",
+   "jobOpeningName": "Senior Ethernet Performance Engineer",
+   "departmentId": "18867",
+   "departmentLabel": "Performance",
+   "employmentStatusLabel": "Full-Time (U.S. Benefit Eligible)",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "California",
+    "province": null,
+    "city": "San Francisco"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "248",
+   "jobOpeningName": "ASIC Verification Engineer",
+   "departmentId": "18609",
+   "departmentLabel": "ASIC Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "Costa Rica",
+    "state": null,
+    "province": "Costa Rica",
+    "city": "San Jose"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "249",
+   "jobOpeningName": "Senior Solution Architect (Japan)",
+   "departmentId": "18626",
+   "departmentLabel": "Sales",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": null,
+    "state": null,
+    "province": null,
+    "city": null
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "251",
+   "jobOpeningName": "High Performance Networking Technical Support Engineer (EMEA)",
+   "departmentId": "18592",
+   "departmentLabel": "Customer Support",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "Germany",
+    "state": null,
+    "province": "Germany",
+    "city": "Berlin"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "252",
+   "jobOpeningName": "System Validation Manager ",
+   "departmentId": "18622",
+   "departmentLabel": "Validation Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "Pennsylvania",
+    "province": null,
+    "city": "Wayne"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "253",
+   "jobOpeningName": "Thermal Design Engineer ",
+   "departmentId": "18590",
+   "departmentLabel": "Platform Engineering",
+   "employmentStatusLabel": "Full-Time (U.S. Benefit Eligible)",
+   "employmentType": null,
+   "location": {
+    "city": "Wayne",
+    "state": "Pennsylvania"
+   },
+   "atsLocation": {
+    "country": null,
+    "state": null,
+    "province": null,
+    "city": null
+   },
+   "isRemote": null,
+   "locationType": "2"
+  },
+  {
+   "id": "254",
+   "jobOpeningName": "Mechanical Engineer",
+   "departmentId": "18590",
+   "departmentLabel": "Platform Engineering",
+   "employmentStatusLabel": "Full-Time (U.S. Benefit Eligible)",
+   "employmentType": null,
+   "location": {
+    "city": "Wayne",
+    "state": "Pennsylvania"
+   },
+   "atsLocation": {
+    "country": null,
+    "state": null,
+    "province": null,
+    "city": null
+   },
+   "isRemote": null,
+   "locationType": "2"
+  },
+  {
+   "id": "255",
+   "jobOpeningName": "Campaign and Marketing Operations Manager ",
+   "departmentId": "18662",
+   "departmentLabel": "Marketing",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "Washington",
+    "province": null,
+    "city": "Seattle"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "257",
+   "jobOpeningName": "Senior System Software Engineer for Kubernetes Fabric Integration",
+   "departmentId": "18594",
+   "departmentLabel": "Software Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "Costa Rica",
+    "state": null,
+    "province": "Costa Rica",
+    "city": "San Jose"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "258",
+   "jobOpeningName": "Senior Software Engineer - SAI/SDK",
+   "departmentId": "18594",
+   "departmentLabel": "Software Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "Costa Rica",
+    "state": null,
+    "province": "Costa Rica",
+    "city": "San Jose"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "259",
+   "jobOpeningName": "Senior Software Engineer, NOS Platform Engineer",
+   "departmentId": "18594",
+   "departmentLabel": "Software Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "Costa Rica",
+    "state": null,
+    "province": "Costa Rica",
+    "city": "San Jose"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "260",
+   "jobOpeningName": "Electronic Hardware Design Engineer",
+   "departmentId": "18590",
+   "departmentLabel": "Platform Engineering",
+   "employmentStatusLabel": "Full-Time (U.S. Benefit Eligible)",
+   "employmentType": null,
+   "location": {
+    "city": "Wayne",
+    "state": "Pennsylvania"
+   },
+   "atsLocation": {
+    "country": null,
+    "state": null,
+    "province": null,
+    "city": null
+   },
+   "isRemote": null,
+   "locationType": "2"
+  },
+  {
+   "id": "261",
+   "jobOpeningName": "Software Engineer – AI/HPC Middleware",
+   "departmentId": "18594",
+   "departmentLabel": "Software Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "New York",
+    "province": null,
+    "city": "New York"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "262",
+   "jobOpeningName": "Senior Software Engineer – AI/HPC Middleware",
+   "departmentId": "18594",
+   "departmentLabel": "Software Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "New York",
+    "province": null,
+    "city": "New York"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "263",
+   "jobOpeningName": "Senior Software Engineer – AI/HPC Middleware",
+   "departmentId": "18594",
+   "departmentLabel": "Software Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "Costa Rica",
+    "state": null,
+    "province": "Costa Rica",
+    "city": "San Jose"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "264",
+   "jobOpeningName": "Software Engineer – AI/HPC Middleware",
+   "departmentId": "18594",
+   "departmentLabel": "Software Engineering",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "Costa Rica",
+    "state": null,
+    "province": "Costa Rica",
+    "city": "San Jose"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  },
+  {
+   "id": "265",
+   "jobOpeningName": "Senior Account Manager – Mid-West (Automotive & Higher Ed focus) ",
+   "departmentId": "18626",
+   "departmentLabel": "Sales",
+   "employmentStatusLabel": "Full-Time",
+   "employmentType": null,
+   "location": {
+    "city": null,
+    "state": null
+   },
+   "atsLocation": {
+    "country": "United States",
+    "state": "Illinois",
+    "province": null,
+    "city": "Chicago"
+   },
+   "isRemote": null,
+   "locationType": "1"
+  }
+ ]
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Railway",
+  "job_board_url": "https://railway.com/careers#open-positions",
+  "sample_job_url": "https://railway.com/careers/orchestration-baremetal",
+  "expected_unfiltered_count": 16,
+  "captured_at": "2026-08-08T01:15:55.841668+00:00",
+  "captured_with_filters": false,
+  "notes": "Case A board: no location filter of any kind \u2014 the probe's filter census reports zero native selects, zero comboboxes, zero checkbox facets and zero search boxes, so GOAL_PROMPT Step 1c routes this to Case A (extract every listing). That is semantically right here rather than a fallback: every one of the 16 postings carries location 'Anywhere' (16 occurrences, one per role), so the whole board is worldwide-remote and in scope for a Costa Rica / LATAM target. expected_unfiltered_count=16 therefore equals expected_jobs \u2014 unlike the pre-filtered boards in this corpus, the two coincide because there is nothing to filter, not because the URL carries a filter. Derived prefix /careers is correct with no override; all 16 anchors sit at depth 1 and none is chrome (no /careers/faq or /careers/benefits shape). No pagination affordance and no hidden anchors."
+}

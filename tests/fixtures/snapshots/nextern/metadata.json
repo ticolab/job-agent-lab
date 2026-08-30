@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "company_name": "Nextern",
+  "job_board_url": "https://apply.workable.com/nextern/?location=Costa%20Rica",
+  "sample_job_url": "https://apply.workable.com/nextern/j/C3DE60B03F/",
+  "expected_unfiltered_count": 19,
+  "captured_at": "2026-08-15T19:07:17.195067+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pages": [
+    {
+      "file": "pages/page-2.html",
+      "url": "https://apply.workable.com/nextern/?location=Costa%20Rica"
+    }
+  ],
+  "next_control_selector": "button[data-ui=\"load-more-button\"]"
+}

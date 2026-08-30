@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Elite",
+  "job_board_url": "https://job-boards.greenhouse.io/elitetechnology",
+  "sample_job_url": "https://job-boards.greenhouse.io/elitetechnology/jobs/5235018008",
+  "expected_unfiltered_count": 11,
+  "captured_at": "2026-07-01T01:22:30.848083+00:00",
+  "captured_with_filters": false,
+  "notes": "Greenhouse board. 11 unfiltered listings; Office filter offers only 'Australia - Remote' and 'US - Remote', neither of which matches Costa Rica or LATAM. Live agent run resolves to Case C (report_no_matching_location_filter) with target expected_jobs=0. Snapshot count is the pre-filter deterministic-matcher target."
+}

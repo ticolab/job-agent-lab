@@ -1,0 +1,1461 @@
+{
+  "jobs": [
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5265294008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4474955008,
+      "location": {
+        "name": "Concord, NH,US"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Fixed-Term Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5265294008,
+      "updated_at": "2026-08-07T14:48:17-04:00",
+      "requisition_id": "416",
+      "title": "Associate Seller (6 Month Paternity-leave Contract)",
+      "company_name": "Varicent ",
+      "first_published": "2026-06-16T13:48:20-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5265277008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4474955008,
+      "location": {
+        "name": "Phoenix, AZ, US"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Fixed-Term Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5265277008,
+      "updated_at": "2026-08-07T14:24:35-04:00",
+      "requisition_id": "416",
+      "title": "Associate Seller (6 Month Paternity-leave Contract)",
+      "company_name": "Varicent ",
+      "first_published": "2026-06-16T13:44:22-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5265279008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4474955008,
+      "location": {
+        "name": "Salem, OR , US"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Fixed-Term Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5265279008,
+      "updated_at": "2026-08-07T14:25:46-04:00",
+      "requisition_id": "416",
+      "title": "Associate Seller (6 Month Paternity-leave Contract)",
+      "company_name": "Varicent ",
+      "first_published": "2026-06-16T13:45:30-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5265281008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4474955008,
+      "location": {
+        "name": "Minneapolis, MN, US"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Fixed-Term Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5265281008,
+      "updated_at": "2026-08-07T14:33:57-04:00",
+      "requisition_id": "416",
+      "title": "Associate Seller (6 Month Paternity-leave Contract)",
+      "company_name": "Varicent ",
+      "first_published": "2026-06-16T13:46:52-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5220727008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4474955008,
+      "location": {
+        "name": "Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Fixed-Term Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5220727008,
+      "updated_at": "2026-08-07T14:10:20-04:00",
+      "requisition_id": "416",
+      "title": "Associate Seller (6 Month Paternity-leave Contract)",
+      "company_name": "Varicent ",
+      "first_published": "2026-05-20T12:09:29-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5220729008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4474955008,
+      "location": {
+        "name": "Toronto, Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Fixed-Term Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5220729008,
+      "updated_at": "2026-08-07T14:11:58-04:00",
+      "requisition_id": "416",
+      "title": "Associate Seller (6 Month Paternity-leave Contract)",
+      "company_name": "Varicent ",
+      "first_published": "2026-05-20T12:16:50-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5220728008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4474955008,
+      "location": {
+        "name": "Toronto, Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Fixed-Term Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5220728008,
+      "updated_at": "2026-07-22T08:28:37-04:00",
+      "requisition_id": "416",
+      "title": "Associate Seller (6 Month Paternity-leave Contract)",
+      "company_name": "Varicent ",
+      "first_published": "2026-05-20T12:09:25-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5265257008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4474955008,
+      "location": {
+        "name": "Dallas, TX, US"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Fixed-Term Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5265257008,
+      "updated_at": "2026-08-07T14:18:20-04:00",
+      "requisition_id": "416",
+      "title": "Associate Seller (6 Month Paternity-leave Contract)",
+      "company_name": "Varicent ",
+      "first_published": "2026-06-16T13:36:04-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5265267008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4474955008,
+      "location": {
+        "name": "Columbus Oh, US"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Fixed-Term Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5265267008,
+      "updated_at": "2026-07-22T08:28:37-04:00",
+      "requisition_id": "416",
+      "title": "Associate Seller (6 Month Paternity-leave Contract)",
+      "company_name": "Varicent ",
+      "first_published": "2026-06-16T13:42:38-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5265274008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4474955008,
+      "location": {
+        "name": "Montgomery, Al, US"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Fixed-Term Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5265274008,
+      "updated_at": "2026-08-07T14:19:52-04:00",
+      "requisition_id": "416",
+      "title": "Associate Seller (6 Month Paternity-leave Contract)",
+      "company_name": "Varicent ",
+      "first_published": "2026-06-16T13:42:39-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5349669008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4496481008,
+      "location": {
+        "name": "London, UK"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5349669008,
+      "updated_at": "2026-07-22T08:28:37-04:00",
+      "requisition_id": "436",
+      "title": "Associate Seller - French Speaking",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-14T12:23:53-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5317819008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4496430008,
+      "location": {
+        "name": "Toronto, Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5317819008,
+      "updated_at": "2026-08-07T15:39:20-04:00",
+      "requisition_id": "435",
+      "title": "Director, Events",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-09T15:57:10-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5362369008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4491322008,
+      "location": {
+        "name": "Toronto, Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5362369008,
+      "updated_at": "2026-08-07T15:33:46-04:00",
+      "requisition_id": "427",
+      "title": "Director, Offensive Security",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-16T22:39:06-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5362370008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4491321008,
+      "location": {
+        "name": "Toronto, Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5362370008,
+      "updated_at": "2026-08-07T15:13:56-04:00",
+      "requisition_id": "426",
+      "title": "Director, Security Architecture & Threat Modeling",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-16T22:41:47-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5285523008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4489420008,
+      "location": {
+        "name": "San Francisco, California"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5285523008,
+      "updated_at": "2026-08-07T15:07:49-04:00",
+      "requisition_id": "425",
+      "title": "Ecosystem Growth Executive - Workday",
+      "company_name": "Varicent ",
+      "first_published": "2026-06-29T10:07:09-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5212754008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "education": "education_optional",
+      "internal_job_id": 4469092008,
+      "location": {
+        "name": "Guadalajara, Jalisco, Mexico"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5212754008,
+      "updated_at": "2026-08-06T13:45:57-04:00",
+      "requisition_id": "403",
+      "title": " Executive Assistant",
+      "company_name": "Varicent ",
+      "first_published": "2026-05-07T08:51:21-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5208922008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "education": "education_optional",
+      "internal_job_id": 4469092008,
+      "location": {
+        "name": "San José, Costa Rica"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5208922008,
+      "updated_at": "2026-08-06T13:47:11-04:00",
+      "requisition_id": "403",
+      "title": "Executive Assistant",
+      "company_name": "Varicent ",
+      "first_published": "2026-05-07T08:49:23-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5370580008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4508585008,
+      "location": {
+        "name": "Mexico City, Mexico"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5370580008,
+      "updated_at": "2026-07-24T17:52:58-04:00",
+      "requisition_id": "453",
+      "title": "Instructional Multimedia Designer (Remote - Mexico Only)",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-24T17:52:58-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5362380008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4418662008,
+      "location": {
+        "name": "Queretaro, Mexico"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5362380008,
+      "updated_at": "2026-08-06T13:22:45-04:00",
+      "requisition_id": "315",
+      "title": "Lead Software Engineer (Backend)",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-16T23:05:51-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5370603008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4508585008,
+      "location": {
+        "name": "Buenos Aires, Argentina"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5370603008,
+      "updated_at": "2026-07-24T17:52:59-04:00",
+      "requisition_id": "453",
+      "title": "Learning Media Designer (Remote - Argentina Only)",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-24T17:52:59-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5255046008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4489420008,
+      "location": {
+        "name": "San Jose, California"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5255046008,
+      "updated_at": "2026-08-07T15:08:51-04:00",
+      "requisition_id": "425",
+      "title": "Market Development Executive (Workday)",
+      "company_name": "Varicent ",
+      "first_published": "2026-06-26T13:44:05-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5370595008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4508585008,
+      "location": {
+        "name": "San Jose, Costa Rica"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5370595008,
+      "updated_at": "2026-07-24T17:52:59-04:00",
+      "requisition_id": "453",
+      "title": "Multimedia Designer / Learning Experience (Remote - Costa Rica Only)",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-24T17:52:59-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5353092008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4507223008,
+      "location": {
+        "name": "Buenos Aires, Argentina"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5353092008,
+      "updated_at": "2026-07-22T08:28:37-04:00",
+      "requisition_id": "451",
+      "title": "Payroll & Benefits Specialist (Argentina Only - Remote)",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-16T12:26:02-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5310643008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4507223008,
+      "location": {
+        "name": "San Jose, Costa Rica (Remote) "
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5310643008,
+      "updated_at": "2026-07-22T08:28:37-04:00",
+      "requisition_id": "451",
+      "title": "Payroll & Benefits Specialist (Costa Rica Only - Remote)",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-15T01:34:01-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5353083008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4507223008,
+      "location": {
+        "name": "Mexico City, Remote"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5353083008,
+      "updated_at": "2026-07-22T08:28:37-04:00",
+      "requisition_id": "451",
+      "title": "Payroll & Benefits Specialist (Mexico Only - Remote)",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-15T01:40:35-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5372097008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4491670008,
+      "location": {
+        "name": "Costa Rica - Remote"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5372097008,
+      "updated_at": "2026-07-27T17:08:01-04:00",
+      "requisition_id": "429",
+      "title": "RevOps Technical System Analyst (Costa Rica Only - Remote)",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-27T17:08:01-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5372099008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4491670008,
+      "location": {
+        "name": "Mexico City - Remote"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5372099008,
+      "updated_at": "2026-07-27T17:09:52-04:00",
+      "requisition_id": "429",
+      "title": "RevOps Technical System Analyst (Mexico Only - Remote)",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-27T17:09:52-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5291033008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4494932008,
+      "location": {
+        "name": "Toronto - Hybrid"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5291033008,
+      "updated_at": "2026-07-22T08:28:37-04:00",
+      "requisition_id": "432",
+      "title": "Senior IT Technical  Support Specialist",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-03T11:23:22-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5291037008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4494935008,
+      "location": {
+        "name": "Bucharest - Romania"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5291037008,
+      "updated_at": "2026-07-22T08:28:37-04:00",
+      "requisition_id": "433",
+      "title": "Senior IT Technical Support Specialist",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-03T11:32:29-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5348982008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4504108008,
+      "location": {
+        "name": "Vancouver, British Columbia"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5348982008,
+      "updated_at": "2026-07-22T08:28:37-04:00",
+      "requisition_id": "449",
+      "title": "Senior Product Manager - AI",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-14T10:14:48-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5317523008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4504109008,
+      "location": {
+        "name": "Toronto, Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5317523008,
+      "updated_at": "2026-07-22T08:28:37-04:00",
+      "requisition_id": "450",
+      "title": "Senior Product Manager - AI",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-09T15:11:58-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5322987008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4504108008,
+      "location": {
+        "name": "Toronto, Ontario"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5322987008,
+      "updated_at": "2026-07-22T08:28:37-04:00",
+      "requisition_id": "449",
+      "title": "Senior Product Manager - AI",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-10T09:21:41-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5369360008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4521421008,
+      "location": {
+        "name": "Toronto, Ontario, Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5369360008,
+      "updated_at": "2026-07-23T17:52:15-04:00",
+      "requisition_id": "471",
+      "title": "Senior Talent Acquisition Advisor",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-23T17:50:32-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5369357008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4521421008,
+      "location": {
+        "name": "Toronto, Ontario, Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5369357008,
+      "updated_at": "2026-07-23T17:52:16-04:00",
+      "requisition_id": "471",
+      "title": "Senior Talent Acquisition Advisor",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-23T17:47:35-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5286988008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4500528008,
+      "location": {
+        "name": "Toronto - Remote "
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5286988008,
+      "updated_at": "2026-08-07T15:53:26-04:00",
+      "requisition_id": "440",
+      "title": "Senior Vice President, North America Sales",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-06T11:19:44-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5286989008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4500528008,
+      "location": {
+        "name": "Minneapolis - Remote "
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5286989008,
+      "updated_at": "2026-08-07T15:56:17-04:00",
+      "requisition_id": "440",
+      "title": "Senior Vice President, North America Sales",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-06T11:19:49-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5349808008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4496481008,
+      "location": {
+        "name": "London, UK"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5349808008,
+      "updated_at": "2026-07-22T08:28:37-04:00",
+      "requisition_id": "436",
+      "title": "Spécialiste en développement des affaires - (Associate Seller)",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-14T14:46:04-04:00",
+      "language": "fr",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5362373008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4418642008,
+      "location": {
+        "name": "Toronto, Ontario, Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5362373008,
+      "updated_at": "2026-08-06T13:33:17-04:00",
+      "requisition_id": "313",
+      "title": "Staff Backend Developer",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-16T22:45:24-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5362375008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4418642008,
+      "location": {
+        "name": "Toronto, Ontario, Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5362375008,
+      "updated_at": "2026-08-06T13:41:09-04:00",
+      "requisition_id": "313",
+      "title": "Staff Gen AI Developer",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-16T22:48:01-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5362377008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4418662008,
+      "location": {
+        "name": "Guadalajara, Jalisco, Mexico"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5362377008,
+      "updated_at": "2026-08-06T13:26:37-04:00",
+      "requisition_id": "315",
+      "title": "Staff Gen AI Developer",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-16T23:05:53-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5216446008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4473022008,
+      "location": {
+        "name": "Canada, remote"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5216446008,
+      "updated_at": "2026-08-06T13:55:35-04:00",
+      "requisition_id": "412",
+      "title": "Staff Software Developer",
+      "company_name": "Varicent ",
+      "first_published": "2026-06-09T15:27:41-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5362381008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4418662008,
+      "location": {
+        "name": "Guadalajara, Jalisco, Mexico"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5362381008,
+      "updated_at": "2026-08-06T13:28:06-04:00",
+      "requisition_id": "315",
+      "title": "Staff Software Engineer (Backend)",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-16T23:05:54-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5362389008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4481080008,
+      "location": {
+        "name": "Toronto, Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5362389008,
+      "updated_at": "2026-08-07T14:52:58-04:00",
+      "requisition_id": "421",
+      "title": "Staff Software Engineer – Backend (Typescript / .Nodejs / AWS )",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-16T23:15:54-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/varicent/jobs/5362391008",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": true
+        }
+      ],
+      "internal_job_id": 4481080008,
+      "location": {
+        "name": "Vancouver, British Columbia, Canada"
+      },
+      "metadata": [
+        {
+          "id": 4496454008,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5362391008,
+      "updated_at": "2026-08-07T14:53:57-04:00",
+      "requisition_id": "421",
+      "title": "Staff Software Engineer – Backend (Typescript / .Nodejs / AWS )",
+      "company_name": "Varicent ",
+      "first_published": "2026-07-16T23:15:53-04:00",
+      "language": "en",
+      "application_deadline": null
+    }
+  ],
+  "meta": {
+    "total": 44
+  }
+}

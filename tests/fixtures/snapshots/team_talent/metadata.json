@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Team Talent",
+  "job_board_url": "https://teaminternational1234.my.site.com/teamsites/our-openings",
+  "sample_job_url": "https://teaminternational1234.my.site.com/teamsites/job-posting?id=a13UV00000qflt8YAA&jobName=Product%20Designer%20/%20UX%20Researcher",
+  "expected_unfiltered_count": 9,
+  "captured_at": "2026-07-17T03:37:13.397552+00:00",
+  "captured_with_filters": false,
+  "notes": "Salesforce Experience Cloud tenant (teaminternational1234) with Lightning Web Component shadow roots; SYS-2 shadow-piercing matcher retrieves all 9 unfiltered postings. Direct Salesforce host bypasses the C5 cross-origin iframe embed on the marketing careers page at www.teaminternational.com/en/careers/open-positions."
+}

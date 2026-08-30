@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Fractal River",
+  "job_board_url": "https://fractal-river.breezy.hr/",
+  "sample_job_url": "https://fractal-river.breezy.hr/p/60cec77079df-data-engineer-remote-latin-america",
+  "expected_unfiltered_count": 1,
+  "captured_at": "2026-07-06T22:44:23.449275+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "company_name": "ImagineX",
+  "job_board_url": "https://imaginexdigital.applytojob.com/apply/",
+  "sample_job_url": "https://imaginexdigital.applytojob.com/apply/gnzjS6G2b2/Android-Architect",
+  "expected_unfiltered_count": 19,
+  "captured_at": "2026-07-06T19:36:23.608981+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/apply"
+}

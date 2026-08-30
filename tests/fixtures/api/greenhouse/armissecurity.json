@@ -1,0 +1,964 @@
+{
+  "jobs": [
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/6014049004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5162220004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "In-Office",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 6014049004,
+      "updated_at": "2026-07-08T03:31:39-04:00",
+      "requisition_id": "2017",
+      "title": "AI Engineering Team Lead",
+      "company_name": "Armis Security",
+      "first_published": "2026-07-08T03:30:36-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/6105747004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5180965004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": null,
+          "value_type": "single_select"
+        }
+      ],
+      "id": 6105747004,
+      "updated_at": "2026-07-09T11:38:21-04:00",
+      "requisition_id": "2039",
+      "title": "AI Expert",
+      "company_name": "Armis Security",
+      "first_published": "2026-07-09T11:38:21-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5995287004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5154511004,
+      "location": {
+        "name": "North America"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Remote",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5995287004,
+      "updated_at": "2026-07-14T10:41:06-04:00",
+      "requisition_id": "2000",
+      "title": " AI Solutions Consultant",
+      "company_name": "Armis Security",
+      "first_published": "2026-06-05T09:27:32-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5840641004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5048730004,
+      "location": {
+        "name": "M\u00fcnchen, Bavaria, Germany"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5840641004,
+      "updated_at": "2026-06-09T06:14:33-04:00",
+      "requisition_id": "1885",
+      "title": "Customer Success Manager",
+      "company_name": "Armis Security",
+      "first_published": "2026-03-30T10:41:29-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5864252004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5048730004,
+      "location": {
+        "name": "Hamburg, Hamburg, Germany"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5864252004,
+      "updated_at": "2026-06-09T06:14:40-04:00",
+      "requisition_id": "1885",
+      "title": "Customer Success Manager",
+      "company_name": "Armis Security",
+      "first_published": "2026-04-08T05:50:16-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5864263004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5048730004,
+      "location": {
+        "name": "Frankfurt am Main, Hesse, Germany"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5864263004,
+      "updated_at": "2026-06-09T06:14:48-04:00",
+      "requisition_id": "1885",
+      "title": "Customer Success Manager",
+      "company_name": "Armis Security",
+      "first_published": "2026-04-08T05:50:45-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5797707004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5048730004,
+      "location": {
+        "name": "Milan, Italy"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5797707004,
+      "updated_at": "2026-06-09T06:14:56-04:00",
+      "requisition_id": "1885",
+      "title": "Customer Success Manager (German speaking)",
+      "company_name": "Armis Security",
+      "first_published": "2026-03-03T12:12:53-05:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5970726004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5142555004,
+      "location": {
+        "name": "Bengaluru, Karnataka, India"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5970726004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1948",
+      "title": "Deployment Engineer ",
+      "company_name": "Armis Security",
+      "first_published": "2026-04-15T12:54:13-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/6008372004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5148741004,
+      "location": {
+        "name": "Boston, Massachusetts, United States; Cincinnati, Ohio, United States; Dallas, Texas, United States; Houston, Texas, United States; North Carolina, United States; San Francisco, California, United States"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Remote",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 6008372004,
+      "updated_at": "2026-07-09T11:08:03-04:00",
+      "requisition_id": "1968",
+      "title": "Director,  Strategic Partners",
+      "company_name": "Armis Security",
+      "first_published": "2026-05-28T13:52:18-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5567874004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4944118004,
+      "location": {
+        "name": "London, England, United Kingdom"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5567874004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1470",
+      "title": "Enterprise Account Executive",
+      "company_name": "Armis Security",
+      "first_published": "2025-06-23T04:51:29-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5780128004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5040761004,
+      "location": {
+        "name": "Vienna, Vienna, Austria"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Remote",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5780128004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1836",
+      "title": "Enterprise Account Executive - Austria",
+      "company_name": "Armis Security",
+      "first_published": "2026-01-27T04:02:03-05:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5995601004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5154688004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "In-Office",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5995601004,
+      "updated_at": "2026-07-01T06:58:30-04:00",
+      "requisition_id": "2002",
+      "title": "Network Researcher",
+      "company_name": "Armis Security",
+      "first_published": "2026-07-01T06:58:30-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/6016139004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5163347004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "In-Office",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 6016139004,
+      "updated_at": "2026-06-15T11:31:18-04:00",
+      "requisition_id": "2018",
+      "title": "Senior Data Analyst ",
+      "company_name": "Armis Security",
+      "first_published": "2026-06-10T04:29:35-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5661391004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4985435004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": null,
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5661391004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1592",
+      "title": "Senior Data Platform Engineer",
+      "company_name": "Armis Security",
+      "first_published": "2025-09-30T12:01:31-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5683708004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 4995448004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "In-Office",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5683708004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1636",
+      "title": "Senior Product Manager ",
+      "company_name": "Armis Security",
+      "first_published": "2025-10-21T05:00:20-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5994462004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5153721004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": null,
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5994462004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1997",
+      "title": "Senior Software Engineer",
+      "company_name": "Armis Security",
+      "first_published": "2026-05-27T07:08:28-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5810362004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5055243004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "In-Office",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5810362004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1906",
+      "title": "Senior Software Engineer ",
+      "company_name": "Armis Security",
+      "first_published": "2026-03-10T10:46:53-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5995276004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5154504004,
+      "location": {
+        "name": "US Eastern States; US Mid West and Central States; US Western States"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Remote",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5995276004,
+      "updated_at": "2026-06-10T15:32:32-04:00",
+      "requisition_id": "1999",
+      "title": "Senior Staff Data Infrastructure Engineer ",
+      "company_name": "Armis Security",
+      "first_published": "2026-06-03T10:44:09-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5832885004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5066424004,
+      "location": {
+        "name": "Bengaluru, Karnataka, India"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5832885004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1939",
+      "title": "Senior Technical Support Engineer",
+      "company_name": "Armis Security",
+      "first_published": "2026-06-01T01:09:43-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/6013706004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5162052004,
+      "location": {
+        "name": "Sydney, New South Wales, Australia"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Remote",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 6013706004,
+      "updated_at": "2026-06-18T23:54:22-04:00",
+      "requisition_id": "2015",
+      "title": "Senior Technical Support Engineer ",
+      "company_name": "Armis Security",
+      "first_published": "2026-06-05T02:47:27-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5749729004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5025894004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "In-Office",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5749729004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1709",
+      "title": "Software Architect (Hands On)",
+      "company_name": "Armis Security",
+      "first_published": "2026-01-11T05:10:22-05:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/6105741004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5180961004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "In-Office",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 6105741004,
+      "updated_at": "2026-07-14T05:47:16-04:00",
+      "requisition_id": "2038",
+      "title": "Sr Staff Inbound Product Manager",
+      "company_name": "Armis Security",
+      "first_published": "2026-07-14T05:47:16-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/6010132004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5160621004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "In-Office",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 6010132004,
+      "updated_at": "2026-06-03T08:01:48-04:00",
+      "requisition_id": "2009",
+      "title": "Staff AI Platform Engineer",
+      "company_name": "Armis Security",
+      "first_published": "2026-06-03T08:01:48-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5993144004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5152885004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "In-Office",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5993144004,
+      "updated_at": "2026-07-02T12:54:23-04:00",
+      "requisition_id": "1990",
+      "title": "Staff Software Engineer",
+      "company_name": "Armis Security",
+      "first_published": "2026-07-02T12:54:23-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/6011024004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5161083004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "In-Office",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 6011024004,
+      "updated_at": "2026-07-16T08:02:57-04:00",
+      "requisition_id": "2010",
+      "title": "Staff Technical Program Manager",
+      "company_name": "Armis Security",
+      "first_published": "2026-06-10T05:00:09-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5994162004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5153576004,
+      "location": {
+        "name": "Tel Aviv-Yafo, Tel Aviv District, Israel"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "In-Office",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5994162004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1991",
+      "title": "Streaming Infrastructure DevOps Engineer ",
+      "company_name": "Armis Security",
+      "first_published": "2026-05-19T07:16:40-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5829338004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5064486004,
+      "location": {
+        "name": "Washington DC - Baltimore Metro Area"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Remote",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5829338004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1933",
+      "title": "Technical Customer Success Manager, FED TEAM",
+      "company_name": "Armis Security",
+      "first_published": "2026-03-18T10:25:57-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5785560004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5043122004,
+      "location": {
+        "name": "San Jos\u00e9, San Jos\u00e9, Costa Rica"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5785560004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1848",
+      "title": "Technical Support Engineer (Hybrid, Costa Rica)",
+      "company_name": "Armis Security",
+      "first_published": "2026-02-01T13:38:22-05:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/armissecurity/jobs/5765526004",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 5034344004,
+      "location": {
+        "name": "Bengaluru, Karnataka, India"
+      },
+      "metadata": [
+        {
+          "id": 4558737004,
+          "name": "Work Location Status",
+          "value": "Hybrid",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 5765526004,
+      "updated_at": "2026-06-01T09:03:39-04:00",
+      "requisition_id": "1800",
+      "title": "Tier 2 Technical Support Engineer",
+      "company_name": "Armis Security",
+      "first_published": "2026-01-20T10:58:06-05:00",
+      "language": "en",
+      "application_deadline": null
+    }
+  ],
+  "meta": {
+    "total": 29
+  }
+}

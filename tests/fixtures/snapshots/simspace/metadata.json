@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "SimSpace",
+  "job_board_url": "https://jobs.ashbyhq.com/simspace-corporation?locationId=29613d3f-9d2d-49fb-bcc2-b24564dcc347",
+  "sample_job_url": "https://jobs.ashbyhq.com/simspace-corporation/8b4e8d0b-b181-45fb-9813-652e0cdc953d",
+  "expected_unfiltered_count": 8,
+  "captured_at": "2026-07-19T01:10:29.852846+00:00",
+  "captured_with_filters": false,
+  "notes": "Pre-filtered URL (?locationId=29613d3f-9d2d-49fb-bcc2-b24564dcc347). SimSpace is Ashby-hosted (Preact SPA); the location filter is a native <select name=\"locationId\"> that SYS-6's C3 discovery clause identifies correctly, but browser-use's select_dropdown action fails at the CDP layer because Ashby's framework rerenders the subtree on interaction and invalidates the captured node reference (CDP error -32000 'Cannot find context with specified id', reproduced deterministically across three live runs; see C15 in spike/INTEGRATION_BLOCKERS_R2.md). Ashby exposes the same filter via a URL query parameter, so job_board_url points at the filtered view directly (same pattern as Confiz's ?country=CR under the pre-SYS-6 C3 gap, and 10Pearls' path-based /latin-america-job-openings/). Consequence: expected_unfiltered_count=8 pins the CR-filtered subset rather than the full 31-anchor unfiltered board; the snapshot validates the matcher against the filtered state as the Confiz-precedent trade-off."
+}

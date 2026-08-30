@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "Sapphire Labs",
+  "job_board_url": "https://careers.sapphirelabs.io/jobs",
+  "sample_job_url": "https://careers.sapphirelabs.io/jobs/673426-senior-qa-engineer",
+  "expected_unfiltered_count": 10,
+  "captured_at": "2026-08-15T16:06:36.854500+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pre_filter_urls": [
+    "https://careers.sapphirelabs.io/jobs"
+  ],
+  "top_url": "https://careers.sapphirelabs.io/jobs"
+}

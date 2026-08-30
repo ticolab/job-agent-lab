@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "company_name": "Cohesity",
+  "job_board_url": "https://cohesity.wd5.myworkdayjobs.com/en-US/Cohesity_Careers?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+  "sample_job_url": "https://cohesity.wd5.myworkdayjobs.com/en-US/Cohesity_Careers/details/Senior-Technical-Support-Engineer_R03657",
+  "expected_unfiltered_count": 2,
+  "captured_at": "2026-08-15T16:41:53.126270+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/en-US/Cohesity_Careers/job"
+}

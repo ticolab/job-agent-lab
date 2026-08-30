@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Smarsh",
+  "job_board_url": "https://jobs.lever.co/smarsh?location=Costa%20Rica%20-%20Heredia",
+  "sample_job_url": "https://jobs.lever.co/smarsh/520c2bd4-47d0-414b-b3bf-cf30c59d7712",
+  "expected_unfiltered_count": 1,
+  "captured_at": "2026-08-09T02:57:15.657908+00:00",
+  "captured_with_filters": false,
+  "notes": "Lever board with the tenant's 'Costa Rica - Heredia' location filter carried in job_board_url. Lever filter options are plain <a href=\"?location=...\"> links, so the filter is URL-addressable and re-applying it is idempotent. Unlike doola, this board's filtered view is deterministic: 8 consecutive plain-httpx samples all returned the same single posting. Third Lever tenant in the corpus and the first where hooks.filter_already_applied=True actually holds - without it the agent cleared the filter on 1 of 3 runs and returned the full 42-posting board; with it, 4 of 4 match. On doola and REAP the same hook did not hold. The plausible difference is that those boards offer a competing in-region option (REAP exposes both Costa Rica and Latin America, so Case B's preference rule actively pulls the agent to re-pick) whereas here 'Costa Rica - Heredia' is the only matching option and there is nothing better for the agent to switch to. Treat the hook as not decidable from the ATS. The intermittent agent_had_errors=true on some runs is the benign 'Page readiness timeout (8.0s)' watchdog warning, which the SKILL documents as noise; counts were correct on every run that raised it. Derived prefix /smarsh is correct with no override, and Lever's facet anchors are excluded for free by the matcher's id-in-path preference. expected_unfiltered_count=1 equals expected_jobs because the URL baseline IS the filtered view."
+}

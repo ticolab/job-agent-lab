@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "company_name": "Dotdigital",
+  "job_board_url": "https://careers.dotdigital.com/jobs?country=Costa+Rica",
+  "sample_job_url": "https://careers.dotdigital.com/jobs/7685129-tech-support-specialist-alia",
+  "expected_unfiltered_count": 1,
+  "captured_at": "2026-07-08T04:21:02.707324+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

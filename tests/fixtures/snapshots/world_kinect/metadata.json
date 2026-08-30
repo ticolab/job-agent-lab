@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "company_name": "World Kinect",
+  "job_board_url": "https://wfscorp.wd5.myworkdayjobs.com/wfscareers/jobs?locations=d9b07447948d10730925087695ee04c3",
+  "sample_job_url": "https://wfscorp.wd5.myworkdayjobs.com/en-US/wfscareers/jobs/details/FinOps-Coordinator-I_R22706?locations=d9b07447948d10730925087695ee04c3",
+  "expected_unfiltered_count": 2,
+  "captured_at": "2026-07-08T19:18:02.722478+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/en-US/wfscareers/job"
+}
