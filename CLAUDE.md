@@ -33,7 +33,7 @@ uv run --group test pytest tests/unit/test_coveo.py -k pagination   # single tes
 
 Pre-commit gates: ruff, mypy, and the full test suite runs on any change under `src/job_agent_lab/{extraction,navigation,domain}/` or `tests/`.
 
-Commit directly to `main` — no feature branches in this repo.
+Commit directly to `main` — no feature branches in this repo. Never bypass the pre-commit hooks with `--no-verify`; if an auto-fixer modifies a file, re-stage and commit again.
 
 Commit messages are a **single short sentence, 100 characters max** — subject line only, no body. Reasoning belongs in the code, the design docs, or `blockers/`, not in the commit message.
 

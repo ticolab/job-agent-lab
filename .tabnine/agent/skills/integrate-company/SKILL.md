@@ -385,11 +385,11 @@ whether a filter the browser-use agent is applying shrinks the count below
 9. **Commit the integration.** Stage **only** the `catalog/companies.py` edit
    and the new `tests/fixtures/snapshots/<slug>/` directory; leave
    `new-companies.json` and `ARCHITECTURE.md` untracked. Use a lowercase
-   `feat:` subject (`feat: add <Name> to company test sample`) and include a
-   detailed body covering the ATS, any cross-origin / prefix gotchas, the
-   live agent run numbers, and the snapshot path. End with the
-   `Co-Authored-By: Tabnine CLI <noreply@tabnine.com>` trailer. The
-   pre-commit hooks (run `pre-commit install` once per clone if not yet
+   `feat:` subject (`feat: add <Name> to company test sample`) — subject line
+   only, 100 characters max, no body and no trailers, per `TABNINE.md`. The
+   ATS, any cross-origin / prefix gotchas, the live agent run numbers, and
+   the snapshot path belong in the report below, not in the commit message.
+   The pre-commit hooks (run `pre-commit install` once per clone if not yet
    installed) will fire ruff, mypy, end-of-file-fixer, and the
    snapshot-regression pytest hook. If `end-of-file-fixer` or any other
    auto-fixer modifies a file, re-stage and retry — do **not** bypass with
@@ -474,13 +474,12 @@ and the pattern classes that are now closed vs still open.
 - **Commit exactly once, only on success, never push, never branch.** When all
   quality gates and the live agent run pass (steps 5–7), step 9 commits the
   integration in a single `feat:` commit covering only the `catalog/companies.py`
-  edit and the new `tests/fixtures/snapshots/<slug>/` directory, with the
-  `Co-Authored-By: Tabnine CLI <noreply@tabnine.com>` trailer. Do not stage
-  or commit anything else (especially not `new-companies.json` or
-  `ARCHITECTURE.md` — both are intentionally untracked). On a blocker, do
-  **not** commit at all; leave changes in the working tree for human review.
-  Never `git push`, never create branches, never bypass pre-commit with
-  `--no-verify`.
+  edit and the new `tests/fixtures/snapshots/<slug>/` directory, subject line
+  only, no body. Do not stage or commit anything else (especially not
+  `new-companies.json` or `ARCHITECTURE.md` — both are intentionally
+  untracked). On a blocker, do **not** commit at all; leave changes in the
+  working tree for human review. Never `git push`, never create branches,
+  never bypass pre-commit with `--no-verify`.
 - **Prefer config-level fixes** (`sample_job_url`, `job_board_url`, `aliases`,
   `link_rule.path_prefix`) over code changes. They solve the vast majority of
   cases.
@@ -537,10 +536,9 @@ All of the following hold:
    `new-companies.json` queue file at the repo root.
 7. A single `feat: add <Name> to company test sample` commit has been
    created, staging only `catalog/companies.py` and the new
-   `tests/fixtures/snapshots/<slug>/` directory, with the
-   `Co-Authored-By: Tabnine CLI <noreply@tabnine.com>` trailer; all
-   pre-commit hooks passed (ruff, mypy, end-of-file-fixer, snapshot
-   regression). Nothing was pushed.
+   `tests/fixtures/snapshots/<slug>/` directory, subject line only with no
+   body or trailers; all pre-commit hooks passed (ruff, mypy,
+   end-of-file-fixer, snapshot regression). Nothing was pushed.
 8. Temporary debug artifacts (throwaway scripts, `print`s, MCP dumps)
    removed.
 

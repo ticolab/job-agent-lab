@@ -107,7 +107,7 @@ Python 3.12+, uv-managed. Ruff enforces line-length 88, double quotes, and rules
 
 Two files are E501-exempt on purpose: `navigation/prompt.py` and `tests/unit/test_prompt_render.py`. Prompt clauses and their golden copies are byte-exact single-line literals — never reflow them.
 
-Commit directly to `main`; no feature branches. Commit messages are a single short sentence, 100 characters max, subject line only, no body. Reasoning belongs in the code, the design docs, or `blockers/`, not in the commit message.
+Commit directly to `main`; no feature branches. Never bypass the pre-commit hooks with `--no-verify`; if an auto-fixer modifies a file, re-stage and commit again. Commit messages are a single short sentence, 100 characters max, subject line only, no body. Reasoning belongs in the code, the design docs, or `blockers/`, not in the commit message.
 
 Prefer clean abstractions in the design over per-site code branches. Every opt-in knob defaults to inert so adding one cannot change any existing board's behaviour. Per-board differences live in configuration, not in code — no company name, host, or posting id ever appears in the matcher.
 
