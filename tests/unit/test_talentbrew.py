@@ -1098,3 +1098,118 @@ class TestVeeamRecordedPayload:
         citi_cfg = _make_company().talentbrew
         assert veeam_cfg is not None and citi_cfg is not None
         assert veeam_cfg.facet_id == citi_cfg.facet_id == "3624060"
+
+
+_MOODYS_ORIGIN = "https://careers.moodys.com"
+_MOODYS_ENDPOINT = f"{_MOODYS_ORIGIN}/en/search-jobs/results"
+
+
+def _load_moodys_fixture(page: int = 1) -> dict[str, Any]:
+    """Read a recorded Moody's ``/en/search-jobs/results`` page payload."""
+    name = "moodys.json" if page == 1 else f"moodys_page{page}.json"
+    payload = json.loads((_FIXTURE_DIR / name).read_text())
+    assert isinstance(payload, dict), f"{name} is not a JSON object"
+    return payload
+
+
+def _make_moodys_company(**overrides: Any) -> Company:
+    """Build the shipped ``Moody's Corporation`` catalog entry's shape."""
+    defaults: dict[str, Any] = {
+        "name": "Moody's Corporation",
+        "job_board_url": f"{_MOODYS_ORIGIN}/en/search-jobs",
+        "sample_job_url": (
+            f"{_MOODYS_ORIGIN}/en/job/heredia/"
+            "fin-rptg-and-acct-policy-accountant/49841/99229266848"
+        ),
+        "strategy": "talentbrew",
+        "talentbrew": TalentbrewConfig(
+            facet_id="3624060",
+            facet_display="Costa Rica",
+            results_path="/en/search-jobs/results",
+        ),
+        "link_rule": LinkRule(path_prefix="/en/job"),
+        "expected_jobs": 27,
+    }
+    defaults.update(overrides)
+    return Company(**defaults)
+
+
+class TestMoodysRecordedPayload:
+    """Third Talentbrew tenant — the first that genuinely spans two pages.
+
+    Moody's closes two gaps the Citi and Veeam fixtures leave open.
+
+    First, ``results_path``. Citi and Veeam both serve the widget at the
+    schema default ``/search-jobs/results``; Moody's is locale-prefixed
+    (``/en/search-jobs/results``), so this is the first entry to exercise
+    the override as a real tenant value rather than a synthetic one. The
+    same ``/en`` prefix reaches the anchors, which is why the LinkRule is
+    ``/en/job`` and not Citi's ``/job``.
+
+    Second, and more load-bearing: ``build_query_params`` documents that
+    ``IsPagination=False`` is sent verbatim even for pages >= 2, and that
+    the toggle "has never been live-verified" because Citi's Costa Rica
+    set fits on one page — naming a future multi-page tenant as the
+    trigger to check. Moody's is that tenant: 27 Costa Rica postings
+    against ``records_per_page=15`` means page 1 returns a full 15
+    (== page size, so the adapter advances) and page 2 returns the
+    remaining 12 (< page size, so it stops). A live run on 2026-08-31
+    returned 27, so the constant ``IsPagination=False`` is now confirmed
+    to work across the page boundary rather than merely assumed. The two
+    recorded payloads pin that union offline.
+    """
+
+    def test_recorded_payload_yields_twenty_seven_urls(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.get(_MOODYS_ENDPOINT).mock(
+                side_effect=[
+                    httpx.Response(200, json=_load_moodys_fixture(1)),
+                    httpx.Response(200, json=_load_moodys_fixture(2)),
+                ]
+            )
+            result = _run(TalentbrewStrategy().extract(_make_moodys_company(), _ctx()))
+        assert result["metadata"]["error"] is None
+        assert len(result["jobs"]) == 27
+
+    def test_two_requests_when_first_page_is_full(self) -> None:
+        # 15 filtered anchors == records_per_page, so the adapter MUST
+        # probe page 2; 12 < 15 terminates it there. Exactly two calls
+        # is the multi-page contract Citi/Veeam cannot demonstrate.
+        with respx.mock(assert_all_called=False) as mock:
+            route = mock.get(_MOODYS_ENDPOINT).mock(
+                side_effect=[
+                    httpx.Response(200, json=_load_moodys_fixture(1)),
+                    httpx.Response(200, json=_load_moodys_fixture(2)),
+                ]
+            )
+            _run(TalentbrewStrategy().extract(_make_moodys_company(), _ctx()))
+        assert route.call_count == 2
+
+    def test_every_url_is_absolutized_under_the_en_locale_prefix(self) -> None:
+        # The locale prefix is part of the anchor path, not just the
+        # results path — a regression that drops it would still produce
+        # 27 URLs, all of them 404s.
+        with respx.mock(assert_all_called=False) as mock:
+            mock.get(_MOODYS_ENDPOINT).mock(
+                side_effect=[
+                    httpx.Response(200, json=_load_moodys_fixture(1)),
+                    httpx.Response(200, json=_load_moodys_fixture(2)),
+                ]
+            )
+            result = _run(TalentbrewStrategy().extract(_make_moodys_company(), _ctx()))
+        for url in result["jobs"]:
+            assert url.startswith(f"{_MOODYS_ORIGIN}/en/job/"), url
+
+    def test_results_path_override_is_the_requested_endpoint(self) -> None:
+        # Guards the override itself: if the adapter ever fell back to
+        # the schema default ``/search-jobs/results``, this route would
+        # not match and the call count would be zero.
+        with respx.mock(assert_all_called=False) as mock:
+            route = mock.get(_MOODYS_ENDPOINT).mock(
+                side_effect=[
+                    httpx.Response(200, json=_load_moodys_fixture(1)),
+                    httpx.Response(200, json=_load_moodys_fixture(2)),
+                ]
+            )
+            _run(TalentbrewStrategy().extract(_make_moodys_company(), _ctx()))
+        assert route.call_count == 2

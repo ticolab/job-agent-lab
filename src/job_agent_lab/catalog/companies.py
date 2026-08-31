@@ -764,6 +764,20 @@ COMPANIES: list[Company] = [
         ),
     ),
     Company(
+        name="Moody's Corporation",
+        aliases=("moodys",),
+        job_board_url="https://careers.moodys.com/en/search-jobs",
+        sample_job_url="https://careers.moodys.com/en/job/heredia/fin-rptg-and-acct-policy-accountant/49841/99229266848",
+        link_rule=LinkRule(path_prefix="/en/job"),
+        strategy="talentbrew",
+        expected_jobs=27,
+        talentbrew=TalentbrewConfig(
+            facet_id="3624060",
+            facet_display="Costa Rica",
+            results_path="/en/search-jobs/results",
+        ),
+    ),
+    Company(
         name="Medtronic",
         aliases=(),
         job_board_url="https://medtronic.wd1.myworkdayjobs.com/es/MedtronicCareers?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",

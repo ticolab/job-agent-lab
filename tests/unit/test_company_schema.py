@@ -537,6 +537,7 @@ class TestExpectedJobsField:
             "Terumo Blood and Cell Technologies": 5,
             "Concentrix": 16,
             "Medtronic": 14,
+            "Moody's Corporation": 27,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1324,7 +1325,12 @@ class TestTalentbrewStrategyPresenceValidator:
         # Veeam Software is the second tenant, with the same artifact
         # shape: ``tests/fixtures/api/talentbrew/veeam.json`` plus the
         # ``TestVeeamRecordedPayload`` cases, and no DOM snapshot.
-        expected_talentbrew = {"Citi", "Veeam Software"}
+        # Moody's Corporation is the third tenant and the first to span
+        # two pages (27 CR postings at records_per_page=15), so it ships
+        # two recorded payloads — ``moodys.json`` plus
+        # ``moodys_page2.json`` — and the ``TestMoodysRecordedPayload``
+        # cases. Same no-DOM-snapshot shape as Citi and Veeam.
+        expected_talentbrew = {"Citi", "Veeam Software", "Moody's Corporation"}
         actual_talentbrew = {c.name for c in COMPANIES if c.strategy == "talentbrew"}
         assert actual_talentbrew == expected_talentbrew, (
             f"strategy='talentbrew' corpus set drift: "
