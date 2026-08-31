@@ -764,6 +764,15 @@ COMPANIES: list[Company] = [
         ),
     ),
     Company(
+        name="Terumo Blood and Cell Technologies",
+        aliases=("terumo", "terumobct"),
+        job_board_url="https://careers.terumobct.com/search/?createNewAlert=false&q=&locationsearch=costa+rica",
+        sample_job_url="https://careers.terumobct.com/job/Cartago-Sr-Quality-Engineer-QMS-C/1422008100/",
+        link_rule=LinkRule(path_prefix="/job"),
+        expected_jobs=5,
+        hooks=RuntimeHooks(filter_already_applied=True),
+    ),
+    Company(
         name="Acuity Analytics",
         aliases=("acuity",),
         job_board_url="https://acuitykp.darwinbox.com/ms/candidatev2/main/careers/allJobs",

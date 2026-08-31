@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "company_name": "Terumo Blood and Cell Technologies",
+  "job_board_url": "https://careers.terumobct.com/search/?createNewAlert=false&q=&locationsearch=costa+rica",
+  "sample_job_url": "https://careers.terumobct.com/job/Cartago-Sr-Quality-Engineer-QMS-C/1422008100/",
+  "expected_unfiltered_count": 5,
+  "captured_at": "2026-08-31T02:15:49.875731+00:00",
+  "captured_with_filters": false,
+  "notes": "URL-pre-filter workaround on a SuccessFactors board. The board exposes no location select, combobox, or checkbox facet \u2014 only three bare text inputs (q, title, date), i.e. the C2 shape \u2014 so the filter is carried in the URL via locationsearch=costa+rica. Despite being a free-text parameter this behaves as a structured lookup, not naive string matching: SuccessFactors resolves the term to a location entity (page title becomes 'Costa Rica - Terumo BCT, Inc. Jobs') and matches rows whose displayed location reads 'Cartago, CR' \u2014 the literal string 'Costa Rica' never appears in a row. Cross-checked against the structured country facet ?optionsFacetsDD_country=CR (the Coloplast-shape parameter on the same platform): both return the identical 5 jobs, and both report 'Results 1 - 5 of 5, Page 1 of 1', so the filtered set is complete and single-page. hooks.filter_already_applied=True guards the pre-applied filter against the agent typing into the search inputs; with it the live run settles in 2 steps. expected_unfiltered_count=5 is unfiltered relative to the ship-path URL, not the full board. The queue's original sample_job_url (/job/Pinares-Sr-Software-Systems-Engineer-R&D/1361772900/) was closed by integration time and appears under neither filter; the entry ships a live sample instead, though LinkRule(path_prefix='/job') means the derivation is overridden either way (the title-in-path shape derives a per-job prefix).",
+  "path_prefix": "/job"
+}
