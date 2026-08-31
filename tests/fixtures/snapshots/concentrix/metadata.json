@@ -1,0 +1,15 @@
+{
+  "schema_version": 2,
+  "company_name": "Concentrix",
+  "job_board_url": "https://jobs.concentrix.com/job-search/?country=Costa+Rica",
+  "sample_job_url": "https://jobs.concentrix.com/job/?id=R1750118",
+  "expected_unfiltered_count": 10,
+  "captured_at": "2026-08-31T02:38:40.895473+00:00",
+  "captured_with_filters": false,
+  "notes": "Agent-less board (SYS-13 pre_filter_urls) with runtime pagination. expected_unfiltered_count=10 is ONE page, not expected_jobs=16: the Costa Rica set spans two pages (10 + 6) and the runtime walker unions them, but the capture script refuses --paginate together with pre_filter_urls ('the fixture layout for the combined case is deferred'), so the frozen fixture pins page 1 only. That still exercises what the snapshot corpus is for \u2014 this board's id-in-query link shape \u2014 while the 16 is verified by the live run's verdict gate.\n\nThree things this board pins. (1) Link shape: jobs are /job/?id=<ID>&utm_source=concentrixCareerWebsite, so derive_path_prefix on the sample yields '/' (far too broad) and LinkRule(path_prefix='/job') is required to fire the matcher's id-in-query branch. (2) Why agent-less: the location <select> (aria-label='Filter by Location') is URL-addressable as ?country=Costa+Rica, but on the agent path the DOM agent reads the C4 'reveal all listings' instruction as an instruction to paginate \u2014 observed step log: 'Paginate through all job listing pages' then 'clicked on the second page button' \u2014 leaving the browser on page 2 so the walker starts there and returns only its 6 anchors (measured 6/16). The agent-less path removes the LLM from the loop, doola-style, and returns 16/16. (3) Pagination is JS-driven, not URL-addressable on fresh load: declaring '...&page=2' as a second pre_filter_url re-renders page 1, so the two-state union collapses to 10 \u2014 hence one state plus paginate=True rather than two explicit page states.",
+  "path_prefix": "/job",
+  "pre_filter_urls": [
+    "https://jobs.concentrix.com/job-search/?country=Costa+Rica"
+  ],
+  "top_url": "https://jobs.concentrix.com/job-search/?country=Costa+Rica"
+}

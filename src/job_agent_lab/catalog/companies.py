@@ -764,6 +764,16 @@ COMPANIES: list[Company] = [
         ),
     ),
     Company(
+        name="Concentrix",
+        aliases=(),
+        job_board_url="https://jobs.concentrix.com/job-search/?country=Costa+Rica",
+        sample_job_url="https://jobs.concentrix.com/job/?id=R1750118",
+        link_rule=LinkRule(path_prefix="/job"),
+        expected_jobs=16,
+        paginate=True,
+        pre_filter_urls=("https://jobs.concentrix.com/job-search/?country=Costa+Rica",),
+    ),
+    Company(
         name="Terumo Blood and Cell Technologies",
         aliases=("terumo", "terumobct"),
         job_board_url="https://careers.terumobct.com/search/?createNewAlert=false&q=&locationsearch=costa+rica",

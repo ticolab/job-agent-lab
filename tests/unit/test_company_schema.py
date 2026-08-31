@@ -398,6 +398,7 @@ class TestPaginateField:
             "Dev.Pro",
             "Hire With Near",
             "Nextern",
+            "Concentrix",
         }
         actual_paginated = {c.name for c in COMPANIES if c.paginate}
         assert actual_paginated == expected_paginated, (
@@ -534,6 +535,7 @@ class TestExpectedJobsField:
             "Pythian": 3,
             "Acuity Analytics": 5,
             "Terumo Blood and Cell Technologies": 5,
+            "Concentrix": 16,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -997,6 +999,7 @@ class TestPreFilterUrlsField:
             "Oliver Healthcare Packaging",
             "Progress",
             "Vintti",
+            "Concentrix",
         }
         actual_states = {c.name for c in COMPANIES if c.pre_filter_urls}
         assert actual_states == expected_states, (
