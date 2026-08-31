@@ -532,6 +532,7 @@ class TestExpectedJobsField:
             "UST": 20,
             "Coloplast": 22,
             "Pythian": 3,
+            "Acuity Analytics": 5,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None

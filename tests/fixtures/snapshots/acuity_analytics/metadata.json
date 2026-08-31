@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Acuity Analytics",
+  "job_board_url": "https://acuitykp.darwinbox.com/ms/candidatev2/main/careers/allJobs",
+  "sample_job_url": "https://acuitykp.darwinbox.com/ms/candidatev2/main/careers/jobDetails/a6a7501a2c20d4",
+  "expected_unfiltered_count": 10,
+  "captured_at": "2026-08-31T01:58:08.157815+00:00",
+  "captured_with_filters": false,
+  "notes": "On-page-filter board (Darwinbox candidatev2 SPA). expected_unfiltered_count=10 is the pre-filter first page, NOT expected_jobs=5: the board holds 87 roles and renders 10 at a time behind a 'Load More Jobs' button (POST /ms/candidateapi/job/alljobs with {page, limit:10}); 5 of the 87 are Costa Rica (POST /ms/candidateapi/job/newfilters lists the CR location as _id=a61597871084e6). The location filter is NOT URL-addressable \u2014 it is applied via POST body, the SPA route never gains a query string or hash, and ?country=Costa+Rica is ignored (still 10) \u2014 so the Coloplast/Pythian URL pre-filter workaround does not apply here and the agent must drive the filter. Filter checkboxes live in open shadow DOM (dbx-* Stencil web components); both the agent's DOM serialization and the matcher's shadow-piercing walk reach them. This board motivated the Case B apply-decoy guard in navigation/prompt.py: its only buttons matching the Case B 'Search/Apply/Submit/Filter' vocabulary are 'Apply Here' (resume-drop CTA) and 'View and Apply' (per-job link) \u2014 there is no real filter-submit button, the checkbox applies instantly, and clicking 'Apply Here' navigates to /ms/candidatev2/main/auth/login, dropping the listing to 0 anchors. Three pre-guard live runs returned 0/0/0; two post-guard runs returned 5/5."
+}

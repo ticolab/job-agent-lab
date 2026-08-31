@@ -50,6 +50,7 @@ not the same as every board of that shape being integrated.
 | C18 | The location filter is single-select per URL with no aggregate option covering the region | Closed — `pre_filter_urls` union |
 | C19 | Fingerprint-based bot management rejects any non-browser HTTP client regardless of headers | **Partly closed** — where the gated response lands in readable page state, borrow it instead of re-issuing the request (`CoveoConfig.browser_token_key`, SYS-19). Still **open** where the needed data never reaches such state |
 | C20 | **Exclusive** accordion: opening one section closes the others, so no DOM state ever holds the full listing — and each section may carry its own cap | **Open** — needs a nested multi-state walk; neither `expand_selector` nor the pagination walker expresses it |
+| C21 | Apply-decoy: the board's only buttons matching the Case B `Search/Apply/Submit/Filter` vocabulary are job-application affordances (`Apply Here`, `View and Apply`), and clicking one leaves the listing page | Closed — Case B anti-scope guard in `navigation/prompt.py` naming the job-application labels and stating no click is needed when selecting the option already updates the listings |
 
 Two open classes sit **below every strategy**: C1 on the DOM path and C20 in
 the DOM state machine. Neither is reachable by a prompt or matcher change. C2

@@ -127,7 +127,7 @@ _STEP_1C_DECIDE_CLAUSE: str = """1c. DECIDE. Handle exactly one of these three c
 
 Case A — no location/region filter of any kind exists on the page. Go straight to STEP 2 and extract every listing.
 
-Case B — the filter's options include {quoted}. Select the first matching option, preferring {preference} when both are offered. Filter options may be ISO country codes rather than full country names — treat "CR" or "CRI" as Costa Rica. If the filter sits in a form with a Search, Apply, Submit, or Filter button, click that button after selecting the option so the filter is applied. Then go to STEP 2 and extract the filtered listings.
+Case B — the filter's options include {quoted}. Select the first matching option, preferring {preference} when both are offered. Filter options may be ISO country codes rather than full country names — treat "CR" or "CRI" as Costa Rica. If the filter sits in a form with a Search, Apply, Submit, or Filter button, click that button after selecting the option so the filter is applied. That button must belong to the filter control itself; a button labelled "Apply Here", "Apply Now", "Apply for this job", or "View and Apply" is a job-application affordance, not a filter submit — never click it. If selecting the option already updates the listings, no button click is needed. Then go to STEP 2 and extract the filtered listings.
 
 Case C — the filter's options are visible, and none of {quoted} appear among them. Do NOT extract. Call the report_no_matching_location_filter tool. This finishes the run with an empty result, meaning the company has no listings applicable to the target region.
 

@@ -764,6 +764,13 @@ COMPANIES: list[Company] = [
         ),
     ),
     Company(
+        name="Acuity Analytics",
+        aliases=("acuity",),
+        job_board_url="https://acuitykp.darwinbox.com/ms/candidatev2/main/careers/allJobs",
+        sample_job_url="https://acuitykp.darwinbox.com/ms/candidatev2/main/careers/jobDetails/a6a7501a2c20d4",
+        expected_jobs=5,
+    ),
+    Company(
         name="Pythian",
         aliases=(),
         job_board_url="https://ats.rippling.com/en-GB/pythian/jobs?country=CR",
