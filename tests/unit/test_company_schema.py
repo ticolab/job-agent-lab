@@ -536,6 +536,7 @@ class TestExpectedJobsField:
             "Acuity Analytics": 5,
             "Terumo Blood and Cell Technologies": 5,
             "Concentrix": 16,
+            "Medtronic": 14,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1000,6 +1001,7 @@ class TestPreFilterUrlsField:
             "Progress",
             "Vintti",
             "Concentrix",
+            "Medtronic",
         }
         actual_states = {c.name for c in COMPANIES if c.pre_filter_urls}
         assert actual_states == expected_states, (

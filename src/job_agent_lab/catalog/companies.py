@@ -764,6 +764,17 @@ COMPANIES: list[Company] = [
         ),
     ),
     Company(
+        name="Medtronic",
+        aliases=(),
+        job_board_url="https://medtronic.wd1.myworkdayjobs.com/es/MedtronicCareers?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+        sample_job_url="https://medtronic.wd1.myworkdayjobs.com/es/MedtronicCareers/details/Machine-Operator-I_R74658-1?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+        link_rule=LinkRule(path_prefix="/es/MedtronicCareers/job"),
+        expected_jobs=14,
+        pre_filter_urls=(
+            "https://medtronic.wd1.myworkdayjobs.com/es/MedtronicCareers?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+        ),
+    ),
+    Company(
         name="Concentrix",
         aliases=(),
         job_board_url="https://jobs.concentrix.com/job-search/?country=Costa+Rica",
