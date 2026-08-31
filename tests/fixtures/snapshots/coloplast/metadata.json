@@ -3,9 +3,9 @@
   "company_name": "Coloplast",
   "job_board_url": "https://careers.coloplast.com/search/?optionsFacetsDD_country=CR",
   "sample_job_url": "https://careers.coloplast.com/job/Cartago-Quality-Systems-Engineer-Cost/1404074033/",
-  "expected_unfiltered_count": 15,
-  "captured_at": "2026-07-19T03:26:36.743696+00:00",
+  "expected_unfiltered_count": 22,
+  "captured_at": "2026-08-31T01:32:17.676077+00:00",
   "captured_with_filters": false,
-  "notes": "URL-pre-filter workaround. Full board at careers.coloplast.com/search/ is a SuccessFactors instance with 323 jobs across 13 pages (page size 25). Pagination markup fails all four FIND_NEXT_CONTROL_JS discovery signals: no rel=next, no aria-label on the paginationItemLast anchor, glyph-only textContent (\u00ab/\u00bb rather than /^next$/i), and current-page indicator <li class='active'><a class='current-page'>1</a></li> shares only a <ul> grandparent with successor <li><a>2</a></li>, not a parentElement (Movate-shape C13 defect; see spike/INTEGRATION_BLOCKERS_R2.md). Since SuccessFactors exposes URL-addressable filters via optionsFacetsDD_country=CR, we ship the CR-filtered subset (15 jobs, single page) rather than deferring \u2014 Confiz-shape workaround (also SimSpace precedent for Ashby C15). expected_unfiltered_count=15 is unfiltered relative to the ship-path URL, not the full board.",
+  "notes": "URL-pre-filter workaround. Full board at careers.coloplast.com/search/ is a SuccessFactors instance whose pagination markup fails all four FIND_NEXT_CONTROL_JS discovery signals: no rel=next, no aria-label on the paginationItemLast anchor, glyph-only textContent (\u00ab/\u00bb rather than /^next$/i), and a current-page indicator <li class='active'><a class='current-page'>1</a></li> that shares only a <ul> grandparent with the successor <li><a>2</a></li>, not a parentElement (Movate-shape C13 defect; see blockers/INTEGRATION_BLOCKERS_R2.md). Since SuccessFactors exposes URL-addressable filters via optionsFacetsDD_country=CR, we ship the CR-filtered subset (single page, under the 25-per-page size) rather than deferring \u2014 Confiz-shape workaround (also SimSpace precedent for Ashby C15). hooks.filter_already_applied=True guards the pre-applied filter against agent re-toggle of the live <select name='optionsFacetsDD_country'> under the SYS-6 C3 clause. expected_unfiltered_count=22 is unfiltered relative to the ship-path URL, not the full board; it was 15 at the 2026-07-19 capture and the board has since grown \u2014 recaptured 2026-08-31 against expected_jobs=22.",
   "path_prefix": "/job"
 }

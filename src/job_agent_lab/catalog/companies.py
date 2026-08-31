@@ -379,6 +379,8 @@ COMPANIES: list[Company] = [
         job_board_url="https://careers.coloplast.com/search/?optionsFacetsDD_country=CR",
         sample_job_url="https://careers.coloplast.com/job/Cartago-Quality-Systems-Engineer-Cost/1404074033/",
         link_rule=LinkRule(path_prefix="/job"),
+        expected_jobs=22,
+        hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
         name="Luxor",
