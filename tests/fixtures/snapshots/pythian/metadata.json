@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Pythian",
+  "job_board_url": "https://ats.rippling.com/en-GB/pythian/jobs?country=CR",
+  "sample_job_url": "https://ats.rippling.com/en-GB/pythian/jobs/9cd647df-0857-4768-954e-9d71468c311b",
+  "expected_unfiltered_count": 3,
+  "captured_at": "2026-08-31T01:42:35.251034+00:00",
+  "captured_with_filters": false,
+  "notes": "URL-pre-filter workaround. Rippling ATS (Next.js) board; the full board at ats.rippling.com/en-GB/pythian/jobs carries 20 global roles. The location filter is an ARIA combobox (input#input-6, placeholder 'All locations') with a tree popup, not a native <select>, so it falls outside the SYS-6 C3 clause the agent drives. The board's own React-Query key exposes the filter params (searchQuery/departments/workplaceType/country/state/city/page/pageSize) and ?country=CR is honoured server-side: __NEXT_DATA__ on the filtered URL reports totalItems=3, totalPages=1, and the combobox renders 'Costa Rica'. So we ship the CR-filtered URL \u2014 Confiz/Coloplast-shape workaround. hooks.filter_already_applied=True guards the pre-applied filter against agent re-toggle of the combobox. expected_unfiltered_count=3 is unfiltered relative to the ship-path URL, not the full 20-role board. Anchors render twice per job (40 raw, 20 unique unfiltered) across desktop/mobile layouts; the matcher's href dedup collapses them."
+}

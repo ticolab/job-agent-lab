@@ -763,4 +763,12 @@ COMPANIES: list[Company] = [
             browser_token_key="searchToken_en_us",
         ),
     ),
+    Company(
+        name="Pythian",
+        aliases=(),
+        job_board_url="https://ats.rippling.com/en-GB/pythian/jobs?country=CR",
+        sample_job_url="https://ats.rippling.com/en-GB/pythian/jobs/9cd647df-0857-4768-954e-9d71468c311b",
+        expected_jobs=3,
+        hooks=RuntimeHooks(filter_already_applied=True),
+    ),
 ]
