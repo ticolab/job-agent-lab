@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "company_name": "Boston Scientific",
+  "job_board_url": "https://jobs.bostonscientific.com/search/?createNewAlert=false&q=&optionsFacetsDD_country=CR",
+  "sample_job_url": "https://jobs.bostonscientific.com/job/Global-Park%2C-La-Aurora-de-Here-Sr_-Quality-Engineer/1422718400/",
+  "expected_unfiltered_count": 6,
+  "captured_at": "2026-09-01T01:24:58.718783+00:00",
+  "captured_with_filters": false,
+  "notes": "URL-pre-filter workaround on a SuccessFactors board \u2014 same platform and same shape as Coloplast and Terumo BCT. Costa Rica is carried by the SuccessFactors country facet ?optionsFacetsDD_country=CR; the board reports 'Results 1 - 6 of 6, Page 1 of 1', so the filtered set is complete and single-page. All six rows are Costa Rica sites (CR1 Heredia, CR2 Coyol, CR3 Cartago, Plaza Roble Escazu).\n\nPrefix: job URLs are /job/<Title-with-location>/<id>/, so derive_path_prefix on any sample returns a per-job title path and LinkRule(path_prefix='/job') is required \u2014 the same override Coloplast and Terumo carry.\n\nhooks.filter_already_applied=True guards the pre-applied filter against the agent driving the board's own search inputs; with it the live run settles in 3 steps. expected_unfiltered_count=6 is unfiltered relative to the ship-path URL, not the full board.\n\nHandle note: 'boston' resolves to Boston Consulting Group, which sits earlier in COMPANIES and wins under the catalog's insertion-order substring match, so this entry ships explicit aliases ('bostonsci', 'bsci'). The queue's original sample_job_url (.../Quality-Assurance-Engineer-III-Temporary-12-months-A/1410268200/) had closed by integration time and is absent from the filtered set; a live posting is shipped instead, though the explicit path_prefix makes the derivation moot either way.",
+  "path_prefix": "/job"
+}

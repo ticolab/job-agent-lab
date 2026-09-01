@@ -764,6 +764,15 @@ COMPANIES: list[Company] = [
         ),
     ),
     Company(
+        name="Boston Scientific",
+        aliases=("bostonsci", "bsci"),
+        job_board_url="https://jobs.bostonscientific.com/search/?createNewAlert=false&q=&optionsFacetsDD_country=CR",
+        sample_job_url="https://jobs.bostonscientific.com/job/Global-Park%2C-La-Aurora-de-Here-Sr_-Quality-Engineer/1422718400/",
+        link_rule=LinkRule(path_prefix="/job"),
+        expected_jobs=6,
+        hooks=RuntimeHooks(filter_already_applied=True),
+    ),
+    Company(
         name="Zimmer Biomet",
         aliases=("zimmer",),
         job_board_url="https://careers.zimmerbiomet.com/us/en/search-results",

@@ -540,6 +540,7 @@ class TestExpectedJobsField:
             "Moody's Corporation": 27,
             "Philips": 1,
             "Zimmer Biomet": 11,
+            "Boston Scientific": 6,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -769,6 +770,7 @@ class TestHooksField:
             "Coloplast",
             "Pythian",
             "Terumo Blood and Cell Technologies",
+            "Boston Scientific",
         }
         actual_non_inert = {c.name for c in COMPANIES if not c.hooks.is_inert}
         assert actual_non_inert == expected_non_inert, (
