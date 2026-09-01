@@ -538,6 +538,7 @@ class TestExpectedJobsField:
             "Concentrix": 16,
             "Medtronic": 14,
             "Moody's Corporation": 27,
+            "Philips": 1,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1132,7 +1133,11 @@ class TestPhenomStrategyPresenceValidator:
         # ``TestPaginateField.test_paginate_true_corpus_entries_are_whitelisted``
         # — every subsequent Phenom tenant MUST be added here in the
         # same commit that adds it to ``COMPANIES``.
-        expected_phenom = {"Boston Consulting Group", "Roche"}
+        # Philips is the third tenant, same artifact shape:
+        # ``tests/fixtures/api/phenom/philips.json`` plus the
+        # ``TestPhilipsRecordedPayload`` cases, and no DOM snapshot. It
+        # is the corpus's smallest non-zero API result (totalHits=1).
+        expected_phenom = {"Boston Consulting Group", "Roche", "Philips"}
         actual_phenom = {c.name for c in COMPANIES if c.strategy == "phenom"}
         assert actual_phenom == expected_phenom, (
             f"strategy='phenom' corpus set drift: "

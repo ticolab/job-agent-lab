@@ -1,0 +1,191 @@
+{
+ "refineSearch": {
+  "status": 200,
+  "hits": 1,
+  "totalHits": 1,
+  "data": {
+   "jobs": [
+    {
+     "customField1": "LOCATION-3-1399",
+     "ml_skills": [
+      "plm",
+      "labeling artwork preparation",
+      "adobe live cycle",
+      "en labelto",
+      "microsoft office",
+      "document control",
+      "quality system compliance",
+      "bartender",
+      "proofreading",
+      "measurement tools",
+      "inspection tools",
+      "regulatory compliance",
+      "workflow prioritization",
+      "independent judgment",
+      "stakeholder management"
+     ],
+     "type": "Full time",
+     "descriptionTeaser": "Job TitleLabeling Specialist. Job Description. Labeling Specialist. Your role. Develop and maintain Instruction For Use (IFUs) documents, including product illustrations, layout design,and illustra...",
+     "payType": "https://philips.wd3.myworkdayjobs.com/jobs-and-careers/job/Alajuela/Labeling-Specialist_580020",
+     "state": "Alajuela",
+     "siteType": "professional",
+     "multi_category": [
+      "Quality & Regulatory"
+     ],
+     "reqId": "580020",
+     "city": "Alajuela",
+     "latitude": "10.01625",
+     "industry": "",
+     "multi_location": [
+      "Alajuela, Alajuela, Costa Rica"
+     ],
+     "address": "Distrito 13-Garita Canton 1-Alajuela de la Provincia Alajuela, 20101 Alajuela, Costa Rica",
+     "applyUrl": "https://philips.wd3.myworkdayjobs.com/jobs-and-careers/job/Alajuela/Labeling-Specialist_580020/apply?source=Philips_Career_Site",
+     "ml_job_parser": {
+      "descriptionTeaser": "Exciting opportunity for a Labeling Specialist to develop and maintain Instruction For Use documents, create or revise labelling artwork, and ensure quality in medical devices. Ideal for candidates with basic label editing skills, proficiency in Microsoft Office, and strong attention to detail.",
+      "descriptionTeaser_first200": "Job TitleLabeling Specialist. Job Description. Labeling Specialist. Your role. Develop and maintain Instruction For Use (IFUs) documents, including product illustrations, layout design,and illustra...",
+      "descriptionTeaser_keyword": "Labeling Specialist. Your role. Develop and maintain Instruction For Use (IFUs) documents, including product illustrations, layout design,and illustrative material and copy. Utilize existing templates...",
+      "descriptionTeaser_ats": "Job TitleLabeling SpecialistJob DescriptionLabeling Specialist\u00a0Your role:\u2022Develop and maintain Instruction For Use (IFUs) documents, including product illustrations, layout design,and illustrative mat"
+     },
+     "externalApply": true,
+     "cityState": "Alajuela, Alajuela",
+     "country": "Costa Rica",
+     "visibilityType": "External",
+     "longitude": "-84.21163",
+     "positionLevel": "en_GLOBAL",
+     "jobId": "580020",
+     "locale": "en_GLOBAL",
+     "title": "Labeling Specialist",
+     "jobSeqNo": "PHILUS580020ENGLOBAL",
+     "postedDate": "2026-06-15T00:00:00.000+0000",
+     "dateCreated": "2026-05-08T13:19:15.161+0000",
+     "cityStateCountry": "Alajuela, Alajuela, Costa Rica",
+     "department": "EE_REG",
+     "jobVisibility": [
+      "external"
+     ],
+     "location": "Alajuela, Alajuela, Costa Rica",
+     "category": "Quality & Regulatory",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.21163,
+        "lat": 10.01625
+       },
+       "location": "Alajuela, Alajuela, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Quality & Regulatory"
+      }
+     ],
+     "badge": ""
+    }
+   ],
+   "aggregations": [
+    {
+     "field": "country",
+     "value": {
+      "United States of America": 232,
+      "China": 181,
+      "Germany": 58,
+      "India": 52,
+      "Japan": 35,
+      "Netherlands": 35,
+      "Brazil": 34,
+      "Poland": 25,
+      "France": 21,
+      "United Kingdom": 13,
+      "Israel": 12,
+      "Belgium": 8,
+      "Canada": 8,
+      "Thailand": 8,
+      "Austria": 7,
+      "Taiwan": 7,
+      "Australia": 6,
+      "Spain": 6,
+      "Sweden": 6,
+      "Indonesia": 5,
+      "Korea, Republic of": 5,
+      "T\u00fcrkiye": 5,
+      "Mexico": 4,
+      "Russian Federation": 4,
+      "Switzerland": 4,
+      "Egypt": 3,
+      "Italy": 3,
+      "New Zealand": 3,
+      "Colombia": 2,
+      "Czechia": 2,
+      "Norway": 2,
+      "Romania": 2,
+      "South Africa": 2,
+      "Argentina": 1,
+      "Costa Rica": 1,
+      "Denmark": 1,
+      "Finland": 1,
+      "Greece": 1,
+      "Kazakhstan": 1,
+      "Malaysia": 1,
+      "Philippines": 1,
+      "Portugal": 1,
+      "Saudi Arabia": 1,
+      "Ukraine": 1,
+      "United Arab Emirates": 1
+     }
+    },
+    {
+     "field": "city",
+     "value": {
+      "Alajuela": 1
+     }
+    },
+    {
+     "field": "company",
+     "value": {}
+    },
+    {
+     "field": "jobType",
+     "value": {}
+    },
+    {
+     "field": "type",
+     "value": {
+      "Full time": 1
+     }
+    },
+    {
+     "field": "category",
+     "value": {
+      "Quality & Regulatory": 1
+     }
+    }
+   ],
+   "SEARCH_CONFIG": {
+    "contextualSearch": false,
+    "isSuggestionsEnabled": true
+   },
+   "suggestions": {},
+   "ui_skills_selection": null,
+   "ui_selections": {
+    "country": [
+     "Costa Rica"
+    ]
+   },
+   "locationData": {},
+   "spellCheckData": {}
+  },
+  "eid": {
+   "trialIndex": -1,
+   "eid": "6a961c4656f991bcb2e0e4a6",
+   "searchType": "location",
+   "isMultiLingualVectorApplied": false,
+   "query": "Costa Rica",
+   "variant": 0,
+   "banditId": "",
+   "keywordLanguage": "en"
+  }
+ }
+}

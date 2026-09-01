@@ -764,6 +764,16 @@ COMPANIES: list[Company] = [
         ),
     ),
     Company(
+        name="Philips",
+        aliases=(),
+        job_board_url="https://www.careers.philips.com/global/en/search-results",
+        sample_job_url="https://www.careers.philips.com/global/en/job/583860/Finance-Controller-Assistant",
+        link_rule=LinkRule(path_prefix="/global/en/job"),
+        strategy="phenom",
+        expected_jobs=1,
+        phenom=PhenomConfig(page_id="page31-ds"),
+    ),
+    Company(
         name="Moody's Corporation",
         aliases=("moodys",),
         job_board_url="https://careers.moodys.com/en/search-jobs",

@@ -719,3 +719,92 @@ class TestRocheRecordedPayload:
             )
             result = _run(PhenomStrategy().extract(_make_roche_company(), _ctx()))
         assert len(result["jobs"]) == total
+
+
+_PHILIPS_ORIGIN = "https://www.careers.philips.com"
+_PHILIPS_ENDPOINT = f"{_PHILIPS_ORIGIN}/widgets"
+
+
+def _make_philips_company(**overrides: Any) -> Company:
+    """Build the shipped ``Philips`` catalog entry's shape."""
+    defaults: dict[str, Any] = {
+        "name": "Philips",
+        "job_board_url": f"{_PHILIPS_ORIGIN}/global/en/search-results",
+        "sample_job_url": (
+            f"{_PHILIPS_ORIGIN}/global/en/job/583860/Finance-Controller-Assistant"
+        ),
+        "strategy": "phenom",
+        "phenom": PhenomConfig(page_id="page31-ds"),
+        "link_rule": LinkRule(path_prefix=_PATH_PREFIX),
+        "expected_jobs": 1,
+    }
+    defaults.update(overrides)
+    return Company(**defaults)
+
+
+class TestPhilipsRecordedPayload:
+    """Third Phenom tenant — the single-posting floor of the adapter.
+
+    Philips matters for two reasons beyond "one more tenant".
+
+    First, it is the corpus's smallest non-zero API result: the Costa
+    Rica facet reports ``totalHits: 1``. BCG (13) and Roche (12) both
+    exercise the many-record path, so a regression that, say, returned
+    the first page's head or mishandled a one-element list would pass
+    both and fail here. The count assertions below are deliberately
+    tied to the payload's own ``totalHits`` as well as the literal 1,
+    so the fixture and the adapter cannot drift apart silently.
+
+    Second, it pins a *synthesized* URL end to end. The adapter builds
+    posting URLs from the record's job id plus a slugified title rather
+    than reading a href from the payload, which carries a verification
+    obligation — a wrong slug still yields a well-formed URL. The
+    single record's synthesized URL was checked against the live board
+    on 2026-08-31 and resolves to the real posting ("Labeling
+    Specialist job in Alajuela, Alajuela, Costa Rica"), so the exact
+    string is pinned here as the regression anchor for the slug rule.
+    """
+
+    def test_recorded_payload_yields_one_url(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_PHILIPS_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("philips"))
+            )
+            result = _run(PhenomStrategy().extract(_make_philips_company(), _ctx()))
+        assert result["metadata"]["error"] is None
+        assert len(result["jobs"]) == 1
+
+    def test_emitted_count_equals_server_total_hits(self) -> None:
+        payload = _load_fixture("philips")
+        total = payload["refineSearch"]["totalHits"]
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_PHILIPS_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=payload)
+            )
+            result = _run(PhenomStrategy().extract(_make_philips_company(), _ctx()))
+        assert len(result["jobs"]) == total == 1
+
+    def test_synthesized_url_matches_the_verified_live_posting(self) -> None:
+        # Verified against the live board on 2026-08-31. If the slug
+        # rule changes, this fails rather than silently emitting a
+        # well-formed 404.
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_PHILIPS_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("philips"))
+            )
+            result = _run(PhenomStrategy().extract(_make_philips_company(), _ctx()))
+        assert result["jobs"] == [
+            f"{_PHILIPS_ORIGIN}{_PATH_PREFIX}/580020/Labeling-Specialist"
+        ]
+
+    def test_page_id_is_tenant_specific(self) -> None:
+        # page31-ds, read off a live /widgets capture. Distinct from
+        # BCG's page17-ds and Roche's page11-ds — unlike Talentbrew's
+        # country facet, the Phenom page id genuinely does not transfer
+        # between tenants, so a copy-paste would silently query the
+        # wrong board.
+        philips_cfg = _make_philips_company().phenom
+        roche_cfg = _make_roche_company().phenom
+        assert philips_cfg is not None and roche_cfg is not None
+        assert philips_cfg.page_id == "page31-ds"
+        assert philips_cfg.page_id != roche_cfg.page_id
