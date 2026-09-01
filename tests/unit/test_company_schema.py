@@ -539,6 +539,7 @@ class TestExpectedJobsField:
             "Medtronic": 14,
             "Moody's Corporation": 27,
             "Philips": 1,
+            "Zimmer Biomet": 11,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1137,7 +1138,17 @@ class TestPhenomStrategyPresenceValidator:
         # ``tests/fixtures/api/phenom/philips.json`` plus the
         # ``TestPhilipsRecordedPayload`` cases, and no DOM snapshot. It
         # is the corpus's smallest non-zero API result (totalHits=1).
-        expected_phenom = {"Boston Consulting Group", "Roche", "Philips"}
+        # Zimmer Biomet is the fourth tenant and the first on a
+        # non-``en_global`` locale (``en_us``) with a non-global posting
+        # path (``/us/en/job``); artifact is
+        # ``tests/fixtures/api/phenom/zimmer_biomet.json`` plus the
+        # ``TestZimmerBiometRecordedPayload`` cases, and no DOM snapshot.
+        expected_phenom = {
+            "Boston Consulting Group",
+            "Roche",
+            "Philips",
+            "Zimmer Biomet",
+        }
         actual_phenom = {c.name for c in COMPANIES if c.strategy == "phenom"}
         assert actual_phenom == expected_phenom, (
             f"strategy='phenom' corpus set drift: "

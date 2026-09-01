@@ -1,0 +1,1030 @@
+{
+ "refineSearch": {
+  "status": 200,
+  "hits": 11,
+  "totalHits": 11,
+  "data": {
+   "jobs": [
+    {
+     "subCategory": "Manufacturing",
+     "ml_skills": [
+      "lean manufacturing",
+      "six sigma",
+      "process validation",
+      "kaizen",
+      "5s",
+      "smed",
+      "kanban",
+      "overall equipment effectiveness",
+      "process improvement",
+      "project management",
+      "manufacturing process design",
+      "equipment qualification",
+      "risk assessment",
+      "statistical process control",
+      "gmp",
+      "fda compliance",
+      "process capability",
+      "design of experiments",
+      "measurement system analysis",
+      "pfmea",
+      "dfmea",
+      "control plans",
+      "erp systems",
+      "mes",
+      "minitab",
+      "cad software",
+      "document management systems",
+      "chemical handling"
+     ],
+     "type": "External",
+     "descriptionTeaser": "Become part of our team as a Process Engineer, driving process improvement and supporting manufacturing operations. You will design and optimise manufacturing processes, apply continuous improvement tools, and ensure high-quality standards. Ideal for candidates with engineering backgrounds and experience in medical device manufacturing.",
+     "state": "Alajuela",
+     "siteType": "external",
+     "multi_category": [
+      "Manufacturing"
+     ],
+     "reqId": "11463",
+     "grade": "",
+     "city": "Grecia",
+     "latitude": "10.07243",
+     "multi_location": [
+      "Grecia, Alajuela, Costa Rica"
+     ],
+     "applyUrl": "https://career8.successfactors.com/careers?company=zimmerin01&loginFlowRequired=true&career_os=job_listing&career_ns=job_application&career_job_req_id=11463&_s.crb=25fvCmbM9Lad2rza%252fxJs%252fNp1mhY1RYUVrVIMdAiM2RI%253d",
+     "ml_job_parser": {
+      "descriptionTeaser": "Become part of our team as a Process Engineer, driving process improvement and supporting manufacturing operations. You will design and optimise manufacturing processes, apply continuous improvement tools, and ensure high-quality standards. Ideal for candidates with engineering backgrounds and experience in medical device manufacturing.",
+      "descriptionTeaser_first200": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by...",
+      "descriptionTeaser_keyword": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a...",
+      "descriptionTeaser_ats": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a "
+     },
+     "externalApply": false,
+     "cityState": "Grecia, Alajuela",
+     "country": "Costa Rica",
+     "indeedApplyTags": true,
+     "visibilityType": "External",
+     "longitude": "-84.31124",
+     "jobId": "11463",
+     "locale": "en_US",
+     "title": "Process Engineer",
+     "jobSeqNo": "ZBUZBRUS11463EXTERNALENUS",
+     "postedDate": "2026-07-30T00:00:00.000+0000",
+     "dateCreated": "2026-07-11T15:03:56.282+0000",
+     "cityStateCountry": "Grecia, Alajuela, Costa Rica",
+     "jobVisibility": [
+      "external",
+      "internal"
+     ],
+     "location": "Grecia, Alajuela, Costa Rica",
+     "category": "Manufacturing",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.31124,
+        "lat": 10.07243
+       },
+       "location": "Grecia, Alajuela, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Manufacturing"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Manufacturing",
+     "ml_skills": [
+      "cmm calibration",
+      "asme b89.4.1",
+      "gmp compliance",
+      "cmm programming",
+      "gd&t",
+      "pcdmis",
+      "process validation",
+      "capa",
+      "statistical analysis",
+      "measurement uncertainty handling",
+      "technical documentation",
+      "sap",
+      "manufacturing operations",
+      "troubleshooting",
+      "process improvement",
+      "equipment maintenance",
+      "technical reporting",
+      "cross-functional collaboration",
+      "training delivery",
+      "feasibility studies",
+      "capital equipment analysis",
+      "microsoft word",
+      "microsoft excel"
+     ],
+     "descriptionTeaser": "Exciting opportunity for a Process Engineer - CMM Programmer to manage calibration and preventive maintenance schedules for Continuous Measurement Machines (CMMs) at a medical device manufacturing site. Key responsibilities include ensuring CMMs are calibrated and maintained to cGMP standards and supporting manufacturing operations. Ideal for candidates with experience in CMM programming and calibration within regulated environments.",
+     "state": "Alajuela",
+     "siteType": "external",
+     "multi_category": [
+      "Manufacturing"
+     ],
+     "reqId": "11461",
+     "grade": "",
+     "city": "Grecia",
+     "latitude": "10.07243",
+     "multi_location": [
+      "Grecia, Alajuela, Costa Rica"
+     ],
+     "applyUrl": "https://career8.successfactors.com/careers?company=zimmerin01&loginFlowRequired=true&career_os=job_listing&career_ns=job_application&career_job_req_id=11461&_s.crb=25fvCmbM9Lad2rza%252fxJs%252fNp1mhY1RYUVrVIMdAiM2RI%253d",
+     "ml_job_parser": {
+      "descriptionTeaser": "Exciting opportunity for a Process Engineer - CMM Programmer to manage calibration and preventive maintenance schedules for Continuous Measurement Machines (CMMs) at a medical device manufacturing site. Key responsibilities include ensuring CMMs are calibrated and maintained to cGMP standards and supporting manufacturing operations. Ideal for candidates with experience in CMM programming and calibration within regulated environments.",
+      "descriptionTeaser_first200": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by...",
+      "descriptionTeaser_keyword": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a...",
+      "descriptionTeaser_ats": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a "
+     },
+     "externalApply": false,
+     "cityState": "Grecia, Alajuela",
+     "country": "Costa Rica",
+     "indeedApplyTags": true,
+     "visibilityType": "External",
+     "longitude": "-84.31124",
+     "jobId": "11461",
+     "locale": "en_US",
+     "title": "Process Engineer - CMM Programmer",
+     "jobSeqNo": "ZBUZBRUS11461EXTERNALENUS",
+     "postedDate": "2026-07-21T00:00:00.000+0000",
+     "dateCreated": "2026-07-11T14:33:22.595+0000",
+     "cityStateCountry": "Grecia, Alajuela, Costa Rica",
+     "jobVisibility": [
+      "external",
+      "internal"
+     ],
+     "location": "Grecia, Alajuela, Costa Rica",
+     "category": "Manufacturing",
+     "type": "External",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.31124,
+        "lat": 10.07243
+       },
+       "location": "Grecia, Alajuela, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Manufacturing"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Manufacturing",
+     "ml_skills": [
+      "cnc programming",
+      "cad",
+      "cam",
+      "machining centers",
+      "gd&t",
+      "process improvement",
+      "machine troubleshooting",
+      "machining efficiency analysis",
+      "tool and die certification",
+      "nims certification",
+      "training delivery",
+      "team leadership",
+      "manufacturing budgeting",
+      "cycle time analysis",
+      "machining efficiency figures",
+      "process stability",
+      "quality system compliance",
+      "design testing",
+      "offset guidance",
+      "probing cycles",
+      "program linking"
+     ],
+     "descriptionTeaser": "Take on the role of CNC Engineer, providing advanced technical support and guidance to less experienced CNC Programmers. Lead the development of machining processes for medical device manufacturing and drive process improvements. Ideal for candidates with strong CAD and CAM expertise and experience in machining centres.",
+     "state": "Alajuela",
+     "siteType": "external",
+     "multi_category": [
+      "Manufacturing"
+     ],
+     "reqId": "11462",
+     "grade": "",
+     "city": "Grecia",
+     "latitude": "10.07243",
+     "multi_location": [
+      "Grecia, Alajuela, Costa Rica"
+     ],
+     "applyUrl": "https://career8.successfactors.com/careers?company=zimmerin01&loginFlowRequired=true&career_os=job_listing&career_ns=job_application&career_job_req_id=11462&_s.crb=25fvCmbM9Lad2rza%252fxJs%252fNp1mhY1RYUVrVIMdAiM2RI%253d",
+     "ml_job_parser": {
+      "descriptionTeaser": "Take on the role of CNC Engineer, providing advanced technical support and guidance to less experienced CNC Programmers. Lead the development of machining processes for medical device manufacturing and drive process improvements. Ideal for candidates with strong CAD and CAM expertise and experience in machining centres.",
+      "descriptionTeaser_first200": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by...",
+      "descriptionTeaser_keyword": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a...",
+      "descriptionTeaser_ats": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a "
+     },
+     "externalApply": false,
+     "cityState": "Grecia, Alajuela",
+     "country": "Costa Rica",
+     "indeedApplyTags": true,
+     "visibilityType": "External",
+     "longitude": "-84.31124",
+     "jobId": "11462",
+     "locale": "en_US",
+     "title": "CNC Engineer",
+     "jobSeqNo": "ZBUZBRUS11462EXTERNALENUS",
+     "postedDate": "2026-07-21T00:00:00.000+0000",
+     "dateCreated": "2026-07-11T15:03:56.284+0000",
+     "cityStateCountry": "Grecia, Alajuela, Costa Rica",
+     "jobVisibility": [
+      "external",
+      "internal"
+     ],
+     "location": "Grecia, Alajuela, Costa Rica",
+     "category": "Manufacturing",
+     "type": "External",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.31124,
+        "lat": 10.07243
+       },
+       "location": "Grecia, Alajuela, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Manufacturing"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Manufacturing",
+     "ml_skills": [
+      "mes implementation",
+      "data analytics",
+      "manufacturing systems",
+      "erp",
+      "system configuration",
+      "system troubleshooting",
+      "sql",
+      "oracle",
+      "microsoft sql server",
+      "user requirement specifications",
+      "factory acceptance testing",
+      "user acceptance testing",
+      "site acceptance testing",
+      "data validation",
+      "data modeling",
+      "dashboard development",
+      "kpi development",
+      "reporting tools",
+      "automation platforms",
+      "digital solutions deployment",
+      "regulatory compliance",
+      "quality performance tracking",
+      "cross-functional collaboration",
+      "project planning",
+      "opcenter",
+      "critical manufacturing",
+      "rockwell plex",
+      "project management",
+      "training delivery"
+     ],
+     "type": "External",
+     "descriptionTeaser": "Become part of our team as a Business Analyst-MES, supporting the implementation and optimisation of Manufacturing Execution Systems and data analytics solutions in a regulated medical device environment. Drive operational improvements and collaborate with cross-functional teams. Ideal for candidates with experience in manufacturing systems and strong analytical skills.",
+     "state": "Alajuela",
+     "siteType": "external",
+     "multi_category": [
+      "Manufacturing"
+     ],
+     "reqId": "11451",
+     "grade": "",
+     "city": "Grecia",
+     "latitude": "10.07243",
+     "multi_location": [
+      "Grecia, Alajuela, Costa Rica"
+     ],
+     "applyUrl": "https://career8.successfactors.com/careers?company=zimmerin01&loginFlowRequired=true&career_os=job_listing&career_ns=job_application&career_job_req_id=11451&_s.crb=25fvCmbM9Lad2rza%252fxJs%252fNp1mhY1RYUVrVIMdAiM2RI%253d",
+     "ml_job_parser": {
+      "descriptionTeaser": "Become part of our team as a Business Analyst-MES, supporting the implementation and optimisation of Manufacturing Execution Systems and data analytics solutions in a regulated medical device environment. Drive operational improvements and collaborate with cross-functional teams. Ideal for candidates with experience in manufacturing systems and strong analytical skills.",
+      "descriptionTeaser_first200": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by...",
+      "descriptionTeaser_keyword": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a...",
+      "descriptionTeaser_ats": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a"
+     },
+     "externalApply": false,
+     "cityState": "Grecia, Alajuela",
+     "country": "Costa Rica",
+     "indeedApplyTags": true,
+     "visibilityType": "External",
+     "longitude": "-84.31124",
+     "jobId": "11451",
+     "locale": "en_US",
+     "title": "Business Analyst-MES",
+     "jobSeqNo": "ZBUZBRUS11451EXTERNALENUS",
+     "postedDate": "2026-07-24T00:00:00.000+0000",
+     "dateCreated": "2026-07-11T13:01:31.216+0000",
+     "cityStateCountry": "Grecia, Alajuela, Costa Rica",
+     "jobVisibility": [
+      "external",
+      "internal"
+     ],
+     "location": "Grecia, Alajuela, Costa Rica",
+     "category": "Manufacturing",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.31124,
+        "lat": 10.07243
+       },
+       "location": "Grecia, Alajuela, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Manufacturing"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Manufacturing",
+     "ml_skills": [
+      "training program coordination",
+      "learning management system",
+      "regulatory compliance",
+      "document control",
+      "database processing",
+      "fda regulations",
+      "training documentation management",
+      "verbal communication",
+      "written communication",
+      "organizational skills",
+      "training needs assessment",
+      "cross-functional coordination"
+     ],
+     "type": "External",
+     "descriptionTeaser": "We are looking for a Training Coordinator to support the development and coordination of training programmes for Zimmer Biomet personnel. You will maintain training documentation and ensure compliance with regulatory requirements. Ideal candidates will have relevant experience and strong organisational skills.",
+     "state": "Alajuela",
+     "siteType": "external",
+     "multi_category": [
+      "Manufacturing"
+     ],
+     "reqId": "11467",
+     "grade": "",
+     "city": "Grecia",
+     "latitude": "10.07243",
+     "multi_location": [
+      "Grecia, Alajuela, Costa Rica"
+     ],
+     "applyUrl": "https://career8.successfactors.com/careers?company=zimmerin01&loginFlowRequired=true&career_os=job_listing&career_ns=job_application&career_job_req_id=11467&_s.crb=25fvCmbM9Lad2rza%252fxJs%252fNp1mhY1RYUVrVIMdAiM2RI%253d",
+     "ml_job_parser": {
+      "descriptionTeaser": "We are looking for a Training Coordinator to support the development and coordination of training programmes for Zimmer Biomet personnel. You will maintain training documentation and ensure compliance with regulatory requirements. Ideal candidates will have relevant experience and strong organisational skills.",
+      "descriptionTeaser_first200": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by...",
+      "descriptionTeaser_keyword": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a...",
+      "descriptionTeaser_ats": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a "
+     },
+     "externalApply": false,
+     "cityState": "Grecia, Alajuela",
+     "country": "Costa Rica",
+     "indeedApplyTags": true,
+     "visibilityType": "External",
+     "longitude": "-84.31124",
+     "jobId": "11467",
+     "locale": "en_US",
+     "title": "Training Coordinator",
+     "jobSeqNo": "ZBUZBRUS11467EXTERNALENUS",
+     "postedDate": "2026-07-30T00:00:00.000+0000",
+     "dateCreated": "2026-07-11T15:03:56.285+0000",
+     "cityStateCountry": "Grecia, Alajuela, Costa Rica",
+     "jobVisibility": [
+      "external",
+      "internal"
+     ],
+     "location": "Grecia, Alajuela, Costa Rica",
+     "category": "Manufacturing",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.31124,
+        "lat": 10.07243
+       },
+       "location": "Grecia, Alajuela, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Manufacturing"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Finance",
+     "ml_skills": [
+      "financial forecasting",
+      "budgeting",
+      "financial reporting",
+      "cost accounting",
+      "erp systems",
+      "microsoft excel",
+      "us gaap",
+      "ifrs",
+      "discounted cash flow analysis",
+      "sap",
+      "regulatory compliance",
+      "roi analysis",
+      "payback analysis",
+      "oracle",
+      "microsoft powerpoint",
+      "statistical analysis",
+      "data analysis",
+      "manufacturing accounting",
+      "project leadership",
+      "cross-functional leadership",
+      "conflict resolution",
+      "stakeholder management"
+     ],
+     "type": "External",
+     "descriptionTeaser": "Become part of our team as Finance Manager at our Green Valley manufacturing site, where you will oversee financial forecasting and planning, support consolidation and reporting, and collaborate with business leaders to ensure compliance and drive business objectives. Ideal candidates bring significant finance experience and expertise in accounting within a manufacturing environment.",
+     "state": "Alajuela",
+     "siteType": "external",
+     "multi_category": [
+      "Corporate Careers"
+     ],
+     "reqId": "10091",
+     "grade": "",
+     "city": "Grecia",
+     "latitude": "10.07243",
+     "multi_location": [
+      "Grecia, Alajuela, Costa Rica"
+     ],
+     "applyUrl": "https://career8.successfactors.com/careers?company=zimmerin01&loginFlowRequired=true&career_os=job_listing&career_ns=job_application&career_job_req_id=10091&_s.crb=25fvCmbM9Lad2rza%252fxJs%252fNp1mhY1RYUVrVIMdAiM2RI%253d",
+     "ml_job_parser": {
+      "descriptionTeaser": "Become part of our team as Finance Manager at our Green Valley manufacturing site, where you will oversee financial forecasting and planning, support consolidation and reporting, and collaborate with business leaders to ensure compliance and drive business objectives. Ideal candidates bring significant finance experience and expertise in accounting within a manufacturing environment.",
+      "descriptionTeaser_first200": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by...",
+      "descriptionTeaser_keyword": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a...",
+      "descriptionTeaser_ats": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a "
+     },
+     "externalApply": false,
+     "cityState": "Grecia, Alajuela",
+     "country": "Costa Rica",
+     "indeedApplyTags": true,
+     "visibilityType": "External",
+     "longitude": "-84.31124",
+     "jobId": "10091",
+     "locale": "en_US",
+     "title": "Finance Manager (Green Valley manufacturing site)",
+     "jobSeqNo": "ZBUZBRUS10091EXTERNALENUS",
+     "postedDate": "2026-07-01T00:00:00.000+0000",
+     "dateCreated": "2026-04-16T12:01:51.178+0000",
+     "cityStateCountry": "Grecia, Alajuela, Costa Rica",
+     "jobVisibility": [
+      "external",
+      "internal"
+     ],
+     "location": "Grecia, Alajuela, Costa Rica",
+     "category": "Corporate Careers",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.31124,
+        "lat": 10.07243
+       },
+       "location": "Grecia, Alajuela, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Corporate Careers"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Manufacturing",
+     "ml_skills": [
+      "facilities management",
+      "regulatory compliance",
+      "building technical services",
+      "facility planning",
+      "safety compliance",
+      "maintenance scheduling",
+      "budget management",
+      "quality compliance",
+      "building management systems",
+      "engineering knowledge",
+      "capital expenditure planning",
+      "security systems",
+      "alarm systems",
+      "ms office",
+      "mechanical systems",
+      "electrical systems",
+      "structural systems",
+      "presentation skills",
+      "conflict resolution",
+      "stakeholder management",
+      "process management",
+      "manufacturing operations"
+     ],
+     "type": "External",
+     "descriptionTeaser": "Join our team as a Facilities Manager, leading technical services and overseeing all facilities and building maintenance to support site operations. Drive cost efficiency, reliability, and compliance while providing strategic leadership. Ideal for experienced professionals with strong people management and technical expertise.",
+     "state": "Alajuela",
+     "siteType": "external",
+     "multi_category": [
+      "Manufacturing"
+     ],
+     "reqId": "9931",
+     "grade": "",
+     "city": "Grecia",
+     "latitude": "10.07243",
+     "multi_location": [
+      "Grecia, Alajuela, Costa Rica"
+     ],
+     "applyUrl": "https://career8.successfactors.com/careers?company=zimmerin01&loginFlowRequired=true&career_os=job_listing&career_ns=job_application&career_job_req_id=9931&_s.crb=25fvCmbM9Lad2rza%252fxJs%252fNp1mhY1RYUVrVIMdAiM2RI%253d",
+     "ml_job_parser": {
+      "descriptionTeaser": "Join our team as a Facilities Manager, leading technical services and overseeing all facilities and building maintenance to support site operations. Drive cost efficiency, reliability, and compliance while providing strategic leadership. Ideal for experienced professionals with strong people management and technical expertise.",
+      "descriptionTeaser_first200": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by...",
+      "descriptionTeaser_keyword": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a...",
+      "descriptionTeaser_ats": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a "
+     },
+     "externalApply": false,
+     "cityState": "Grecia, Alajuela",
+     "country": "Costa Rica",
+     "indeedApplyTags": true,
+     "visibilityType": "External",
+     "longitude": "-84.31124",
+     "jobId": "9931",
+     "locale": "en_US",
+     "title": "Facilities Manager",
+     "jobSeqNo": "ZBUZBRUS9931EXTERNALENUS",
+     "postedDate": "2026-07-10T00:00:00.000+0000",
+     "dateCreated": "2026-04-07T16:31:31.189+0000",
+     "cityStateCountry": "Grecia, Alajuela, Costa Rica",
+     "jobVisibility": [
+      "external",
+      "internal"
+     ],
+     "location": "Grecia, Alajuela, Costa Rica",
+     "category": "Manufacturing",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.31124,
+        "lat": 10.07243
+       },
+       "location": "Grecia, Alajuela, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Manufacturing"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Quality",
+     "ml_skills": [
+      "quality management system",
+      "corrective and preventive action",
+      "iso standards",
+      "geometric dimensioning and tolerancing",
+      "blueprint reading",
+      "fmea",
+      "product testing",
+      "supplier quality management",
+      "microsoft office suite",
+      "optical comparator",
+      "cmm",
+      "design assurance",
+      "qsr regulations",
+      "data analysis",
+      "process improvement",
+      "medical device manufacturing",
+      "orthopedic industry experience",
+      "team collaboration",
+      "stakeholder communication"
+     ],
+     "type": "External",
+     "descriptionTeaser": "We are seeking a Quality Engineer to support the launch and implementation of new products at our Costa Rica site. You will ensure compliance with quality standards through audits, inspections, and data analysis. Ideal candidates have experience in quality engineering and a background in engineering or a related field.",
+     "state": "Alajuela",
+     "siteType": "external",
+     "multi_category": [
+      "Quality & Regulatory"
+     ],
+     "reqId": "11470",
+     "grade": "H",
+     "city": "Grecia",
+     "latitude": "10.07243",
+     "multi_location": [
+      "Grecia, Alajuela, Costa Rica"
+     ],
+     "applyUrl": "https://career8.successfactors.com/careers?company=zimmerin01&loginFlowRequired=true&career_os=job_listing&career_ns=job_application&career_job_req_id=11470&_s.crb=25fvCmbM9Lad2rza%252fxJs%252fNp1mhY1RYUVrVIMdAiM2RI%253d",
+     "ml_job_parser": {
+      "descriptionTeaser": "We are seeking a Quality Engineer to support the launch and implementation of new products at our Costa Rica site. You will ensure compliance with quality standards through audits, inspections, and data analysis. Ideal candidates have experience in quality engineering and a background in engineering or a related field.",
+      "descriptionTeaser_ats": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a",
+      "descriptionTeaser_keyword": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a...",
+      "descriptionTeaser_first200": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by..."
+     },
+     "externalApply": false,
+     "cityState": "Grecia, Alajuela",
+     "country": "Costa Rica",
+     "indeedApplyTags": true,
+     "visibilityType": "External",
+     "longitude": "-84.31124",
+     "jobId": "11470",
+     "locale": "en_US",
+     "title": "Quality Engineer",
+     "jobSeqNo": "ZBUZBRUS11470EXTERNALENUS",
+     "postedDate": "2026-07-23T00:00:00.000+0000",
+     "dateCreated": "2026-07-11T15:53:26.168+0000",
+     "cityStateCountry": "Grecia, Alajuela, Costa Rica",
+     "jobVisibility": [
+      "external",
+      "internal"
+     ],
+     "location": "Grecia, Alajuela, Costa Rica",
+     "category": "Quality & Regulatory",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.31124,
+        "lat": 10.07243
+       },
+       "location": "Grecia, Alajuela, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Quality & Regulatory"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Procurement",
+     "ml_skills": [
+      "supply planning",
+      "procurement",
+      "inventory management",
+      "demand planning",
+      "supplier management",
+      "sap ecc",
+      "s/4hana",
+      "sales and operations planning",
+      "continuous improvement",
+      "process improvement",
+      "contract negotiation",
+      "microsoft excel",
+      "cross-functional collaboration",
+      "team leadership",
+      "apics cscp",
+      "apics cpim"
+     ],
+     "type": "External",
+     "descriptionTeaser": "We are looking for a Supply Chain Manager to lead supply planning, procurement, and end-to-end supply chain management for medical devices. Oversee supplier performance and collaborate with cross-functional teams. Ideal for candidates with significant supply chain experience and expertise in medical device or regulated industries.",
+     "state": "Alajuela",
+     "siteType": "external",
+     "multi_category": [
+      "Supply Chain"
+     ],
+     "reqId": "11571",
+     "grade": "",
+     "city": "Grecia",
+     "latitude": "10.07243",
+     "multi_location": [
+      "Grecia, Alajuela, Costa Rica"
+     ],
+     "applyUrl": "https://career8.successfactors.com/careers?company=zimmerin01&loginFlowRequired=true&career_os=job_listing&career_ns=job_application&career_job_req_id=11571&_s.crb=25fvCmbM9Lad2rza%252fxJs%252fNp1mhY1RYUVrVIMdAiM2RI%253d",
+     "ml_job_parser": {
+      "descriptionTeaser": "We are looking for a Supply Chain Manager to lead supply planning, procurement, and end-to-end supply chain management for medical devices. Oversee supplier performance and collaborate with cross-functional teams. Ideal for candidates with significant supply chain experience and expertise in medical device or regulated industries.",
+      "descriptionTeaser_first200": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by...",
+      "descriptionTeaser_keyword": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a...",
+      "descriptionTeaser_ats": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a"
+     },
+     "externalApply": false,
+     "cityState": "Grecia, Alajuela",
+     "country": "Costa Rica",
+     "indeedApplyTags": true,
+     "visibilityType": "External",
+     "longitude": "-84.31124",
+     "jobId": "11571",
+     "locale": "en_US",
+     "title": "Supply Chain Manager (m/f/d)",
+     "jobSeqNo": "ZBUZBRUS11571EXTERNALENUS",
+     "postedDate": "2026-08-12T00:00:00.000+0000",
+     "dateCreated": "2026-07-16T19:35:31.316+0000",
+     "cityStateCountry": "Grecia, Alajuela, Costa Rica",
+     "jobVisibility": [
+      "external",
+      "internal"
+     ],
+     "location": "Grecia, Alajuela, Costa Rica",
+     "category": "Supply Chain",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.31124,
+        "lat": 10.07243
+       },
+       "location": "Grecia, Alajuela, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Supply Chain"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Information Technology",
+     "descriptionTeaser": "We are expanding our team: As a Manufacturing Systems Sr Technician, you will provide advanced support for manufacturing applications and systems, ensuring secure and reliable operations. You will troubleshoot complex issues and mentor junior team members. Ideal candidates have significant experience in manufacturing IT support and strong technical expertise.",
+     "state": "Alajuela",
+     "siteType": "external",
+     "multi_category": [
+      "Corporate Careers"
+     ],
+     "reqId": "11629",
+     "grade": "A",
+     "city": "Grecia",
+     "latitude": "10.07243",
+     "multi_location": [
+      "Grecia, Alajuela, Costa Rica"
+     ],
+     "applyUrl": "https://career8.successfactors.com/careers?company=zimmerin01&loginFlowRequired=true&career_os=job_listing&career_ns=job_application&career_job_req_id=11629&_s.crb=25fvCmbM9Lad2rza%252fxJs%252fNp1mhY1RYUVrVIMdAiM2RI%253d",
+     "ml_job_parser": {
+      "descriptionTeaser": "We are expanding our team: As a Manufacturing Systems Sr Technician, you will provide advanced support for manufacturing applications and systems, ensuring secure and reliable operations. You will troubleshoot complex issues and mentor junior team members. Ideal candidates have significant experience in manufacturing IT support and strong technical expertise.",
+      "descriptionTeaser_keyword": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a...",
+      "descriptionTeaser_first200": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by...",
+      "descriptionTeaser_ats": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a "
+     },
+     "externalApply": false,
+     "cityState": "Grecia, Alajuela",
+     "country": "Costa Rica",
+     "indeedApplyTags": true,
+     "visibilityType": "External",
+     "longitude": "-84.31124",
+     "jobId": "11629",
+     "locale": "en_US",
+     "title": "Manufacturing Systems Sr Technician",
+     "jobSeqNo": "ZBUZBRUS11629EXTERNALENUS",
+     "postedDate": "2026-07-30T00:00:00.000+0000",
+     "dateCreated": "2026-07-22T00:45:09.288+0000",
+     "cityStateCountry": "Grecia, Alajuela, Costa Rica",
+     "jobVisibility": [
+      "external",
+      "internal"
+     ],
+     "location": "Grecia, Alajuela, Costa Rica",
+     "category": "Corporate Careers",
+     "ml_skills": [
+      "manufacturing operations management",
+      "plc support",
+      "technical troubleshooting",
+      "scada support",
+      "hmi support",
+      "system integration testing",
+      "data transfer protocols",
+      "application validation",
+      "root cause analysis",
+      "change control",
+      "technical documentation",
+      "configuration management",
+      "security policy enforcement",
+      "sql",
+      "ftp",
+      "manufacturing connectivity",
+      "mentoring",
+      "process improvement",
+      "technical support",
+      "user training",
+      "project execution",
+      "regulated industry experience",
+      "fda compliance",
+      "iso compliance"
+     ],
+     "type": "External",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.31124,
+        "lat": 10.07243
+       },
+       "location": "Grecia, Alajuela, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Corporate Careers"
+      }
+     ],
+     "badge": ""
+    },
+    {
+     "subCategory": "Manufacturing",
+     "ml_skills": [
+      "plant engineering systems",
+      "preventive maintenance",
+      "hvac",
+      "compliance management",
+      "plc",
+      "electrical distribution",
+      "purified water systems",
+      "compressed air systems",
+      "condition monitoring",
+      "predictive maintenance",
+      "sap plant maintenance",
+      "computerized maintenance management systems",
+      "project planning",
+      "cost estimation",
+      "vendor management",
+      "manufacturing equipment validation",
+      "microsoft powerpoint",
+      "record keeping",
+      "process improvement",
+      "subcontractor management",
+      "organizational skills",
+      "problem solving",
+      "budget management",
+      "plant construction",
+      "facilities installation"
+     ],
+     "type": "External",
+     "descriptionTeaser": "Exciting opportunity for a Facilities Specialist to support plant operations by overseeing building construction, expansion projects, and maintenance. Key responsibilities include ensuring compliance with local regulations and coordinating with vendors. Ideal for candidates with experience in plant engineering and a background in technical fields.",
+     "state": "Alajuela",
+     "siteType": "external",
+     "multi_category": [
+      "Manufacturing"
+     ],
+     "reqId": "11457",
+     "grade": "",
+     "city": "Grecia",
+     "latitude": "10.07243",
+     "multi_location": [
+      "Grecia, Alajuela, Costa Rica"
+     ],
+     "applyUrl": "https://career8.successfactors.com/careers?company=zimmerin01&loginFlowRequired=true&career_os=job_listing&career_ns=job_application&career_job_req_id=11457&_s.crb=25fvCmbM9Lad2rza%252fxJs%252fNp1mhY1RYUVrVIMdAiM2RI%253d",
+     "ml_job_parser": {
+      "descriptionTeaser": "Exciting opportunity for a Facilities Specialist to support plant operations by overseeing building construction, expansion projects, and maintenance. Key responsibilities include ensuring compliance with local regulations and coordinating with vendors. Ideal for candidates with experience in plant engineering and a background in technical fields.",
+      "descriptionTeaser_first200": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by...",
+      "descriptionTeaser_keyword": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a...",
+      "descriptionTeaser_ats": "At Zimmer Biomet, we believe in pushing the boundaries of innovation and driving our mission forward. As a global medical technology leader for nearly 100 years, a patient\u2019s mobility is enhanced by a"
+     },
+     "externalApply": false,
+     "cityState": "Grecia, Alajuela",
+     "country": "Costa Rica",
+     "indeedApplyTags": true,
+     "visibilityType": "External",
+     "longitude": "-84.31124",
+     "jobId": "11457",
+     "locale": "en_US",
+     "title": "Facilities Specialist",
+     "jobSeqNo": "ZBUZBRUS11457EXTERNALENUS",
+     "postedDate": "2026-07-30T00:00:00.000+0000",
+     "dateCreated": "2026-07-11T14:03:23.042+0000",
+     "cityStateCountry": "Grecia, Alajuela, Costa Rica",
+     "jobVisibility": [
+      "external",
+      "internal"
+     ],
+     "location": "Grecia, Alajuela, Costa Rica",
+     "category": "Manufacturing",
+     "isMultiLocation": true,
+     "multi_location_array": [
+      {
+       "latlong": {
+        "lon": -84.31124,
+        "lat": 10.07243
+       },
+       "location": "Grecia, Alajuela, Costa Rica"
+      }
+     ],
+     "isMultiCategory": false,
+     "multi_category_array": [
+      {
+       "category": "Manufacturing"
+      }
+     ],
+     "badge": ""
+    }
+   ],
+   "aggregations": [
+    {
+     "field": "country",
+     "value": {
+      "United States": 173,
+      "India": 45,
+      "Germany": 14,
+      "Japan": 14,
+      "Canada": 12,
+      "Poland": 12,
+      "Costa Rica": 11,
+      "France": 11,
+      "Australia": 9,
+      "Ireland": 8,
+      "New Zealand": 7,
+      "Colombia": 6,
+      "United Kingdom": 6,
+      "Malaysia": 5,
+      "Netherlands": 5,
+      "South Korea": 4,
+      "Belgium": 3,
+      "Chile": 3,
+      "Singapore": 3,
+      "South Africa": 3,
+      "Switzerland": 3,
+      "Finland": 2,
+      "Italy": 2,
+      "Mexico": 2,
+      "Spain": 2,
+      "Taiwan": 2,
+      "Austria": 1,
+      "Brazil": 1,
+      "Denmark": 1,
+      "Lebanon": 1,
+      "Norway": 1,
+      "Portugal": 1,
+      "Romania": 1,
+      "Saudi Arabia": 1,
+      "Sweden": 1,
+      "Turkey": 1
+     }
+    },
+    {
+     "field": "city",
+     "value": {
+      "Grecia": 11
+     }
+    },
+    {
+     "field": "company",
+     "value": {
+      "Zimmer Biomet Manufacturing Green Valley": 11
+     }
+    },
+    {
+     "field": "jobType",
+     "value": {}
+    },
+    {
+     "field": "type",
+     "value": {
+      "External": 11
+     }
+    },
+    {
+     "field": "category",
+     "value": {
+      "Manufacturing": 7,
+      "Corporate Careers": 2,
+      "Quality & Regulatory": 1,
+      "Supply Chain": 1
+     }
+    }
+   ],
+   "SEARCH_CONFIG": {
+    "contextualSearch": false,
+    "isSuggestionsEnabled": true
+   },
+   "suggestions": {},
+   "ui_skills_selection": null,
+   "ui_selections": {
+    "country": [
+     "Costa Rica"
+    ]
+   },
+   "locationData": {}
+  },
+  "eid": {
+   "trialIndex": -1,
+   "eid": "6a961e0859da49feeb3e2ced",
+   "searchType": "location",
+   "isMultiLingualVectorApplied": false,
+   "query": "Costa Rica",
+   "variant": 0,
+   "banditId": "",
+   "keywordLanguage": "en"
+  }
+ }
+}

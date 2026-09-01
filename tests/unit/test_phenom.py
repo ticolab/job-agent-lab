@@ -808,3 +808,106 @@ class TestPhilipsRecordedPayload:
         assert philips_cfg is not None and roche_cfg is not None
         assert philips_cfg.page_id == "page31-ds"
         assert philips_cfg.page_id != roche_cfg.page_id
+
+
+_ZB_ORIGIN = "https://careers.zimmerbiomet.com"
+_ZB_ENDPOINT = f"{_ZB_ORIGIN}/widgets"
+_ZB_PATH_PREFIX = "/us/en/job"
+
+
+def _make_zimmer_company(**overrides: Any) -> Company:
+    """Build the shipped ``Zimmer Biomet`` catalog entry's shape."""
+    defaults: dict[str, Any] = {
+        "name": "Zimmer Biomet",
+        "job_board_url": f"{_ZB_ORIGIN}/us/en/search-results",
+        "sample_job_url": f"{_ZB_ORIGIN}/us/en/job/11373/Operations-Project-Manager",
+        "strategy": "phenom",
+        "phenom": PhenomConfig(page_id="page12-ds", locale="en_us"),
+        "link_rule": LinkRule(path_prefix=_ZB_PATH_PREFIX),
+        "expected_jobs": 11,
+    }
+    defaults.update(overrides)
+    return Company(**defaults)
+
+
+class TestZimmerBiometRecordedPayload:
+    """Fourth Phenom tenant — first non-``en_global`` locale and non-global path.
+
+    Every prior tenant (BCG, Roche, Philips) sits at the ``en_global``
+    locale default and serves postings under ``/global/en/job``. Zimmer
+    Biomet is the first to differ on both axes at once: its board issues
+    ``lang: "en_us"`` and its postings live under ``/us/en/job``. That
+    makes it the entry that would catch a regression hard-coding either
+    value — a change assuming ``/global/en/job`` still returns 11
+    well-formed URLs here, all of them 404s.
+
+    Both locales were probed live on 2026-08-31 and return the identical
+    11 records, so ``en_us`` is shipped for fidelity to the tenant's own
+    request rather than out of necessity; ``test_locale_is_the_tenants_own``
+    pins that choice so a future "simplify to the default" edit is a
+    deliberate decision rather than an accident.
+
+    The synthesized-URL obligation gets its sharpest test here. Two of
+    the eleven titles carry characters the slug rule must survive —
+    ``Finance Manager (Green Valley manufacturing site)`` (parentheses)
+    and ``Supply Chain Manager (m/f/d)`` (parentheses plus slashes).
+    Both synthesized URLs were opened against the live board on
+    2026-08-31 and resolve to the real Costa Rica postings, so they are
+    pinned literally below.
+    """
+
+    def test_recorded_payload_yields_eleven_urls(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_ZB_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("zimmer_biomet"))
+            )
+            result = _run(PhenomStrategy().extract(_make_zimmer_company(), _ctx()))
+        assert result["metadata"]["error"] is None
+        assert len(result["jobs"]) == 11
+
+    def test_emitted_count_equals_server_total_hits(self) -> None:
+        payload = _load_fixture("zimmer_biomet")
+        total = payload["refineSearch"]["totalHits"]
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_ZB_ENDPOINT).mock(return_value=httpx.Response(200, json=payload))
+            result = _run(PhenomStrategy().extract(_make_zimmer_company(), _ctx()))
+        assert len(result["jobs"]) == total == 11
+
+    def test_every_url_uses_the_us_en_locale_path(self) -> None:
+        # The locale segment is part of the posting path, not just the
+        # board URL. A regression defaulting to /global/en/job would
+        # still emit 11 well-formed URLs, every one a 404.
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_ZB_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("zimmer_biomet"))
+            )
+            result = _run(PhenomStrategy().extract(_make_zimmer_company(), _ctx()))
+        for url in result["jobs"]:
+            assert url.startswith(f"{_ZB_ORIGIN}{_ZB_PATH_PREFIX}/"), url
+
+    def test_punctuated_titles_slugify_to_verified_live_urls(self) -> None:
+        # Verified against the live board on 2026-08-31. Parentheses are
+        # dropped and the slashes in "(m/f/d)" become hyphens; both
+        # resolve to the real postings.
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_ZB_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("zimmer_biomet"))
+            )
+            result = _run(PhenomStrategy().extract(_make_zimmer_company(), _ctx()))
+        assert (
+            f"{_ZB_ORIGIN}{_ZB_PATH_PREFIX}/11571/Supply-Chain-Manager-m-f-d"
+            in result["jobs"]
+        )
+        assert (
+            f"{_ZB_ORIGIN}{_ZB_PATH_PREFIX}"
+            "/10091/Finance-Manager-Green-Valley-manufacturing-site" in result["jobs"]
+        )
+
+    def test_locale_is_the_tenants_own(self) -> None:
+        # en_us, read off the live board. en_global returns the same 11
+        # records, so this is fidelity rather than necessity — but the
+        # value shipped should be the one the tenant issues.
+        cfg = _make_zimmer_company().phenom
+        assert cfg is not None
+        assert cfg.locale == "en_us"
+        assert cfg.page_id == "page12-ds"

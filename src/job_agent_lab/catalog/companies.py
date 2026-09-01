@@ -764,6 +764,16 @@ COMPANIES: list[Company] = [
         ),
     ),
     Company(
+        name="Zimmer Biomet",
+        aliases=("zimmer",),
+        job_board_url="https://careers.zimmerbiomet.com/us/en/search-results",
+        sample_job_url="https://careers.zimmerbiomet.com/us/en/job/11373/Operations-Project-Manager",
+        link_rule=LinkRule(path_prefix="/us/en/job"),
+        strategy="phenom",
+        expected_jobs=11,
+        phenom=PhenomConfig(page_id="page12-ds", locale="en_us"),
+    ),
+    Company(
         name="Philips",
         aliases=(),
         job_board_url="https://www.careers.philips.com/global/en/search-results",
