@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Viant Medical",
+  "job_board_url": "https://jobs.dayforcehcm.com/es-MX/medplast/COSTARICA",
+  "sample_job_url": "https://jobs.dayforcehcm.com/es-MX/medplast/COSTARICA/jobs/30656",
+  "expected_unfiltered_count": 10,
+  "captured_at": "2026-09-01T01:30:12.920990+00:00",
+  "captured_with_filters": false,
+  "notes": "Dayforce HCM board \u2014 first of this platform in the corpus. The Costa Rica scope is carried by the URL PATH (/es-MX/medplast/COSTARICA), not a query filter, so there is nothing to pre-apply and expected_unfiltered_count=10 equals expected_jobs. Tenant slug is 'medplast' (Viant Medical's former name), hence the alias.\n\nPrefix derives cleanly to /es-MX/medplast/COSTARICA/jobs with no LinkRule override \u2014 unusual for this corpus and worth keeping that way.\n\nTwo things checked rather than assumed. (1) 'Leer m\u00e1s' is NOT a load-more: there are exactly 10 of them, one per posting, and clicking one navigates into the job detail page (/jobs/27120). The probe reports no pagination affordance, and hard scrolling adds nothing, so 10 is the complete set. (2) The board does expose location controls the agent could disturb \u2014 an ARIA combobox 'locationString' and a 'distance' input \u2014 even though the scope is already in the path; hooks.filter_already_applied=True guards against the agent driving them, and the live run settles in 4 steps.\n\nAnchors render twice per posting (20 raw, 10 unique); the matcher's href dedup collapses them. The queue's original sample_job_url (/jobs/30358) had closed by integration time; a live posting is shipped instead."
+}

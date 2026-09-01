@@ -764,6 +764,14 @@ COMPANIES: list[Company] = [
         ),
     ),
     Company(
+        name="Viant Medical",
+        aliases=("viant", "medplast"),
+        job_board_url="https://jobs.dayforcehcm.com/es-MX/medplast/COSTARICA",
+        sample_job_url="https://jobs.dayforcehcm.com/es-MX/medplast/COSTARICA/jobs/30656",
+        expected_jobs=10,
+        hooks=RuntimeHooks(filter_already_applied=True),
+    ),
+    Company(
         name="Boston Scientific",
         aliases=("bostonsci", "bsci"),
         job_board_url="https://jobs.bostonscientific.com/search/?createNewAlert=false&q=&optionsFacetsDD_country=CR",
