@@ -323,6 +323,47 @@ async def _same_origin_ancestor_chain(frame: Frame, top_origin: str) -> bool:
     return True
 
 
+async def _capture_same_origin_frames(
+    page: Page, top_origin: str
+) -> list[tuple[str, str, str]]:
+    """Bake every same-origin descendant frame of ``page`` that holds anchors.
+
+    Returns ``(name, url, html)`` triples ready for the metadata writer.
+    Frames whose ancestor chain leaves ``top_origin``, frames that fail
+    to serialize, and frames with zero anchors are skipped — an anchorless
+    frame is chrome (a tracking pixel, a video embed) and freezing it would
+    only inflate the fixture.
+
+    Called once for state 1 and once per SYS-13 state >= 2. Per-state frames
+    were a documented non-goal through SYS-13 because no corpus board
+    combined same-origin frame descent with ``pre_filter_urls``: every
+    frame-bearing fixture was single-state, and every multi-state fixture
+    kept its anchors in the top document. Auxis is the first board where
+    both hold at once — an iCIMS portal whose entire listing lives inside
+    ``#icims_content_iframe``, paged by a URL cursor the top-document pager
+    walk cannot see. Freezing only state 1's frame left states >= 2 as
+    anchorless shells, so the fixture replayed 10 of 11 links while the
+    live runtime returned all 11. The asymmetry was in the capture side
+    alone: the matcher asset already descends same-origin frames in-page
+    at every state.
+    """
+    frames: list[tuple[str, str, str]] = []
+    for idx, frame in enumerate(page.frames):
+        if frame is page.main_frame:
+            continue
+        if not await _same_origin_ancestor_chain(frame, top_origin):
+            continue
+        try:
+            frame_html, anchor_count = await _bake_and_serialize(frame)
+        except Exception:  # noqa: BLE001 — best-effort per-frame
+            continue
+        if anchor_count == 0:
+            continue
+        name = _sanitize_frame_name(frame.name)
+        frames.append((f"{idx}-{name}", frame.url, frame_html))
+    return frames
+
+
 async def _bake_and_serialize(scope: Page | Frame) -> tuple[str, int]:
     """Run the bake+serialize routine in ``scope``'s execution context.
 
@@ -434,15 +475,17 @@ async def _capture(
     str,
     list[tuple[str, str, str]],
     list[tuple[int, str, str]],
-    list[tuple[int, str, str]],
+    list[tuple[int, str, str, list[tuple[str, str, str]]]],
     int,
 ]:
     """Render, bake, and serialize; return top HTML, frames, pages, states, and count.
 
     ``frames`` is a list of ``(sanitized_name, url, html)`` tuples, one
-    per same-origin-ancestor-chain frame that contains ≥1 anchor. Frames
-    are enumerated for the initial (state 1) DOM only — a documented
-    SYS-5 limitation matching the boards the walker targets.
+    per same-origin-ancestor-chain frame that contains ≥1 anchor, for the
+    initial (state 1) DOM. On the ``pre_filter_urls`` path each state
+    ≥ 2 carries its own such list as the 4th element of its ``states``
+    tuple; on the ``paginate`` path frames remain state-1-only, matching
+    the boards the walker targets.
 
     ``pages`` is a list of ``(state_index, url, html)`` tuples, empty
     unless ``paginate`` is True. When paginate is on the walker drives
@@ -568,26 +611,16 @@ async def _capture(
             # Bake + serialize the top document (state 1).
             top_html, _ = await _bake_and_serialize(page)
 
-            # Enumerate captureable frames for state 1 only — same
-            # walk shape as the pre-SYS-5 flow. Frames on states ≥ 2
-            # are a documented non-goal of SYS-5.
-            frames: list[tuple[str, str, str]] = []
-            for idx, frame in enumerate(page.frames):
-                if frame is page.main_frame:
-                    continue
-                if not await _same_origin_ancestor_chain(frame, top_origin):
-                    continue
-                try:
-                    frame_html, anchor_count = await _bake_and_serialize(frame)
-                except Exception:  # noqa: BLE001 — best-effort per-frame
-                    continue
-                if anchor_count == 0:
-                    continue
-                name = _sanitize_frame_name(frame.name)
-                frames.append((f"{idx}-{name}", frame.url, frame_html))
+            # Enumerate captureable frames for state 1. Identical walk
+            # to the pre-SYS-5 flow, now expressed once in
+            # ``_capture_same_origin_frames`` so the SYS-13 state loop
+            # below can freeze each state's frames with exactly the same
+            # semantics (see that helper's docstring for why per-state
+            # frames stopped being a non-goal).
+            frames = await _capture_same_origin_frames(page, top_origin)
 
             pages: list[tuple[int, str, str]] = []
-            states: list[tuple[int, str, str]] = []
+            states: list[tuple[int, str, str, list[tuple[str, str, str]]]] = []
             extracted: int
 
             if pre_filter_urls:
@@ -601,9 +634,10 @@ async def _capture(
                 # baked above; now we run the matcher against state 1
                 # to seed the union, then walk states 2..N applying
                 # the same execution order (goto → wait → scroll →
-                # hooks 1–2 → bake) and unioning per-state matcher
-                # runs. Frames are captured for state 1 only (SYS-5
-                # carry-forward).
+                # hooks 1–2 → bake → frames) and unioning per-state
+                # matcher runs. Each state's same-origin frames are
+                # frozen alongside it, so an iframe-hosted listing
+                # replays at every state and not just the first.
                 union: set[str] = set()
                 urls_1 = await page.evaluate(
                     EXTRACT_JOB_LINKS_JS,
@@ -627,12 +661,17 @@ async def _capture(
                     if expand_selector is not None:
                         await expand_all(driver, expand_selector)
                     state_html, _ = await _bake_and_serialize(page)
+                    # Freeze this state's same-origin frames too. Boards
+                    # that keep their listing in an iframe (iCIMS) carry
+                    # zero anchors in the state's top document, so without
+                    # this the frozen state is an empty shell.
+                    state_frames = await _capture_same_origin_frames(page, top_origin)
                     state_urls = await page.evaluate(
                         EXTRACT_JOB_LINKS_JS,
                         [prefix, top_origin, min_depth, suppress_selector],
                     )
                     union.update(state_urls)
-                    states.append((idx, page.url, state_html))
+                    states.append((idx, page.url, state_html, state_frames))
                 extracted = len(union)
             elif paginate:
                 # Drive the runtime walker and bake each state ≥ 2 as
@@ -699,7 +738,7 @@ def _write_snapshot(
     html: str,
     frames: list[tuple[str, str, str]],
     pages: list[tuple[int, str, str]],
-    states: list[tuple[int, str, str]],
+    states: list[tuple[int, str, str, list[tuple[str, str, str]]]],
     expected: int,
     notes: str,
     *,
@@ -753,14 +792,41 @@ def _write_snapshot(
     if states_dir.exists():
         for old in states_dir.glob("*.html"):
             old.unlink()
+        # Per-state frame subtrees follow the same hygiene one level
+        # deeper: a re-capture whose state N no longer has frames (or has
+        # fewer of them) must not leave orphans behind to be replayed.
+        for old in states_dir.glob("state-*-frames/*.html"):
+            old.unlink()
 
     states_meta: list[dict[str, Any]] = []
     if states:
         states_dir.mkdir(exist_ok=True)
-        for state_idx, url, state_html in states:
+        for state_idx, url, state_html, state_frames in states:
             filename = f"state-{state_idx}.html"
             (states_dir / filename).write_text(state_html, encoding="utf-8")
-            states_meta.append({"file": f"states/{filename}", "url": url})
+            entry: dict[str, Any] = {"file": f"states/{filename}", "url": url}
+            # ``frames`` on a state entry is additive-optional exactly
+            # like the top-level key: emitted only when the state
+            # actually carries anchor-bearing same-origin frames, so a
+            # multi-state fixture whose anchors live in the top document
+            # keeps byte-identical metadata to its pre-fix shape.
+            if state_frames:
+                frames_subdir = states_dir / f"state-{state_idx}-frames"
+                frames_subdir.mkdir(exist_ok=True)
+                state_frames_meta: list[dict[str, str]] = []
+                for name, frame_url, frame_html in state_frames:
+                    frame_file = f"{name}.html"
+                    (frames_subdir / frame_file).write_text(
+                        frame_html, encoding="utf-8"
+                    )
+                    state_frames_meta.append(
+                        {
+                            "file": f"states/state-{state_idx}-frames/{frame_file}",
+                            "url": frame_url,
+                        }
+                    )
+                entry["frames"] = state_frames_meta
+            states_meta.append(entry)
 
     metadata: dict[str, Any] = {
         "schema_version": SNAPSHOT_SCHEMA_VERSION,

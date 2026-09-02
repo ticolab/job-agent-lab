@@ -543,6 +543,7 @@ class TestExpectedJobsField:
             "Boston Scientific": 6,
             "Viant Medical": 10,
             "Heraeus": 27,
+            "Auxis": 11,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -998,6 +999,20 @@ class TestPreFilterUrlsField:
         # the safe side of the boundary above: "Costa Rica" is a single
         # stable option and the only region-matching value on the
         # board's facet, so there is no editable city list to drift.
+        # Auxis sits on the *riskier* side of that boundary and is worth
+        # naming as such. Its frozen URLs carry two independent values:
+        # the ``searchLocation`` facet (one stable country-level option,
+        # safe like doola's) and a ``?pr=N`` page cursor per state, which
+        # encodes today's page count. iCIMS pages at a fixed 10 per page
+        # with no honoured page-size parameter, so 11 Costa Rica postings
+        # need exactly ``pr=0`` and ``pr=1``; a 21st posting would need a
+        # third URL that no one is prompted to add. This is not the
+        # preferred shape — ``paginate=True`` would be — but the walker's
+        # pager discovery is scoped to the light DOM of the top document
+        # by design, and every iCIMS pager lives inside
+        # ``#icims_content_iframe``. The exposure is bounded by SYS-9:
+        # a page-count change makes the union short, the verdict flips to
+        # ``under``, and the next live run says so.
         expected_states: set[str] = {
             "doola",
             "REAP",
@@ -1010,6 +1025,7 @@ class TestPreFilterUrlsField:
             "Vintti",
             "Concentrix",
             "Medtronic",
+            "Auxis",
         }
         actual_states = {c.name for c in COMPANIES if c.pre_filter_urls}
         assert actual_states == expected_states, (

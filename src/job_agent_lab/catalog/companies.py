@@ -873,4 +873,16 @@ COMPANIES: list[Company] = [
             results_path="/en/search-jobs/results",
         ),
     ),
+    Company(
+        name="Auxis",
+        aliases=(),
+        job_board_url="https://jobs-auxis.icims.com/jobs/search?ss=1&searchLocation=13002-13006-Costa%20Rica",
+        sample_job_url="https://jobs-auxis.icims.com/jobs/4659/forward-deployed-engineer/job",
+        link_rule=LinkRule(path_prefix="/jobs", min_depth=2),
+        expected_jobs=11,
+        pre_filter_urls=(
+            "https://jobs-auxis.icims.com/jobs/search?ss=1&searchLocation=13002-13006-Costa%20Rica&pr=0",
+            "https://jobs-auxis.icims.com/jobs/search?ss=1&searchLocation=13002-13006-Costa%20Rica&pr=1",
+        ),
+    ),
 ]

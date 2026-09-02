@@ -225,17 +225,35 @@ def test_extractor_matches_expected_count(
     # under its recorded URL. The runtime path (``DomStrategy`` prefilter
     # branch) unions the same states via successive ``navigate_to`` +
     # ``collect_job_links`` calls, so the harness mirrors it.
-    states_meta: list[dict[str, str]] = metadata.get("states", [])
-    for entry in states_meta:
-        state_html = (snapshot_dir / entry["file"]).read_text(encoding="utf-8")
-        urls.update(_run_matcher(state_html, entry["url"]))
+    states_meta: list[dict[str, Any]] = metadata.get("states", [])
+    # A state entry may carry its own ``frames`` list, replayed under the
+    # same union semantics as the top-level ``frames`` key. Present only
+    # for boards that combine same-origin frame descent with
+    # ``pre_filter_urls`` — Auxis (iCIMS) is the first, where every job
+    # anchor lives inside ``#icims_content_iframe`` and the state's top
+    # document is an anchorless shell. Absent on every other fixture,
+    # which therefore replays byte-identically.
+    state_frame_count = 0
+    for state_entry in states_meta:
+        state_html = (snapshot_dir / state_entry["file"]).read_text(encoding="utf-8")
+        urls.update(_run_matcher(state_html, state_entry["url"]))
+        state_frames: list[dict[str, str]] = state_entry.get("frames", [])
+        for frame_entry in state_frames:
+            state_frame_count += 1
+            frame_html = (snapshot_dir / frame_entry["file"]).read_text(
+                encoding="utf-8"
+            )
+            urls.update(_run_matcher(frame_html, frame_entry["url"]))
 
     actual = len(urls)
-    doc_count = 1 + len(frames_meta) + len(pages_meta) + len(states_meta)
+    doc_count = (
+        1 + len(frames_meta) + len(pages_meta) + len(states_meta) + state_frame_count
+    )
     assert actual == expected, (
         f"{metadata['company_name']}: matcher returned {actual} links across "
         f"{doc_count} doc(s) "
         f"(1 top + {len(frames_meta)} frame(s) + {len(pages_meta)} page(s) "
-        f"+ {len(states_meta)} state(s)), "
+        f"+ {len(states_meta)} state(s) "
+        f"+ {state_frame_count} state-frame(s)), "
         f"expected {expected} (snapshot: {snapshot_dir.name})"
     )

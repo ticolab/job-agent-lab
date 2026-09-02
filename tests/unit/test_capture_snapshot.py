@@ -243,8 +243,8 @@ class TestPreFilterUrlsMetadata:
             "https://example.com/careers?location=latam",
         )
         company = self._stub_company(pre_filter_urls=pre_filter_urls)
-        states = [
-            (2, pre_filter_urls[1], "<html><body>state 2</body></html>"),
+        states: list[tuple[int, str, str, list[tuple[str, str, str]]]] = [
+            (2, pre_filter_urls[1], "<html><body>state 2</body></html>", []),
         ]
         write_snapshot(
             tmp_path,
@@ -266,6 +266,10 @@ class TestPreFilterUrlsMetadata:
         assert metadata["top_url"] == pre_filter_urls[0]
         # ``states`` mirrors ``frames`` / ``pages`` shape: list of
         # ``{file, url}`` dicts. One entry per state-N ≥ 2.
+        # A state with no same-origin frames emits no ``frames`` key, so
+        # the entry shape is byte-identical to its pre-per-state-frames
+        # form. Every multi-state fixture whose anchors live in the top
+        # document stays comparable.
         assert metadata["states"] == [
             {"file": "states/state-2.html", "url": pre_filter_urls[1]}
         ]
@@ -382,3 +386,123 @@ class TestSuppressAncestorSelectorMetadata:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+class TestPerStateFrames:
+    """Pin per-state frame freezing in ``_write_snapshot``.
+
+    Through SYS-13 the capture script froze same-origin frames for state
+    1 only, and the docstring called frames on states >= 2 a documented
+    non-goal. That held as long as no corpus board combined the two axes:
+    every frame-bearing fixture was single-state, and every multi-state
+    fixture kept its anchors in the top document.
+
+    Auxis breaks the assumption. It is an iCIMS portal whose entire
+    listing renders inside ``#icims_content_iframe``, paged by a ``?pr=N``
+    URL cursor — so it needs ``pre_filter_urls`` for the pages *and* frame
+    descent for the anchors. With state-1-only frames its state 2 froze as
+    an anchorless shell and the fixture replayed 10 of 11 links while the
+    live runtime returned all 11: a capture-side gap only, since the
+    matcher asset already descends same-origin frames in-page at every
+    state.
+
+    The fix keys off the same additive-optional convention as every other
+    schema key: a state entry gains a nested ``frames`` list only when
+    that state actually carries anchor-bearing frames, so multi-state
+    fixtures without frames keep byte-identical metadata (pinned by
+    ``TestPreFilterUrlsMetadata``).
+    """
+
+    def _stub_company(self, pre_filter_urls: tuple[str, ...] = ()) -> Company:  # type: ignore[name-defined]  # noqa: F821
+        from job_agent_lab.domain.company import Company
+
+        return Company(
+            name="Example Corp",
+            job_board_url="https://example.com/careers",
+            sample_job_url="https://example.com/jobs/1",
+            pre_filter_urls=pre_filter_urls,
+        )
+
+    def test_state_frames_are_written_and_recorded(self, tmp_path: Path) -> None:
+        """A state carrying frames emits a nested ``frames`` list + files.
+
+        The path shape (``states/state-N-frames/<name>.html``) matters as
+        much as the metadata: the harness reads each frame straight from
+        ``metadata.states[*].frames[*].file``, so a mismatch between the
+        recorded path and the written file is exactly the "metadata claims
+        a file the harness cannot load" bug the SYS-13 tests guard against
+        one level up.
+        """
+        import json
+
+        write_snapshot = _capture_module._write_snapshot
+        pre_filter_urls = (
+            "https://example.com/careers?pr=0",
+            "https://example.com/careers?pr=1",
+        )
+        company = self._stub_company(pre_filter_urls=pre_filter_urls)
+        states: list[tuple[int, str, str, list[tuple[str, str, str]]]] = [
+            (
+                2,
+                pre_filter_urls[1],
+                "<html><body>state 2 shell</body></html>",
+                [
+                    (
+                        "6-board_iframe",
+                        "https://example.com/careers?pr=1&in_iframe=1",
+                        "<html><body><a href='/jobs/2'>Job</a></body></html>",
+                    )
+                ],
+            ),
+        ]
+        write_snapshot(
+            tmp_path,
+            company,
+            "<html><body>state 1</body></html>",
+            [],  # frames (state 1)
+            [],  # pages
+            states,
+            2,
+            "unit test",
+        )
+        metadata = json.loads((tmp_path / "metadata.json").read_text())
+        assert metadata["states"] == [
+            {
+                "file": "states/state-2.html",
+                "url": pre_filter_urls[1],
+                "frames": [
+                    {
+                        "file": "states/state-2-frames/6-board_iframe.html",
+                        "url": "https://example.com/careers?pr=1&in_iframe=1",
+                    }
+                ],
+            }
+        ]
+        frame_path = tmp_path / "states" / "state-2-frames" / "6-board_iframe.html"
+        assert frame_path.exists()
+        assert "href='/jobs/2'" in frame_path.read_text()
+
+    def test_stale_state_frames_swept_on_recapture(self, tmp_path: Path) -> None:
+        """Orphan per-state frame files are deleted on re-capture.
+
+        Same silent-over-count hazard the ``states/`` and ``pages/``
+        sweeps exist for, one directory level deeper: a board that drops
+        a state (or whose state stops carrying an iframe) would otherwise
+        leave a frame file behind that the harness keeps unioning in.
+        """
+        write_snapshot = _capture_module._write_snapshot
+        stale_dir = tmp_path / "states" / "state-2-frames"
+        stale_dir.mkdir(parents=True)
+        stale_file = stale_dir / "6-board_iframe.html"
+        stale_file.write_text("<html><body><a href='/jobs/99'>Stale</a></body></html>")
+        write_snapshot(
+            tmp_path,
+            self._stub_company(),
+            "<html><body>fresh state 1</body></html>",
+            [],
+            [],
+            [],
+            0,
+            "unit test",
+        )
+        assert not stale_file.exists()
