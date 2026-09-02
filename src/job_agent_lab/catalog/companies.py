@@ -859,4 +859,18 @@ COMPANIES: list[Company] = [
         expected_jobs=3,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
+    Company(
+        name="Heraeus",
+        aliases=(),
+        job_board_url="https://jobs.heraeus.com/en/search-jobs",
+        sample_job_url="https://jobs.heraeus.com/en/job/cartago/quality-engineer-ii/3105/35497250368",
+        link_rule=LinkRule(path_prefix="/en/job"),
+        strategy="talentbrew",
+        expected_jobs=27,
+        talentbrew=TalentbrewConfig(
+            facet_id="3624060",
+            facet_display="Costa Rica",
+            results_path="/en/search-jobs/results",
+        ),
+    ),
 ]

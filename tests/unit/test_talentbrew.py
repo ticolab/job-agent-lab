@@ -25,6 +25,7 @@ import threading
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
+from urllib.parse import urljoin
 
 import httpx
 import pytest
@@ -1213,3 +1214,120 @@ class TestMoodysRecordedPayload:
             )
             _run(TalentbrewStrategy().extract(_make_moodys_company(), _ctx()))
         assert route.call_count == 2
+
+
+_HERAEUS_ORIGIN = "https://jobs.heraeus.com"
+_HERAEUS_ENDPOINT = f"{_HERAEUS_ORIGIN}/en/search-jobs/results"
+
+
+def _load_heraeus_fixture(page: int = 1) -> dict[str, Any]:
+    """Read a recorded Heraeus ``/en/search-jobs/results`` page payload."""
+    name = "heraeus.json" if page == 1 else f"heraeus_page{page}.json"
+    payload = json.loads((_FIXTURE_DIR / name).read_text())
+    assert isinstance(payload, dict), f"{name} is not a JSON object"
+    return payload
+
+
+def _make_heraeus_company(**overrides: Any) -> Company:
+    """Build the shipped ``Heraeus`` catalog entry's shape."""
+    defaults: dict[str, Any] = {
+        "name": "Heraeus",
+        "job_board_url": f"{_HERAEUS_ORIGIN}/en/search-jobs",
+        "sample_job_url": (
+            f"{_HERAEUS_ORIGIN}/en/job/cartago/quality-engineer-ii/3105/35497250368"
+        ),
+        "strategy": "talentbrew",
+        "talentbrew": TalentbrewConfig(
+            facet_id="3624060",
+            facet_display="Costa Rica",
+            results_path="/en/search-jobs/results",
+        ),
+        "link_rule": LinkRule(path_prefix="/en/job"),
+        "expected_jobs": 27,
+    }
+    defaults.update(overrides)
+    return Company(**defaults)
+
+
+class TestHeraeusRecordedPayload:
+    """Fourth Talentbrew tenant — the second that spans two pages.
+
+    Heraeus shares Moody's locale-prefixed shape (``/en/search-jobs/
+    results`` with ``/en/job`` anchors) and its 27-posting Costa Rica
+    facet, so on its own it would only re-cover ground
+    ``TestMoodysRecordedPayload`` already pins. What makes it worth a
+    fixture is the *pager anchors* in its ``results`` fragment: page 1
+    carries 18 raw anchors — the 15 postings plus two
+    ``/search-jobs/results&p=N`` cursor links and a bare ``#`` — which
+    LinkRule drops to exactly 15. That is the concrete instance of the
+    two-signal continuation predicate ``build_query_params``' docstring
+    describes in the abstract: a raw count perturbed above the page size
+    by chrome, where only the *filtered* count may be compared against
+    ``records_per_page``. A regression that compared raw anchors instead
+    would read 18 != 15 and stop after page 1, returning 15 of 27.
+    """
+
+    def test_recorded_payload_yields_twenty_seven_urls(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.get(_HERAEUS_ENDPOINT).mock(
+                side_effect=[
+                    httpx.Response(200, json=_load_heraeus_fixture(1)),
+                    httpx.Response(200, json=_load_heraeus_fixture(2)),
+                ]
+            )
+            result = _run(TalentbrewStrategy().extract(_make_heraeus_company(), _ctx()))
+        assert result["metadata"]["error"] is None
+        assert len(result["jobs"]) == 27
+
+    def test_page_one_chrome_anchors_do_not_inflate_the_page_size_check(self) -> None:
+        # The fragment's 18 raw anchors exceed records_per_page=15 while
+        # the LinkRule survivors equal it exactly. Both facts must hold
+        # for this fixture to be the regression guard it claims to be:
+        # if a future recording lost the pager links, the test would
+        # still pass but stop covering the predicate.
+        payload = _load_heraeus_fixture(1)
+        raw = parse_anchor_hrefs(payload["results"])
+        filtered = apply_link_rule(
+            [urljoin(_HERAEUS_ENDPOINT, href) for href in raw],
+            origin=_HERAEUS_ORIGIN,
+            base_path="/en/job",
+        )
+        assert len(raw) > 15, "pager/chrome anchors missing from the recording"
+        assert len(filtered) == 15
+
+    def test_two_requests_when_first_page_is_full(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            route = mock.get(_HERAEUS_ENDPOINT).mock(
+                side_effect=[
+                    httpx.Response(200, json=_load_heraeus_fixture(1)),
+                    httpx.Response(200, json=_load_heraeus_fixture(2)),
+                ]
+            )
+            _run(TalentbrewStrategy().extract(_make_heraeus_company(), _ctx()))
+        assert route.call_count == 2
+
+    def test_every_url_is_absolutized_under_the_en_locale_prefix(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.get(_HERAEUS_ENDPOINT).mock(
+                side_effect=[
+                    httpx.Response(200, json=_load_heraeus_fixture(1)),
+                    httpx.Response(200, json=_load_heraeus_fixture(2)),
+                ]
+            )
+            result = _run(TalentbrewStrategy().extract(_make_heraeus_company(), _ctx()))
+        for url in result["jobs"]:
+            assert url.startswith(f"{_HERAEUS_ORIGIN}/en/job/"), url
+
+    def test_no_pager_cursor_urls_survive_the_link_rule(self) -> None:
+        # ``/search-jobs/results&p=2`` is same-origin and would sail
+        # through an origin-only filter. Naming it explicitly documents
+        # why the LinkRule is load-bearing on this tenant.
+        with respx.mock(assert_all_called=False) as mock:
+            mock.get(_HERAEUS_ENDPOINT).mock(
+                side_effect=[
+                    httpx.Response(200, json=_load_heraeus_fixture(1)),
+                    httpx.Response(200, json=_load_heraeus_fixture(2)),
+                ]
+            )
+            result = _run(TalentbrewStrategy().extract(_make_heraeus_company(), _ctx()))
+        assert not [url for url in result["jobs"] if "search-jobs" in url]

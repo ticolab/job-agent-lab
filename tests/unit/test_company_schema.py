@@ -542,6 +542,7 @@ class TestExpectedJobsField:
             "Zimmer Biomet": 11,
             "Boston Scientific": 6,
             "Viant Medical": 10,
+            "Heraeus": 27,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1350,7 +1351,19 @@ class TestTalentbrewStrategyPresenceValidator:
         # two recorded payloads — ``moodys.json`` plus
         # ``moodys_page2.json`` — and the ``TestMoodysRecordedPayload``
         # cases. Same no-DOM-snapshot shape as Citi and Veeam.
-        expected_talentbrew = {"Citi", "Veeam Software", "Moody's Corporation"}
+        # Heraeus is the fourth tenant and the second two-page one, on
+        # the same 3624060 Costa Rica facet at 27 postings; it ships
+        # ``heraeus.json`` plus ``heraeus_page2.json`` and the
+        # ``TestHeraeusRecordedPayload`` cases. Its distinct coverage is
+        # the pager anchors in the ``results`` fragment, which push the
+        # raw page-1 count to 18 against a filtered 15 and so pin the
+        # continuation predicate to the LinkRule-filtered count.
+        expected_talentbrew = {
+            "Citi",
+            "Veeam Software",
+            "Moody's Corporation",
+            "Heraeus",
+        }
         actual_talentbrew = {c.name for c in COMPANIES if c.strategy == "talentbrew"}
         assert actual_talentbrew == expected_talentbrew, (
             f"strategy='talentbrew' corpus set drift: "
