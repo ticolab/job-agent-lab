@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Emerson",
+  "job_board_url": "https://hdjq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=LOCATIONS&selectedLocationsFacet=300000000228624",
+  "sample_job_url": "https://hdjq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/26010327/",
+  "expected_unfiltered_count": 16,
+  "captured_at": "2026-09-14T18:19:24.217653+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

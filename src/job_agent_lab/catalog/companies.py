@@ -885,4 +885,12 @@ COMPANIES: list[Company] = [
             "https://jobs-auxis.icims.com/jobs/search?ss=1&searchLocation=13002-13006-Costa%20Rica&pr=1",
         ),
     ),
+    Company(
+        name="Emerson",
+        aliases=(),
+        job_board_url="https://hdjq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=LOCATIONS&selectedLocationsFacet=300000000228624",
+        sample_job_url="https://hdjq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/26010327/",
+        expected_jobs=16,
+        hooks=RuntimeHooks(filter_already_applied=True),
+    ),
 ]
