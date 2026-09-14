@@ -10,5 +10,11 @@
     "job_board_url": "https://www.deel.com/careers/",
     "sample_job_url": "https://www.deel.com/careers/job/?ats_id=76d092b7-423d-4cfc-819a-02f5584348ea",
     "expected_jobs": 6
+  },
+  {
+    "name": "Instacredit",
+    "job_board_url": "https://empleos.instacredit.com/empleos/",
+    "sample_job_url": "https://empleos.instacredit.com/v_empleo/?id=314&nombre=Jefe+Regional+de+Capacitaci%C3%B3n+y+Entrenamiento+Operativo",
+    "expected_jobs": 11
   }
 ]

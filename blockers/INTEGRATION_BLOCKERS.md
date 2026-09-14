@@ -30,7 +30,7 @@ not the same as every board of that shape being integrated.
 
 | Class | Shape | Status |
 |---|---|---|
-| C1 | Job cards are non-anchor elements; the destination exists only in framework state or an XHR response | **Open** on the DOM path. Closable per board when a backing API is reachable |
+| C1 | Job cards are non-anchor elements; the destination exists only in framework state, an XHR response, or a `<form>` submit | **Open** on the DOM path. Closable per board when a backing API is reachable. Two boards: Luflox (router state), Instacredit (form submit) |
 | C2 | The only filter affordance is a free-text search box — no location facet | **Open** outside Greenhouse. Closed for Greenhouse tenants, which bypass the DOM entirely |
 | C3 | Location filter is a native `<select>` or combobox the agent must discover and drive | Closed by the prompt playbook, including attribute-anonymous selects behind custom widgets |
 | C4 | Listings hidden behind collapsed accordions, each independently openable | Closed — `hooks.expand_selector` runs bounded click-all rounds (exemplar: Jobsity). The *exclusive* accordion variant is **not** this class; see C20 |
@@ -107,8 +107,68 @@ harness, since it is a sequenced interaction rather than a one-shot evaluate.
 
 **Disposition (2026-08-15).** Reviewed and deliberately left blocked. Three
 postings do not justify either route, and the next C1 board is unlikely to be
-Firestore, so the config surface would not be reused. Revisit if C1-interaction
-boards accumulate.
+Firestore, so the config surface would not be reused. A second C1 board arrived
+2026-09-14 (Instacredit, below) on a different transport with the destination
+present in the DOM — a Firestore surface would still not be reused, so this
+disposition stands.
+
+### Instacredit — C1 (form-submit variant), open
+
+*Investigated 2026-09-14. Queue: `blocked-companies.json`, `expected_jobs: 11`.*
+
+A WordPress board at `https://empleos.instacredit.com/empleos/`. Cards come from
+`POST /wp-admin/admin-ajax.php` (`action=fetch_empleos`, params `page`, `pais`,
+`cargo_categoria`, `localidad`), which returns a JSON envelope around an HTML
+fragment. Every posting navigates by form submission, not an anchor:
+
+```html
+<form action="/v_empleo" method="get">
+  <input type="hidden" name="id" value="336">
+  <input type="hidden" name="nombre" value="Gestor de cobranza telefónica …">
+  <button type="submit" class="apply-button">Aplicar</button>
+</form>
+```
+
+Zero `<a>` under any prefix, on all 3 pages and in every AJAX payload.
+`extractor_ground_truth.py` returns 0 with the corrected prefix `/v_empleo` (the
+queue's query-form `sample_job_url` derives `/`; the path form `/v_empleo/314/`
+is required). Unlike Luflox, the destination *is* in the DOM: `action` plus the
+hidden inputs fully determine `/v_empleo?id=336&nombre=…`.
+
+**Three independent gaps**, each measured on the live board:
+
+1. **Link shape (C1).** A form-derived-link rule prototyped in-page synthesizes
+   9/9 links per page with 0 false positives — the filter form falls outside the
+   prefix on its own. Closes this gap only.
+2. **Pagination (C13 shape).** `<button class="page-next">→</button>`, AJAX
+   swap, URL unchanged. Closable today with `paginate=True` and
+   `hooks.next_control_selector="#pagination .page-next"`.
+3. **Location filter — the real wall.** `select#pais` values are exact
+   `country, city` strings and the backend matches exactly: `pais=Costa Rica`
+   returns 0. Costa Rica is split across four options (San José 7, `Costa Rica,`
+   1, Cartago 1, Alajuela 1 = 10). Filter state never reaches the URL, so
+   `pre_filter_urls` cannot express it. A union of four exclusive selections is
+   the C20 shape.
+
+```text
+today                                0
++ form rule                          9   (page 1)
++ form rule + pagination            23   (whole board — verdict `over`)
+Costa Rica, four-way union          10   (target 11)
+```
+
+**Target drift.** Live Costa Rica count is 10 against `expected_jobs: 11`.
+Posting 312 carries a blank city (`Costa Rica,`) and is easy to miss or
+double-count. Needs a human re-count before any route can verify.
+
+**Options.** (a) An adapter over the admin-ajax endpoint: four POSTs with the
+four `pais` values, parse cards, synthesize URLs from the hidden inputs. Closes
+all three gaps with no agent and no browser; the fixture is a recorded payload
+(C12 pattern). Cost: an HTML-parsing strategy whose config would not generalize
+past this board. (b) A generic form-derived-link matcher rule behind an opt-in
+`LinkRule` flag. Reusable — it closes the form variant of C1 for any future
+board — but alone leaves this one at 23 / 11. Build (b) for a board it actually
+completes.
 
 ### Deel — C20, reclassified from C4; blocked
 
@@ -196,6 +256,15 @@ configuration (Luflox's Firestore) or the only route is interaction, the cost is
 a new strategy plus either a config surface far larger than any existing field
 or a stateful sequenced-interaction harness with per-site heuristics. Neither is
 a cheap extension.
+
+Instacredit adds a third sub-shape that *is* cheap on the matcher side: the
+destination is fully present in the DOM as a GET `<form action>` plus hidden
+inputs, so a generic form-derived-link rule (opt-in `LinkRule` flag, synthesized
+URL fed through the existing prefix buckets) would close the link-shape half
+with no per-board config. It is deliberately not built yet because the only
+board of the shape is also blocked by a non-URL-addressable, four-way-split
+location filter (C20 shape), so the rule would not complete it. Build it when a
+form-submit board arrives that it finishes.
 
 **Nested DOM state machines (C20).** Both multi-state mechanisms in the codebase
 assume a *single* level: the pagination walker advances monotonically toward an
