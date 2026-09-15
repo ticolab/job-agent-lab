@@ -3,11 +3,11 @@
 
 This is "Appendix B" of the integrate-company workflow: it runs the actual
 ``vacantes.extraction.dom.agent.controller.build_controller`` extractor (the same
-code the lab uses end-to-end) over a real rendered DOM, with no LLM in the loop.
+code vacantes uses end-to-end) over a real rendered DOM, with no LLM in the loop.
 Use it as the fast, free iteration loop while finding a working
 ``(job_board_url, sample_job_url)`` combination.
 
-Run from the job-agent-lab repo so ``vacantes`` is importable. See
+Run from the vacantes repo so ``vacantes`` is importable. See
 ``--help`` for the full argument list. For lazy-loaded sites, raise ``--wait``
 and/or pass ``--scroll N``. For boards whose full listing is partitioned
 across multiple DOM states advanced by an in-page "next" control (SYS-5:

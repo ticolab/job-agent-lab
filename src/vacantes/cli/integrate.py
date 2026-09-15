@@ -1,4 +1,10 @@
-"""CLI entry point for the browser-use agent lab.
+"""The ``integrate`` CLI surface: extract company-by-company.
+
+Drives one company at a time (or the whole corpus, sequentially) and
+writes a JSON report per company for a human to review — the evidence
+the ``integrate-company`` workflow inspects before a catalog entry is
+committed. Concurrency and persistence are deliberately absent here;
+those belong to the ``batch`` surface.
 
 This module owns argparse + the per-company orchestration loop. The heavy
 lifting is delegated to sibling packages:
@@ -70,7 +76,7 @@ async def run_extraction(args: argparse.Namespace) -> None:
         region=COSTA_RICA_LATAM,
     )
 
-    print(f"\nAgent Lab - Extracting jobs from {len(companies)} company(ies)")
+    print(f"\nvacantes - Extracting jobs from {len(companies)} company(ies)")
     print(
         f"Model: {args.model} | Max steps: {args.max_steps} | "
         f"Headless: {not args.headed}"
@@ -114,7 +120,7 @@ def _has_non_match(results: list[dict]) -> bool:
     return any(r["metadata"]["verdict"] != "match" for r in results)
 
 
-INTEGRATE_DESCRIPTION = "Browser-use agent lab for job extraction"
+INTEGRATE_DESCRIPTION = "Extract job postings from one company, or the whole corpus."
 
 
 def add_integrate_arguments(parser: argparse.ArgumentParser) -> None:

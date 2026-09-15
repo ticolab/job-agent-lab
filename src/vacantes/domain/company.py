@@ -477,7 +477,7 @@ class RuntimeHooks(BaseModel):
 
 
 class Company(BaseModel):
-    """A career site the agent lab tests against.
+    """A career site in the corpus.
 
     Attributes:
         name: Canonical display name, also used to derive the acronym

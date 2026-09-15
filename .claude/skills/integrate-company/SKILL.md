@@ -1,12 +1,12 @@
 ---
 name: integrate-company
-description: Integrate a single company into job-agent-lab's COMPANIES config and iterate until the deterministic extractor returns the human-counted expected_jobs target. Use when the user names a company they want integrated into the lab — the full entry (name, aliases, job_board_url, sample_job_url, expected_jobs) is read from new-companies.json at the repo root, which the user populates from the committed new-companies.example.json template. Also use when debugging why an already-configured company returns the wrong job count, or troubleshooting zero / short / over-count extraction at integration time.
+description: Integrate a single company into vacantes' COMPANIES catalog and iterate until the deterministic extractor returns the human-counted expected_jobs target. Use when the user names a company they want integrated into the corpus — the full entry (name, aliases, job_board_url, sample_job_url, expected_jobs) is read from new-companies.json at the repo root, which the user populates from the committed new-companies.example.json template. Also use when debugging why an already-configured company returns the wrong job count, or troubleshooting zero / short / over-count extraction at integration time.
 ---
 
-# Integrate One Company into the Job Agent Lab
+# Integrate One Company into the Vacantes Corpus
 
-Integrate **one** company into the `job-agent-lab` test sample so that the lab
-extracts the **exact number of job listings** that a human counted on that
+Integrate **one** company into the `vacantes` corpus so that the extractor
+returns the **exact number of job listings** that a human counted on that
 company's career site. Iterate — add the company, run it, debug failures —
 until the extracted count matches the target. On success, remove the
 company's entry from the `new-companies.json` queue and commit the
@@ -16,7 +16,7 @@ report without committing.
 ## Objective
 
 Append **one** company (provided in the input) to `COMPANIES` in
-`src/job_agent_lab/catalog/companies.py`, then make the extractor return the
+`src/vacantes/catalog/companies.py`, then make the extractor return the
 **expected number of jobs**. "Done" means the deterministic extractor returns
 exactly that count on the real site, with no errors, the regression snapshot
 is captured and the corpus passes, the integrated entry is removed from the
@@ -78,7 +78,7 @@ update the entry).
 
 - `scripts/extractor_ground_truth.py` — Appendix B in script form. Runs the real
   extractor against the rendered DOM, no LLM. Invoke it from the repo root so
-  `job_agent_lab` is importable:
+  `vacantes` is importable:
   ```bash
   uv run python <skill-root>/scripts/extractor_ground_truth.py
       --job-board-url <url> --sample-job-url <url> [--wait 10] [--scroll 3]
@@ -90,14 +90,14 @@ update the entry).
 Before touching anything, read:
 
 - `CLAUDE.md` — project overview and conventions.
-- `src/job_agent_lab/catalog/companies.py` — the `COMPANIES` list; the
-  `Company` / `LinkRule` pydantic models live in `src/job_agent_lab/domain/company.py`.
-- `src/job_agent_lab/navigation/prompt.py` — the shared `GOAL_PROMPT` the
+- `src/vacantes/catalog/companies.py` — the `COMPANIES` list; the
+  `Company` / `LinkRule` pydantic models live in `src/vacantes/domain/company.py`.
+- `src/vacantes/extraction/dom/agent/prompt.py` — the shared `GOAL_PROMPT` the
   live agent runs under.
-- `src/job_agent_lab/extraction/dom/rules.py` — `derive_path_prefix()`, and
-  `src/job_agent_lab/extraction/dom/assets/collect_links.js` — the matcher JS
+- `src/vacantes/extraction/dom/rules.py` — `derive_path_prefix()`, and
+  `src/vacantes/extraction/dom/assets/collect_links.js` — the matcher JS
   body (registered as the `extract_job_links` tool in
-  `src/job_agent_lab/navigation/controller.py`). **Understand these two
+  `src/vacantes/extraction/dom/agent/controller.py`). **Understand these two
   before debugging.**
 
 ## How the system works (mechanics to understand)
@@ -137,7 +137,7 @@ agent run.** Isolate which (see Debugging).
 
 - The **path prefix is everything.** Verify it before anything else:
   ```bash
-  uv run python -c "from job_agent_lab.extraction.dom.rules import derive_path_prefix; print(derive_path_prefix('<sample_job_url>'))"
+  uv run python -c "from vacantes.extraction.dom.rules import derive_path_prefix; print(derive_path_prefix('<sample_job_url>'))"
   ```
   Choose `sample_job_url` so this prints the prefix shared by all real job
   links. For query-string sites, give the **path form** that yields the right
@@ -374,7 +374,7 @@ whether a filter the browser-use agent is applying shrinks the count below
    ```
    `pytest` exercises the entire snapshot corpus — the one you just added and
    every previously-integrated company. If a matcher-touching change (anywhere
-   under `extraction/`, `navigation/`, or the `agent.py` shim) regressed an
+   under `extraction/`, which now covers the agent wiring too) regressed an
    older company, this is where you find out.
 
 8. **Remove the company from the queue.** The repo root carries an untracked
@@ -405,7 +405,7 @@ whether a filter the browser-use agent is applying shrinks the count below
 | **0 jobs**, anchors exist on page | Wrong path prefix, or job links are on a **different origin** than `job_board_url` | `browser_evaluate` the host-histogram recipe; if a non-company host dominates, the board is cross-origin | Fix `sample_job_url` (to correct the prefix) and/or `job_board_url` (to the real board host). |
 | **0 jobs**, page shows listings | Links are **query-string style** but prefix derived too deep, OR jobs aren't `<a>` tags | `browser_snapshot` — if listing rows are `button`/`generic` with no link, they aren't `<a>`; otherwise `browser_evaluate` to inspect pathnames and search strings | If query-style, pick a `sample_job_url` whose path equals the listing prefix. If they're buttons/divs, report as a structural limitation. |
 | **0 jobs**, MCP shows few/no anchors | Jobs are **JS-rendered or lazy-loaded** and hadn't loaded | `browser_wait_for` then `browser_evaluate` to scroll; check `browser_network_requests` for the XHR fetching the listings | If an XHR returns the job JSON, point `job_board_url` at the host serving that XHR. Otherwise re-run the script with higher `--wait` and `--scroll`. |
-| **Fewer than expected** | Pagination, lazy-load needing more scroll, or a location filter narrowed results | `browser_snapshot` for a "next page" / "load more" control; `browser_click` it and re-run the count recipe | Re-run the script with more `--scroll`. If a location filter is being applied by the browser-use agent and shrinking the set, note it (the lab's `GOAL_PROMPT` filtering is optional). |
+| **Fewer than expected** | Pagination, lazy-load needing more scroll, or a location filter narrowed results | `browser_snapshot` for a "next page" / "load more" control; `browser_click` it and re-run the count recipe | Re-run the script with more `--scroll`. If a location filter is being applied by the browser-use agent and shrinking the set, note it (`GOAL_PROMPT` filtering is optional). |
 | **More than expected** | Prefix too broad (catches category/nav/"apply" links), or **tracking-param duplicates** of the same job counted twice | `browser_evaluate` to compare distinct pathnames against distinct full hrefs — duplicates show up as different `?utm_*` but identical path | Narrow the prefix. If duplicates differ only by tracking params, that is a real dedup gap — report it. |
 | Count correct from script but **wrong in full run** | Non-deterministic browser-use agent (didn't extract, didn't scroll, hit step limit) | Watch with `uv run job-agent-lab -c <handle> --headed`; MCP does not help here (the issue is in the in-process agent, not the page) | Re-run a few times. Report if it stays flaky. |
 
@@ -418,7 +418,7 @@ listings, but it is useful for static boards and for comparing what MCP
 renders against the raw server response. **`uv run job-agent-lab -c <handle>
 --headed`** shows the full agent run in a visible browser when end-to-end is
 flaky despite a correct script result. Temporary `logger`/`print` statements
-in the extraction (`extraction/dom/`) or navigation (`navigation/`) modules
+in the extraction (`extraction/dom/`) or navigation (`extraction/dom/agent/`) modules
 are fine while debugging — remove them before finishing.
 
 **Capture-time flags for stateful boards.** Two `scripts/capture_snapshot.py`
@@ -490,8 +490,8 @@ and the pattern classes that are now closed vs still open.
   site-specific branch into the extractor. (Per `CLAUDE.md`: the link
   extraction is deterministic; do not replace it with LLM-guessed lists.)
 - **Playwright MCP is for investigation only.** Do not import MCP-driven logic
-  into any production module (`extraction/`, `navigation/`, `catalog/`, or the
-  `agent.py` / `config.py` shims). Do not declare the task Done based on MCP
+  into any production module (`extraction/`, `catalog/`, or `domain/`). Do not
+  declare the task Done based on MCP
   findings alone — the bundled script and a real `uv run job-agent-lab -c
   <handle>` remain the gates. Do not commit MCP artefacts (`.playwright-mcp/`,
   screenshots, console-message dumps); keep them outside the repo.
@@ -509,7 +509,7 @@ and the pattern classes that are now closed vs still open.
   reporting. (Put temp scripts outside the repo or in a path that won't be
   committed.)
 - Follow repo conventions: Python 3.12+, Ruff (line-length 88, double quotes),
-  Mypy; imports as `from job_agent_lab.X`.
+  Mypy; imports as `from vacantes.X`.
 
 ## Definition of Done
 

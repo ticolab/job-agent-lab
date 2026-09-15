@@ -1,13 +1,15 @@
 # Architecture
 
-`job-agent-lab` extracts job-posting URLs from company career sites. This
+`vacantes` answers one question a few times a week: what job postings are open
+right now. It extracts job-posting URLs from company career sites. This
 document is the big-picture map: the layers, the seams between them, and the
 rules that keep the design from decaying as new sites arrive.
 
 Per-feature semantics and the change history live in `TABNINE.md`. Per-board
 evidence — the catalogue of site behaviours that resist extraction, with the
 ground truth behind each — lives under `blockers/`. Forward-looking design
-work lives in `spike/ARCHITECTURE_PROPOSAL_R2.md`.
+work lives in `TRANSITION.md`, which is transient: each phase's section is
+deleted once it lands and its durable rationale graduates into this document.
 
 ## The central split
 
@@ -29,6 +31,45 @@ and regression-tested offline across the whole corpus in seconds. Keeping them
 apart means a wrong count is always attributable to one side. Collapsing them —
 letting the model report the links it believes it saw — would make every count
 unauditable, which is the failure this project exists to avoid.
+
+## Components and layering
+
+The second structural decision is where code is allowed to point. Three
+components sit over one shared kernel: `extraction/` owns the port and every
+strategy, `persistence/` owns the database, and `batch/` owns concurrency and
+the definition of one company's unit of work. The kernel — `domain/`,
+`catalog/`, `settings.py` — is the vocabulary all three speak. Today only
+`extraction/` exists alongside `cli/` and `reporting/`; `persistence/` and
+`batch/` arrive in later phases of `TRANSITION.md`.
+
+Dependencies point inward and never cycle:
+
+```
+cli        → batch, extraction, catalog, domain, reporting, settings
+batch      → extraction, persistence, catalog, domain, reporting, settings
+persistence→ domain, settings
+extraction → domain, catalog, settings          (never persistence, never batch)
+reporting  → domain, catalog, settings
+catalog    → domain
+domain     → (nothing inside vacantes)
+```
+
+This graph is not housekeeping. Two entry points share one extraction core:
+the integration CLI drives one board at a time and produces the JSON artifact a
+human reviews before a catalog entry is committed, while the batch scheduler
+runs the corpus concurrently and persists the result. Both call the same
+`extract` coroutine with the same `RunContext`. The integration workflow is
+therefore a correctness signal for scheduled runs — but only for as long as a
+strategy cannot tell which caller invoked it. A strategy that could reach the
+database, or detect that a batch was in progress, could behave differently
+under the scheduler than under the CLI, and the onboarding evidence would stop
+meaning anything.
+
+`tests/unit/test_layering.py` parses the imports of every module under
+`src/vacantes/` and asserts each package imports only from its allowed set,
+which makes the constraint structural rather than a matter of review
+discipline. The allowlist is written from the real import graph rather than
+from intent, and it may only ever shrink.
 
 ## Extraction strategies
 
@@ -218,6 +259,9 @@ design would decay.
   never supplies URLs.
 - Per-board differences live in configuration, not in code branches. No
   company name, host, or posting id appears in the matcher.
+- Dependencies point inward. `extraction` never imports `persistence` or
+  `batch`, so a strategy cannot tell which caller invoked it and cannot behave
+  differently under the scheduler than under the integration CLI.
 - The matcher JavaScript has exactly one copy on disk.
 - Every opt-in knob defaults to inert, so adding one cannot change any
   existing board's behaviour.

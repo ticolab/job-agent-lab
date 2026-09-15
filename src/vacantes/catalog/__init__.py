@@ -1,7 +1,7 @@
 """The company catalog: the ``COMPANIES`` list plus handle resolution.
 
 The catalog is the data layer's *identity* surface: the canonical list of
-companies the lab tests against, and the helpers that resolve a
+companies in the corpus, and the helpers that resolve a
 user-supplied handle (``-c gap``) to a specific entry. Handle resolution
 lives here — not in ``cli`` — because ``scripts/capture_snapshot.py`` also
 needs it.

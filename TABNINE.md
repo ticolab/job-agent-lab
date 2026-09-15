@@ -4,11 +4,13 @@ Guidance file for the Tabnine CLI when working in this repository. Keep this fil
 
 ## Project Overview
 
-`job-agent-lab` is a research sandbox for agentic, browser-based job listing extraction. It exists to stress-test one design decision — **navigation is non-deterministic, extraction is deterministic** — against a large, diverse corpus of real career sites (30-50+) before the approach is trusted in a production pipeline.
+`vacantes` answers one question a few times a week: **what job postings are open right now.** It extracts job-posting URLs from a corpus of real career sites, and it exists to stress-test one design decision — **navigation is non-deterministic, extraction is deterministic** — against a large, diverse corpus before the approach is trusted in a production pipeline.
 
 For each configured company, a `browser-use` agent (OpenAI model routed via LiteLLM) drives the career page: loads the board, applies a location filter, reveals lazily-mounted content, and expands collapsed sections. The agent never decides what counts as a job link — that judgement belongs to a single JavaScript matcher (`collect_links.js`) which runs inside the page via `page.evaluate` and returns same-origin `<a>` tags matching a per-company path prefix. A regression harness replays the shipped matcher against frozen page snapshots so counting behaviour can be validated offline in seconds across the whole corpus.
 
-Read `ARCHITECTURE.md` for the design rationale and invariants. Read `blockers/INTEGRATION_BLOCKERS.md` for the catalogue of site behaviours that resist extraction (referenced as C1–C19 throughout the codebase). Read `CLAUDE.md` for the equivalent guidance surface aimed at Claude Code.
+Only one of the seven registered strategies drives an agent at all; the other six are plain HTTP against the ATS or search platform backing the board. "Agent" therefore names a mechanism inside `extraction/dom/`, not the system.
+
+Read `ARCHITECTURE.md` for the design rationale and invariants. Read `blockers/INTEGRATION_BLOCKERS.md` for the catalogue of site behaviours that resist extraction (referenced as C1–C22 throughout the codebase). Read `CLAUDE.md` for the equivalent guidance surface aimed at Claude Code. Read `TRANSITION.md` for the in-flight restructuring plan; it is transient and each phase's section is deleted once that phase lands and its durable rationale has graduated into `ARCHITECTURE.md` and this file.
 
 ## Building and Running
 
@@ -23,12 +25,15 @@ uv run playwright install chromium
 cp .env.example .env                 # add OPENAI_API_KEY for live DOM runs
 ```
 
+Two console scripts are registered. `vacantes` is the dispatcher, with `integrate` and `batch` subcommands. `job-agent-lab` is a frozen alias pointing straight at the integrate entry point rather than through the dispatcher, so its argument surface is the pre-rename CLI's by construction. Both populate their parser from the same `add_integrate_arguments` function, so the two surfaces cannot drift. Keep the alias working — every doc, skill, and habit is built on it.
+
 Run the extractor end-to-end. The `-c` flag matches by alias, then acronym, then substring against `catalog.COMPANIES`:
 
 ```bash
 uv run job-agent-lab                                        # every company
 uv run job-agent-lab -c akurey                              # one company
 uv run job-agent-lab -c gap --headed --model gpt-4o --max-steps 25
+uv run vacantes integrate -c akurey                         # identical, via the dispatcher
 ```
 
 Results are written as timestamped JSON to `./output/` (gitignored) and a summary is printed to the console. The `--strict` flag exits non-zero if any run's `metadata.verdict` is not `"match"`.
@@ -45,31 +50,53 @@ uv run --group test pytest tests/unit/           # browser-free
 uv run --group test pytest tests/snapshots/      # needs Chromium
 ```
 
-Pre-commit gates ruff, mypy, and the full test suite on any change under `src/job_agent_lab/{extraction,navigation,domain}/` or `tests/`.
+Pre-commit gates ruff, mypy, and the full test suite on any change under `src/vacantes/{extraction,domain}/` or `tests/`. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee that the commit passes.
 
 ## Architecture
 
+### Components and the shared kernel
+
+Three components sit over one shared kernel. `extraction/` owns the port and every strategy. `persistence/` owns the database. `batch/` owns concurrency and the per-company unit of work. The kernel — `domain/`, `catalog/`, `settings.py` — is the vocabulary all three speak.
+
+Only `extraction/` exists today, alongside `cli/` and `reporting/`. `persistence/` and `batch/` arrive in later phases of `TRANSITION.md`.
+
+Dependencies point inward and never cycle:
+
+```
+cli        → batch, extraction, catalog, domain, reporting, settings
+batch      → extraction, persistence, catalog, domain, reporting, settings
+persistence→ domain, settings
+extraction → domain, catalog, settings          (never persistence, never batch)
+reporting  → domain, catalog, settings
+catalog    → domain
+domain     → (nothing inside vacantes)
+```
+
+`tests/unit/test_layering.py` parses every module's imports with `ast` and asserts each package imports only from its allowed set, which makes this structural rather than a matter of discipline. A strategy cannot write to the database, cannot know a batch is running, and cannot behave differently under the scheduler than under the integration CLI. The allowlist is written from the real graph, covers the packages actually present, and may only ever shrink.
+
+The reason this matters is that two entry points share one core. The `integrate` CLI iterates sequentially and writes a JSON artifact a human reviews before committing a catalog entry; the batch scheduler runs the corpus concurrently and persists the current URL set. Both call the same `extract` coroutine with the same `RunContext`. If they could diverge, the integration workflow would stop being a correctness signal for scheduled runs.
+
 ### The central split
 
-Every run dispatches through one port: `extraction.get_strategy(company.strategy).extract(company, ctx)`. The port is defined in `src/job_agent_lab/extraction/base.py` and consists of the `ExtractionStrategy` Protocol, the frozen `RunContext` (model, headless flag, step cap, target region), the `STRATEGIES` registry, and `build_report(...)` — the single author of the output shape.
+Every run dispatches through one port: `extraction.get_strategy(company.strategy).extract(company, ctx)`. The port is defined in `src/vacantes/extraction/base.py` and consists of the `ExtractionStrategy` Protocol, the frozen `RunContext` (model, headless flag, step cap, target region), the `STRATEGIES` registry, and `build_report(...)` — the single author of the output shape.
 
-Two families implement the port. `strategy="dom"` (the default) runs the browser-use agent under `GOAL_PROMPT` alongside the deterministic matcher. The seven API adapters — `greenhouse`, `phenom`, `talentbrew`, `coveo`, `peopleforce`, `bamboohr` — live under `extraction/ats/` and bypass the browser entirely, querying the ATS or search platform that backs the board and filtering the returned records by region. Each API strategy earns its module when the DOM path cannot yield an honest regression artifact or cannot reach the postings at all.
+Two families implement the port. `strategy="dom"` (the default) runs the browser-use agent under `GOAL_PROMPT` alongside the deterministic matcher. The six API adapters — `greenhouse`, `phenom`, `talentbrew`, `coveo`, `peopleforce`, `bamboohr` — live under `extraction/ats/` and bypass the browser entirely, querying the ATS or search platform that backs the board and filtering the returned records by region. Each API strategy earns its module when the DOM path cannot yield an honest regression artifact or cannot reach the postings at all. The one exception to "no browser" is `coveo` with `browser_token_key` set, which opens a browser session purely to read a search token out of page state.
 
 Adding a new strategy requires extending the `StrategyName` literal in `domain/company.py` **and** registering the implementation in `extraction/__init__.py`. A unit test asserts the two sets are equal, so shipping half the change fails loudly.
 
 ### Package layout
 
-The `src/job_agent_lab/` tree is organized so each package owns exactly one concern. The CLI entry point is `cli.py` (`argparse` + orchestration loop, wired to the `job-agent-lab` console script). Runtime defaults live in `settings.py` (`DEFAULT_MODEL`, `DEFAULT_MAX_STEPS`, `OUTPUT_DIR`, plus the render-settle constants shared by runtime and capture).
+The `src/vacantes/` tree is organized so each package owns exactly one concern. The CLI lives in `cli/`: `main.py` is the `vacantes` dispatcher (a table of subcommands rather than a branch per subcommand), `integrate.py` holds the argparse surface and the per-company orchestration loop, and `batch.py` is the batch subcommand. Runtime defaults live in `settings.py` (`DEFAULT_MODEL`, `DEFAULT_MAX_STEPS`, `OUTPUT_DIR`, plus the render-settle constants shared by runtime and capture).
 
 The `domain/` package holds the pydantic schema: `Company` with its `strategy`, `paginate`, `hooks`, and `pre_filter_urls` knobs; `LinkRule` with `path_prefix`, `min_depth`, and `suppress_ancestor_selector`; `RuntimeHooks`; `ExtractionResult`; and `TargetRegion` together with the `COSTA_RICA_LATAM` singleton. Cross-field validators fire at catalog-import time — hooks require `strategy="dom"`, `pre_filter_urls` must share origin with `job_board_url`, and API strategies require or forbid their tenant config exactly as documented in each class docstring.
 
-The `catalog/` package supplies the `COMPANIES` list plus `find_company`/`slugify` helpers. Handle resolution iterates in list order, checking alias, then acronym, then substring; insertion order is authoritative when names collide.
+The `catalog/` package supplies the `COMPANIES` list plus `find_company`/`slugify` helpers. It is the source of truth for the corpus; the persistence layer projects it and never owns it. Handle resolution iterates in list order, checking alias, then acronym, then substring; insertion order is authoritative when names collide.
 
 The `extraction/dom/` package owns the deterministic matcher. `assets/collect_links.js` is the single source of truth — loaded once at import time via `importlib.resources` as `EXTRACT_JOB_LINKS_JS`. Edit the JS, never an inlined copy. `collector.py` runs it against a live page and owns the pagination walker and hook execution behind the `PageDriver` protocol.
 
-The `navigation/` package holds the prompt in `prompt.py` (`GOAL_PROMPT` clause constants plus `build_goal_prompt(region)`), the agent/session build in `runner.py`, and the tool registration in `controller.py` (which registers the `extract_job_links` tool the agent calls).
+The `extraction/dom/agent/` package holds the agent wiring, and it lives under `extraction/dom/` because `extraction/dom/strategy.py` is its only consumer: the prompt in `prompt.py` (`GOAL_PROMPT` clause constants plus `build_goal_prompt(region)`), the agent/session build in `runner.py`, and the tool registration in `controller.py` (which registers the `extract_job_links` tool the agent calls).
 
-The `reporting/output.py` module writes JSON output to `./output/` and prints the terminal summary. It never authors the report shape itself; that lives in `build_report`.
+The `reporting/output.py` module writes JSON output to `./output/` and prints the terminal summary. It never authors the report shape itself; that lives in `build_report`. It stays top-level rather than CLI-private because both `integrate` and batch's optional JSON output render through it.
 
 ### The deterministic matcher
 
@@ -103,9 +130,9 @@ The `expected_jobs` value is a human-counted target and is **never** adjusted to
 
 ## Development Conventions
 
-Python 3.12+, uv-managed. Ruff enforces line-length 88, double quotes, and rules `E,F,I,W,UP,B,C4,SIM`. Mypy strict (`disallow_untyped_defs`) means every function is fully annotated. Import package modules as `from job_agent_lab.X`; the package lives under `src/`.
+Python 3.12+, uv-managed. Ruff enforces line-length 88, double quotes, and rules `E,F,I,W,UP,B,C4,SIM`. Mypy strict (`disallow_untyped_defs`) means every function is fully annotated. Import package modules as `from vacantes.X`; the package lives under `src/`.
 
-Two files are E501-exempt on purpose: `navigation/prompt.py` and `tests/unit/test_prompt_render.py`. Prompt clauses and their golden copies are byte-exact single-line literals — never reflow them.
+Two files are E501-exempt on purpose: `extraction/dom/agent/prompt.py` and `tests/unit/test_prompt_render.py`. Prompt clauses and their golden copies are byte-exact single-line literals — never reflow them.
 
 Commit directly to `main`; no feature branches. Never bypass the pre-commit hooks with `--no-verify`; if an auto-fixer modifies a file, re-stage and commit again. Commit messages are a single short sentence, 100 characters max, subject line only, no body. Reasoning belongs in the code, the design docs, or `blockers/`, not in the commit message.
 
@@ -119,7 +146,9 @@ When a task involves researching, investigating, exploring, or searching code in
 
 ### Skills
 
-The `integrate-company` skill lives at `.tabnine/agent/skills/integrate-company/SKILL.md`. Activate it when the user names a company they want integrated into the lab, when debugging why an already-configured company returns the wrong job count, or when troubleshooting zero/short/over-count extraction at integration time. The full entry (name, aliases, job_board_url, sample_job_url, expected_jobs) is read from `new-companies.json` at the repo root, which the user populates from the committed `new-companies.example.json` template.
+The `integrate-company` skill lives at `.tabnine/agent/skills/integrate-company/SKILL.md`. Activate it when the user names a company they want integrated into the corpus, when debugging why an already-configured company returns the wrong job count, or when troubleshooting zero/short/over-count extraction at integration time. The full entry (name, aliases, job_board_url, sample_job_url, expected_jobs) is read from `new-companies.json` at the repo root, which the user populates from the committed `new-companies.example.json` template.
+
+The skill is maintained in two copies, `.claude/skills/integrate-company/` and `.tabnine/agent/skills/integrate-company/`. They are identical except for two deliberate per-assistant adaptations: the Playwright MCP tool prefix (`mcp_playwright_` here, `mcp__playwright__` for Claude Code) and the guidance file each cites for the commit convention. Keep every other change in sync across both copies.
 
 ### Playwright MCP
 

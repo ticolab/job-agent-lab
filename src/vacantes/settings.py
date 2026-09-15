@@ -1,4 +1,4 @@
-"""Runtime settings and defaults for the job-agent lab.
+"""Runtime settings and defaults shared by every component.
 
 Constants that describe *how* a run behaves (model, step cap, output
 directory) rather than *what* it runs against (companies live in

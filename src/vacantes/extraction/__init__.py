@@ -1,6 +1,6 @@
-"""Extraction strategies for the job-agent lab.
+"""Component 1: extraction — the port and every strategy behind it.
 
-Five strategies are registered here at import time:
+Seven strategies are registered here at import time:
 
 - :class:`~vacantes.extraction.dom.strategy.DomStrategy` — the
   browser-use agent + deterministic in-page matcher pipeline (default).
@@ -23,6 +23,16 @@ Five strategies are registered here at import time:
   matcher extension and exist only as ``clickUri`` values in the
   search XHR. This adapter is therefore the only path to them, not
   merely a better regression artifact.
+- :class:`~vacantes.extraction.ats.peopleforce.PeopleForceStrategy`
+  — the PeopleForce careers-board adapter. Like BambooHR below, it is
+  not motivated by an unreachable DOM: the DOM path extracts this
+  board correctly. What it cannot do is stay *complete*. PeopleForce
+  persists one location per posting behind a single-select filter
+  (C18), so a region spanning several cities has no single URL and
+  the first closure was a frozen ``pre_filter_urls`` union — correct
+  the day it is written and silently incomplete afterwards, in a way
+  the verdict layer cannot see. This adapter discovers the tenant's
+  live location list on every run instead of freezing it.
 - :class:`~vacantes.extraction.ats.bamboohr.BambooHrStrategy` —
   the BambooHR ``/careers/list`` adapter. Unlike its siblings this one
   is not motivated by an unreachable DOM: BambooHR's rendered board is
