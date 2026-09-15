@@ -66,8 +66,17 @@ async def start_run(session: AsyncSession, *, company_slug: str, batch_id: str) 
     )
     async with session.begin():
         session.add(run)
+        # Flush and read the id *inside* the transaction. Reading it after
+        # the commit would only work under ``expire_on_commit=False`` —
+        # SQLAlchemy's default ``True`` expires the instance on commit and
+        # turns the attribute access into a lazy refresh against a closed
+        # transaction, which raises ``MissingGreenlet`` on the async
+        # engine. A repository must be correct under any session factory,
+        # not only the one ``engine.create_session_factory`` builds.
+        await session.flush()
+        run_id: int = run.id
 
-    return run.id
+    return run_id
 
 
 async def finish_run(

@@ -1,1 +1,15 @@
-Generic single-database configuration with an async dbapi.
+Alembic migrations for the vacantes persistence layer.
+
+The connection URL is built by env.py from vacantes.settings.DATABASE_PATH;
+sqlalchemy.url in alembic.ini is deliberately left empty so there is one
+source of truth for where the database lives. The schema's rationale and
+the day-to-day commands are documented in TABNINE.md under "The database".
+
+    uv run alembic upgrade head                        # create or migrate the database
+    uv run alembic revision --autogenerate -m "..."    # new revision from models.py
+    uv run alembic check                               # models vs. head: report any drift
+
+Revisions are generated from script.py.mako, which is modernised from
+Alembic's stock template so they pass this repo's ruff and mypy gates as
+generated. tests/unit/test_persistence.py::TestMigrationParity asserts that
+the head revision and the declarative models describe the same schema.

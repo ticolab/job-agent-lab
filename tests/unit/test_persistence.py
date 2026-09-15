@@ -382,6 +382,38 @@ class TestRunLifecycle:
         assert run.finished_at is not None
         assert run.error_message is None
 
+    def test_start_run_does_not_depend_on_expire_on_commit(
+        self, tmp_path: Path
+    ) -> None:
+        """The returned id is read inside the transaction, not after it.
+
+        ``create_session_factory`` sets ``expire_on_commit=False``, and an
+        earlier ``start_run`` relied on that: it read ``run.id`` *after*
+        the commit. Under SQLAlchemy's default ``True`` the instance is
+        expired on commit and the attribute access becomes a lazy refresh
+        against a closed transaction — ``MissingGreenlet`` on the async
+        engine. A repository must not be correct under only one factory
+        configuration, so this test drives it through a plain
+        ``async_sessionmaker(engine)`` with the default and asserts the
+        id still comes back.
+        """
+
+        async def scenario() -> int:
+            engine = create_engine(tmp_path / "default-factory.db")
+            _OPEN_ENGINES.append(engine)
+            async with engine.begin() as connection:
+                await connection.run_sync(models.Base.metadata.create_all)
+            # Deliberately NOT create_session_factory: SQLAlchemy's default
+            # expire_on_commit=True is the configuration under test.
+            factory: async_sessionmaker[AsyncSession] = async_sessionmaker(engine)
+            slug = await _seed_company(factory)
+            async with factory() as session:
+                return await runs_repo.start_run(
+                    session, company_slug=slug, batch_id="batch-default"
+                )
+
+        assert isinstance(_run(scenario()), int)
+
     def test_fail_run_leaves_count_and_verdict_null(self, tmp_path: Path) -> None:
         """A failed run observed no count, so it must not claim one.
 

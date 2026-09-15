@@ -14,8 +14,10 @@ repos:
         # here, the isolated hook environment resolves every ORM import
         # to Any and reports `no-any-return` at each call site — errors
         # that do not exist in the repo-wide run and would otherwise be
-        # papered over with casts.
-        additional_dependencies: [pydantic, sqlalchemy]
+        # papered over with casts. Pinned to the versions in uv.lock so
+        # the hook's view of the ORM cannot drift from the one the code
+        # actually runs against; bump both together.
+        additional_dependencies: [pydantic==2.12.5, sqlalchemy==2.0.53]
         args: [--config-file=pyproject.toml]
         exclude: '^\.(claude|tabnine)/.*/extractor_ground_truth\.py$'
 

@@ -117,10 +117,13 @@ def create_engine(path: Path | None = None) -> AsyncEngine:
 def create_session_factory(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
     """Build the session factory the repositories are called with.
 
-    ``expire_on_commit=False`` because the repositories commit and then
-    return values read from the committed objects. With the default
-    ``True``, every such attribute access would trigger a lazy refresh
-    against a closed transaction and raise.
+    ``expire_on_commit=False`` so a caller that reads attributes off an
+    ORM object after a repository has committed does not trigger a lazy
+    refresh against a closed transaction (``MissingGreenlet`` on the async
+    engine). The repositories themselves do not depend on this setting —
+    ``runs_repo.start_run`` reads its id inside the transaction — and a
+    test drives them through SQLAlchemy's default factory to keep it
+    that way.
     """
     return async_sessionmaker(engine, expire_on_commit=False)
 
