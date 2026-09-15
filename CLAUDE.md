@@ -55,16 +55,22 @@ Only `extraction/` exists today, alongside `cli/` and `reporting/`. `persistence
 Dependencies point inward and never cycle:
 
 ```
-cli        → batch, extraction, catalog, domain, reporting, settings
-batch      → extraction, persistence, catalog, domain, reporting, settings
-persistence→ domain, settings
-extraction → domain, catalog, settings          (never persistence, never batch)
-reporting  → domain, catalog, settings
-catalog    → domain
-domain     → (nothing inside vacantes)
+Enforced today by tests/unit/test_layering.py:
+
+  cli        → catalog, domain, extraction, reporting, settings
+  extraction → domain, settings
+  reporting  → catalog
+  catalog    → domain
+  settings   → (nothing)
+  domain     → (nothing inside vacantes)
+
+Added to the allowlist as each component lands:
+
+  persistence → domain, settings
+  batch       → catalog, domain, extraction, persistence, reporting, settings
 ```
 
-`tests/unit/test_layering.py` parses every module's imports with `ast` and asserts each package imports only from its allowed set, so this is structural rather than a matter of discipline. A strategy cannot write to the database, cannot know a batch is running, and cannot behave differently under the scheduler than under the integration CLI. The allowlist is written from the real graph and may only ever shrink.
+`tests/unit/test_layering.py` parses every module's imports with `ast` and asserts each package imports only from its allowed set, so this is structural rather than a matter of discipline. A strategy cannot write to the database, cannot know a batch is running, and cannot behave differently under the scheduler than under the integration CLI. The allowlist is written from the real graph and may only ever shrink. Because each row is the real graph rather than an intention, widening one — say `extraction → catalog` — is a deliberate allowlist edit that surfaces in review, never something a new import does silently. That `extraction` may reach neither `persistence` nor `batch` is asserted by name as well as by table, so the invariant survives a future edit to the allowlist.
 
 ### Strategy port
 

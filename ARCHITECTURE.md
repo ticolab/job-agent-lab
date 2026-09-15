@@ -45,13 +45,19 @@ the definition of one company's unit of work. The kernel — `domain/`,
 Dependencies point inward and never cycle:
 
 ```
-cli        → batch, extraction, catalog, domain, reporting, settings
-batch      → extraction, persistence, catalog, domain, reporting, settings
-persistence→ domain, settings
-extraction → domain, catalog, settings          (never persistence, never batch)
-reporting  → domain, catalog, settings
-catalog    → domain
-domain     → (nothing inside vacantes)
+Enforced today by tests/unit/test_layering.py:
+
+  cli        → catalog, domain, extraction, reporting, settings
+  extraction → domain, settings
+  reporting  → catalog
+  catalog    → domain
+  settings   → (nothing)
+  domain     → (nothing inside vacantes)
+
+Added to the allowlist as each component lands:
+
+  persistence → domain, settings
+  batch       → catalog, domain, extraction, persistence, reporting, settings
 ```
 
 This graph is not housekeeping. Two entry points share one extraction core:
@@ -69,7 +75,12 @@ meaning anything.
 `src/vacantes/` and asserts each package imports only from its allowed set,
 which makes the constraint structural rather than a matter of review
 discipline. The allowlist is written from the real import graph rather than
-from intent, and it may only ever shrink.
+from intent, and it may only ever shrink. Widening a row — say
+`extraction → catalog` — is therefore a deliberate allowlist edit that
+surfaces in review, never something a new import does silently. That
+`extraction` may reach neither `persistence` nor `batch` is asserted by
+name as well as by table, so the invariant survives a future edit to the
+allowlist.
 
 ## Extraction strategies
 
