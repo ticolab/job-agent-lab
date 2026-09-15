@@ -8,8 +8,9 @@ right now.*
 Status: **Phase 0 landed** (2026-09-15) in four commits, except T0.9 — the GitHub
 repository rename — which is deferred by choice. **Phase 1 landed** (2026-09-15).
 **Phase 2 landed** (2026-09-15). **Phase 3 landed** (2026-09-15). **Phase 4
-landed** (2026-09-15). All five phases are now delivered; T0.9 above is the
-only outstanding item.
+landed** (2026-09-15). All five phases are now delivered; T0.9 — the repository
+rename — is the only outstanding item, and this file stays until it lands, then
+is removed whole.
 Supersedes `ORCHESTRATION.md`, whose technical decisions are carried forward here
 where they still hold and corrected where they do not.
 
@@ -724,6 +725,15 @@ of 8 cost 12615 MB for a wall time that fell inside the ceiling-4 noise band of
 ceiling has never bound: 19 HTTP-class boards against a ceiling of 20 finished
 in 5 seconds.
 
+**What the review then measured.** The run's verdicts: of 60 boards with a human
+count, 20 `match`, 25 `under`, 15 `over`; agent-driven boards matched 11 of 31,
+agent-less 7 of 15, deterministic API adapters 2 of 14. Re-running all 20
+deterministic mismatches and the 3 empty agent boards sequentially through
+`vacantes integrate` reproduced the batch's count on every one, so concurrency at
+the default ceiling changes no board's result and the mismatches are drift against
+stale `expected_jobs`. That is §3.2 observed corpus-wide, and it is recorded in
+`ARCHITECTURE.md` beside the ceilings.
+
 **T4.3 was dropped from the plan** before this phase ran — revisiting the
 blocked-board dispositions is a judgement call about coverage, not delivery
 work, and it belongs to whoever next reads `blockers/INTEGRATION_BLOCKERS.md`.
@@ -762,26 +772,35 @@ with the same context; only scheduling and output differ.
 
 ## 11. Open questions
 
-1. **`batch/` vs `runs/`.** `batch` encodes a mode. If a continuous/watch mode ever
-   appears, `runs/` is the name that does not. Decide before Phase 2 file creation.
-2. **Alias lifetime.** Recommendation: keep `job-agent-lab` indefinitely — it costs one
-   line and protects every doc, skill, and habit. Alternative: sunset once the skills
-   are migrated to `vacantes integrate`.
-3. **Repository rename timing.** Independent of everything; recommended before Phase 1
-   so the new packages are never pushed under the old remote name.
-4. **`reporting/` placement.** Recommendation: keep top-level — both `integrate` and
-   `batch --json-output` use it, so it is not CLI-private.
-5. **Concurrency-class naming.** `browser`/`http` is proposed over `dom`/`api` because
-   it names the cost, which is what the semaphore protects. Confirm before T2.1.
-6. **Where the retired `ARCHITECTURE_PROPOSAL_R2.md` rationale now lives.** Ten
-   citations remain, in `collector.py`, `capture_snapshot.py`, `ats/coveo.py`,
-   `ats/phenom.py`, and four test modules, naming §4.5 (hook execution order), §4.7
-   (matcher boundary semantics), and §4.8.1–3 (the Phenom / Talentbrew / Coveo wire
-   contracts). The file was never committed, so there is nothing to restore. Each
-   pointer needs either a real target — `collector.py`'s own docstring and `TABNINE.md`
-   already carry the execution order; `test_matcher_rules.py` pins the boundary
-   semantics; `TABNINE.md` carries the adapter contracts — or the rule inlined in a
-   sentence and the pointer dropped. One `docs:` commit, no code change.
+Items 1–6 are settled; item 7 is open.
+
+1. **`batch/` vs `runs/`.** Settled: `batch/`. No continuous or watch mode exists or
+   is planned, and the name says what the component does today.
+2. **Alias lifetime.** Settled: `job-agent-lab` stays indefinitely. It costs one
+   `pyproject.toml` line and protects every doc, skill, and habit.
+3. **Repository rename timing.** Deferred by choice as T0.9. The new packages were
+   pushed under the old remote name, which costs nothing but a later URL change.
+4. **`reporting/` placement.** Settled: top-level. Both `integrate` and
+   `batch --json-output` render through it.
+5. **Concurrency-class naming.** Settled: `browser`/`http`, naming the cost the
+   semaphore protects.
+6. **Where the retired `ARCHITECTURE_PROPOSAL_R2.md` rationale now lives.** Settled:
+   the ten citations were repointed or inlined. The hook execution order is pinned by
+   `TestIntegrationOrder` in `tests/snapshots/test_runtime_hooks.py` and implemented
+   by `collect_job_links`; the matcher boundary semantics are pinned by
+   `test_matcher_rules.py`; the Phenom multi-location rule and the Coveo wire
+   contract are stated in their adapters' own docstrings; the Talentbrew mirror's
+   authority is the shipped JS matcher, via `test_linkrule_parity.py`. The six
+   `TRANSITION.md` section citations in `src/` and `tests/` were repointed at
+   `ARCHITECTURE.md` at the same time, so removing this file orphans nothing.
+7. **The `spike/` citations.** Closing item 6 surfaced a third class of the same
+   problem: twelve docstrings and comments cite files under a `spike/` directory that
+   was never committed — SYS plan documents (`SYS_4_PLAN.md`, `SYS_7_TICKET.md`,
+   `SYS_13_PLAN.md`, `SYS_16_RESULTS.md`) and evidence captures under
+   `spike/evidence/` — in `prompt.py`, `coveo.py`, `company.py`, `probe_board.py`,
+   and five test modules. Unlike item 6 these are mostly provenance notes ("seeded
+   from this capture"), so the fix is to say what the evidence *was* in a clause and
+   drop the path. One `docs:` commit, no code change. Open.
 
 ## 12. Task index
 
@@ -794,7 +813,7 @@ with the same context; only scheduling and output differ.
 | T0.5 | 0 | ✅ No "lab" remains in `src/` prose, banner, or `--help` |
 | T0.6 | 0 | ✅ Four docs and both skill copies updated; the two intentional per-assistant differences kept and documented |
 | T0.7 | 0 | ✅ `test_layering.py` encodes §2.3 from the real graph, and fails a new package that has no allowlist row |
-| T0.8 | 0 | ✅ Zero references to non-existent *blocker* docs; `ARCHITECTURE_PROPOSAL_R2.md` citations open (§11) |
+| T0.8 | 0 | ✅ Zero references to non-existent *blocker* docs; `ARCHITECTURE_PROPOSAL_R2.md` citations closed under §11; `spike/` citations open (§11 item 7) |
 | T0.9 | 0 | ⏸ Deferred by choice — `origin` is still `ticolab/job-agent-lab` |
 | T1.1 | 1 | ✅ `engine.py` pragmas asserted on a real file; `models.py` written; `data/` gitignored |
 | T1.2 | 1 | ✅ `migrations/` + `alembic.ini` at root; `env.py` reads `Base.metadata` and `settings.DATABASE_PATH`; `upgrade head` produces §5.3 exactly |

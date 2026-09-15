@@ -141,6 +141,8 @@ Two facts to have before debugging a batch, both settled by killing a live one r
 
 `CompanyOutcome.url_count` carries what `replace_company_urls` actually stored rather than re-deriving the number from the report, so the printed total is the one `select count(*) from job_urls` reproduces; a board that emits the same posting twice would otherwise be over-counted. `worker.py` also logs one line per company at INFO — a skip, a success with its stored count and verdict, or a failure with its message — because a full-corpus run takes hours and an operator needs to watch boards resolve as they go.
 
+Concurrency at the default ceiling changes no board's count. After the first full run, every deterministic verdict mismatch and every empty agent board was re-run alone through `integrate` and reproduced the batch's number exactly, so a non-match after a batch is drift against a stale `expected_jobs`, not the scheduler degrading extraction. Read the verdict distribution per batch as the health signal, and treat an agent-driven board at `under` with zero URLs stored as the line to look at.
+
 `cli/batch.py` preflights the schema through `persistence/engine.missing_tables`, which lives in `persistence/` because nothing outside that package may build a query, and in `engine.py` specifically because it asks about the database as an artifact rather than about any table's rows. Without it the first `vacantes batch` on a fresh checkout would die with an `OperationalError` from inside a repository instead of naming the `alembic upgrade head` the operator actually owes. It compares against `models.Base.metadata`, so Alembic's own `alembic_version` is not counted.
 
 ### Per-company escape hatches (all inert by default)

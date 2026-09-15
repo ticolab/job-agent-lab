@@ -124,11 +124,26 @@ hours, which means a re-run on the same day costs nothing for boards that
 already succeeded and retries only the ones that did not.
 
 Expect the board count in `job_urls` to be lower than the number of companies in
-the corpus. A board with nothing open right now stores no rows, so it disappears
-from that table while still having run successfully: the first full run covered
-116 companies and 9 of them had no current postings, leaving 1504 URLs across
-107 boards. That is a successful run with an unhappy verdict, not a failure, and
-`company_runs` is where to confirm which reading applies.
+the corpus. A board that stores no rows disappears from that table while still
+having run successfully: the first full run covered 116 companies and 9 of them
+stored nothing, leaving 1504 URLs across 107 boards. An empty result is a
+successful run with an unhappy verdict, not a failure, and `company_runs` is
+where to confirm which reading applies.
+
+The verdict distribution is the health query after a batch:
+
+```bash
+sqlite3 data/vacantes.db 'select verdict, count(*) from company_runs where batch_id = (select max(batch_id) from company_runs) group by verdict'
+```
+
+Read it knowing two things. Most of the corpus has no human count yet, so
+`unverified` dominates, and the counts that exist go stale as boards change, so a
+non-match is usually the board having moved rather than the extraction having
+broken: every deterministic mismatch in the first full run reproduced exactly when
+its board was re-run alone through `integrate`. The line worth acting on is an
+agent-driven board reporting `under` with zero URLs stored, which is either a
+board that emptied or an agent that never reached extraction, and only a look at
+the site tells which.
 
 A full run of the current 116-company corpus takes about 16 minutes and peaks
 around 8 GB of Chromium residency at the default ceiling of 4 concurrent

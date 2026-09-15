@@ -358,6 +358,22 @@ in 5 seconds with no failures. Both numbers are worth re-measuring when
 the corpus grows, and the browser one is worth re-measuring on a machine
 with different memory.
 
+**Concurrency changes no board's count.** Cost is not the only thing a
+first full run has to establish. The shared-core constraint says a board
+must extract the same set under the scheduler as under the integration
+command, and that is a claim about quality rather than throughput. The
+run's verdicts looked alarming on their own: of the 60 boards carrying a
+human count, 20 matched, 25 came in under, and 15 over, and the
+deterministic API adapters matched only 2 of 14. Re-running every
+deterministic mismatch and every empty agent board sequentially through
+the integration command, one board at a time with no concurrency,
+reproduced the batch's number exactly on all 23. The disagreement is
+between the boards and human counts that are days to weeks old, which is
+the drift the verdict layer exists to surface, not the batch degrading
+extraction under load. The verdict distribution is therefore the health
+query to read after a batch, and it is noisy by construction: most of
+the corpus carries no count yet, and the counts that exist go stale.
+
 **The worker is the failure-isolation boundary.** Failure modes across a
 corpus of third-party sites are open-ended — a crashed browser, a
 provider rate limit, DNS, a redesign that breaks a selector — so the
