@@ -893,4 +893,13 @@ COMPANIES: list[Company] = [
         expected_jobs=16,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
+    Company(
+        name="Johnson & Johnson",
+        aliases=("jnj",),
+        job_board_url="https://www.careers.jnj.com/en/jobs/?country=Costa%20Rica",
+        sample_job_url="https://www.careers.jnj.com/en/jobs/r-078067/sr-data-engineer/",
+        link_rule=LinkRule(path_prefix="/en/jobs", min_depth=2),
+        expected_jobs=12,
+        pre_filter_urls=("https://www.careers.jnj.com/en/jobs/?country=Costa%20Rica",),
+    ),
 ]

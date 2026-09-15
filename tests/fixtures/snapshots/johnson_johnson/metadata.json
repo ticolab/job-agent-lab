@@ -1,0 +1,16 @@
+{
+  "schema_version": 2,
+  "company_name": "Johnson & Johnson",
+  "job_board_url": "https://www.careers.jnj.com/en/jobs/?country=Costa%20Rica",
+  "sample_job_url": "https://www.careers.jnj.com/en/jobs/r-078067/sr-data-engineer/",
+  "expected_unfiltered_count": 12,
+  "captured_at": "2026-09-15T03:11:49.924579+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/en/jobs",
+  "min_depth": 2,
+  "pre_filter_urls": [
+    "https://www.careers.jnj.com/en/jobs/?country=Costa%20Rica"
+  ],
+  "top_url": "https://www.careers.jnj.com/en/jobs/?country=Costa%20Rica"
+}
