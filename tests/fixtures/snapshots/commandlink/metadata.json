@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "CommandLink",
+  "job_board_url": "https://ats.rippling.com/en-GB/commandlink/jobs?country=CR",
+  "sample_job_url": "https://ats.rippling.com/en-GB/commandlink/jobs/d9f89979-d7e5-4e70-9ebf-0a1b919c0f34",
+  "expected_unfiltered_count": 7,
+  "captured_at": "2026-09-15T03:17:17.930446+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pre_filter_urls": [
+    "https://ats.rippling.com/en-GB/commandlink/jobs?country=CR"
+  ],
+  "top_url": "https://ats.rippling.com/en-GB/commandlink/jobs?country=CR"
+}

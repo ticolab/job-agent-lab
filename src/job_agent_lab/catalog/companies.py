@@ -902,4 +902,12 @@ COMPANIES: list[Company] = [
         expected_jobs=12,
         pre_filter_urls=("https://www.careers.jnj.com/en/jobs/?country=Costa%20Rica",),
     ),
+    Company(
+        name="CommandLink",
+        aliases=(),
+        job_board_url="https://ats.rippling.com/en-GB/commandlink/jobs?country=CR",
+        sample_job_url="https://ats.rippling.com/en-GB/commandlink/jobs/d9f89979-d7e5-4e70-9ebf-0a1b919c0f34",
+        expected_jobs=7,
+        pre_filter_urls=("https://ats.rippling.com/en-GB/commandlink/jobs?country=CR",),
+    ),
 ]
