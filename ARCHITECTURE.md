@@ -39,16 +39,17 @@ components sit over one shared kernel: `extraction/` owns the port and every
 strategy, `persistence/` owns the database, and `batch/` owns concurrency and
 the definition of one company's unit of work. The kernel — `domain/`,
 `catalog/`, `settings.py` — is the vocabulary all three speak. All three
-exist today, alongside `cli/` and `reporting/`. What is still to arrive is
-the command that drives a batch, in a later phase of `TRANSITION.md`, so
-nothing yet runs the scheduler from a terminal.
+exist today, alongside `cli/` and `reporting/`, and both entry points are
+wired: one command onboards a single board, the other drives the corpus
+and is the only thing in the system that writes to the database.
 
 Dependencies point inward and never cycle:
 
 ```
 Enforced today by tests/unit/test_layering.py:
 
-  cli         → catalog, domain, extraction, reporting, settings
+  cli         → batch, catalog, domain, extraction, persistence, reporting,
+                settings
   batch       → domain, extraction, persistence
   extraction  → domain, settings
   persistence → domain, settings
@@ -69,6 +70,20 @@ factory that opens database sessions, and its ceilings are policy rather
 than shared runtime configuration. `reporting` stays out of `batch`
 because rendering belongs to the command that drives a batch, not to the
 batch itself.
+
+One row came out *wider* than the design anticipated, and it is the same
+principle viewed from the opposite end. The batch command reaches
+`persistence` as well as `batch`, because something has to decide where
+the database lives, open the engine, and hand the session factory
+inward — and that job belongs to the outermost layer. The command is the
+composition root, and its two edges are precisely *why* the scheduler
+below it needs no route to shared configuration and never imports a
+global engine. The inversion shows up as an extra edge here and as a
+missing one there; the two observations are one fact. Reading it instead
+as a leak would invite the opposite fix — moving engine construction
+inward, down to whatever needs a session — which is the change that
+would actually break the graph, because it is what would let a strategy
+reach the database.
 
 This graph is not housekeeping. Two entry points share one extraction core:
 the integration CLI drives one board at a time and produces the JSON artifact a
@@ -246,7 +261,22 @@ mid-run leaves rows still marked in progress; the next batch reaps them
 to failed, and because they are not successes the affected companies
 re-run while genuinely-completed ones are skipped. Resumption is
 therefore not a separate mechanism, and there is no checkpoint file to
-keep correct.
+keep correct. The staleness bound the reap measures against is the
+per-company timeout, on the grounds that no run may legitimately
+outlive its own ceiling.
+
+Two consequences of that rule are worth separating out, because both
+were settled by killing a live batch rather than by reasoning. Recovery
+does not actually *depend* on the reap: an abandoned row is not a
+success, so the company is eligible again the moment the next batch
+looks at it, and the reap is only the bookkeeping that closes the
+orphaned row once the bound has passed. A run can therefore be retried
+before it has been reaped at all. And a kill does not invalidate work
+that had already finished — a company whose previous run succeeded
+inside the window is correctly skipped immediately after a crash,
+because nothing is owed for it. Both follow from asking only about
+successes, which is the property that makes the rule worth keeping
+narrow.
 
 **A successful extraction replaces the URL set wholesale** — delete and
 insert inside one transaction, with no history kept by design. That is
@@ -316,6 +346,30 @@ entries, and it is what makes the component testable: a fake strategy
 and a temporary database exercise the real scheduler, worker, and
 repositories with no browser and no network in the loop.
 
+Two further decisions belong to the command that drives a batch rather
+than to the batch itself, and both fall out of the isolation boundary
+above.
+
+**The exit code reports whether the batch ran, not whether every board
+succeeded.** A board-level failure is already data, recorded in the run
+history with its error text, so a batch that reached the end exits zero
+even when boards inside it failed. A non-zero exit is reserved for the
+batch being unable to start at all: a handle that resolves to nothing,
+a selection that empties out, a database with no schema. Folding board
+health into the exit code would contradict the contract that a
+third-party failure is an ordinary event, and the signal would stop
+carrying information the first week a site went down. The single-board
+command behaves the same way, exiting zero on an unhappy verdict unless
+it is explicitly asked to be strict, so neither entry point teaches a
+different habit than the other.
+
+**The aggregate summary is rendered by the command, not by the
+reporting layer.** Per-company JSON still routes through the one module
+that authors that artifact, so the output format keeps exactly one
+writer. But an aggregate summary reads the batch's own result object,
+and teaching the reporting layer to understand the batch package would
+invert a dependency to buy a symmetry that nothing needs.
+
 ## The regression model
 
 Two corpora, deliberately separate.
@@ -380,7 +434,9 @@ design would decay.
   differently under the scheduler than under the integration CLI.
 - No single board aborts a batch. A third-party failure becomes a
   recorded outcome, and an empty board is a success with an unhappy
-  verdict rather than a failure to retry.
+  verdict rather than a failure to retry. The exit code follows from
+  that: it reports whether the batch ran, not whether every board in it
+  succeeded.
 - The matcher JavaScript has exactly one copy on disk.
 - Every opt-in knob defaults to inert, so adding one cannot change any
   existing board's behaviour.

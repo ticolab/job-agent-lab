@@ -60,7 +60,18 @@ uv run alembic revision --autogenerate -m "..."    # new revision from models.py
 sqlite3 data/vacantes.db 'select * from job_urls'  # query it directly
 ```
 
-The connection URL is built by `migrations/env.py` from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth. No command writes to the database yet — the batch scheduler is the first consumer.
+The connection URL is built by `migrations/env.py` from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth.
+
+`vacantes batch` is the only writer. A selection is mandatory — there is no bare invocation that means "the whole corpus" — because a full run drives hundreds of boards, many of them paying for a browser and an LLM:
+
+```bash
+uv run vacantes batch --dry-run --all                  # plan only, writes nothing
+uv run vacantes batch -c speechify -c cloudbeds        # two boards
+uv run vacantes batch --all --exclude accenture        # everything but one
+uv run vacantes batch --companies queue.txt --force    # a file of handles, ignore freshness
+```
+
+Handles resolve exactly as `integrate -c` resolves them, and unknown ones abort before any work starts. `--dry-run` is the first thing to reach for when a batch misbehaves: it prints which companies would run, which are skipped as fresh, and the concurrency ceilings, without writing even the catalog projection. A completed batch exits zero even when individual boards failed, matching `integrate`'s default; query `company_runs` for board health rather than reading the exit code.
 
 ## Architecture
 
@@ -68,7 +79,7 @@ The connection URL is built by `migrations/env.py` from `settings.DATABASE_PATH`
 
 Three components sit over one shared kernel. `extraction/` owns the port and every strategy. `persistence/` owns the database. `batch/` owns concurrency and the per-company unit of work. The kernel — `domain/`, `catalog/`, `settings.py` — is the vocabulary all three speak.
 
-All three components exist today, alongside `cli/` and `reporting/`. What is still missing is the `vacantes batch` subcommand that drives the scheduler; `cli/batch.py` remains a stub until the next phase of `TRANSITION.md`, so nothing yet runs a batch from the command line.
+All three components exist today, alongside `cli/` and `reporting/`, and both subcommands are wired: `vacantes integrate` drives one board at a time and `vacantes batch` drives the corpus.
 
 Every SQL statement in the system lives in one of `persistence/`'s three repository modules (`catalog_repo`, `jobs_repo`, `runs_repo`), so transaction boundaries and error translation have exactly one home. `engine.py` owns the connection URL and the four SQLite pragmas; `models.py` owns the three tables.
 
@@ -77,7 +88,8 @@ Dependencies point inward and never cycle:
 ```
 Enforced today by tests/unit/test_layering.py:
 
-  cli         → catalog, domain, extraction, reporting, settings
+  cli         → batch, catalog, domain, extraction, persistence, reporting,
+                settings
   batch       → domain, extraction, persistence
   extraction  → domain, settings
   persistence → domain, settings
@@ -88,6 +100,8 @@ Enforced today by tests/unit/test_layering.py:
 ```
 
 Two rows are narrower than `TRANSITION.md` §2.3 anticipated, and both for the same reason: a component that is *handed* what it needs does not import it. `persistence` does not reach `catalog` because `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`. `batch` does not reach `catalog` or `settings` either — the scheduler is given both the companies to run and the session factory to use, and its ceilings are policy that lives in `batch/policy.py`. `reporting` stays out of `batch` because rendering belongs to the CLI that drives a batch, not to the batch itself.
+
+The `cli → persistence` edge is that same principle seen from the other end. Something has to decide where the database lives and open the engine, and that job belongs to the outermost layer: `cli/batch.py` is the composition root, which is *why* `batch` can be handed a session factory instead of importing one.
 
 `tests/unit/test_layering.py` parses every module's imports with `ast` and asserts each package imports only from its allowed set, which makes this structural rather than a matter of discipline. A strategy cannot write to the database, cannot know a batch is running, and cannot behave differently under the scheduler than under the integration CLI. The allowlist is written from the real graph, covers the packages actually present, and may only ever shrink. Because each row is the real graph rather than an intention, widening one — say `extraction → catalog` — is a deliberate allowlist edit that surfaces in review, never something a new import does silently. That `extraction` may reach neither `persistence` nor `batch` is asserted by name as well as by table, so the invariant survives a future edit to the allowlist.
 
@@ -145,6 +159,10 @@ Each repository call gets its **own short-lived session**. Phase 1's repositorie
 
 Crash recovery needs no checkpoint file. A killed batch leaves `in_progress` rows; the next batch reaps them to `failed` at startup, using the per-company timeout as the staleness bound since no run may legitimately exceed it; they are therefore not successes, so the freshness rule re-runs exactly those companies and skips the ones that completed.
 
+Two consequences of that design are worth knowing before debugging a batch, both observed live rather than reasoned about. **Resumption does not depend on reaping**: an `in_progress` row is not a success, so the company is eligible again immediately, and the reap is only the bookkeeping that closes the abandoned row once the staleness bound has passed. **A killed run does not invalidate an earlier success**, either — so a company whose previous run succeeded inside the freshness window is correctly *skipped* right after a kill, because nothing is owed. And because the staleness bound *is* `--timeout-seconds`, lowering it to reap sooner also shortens every run's ceiling; the flag's help says so.
+
+`cli/batch.py` preflights the schema before doing anything, because connecting to a SQLite path that does not exist creates an empty file quite happily. Without the check, the first ever `vacantes batch` on a fresh checkout would die with an `OperationalError` from inside a repository instead of naming the `alembic upgrade head` the operator actually owes. `persistence/engine.missing_tables` answers that question, and it lives there rather than in the CLI because nothing outside `persistence/` may build a query.
+
 ### The deterministic matcher
 
 The matcher scans the top document, descends into every open shadow root, and enters every same-origin frame it can reach — guarded so inaccessible frames are skipped rather than fatal. Each surviving anchor is gated on CSS visibility. An anchor must be same-origin and match one of two URL shapes: the id sits in the path (`/jobs/12345-engineer`), or the id sits in the query on the prefix itself (`/careers/requirements/?pId=180`). When both shapes appear on one page the path bucket wins and the query bucket is discarded, because a query on a listing root is usually a filter facet rather than a posting.
@@ -170,6 +188,8 @@ Fixtures freeze the **unfiltered** listing. The region-filtered target lives on 
 Persistence tests (`tests/unit/test_persistence.py`) run against a **real SQLite file** under `tmp_path`, never `:memory:`, because an in-memory database exercises neither WAL nor `busy_timeout` and would make the pragma assertions vacuous. Its `TestMigrationParity` class applies `alembic upgrade head` to a temporary database and asserts Alembic's own `compare_metadata` finds no difference against `models.Base.metadata`, which is what catches a model field added without a migration.
 
 Batch tests (`tests/unit/test_batch.py`) use no browser and no network: a fake strategy is registered over an entry in `STRATEGIES` with `monkeypatch.setitem`, and the real scheduler, worker, and repositories run against a real SQLite file. The fake records its own per-class high-water mark, so a concurrency ceiling is *observed* rather than assumed. It also gates on an explicit target — each extraction blocks until the expected number are simultaneously live — because simply sleeping made the assertion a race against however long the workers spent in the database, and it under-counted on a fast machine.
+
+`tests/unit/test_cli_batch.py` covers the subcommand the same way, driving the real command against a temporary database with a fake strategy. Every argument namespace in it is produced by `cli.main.build_parser` rather than hand-built, so an unregistered subcommand or a renamed flag fails there instead of in a manual run.
 
 The repo does not use `pytest-asyncio`. Async tests are driven on a background thread with a fresh event loop by `tests/unit/asyncio_harness.py`, because the snapshot suite drives Chromium through Playwright's sync API and leaves a running-loop registration on the main thread's `asyncio.events` state that makes both `asyncio.run` and a main-thread `run_until_complete` raise for the rest of the session. `tests/unit/test_prefiltered.py` carries the original diagnosis. The harness also owns engine disposal: an async engine outliving its loop leaves aiosqlite holding a closed one, and the error surfaces in whichever test runs next, so `run_async` disposes every engine passed to `track_engine` on the loop that created it.
 

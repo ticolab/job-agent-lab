@@ -70,6 +70,48 @@ to the console reporting jobs found, elapsed time, agent steps, and errors. The
 `--strict` flag exits non-zero if any run's verdict is not `match`, which makes
 the command usable as a gate.
 
+### Running a batch
+
+The commands above onboard and debug one board at a time. `vacantes batch` is
+the operational counterpart: it runs the corpus concurrently and writes the
+current job-URL set to a SQLite database, which is the artifact that answers
+the question at the top of this file.
+
+Apply the migrations before the first run. Pointing at a path that does not
+exist creates an empty database quite happily, so the batch checks the schema
+first and names the tables it is missing rather than failing part-way through.
+
+```bash
+uv run alembic upgrade head                      # once, and after any schema change
+uv run vacantes batch --dry-run --all            # plan only, writes nothing
+uv run vacantes batch -c speechify -c cloudbeds  # two named boards
+uv run vacantes batch --all                      # the whole corpus
+```
+
+A selection is always required. There is no bare `vacantes batch` meaning
+"everything", because a full run drives hundreds of boards and most of them
+cost a real browser and a paid model, so the whole corpus has to be asked for
+by name. Handles resolve exactly as they do for `integrate`, and an unknown one
+aborts before any work starts.
+
+Start with `--dry-run` whenever a batch behaves unexpectedly. It prints which
+companies would run, which are skipped because they already succeeded recently,
+and the concurrency ceilings, without writing anything at all.
+
+Companies that succeeded inside the freshness window are skipped, so re-running
+after a partial failure retries only what is owed, and `--force` ignores the
+window. A board that failed is recorded as a failure in the database rather
+than signalled through the exit code, so a batch that ran to completion exits
+zero even when some of its boards did not succeed.
+
+One query answers the product question, and the run history beside it is where
+to look when a count seems wrong:
+
+```bash
+sqlite3 data/vacantes.db 'select company_slug, url from job_urls order by company_slug'
+sqlite3 data/vacantes.db 'select company_slug, status, url_count, verdict from company_runs'
+```
+
 ### Adding a new company
 
 Companies are integrated through a queue file plus an agent skill, not by editing

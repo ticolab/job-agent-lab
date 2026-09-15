@@ -7,7 +7,8 @@ right now.*
 
 Status: **Phase 0 landed** (2026-09-15) in four commits, except T0.9 — the GitHub
 repository rename — which is deferred by choice. **Phase 1 landed** (2026-09-15).
-**Phase 2 landed** (2026-09-15). Phases 3–4 are not started.
+**Phase 2 landed** (2026-09-15). **Phase 3 landed** (2026-09-15). Phase 4 is not
+started.
 Supersedes `ORCHESTRATION.md`, whose technical decisions are carried forward here
 where they still hold and corrected where they do not.
 
@@ -137,7 +138,8 @@ Dependencies point inward and never cycle:
 ```
 Enforced today by tests/unit/test_layering.py:
 
-  cli         → catalog, domain, extraction, reporting, settings
+  cli         → batch, catalog, domain, extraction, persistence, reporting,
+                settings
   batch       → domain, extraction, persistence
   extraction  → domain, settings
   persistence → domain, settings
@@ -145,16 +147,16 @@ Enforced today by tests/unit/test_layering.py:
   catalog     → domain
   settings    → (nothing)
   domain      → (nothing inside vacantes)
-
-Added to the allowlist when Phase 3 wires the subcommand:
-
-  cli         → + batch
 ```
 
 Both `persistence` and `batch` landed narrower than this section first anticipated,
 for one reason: a component that is *handed* what it needs — the companies to run,
-the session factory to use — does not import it. `CLAUDE.md`, `ARCHITECTURE.md`, and
-`TABNINE.md` carry the full explanation beside the same table.
+the session factory to use — does not import it. `cli` correspondingly landed one
+edge *wider*: it reaches `persistence` as well as `batch`, because the command is
+the composition root that opens the engine and hands the session factory inward.
+The extra edge there and the missing one below it are the same fact.
+`CLAUDE.md`, `ARCHITECTURE.md`, and `TABNINE.md` carry the full explanation beside
+the same table.
 
 This is the property that makes the shared-code constraint (§3.2) structural rather
 than a matter of discipline: a strategy cannot write to the database, cannot know a
@@ -638,7 +640,31 @@ exception marks `failed`, so retries target genuine breakage, not empty boards.
 - Acceptance: unit tests green; layering test proves `extraction` still imports neither
   `persistence` nor `batch`.
 
-## 7. Phase 3 — The `vacantes batch` subcommand
+## 7. Phase 3 — The `vacantes batch` subcommand — **LANDED**
+
+**As built, four deviations from the text below.** The flag list grew by three.
+`-m/--model` and `--max-steps` are not optional extras: `RunContext` requires both,
+and §7's list simply omitted them. `--database PATH` was added so a run can be
+pointed at a file other than `settings.DATABASE_PATH`, which is what let the kill
+and resume behaviour below be validated without touching the real dataset. The
+command also **preflights the schema** before doing anything, because connecting to
+a SQLite path that does not exist creates an empty file quite happily; without the
+check the first ever batch on a fresh checkout would die with an `OperationalError`
+from inside a repository rather than naming the `alembic upgrade head` the operator
+owes. `persistence/engine.missing_tables` answers that question, since nothing
+outside `persistence/` may build a query. The layering row is the one in §2.3, a
+row wider than anticipated for the reason recorded there. And while per-company
+JSON does route through `reporting.output.save_result` exactly as specified — the
+artifact is byte-shape-identical to `integrate`'s, same filename convention
+included — the **aggregate summary is rendered by the command**, because it reads
+the batch's own result object and teaching `reporting/` to understand the `batch`
+package would invert a dependency to buy a symmetry nothing needs.
+
+The exit code reports **whether the batch ran, not whether every board succeeded**.
+A board-level failure is already data, recorded in `company_runs` with its error
+text; a non-zero exit is reserved for the batch being unable to start at all — an
+unresolvable handle, an empty selection, a database with no schema. This matches
+`integrate`'s default, so neither entry point teaches a different habit.
 
 ```
 vacantes batch [--all | --companies FILE | -c HANDLE ...] [--exclude HANDLE ...]
@@ -752,5 +778,6 @@ with the same context; only scheduling and output differ.
 | T2.2 | 2 | ✅ `worker.py`: `run_company`, `CompanyOutcome`, the isolation boundary |
 | T2.3 | 2 | ✅ `scheduler.py`: `run_batch`, startup reaping, catalog sync, aggregation |
 | T2.4 | 2 | ✅ 25 tests on fakes — no browser, no network; ceiling tests verified to fail an unbounded scheduler; suite at **903** |
-| T3.1–T3.2 | 3 | §7 acceptance |
+| T3.1 | 3 | ✅ `cli/batch.py` wired into the dispatcher; selection mandatory; schema preflighted |
+| T3.2 | 3 | ✅ Five Greenhouse boards plus one browser-class board run live; every §7 acceptance item observed; suite at **932** |
 | T4.1–T4.3 | 4 | Full corpus tuned; runbook written; blocker dispositions reviewed |
