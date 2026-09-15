@@ -1,23 +1,5 @@
 [
   {
-    "name": "Emerson",
-    "job_board_url": "https://hdjq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=LOCATIONS&selectedLocationsFacet=300000000228624",
-    "sample_job_url": "https://hdjq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs/preview/26010327/?lastSelectedFacet=LOCATIONS&selectedLocationsFacet=300000000228624",
-    "expected_jobs": 16
-  },
-  {
-    "name": "Johnson & Johnson",
-    "job_board_url": "https://www.careers.jnj.com/en/jobs/",
-    "sample_job_url": "https://www.careers.jnj.com/en/jobs/r-078067/sr-data-engineer/",
-    "expected_jobs": 8
-  },
-  {
-    "name": "CommandLink",
-    "job_board_url": "https://ats.rippling.com/en-GB/commandlink/jobs",
-    "sample_job_url": "https://ats.rippling.com/en-GB/commandlink/jobs/d9f89979-d7e5-4e70-9ebf-0a1b919c0f34",
-    "expected_jobs": 4
-  },
-  {
     "name": "HNM Systems",
     "job_board_url": "https://hnmsystems.com/openjobs/#/jobs",
     "sample_job_url": "https://hnmsystems.com/openjobs/#/jobs/5050",

@@ -51,9 +51,11 @@ not the same as every board of that shape being integrated.
 | C19 | Fingerprint-based bot management rejects any non-browser HTTP client regardless of headers | **Partly closed** — where the gated response lands in readable page state, borrow it instead of re-issuing the request (`CoveoConfig.browser_token_key`, SYS-19). Still **open** where the needed data never reaches such state |
 | C20 | **Exclusive** accordion: opening one section closes the others, so no DOM state ever holds the full listing — and each section may carry its own cap | **Open** — needs a nested multi-state walk; neither `expand_selector` nor the pagination walker expresses it |
 | C21 | Apply-decoy: the board's only buttons matching the Case B `Search/Apply/Submit/Filter` vocabulary are job-application affordances (`Apply Here`, `View and Apply`), and clicking one leaves the listing page | Closed — Case B anti-scope guard in `navigation/prompt.py` naming the job-application labels and stating no click is needed when selecting the option already updates the listings |
+| C22 | Hash-routed SPA: postings are well-formed `<a>`, but the job id lives **only** in the URL fragment (`#/jobs/5050`), which the matcher strips by design — every posting collapses to the board root | **Open** — needs a third link shape (id-in-fragment) with its own prefix semantics; no config knob reaches it |
 
-Two open classes sit **below every strategy**: C1 on the DOM path and C20 in
-the DOM state machine. Neither is reachable by a prompt or matcher change. C2
+Three open classes sit **below every strategy**: C1 and C22 on the DOM path
+and C20 in the DOM state machine. None is reachable by a prompt change; C22 is
+reachable by a matcher change, but needs new prefix semantics, not a knob. C2
 remains open outside Greenhouse, and C19 is open only in its residual form (see
 the transport frontier).
 
@@ -169,6 +171,69 @@ past this board. (b) A generic form-derived-link matcher rule behind an opt-in
 `LinkRule` flag. Reusable — it closes the form variant of C1 for any future
 board — but alone leaves this one at 23 / 11. Build (b) for a board it actually
 completes.
+
+### HNM Systems — C22, open
+
+*Investigated 2026-09-15. Queue: `new-companies.json`, `expected_jobs: 1` —
+no agreed plan yet; move to `blocked-companies.json` if not pursued.*
+
+An AngularJS hash-routed career portal at `https://hnmsystems.com/openjobs/`,
+backed by Bullhorn (`public-rest33.bullhornstaffing.com/rest-services/1D1609/
+search/JobOrder`, public, no auth). Postings **are** well-formed anchors — the
+failure is the URL shape, not the element type:
+
+```html
+<a href="#/jobs/5050">Senior Project Manager</a>   <!-- x20, ids differ -->
+```
+
+The matcher strips the fragment before bucketing (`linkUrl.hash = ''`), which
+is correct for `#apply`-style in-page anchors and exactly wrong here: the
+fragment *is* the job identity. All 20 anchors normalize to the single href
+`https://hnmsystems.com/openjobs/`, and the prefix test then fails — with
+`basePath="/"` the `startsWith("//")` check is false, and with
+`basePath="/openjobs"` the id-in-query branch needs a query string, which a
+hash route does not have.
+
+Measured, filtered to the one Costa Rica posting (`Costa Rica, Heredia`):
+
+```text
+job anchors in DOM                       1   (href="#/jobs/5050", the right job)
+after the matcher's hash strip           https://hnmsystems.com/openjobs/
+extractor, path_prefix="/openjobs"       0
+extractor, derived prefix "/"            0
+```
+
+The target itself is sound: the Bullhorn API reports 149 open jobs, of which
+exactly **1** is Costa Rica (id 5050, Senior Project Manager, Heredia).
+
+**Why config alone cannot fix it.** No knob reaches a fragment. `path_prefix`
+and `min_depth` operate on `pathname`, which is `/openjobs` for every posting;
+`pre_filter_urls` is also out because filter state never reaches the URL — the
+location facet leaves the address at `#/jobs`.
+
+**Why it is not C1.** The anchors are real and carry the destination. This is
+a normalization collision, one layer below the element-type assumption that
+defines C1.
+
+**Options.** (a) A third link shape, *id-in-fragment*, alongside id-in-path and
+id-in-query: keep route-like fragments (`#/…`) instead of stripping them, and
+match the fragment route against a fragment-derived prefix. The discriminator
+is clean — `#apply` is an in-page anchor, `#/jobs/5050` is a hash-mode router
+route — and both shapes that pin today's collapse behaviour
+(`test_linkrule_parity.py::test_parity_fragment_collapse_dedups`,
+`test_probe_census.py::test_fragment_variants_collapsed`) use `#apply`-style
+fragments, so they would keep passing. Cost: new prefix semantics, since
+`derive_path_prefix` reads `pathname` and would need a fragment-route
+counterpart, plus depth handling to separate `#/jobs/5050` from the `#/jobs`
+listing route. (b) A Bullhorn adapter — the REST endpoint is public, unauthed,
+and returns the full job list with addresses, so the region filter is a
+server-side query. Reusable across any Bullhorn tenant, with `corpToken` as
+the only per-board config.
+
+**Disposition.** One posting does not justify either route today. Bullhorn
+Career Portal is a widely deployed product, so revisit when a second C22 or
+Bullhorn board arrives — (b) is the cheaper of the two and generalizes by
+tenant, while (a) is the one that closes the class.
 
 ### Deel — C20, reclassified from C4; blocked
 
