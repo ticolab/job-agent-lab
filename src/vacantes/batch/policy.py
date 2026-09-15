@@ -42,8 +42,12 @@ ConcurrencyClass = Literal["browser", "http"]
 # Four browser runs and twenty HTTP runs. The two profiles differ by an
 # order of magnitude: a browser run holds a Chromium context (memory)
 # and, for ``dom``, an LLM agent (provider rate limits); an HTTP run is
-# a JSON call bounded only by politeness. Tuned against observed
-# behaviour in Phase 4, not derived from first principles.
+# a JSON call bounded only by politeness. Confirmed by measurement on
+# the first full-corpus run rather than derived from first principles:
+# peak Chromium residency tracked the browser ceiling (about 8.4 GB at
+# 4, 12.6 GB at 8) while wall time did not move, and no provider
+# rate-limit error appeared at 4. ``ARCHITECTURE.md`` carries the
+# numbers.
 DEFAULT_BROWSER_CONCURRENCY = 4
 DEFAULT_HTTP_CONCURRENCY = 20
 
@@ -52,8 +56,8 @@ DEFAULT_HTTP_CONCURRENCY = 20
 # not repeat work.
 DEFAULT_FRESHNESS = timedelta(hours=20)
 
-# A ceiling, not an expectation: the slowest observed board finishes
-# well inside this. Its real job is to stop one hung Playwright context
+# A ceiling, not an expectation: the slowest board in the first full
+# corpus run took 134 s. Its real job is to stop one hung Playwright context
 # from holding a browser slot for the length of the batch.
 DEFAULT_TIMEOUT = timedelta(minutes=10)
 
