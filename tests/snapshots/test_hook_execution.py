@@ -189,16 +189,18 @@ def js_page(js_context: BrowserContext) -> Iterable[Page]:
 
 @pytest.fixture
 def fast_hooks(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Shrink ``EXPAND_SETTLE_SEC`` and make ``asyncio.sleep`` synchronous.
+    """Shrink the settle constants and make ``asyncio.sleep`` synchronous.
 
-    The production ``EXPAND_SETTLE_SEC`` (0.7s) exists to absorb SPA
-    mount/animation tails; tests use ``file://`` pages that mount
-    synchronously, so shrinking the value avoids real wallclock waits.
-    Replacing ``asyncio.sleep`` with a synchronous fake keeps ``_drive``
-    from encountering a scheduler yield. ``EXPAND_MAX_ROUNDS`` is left
-    alone — the cap test passes ``max_rounds=`` explicitly.
+    The production ``EXPAND_SETTLE_SEC`` (0.7s) and ``CSS_SETTLE_SEC``
+    (0.3s) exist to absorb SPA mount/animation and CSS-transition tails;
+    tests use ``file://`` pages that mount synchronously, so shrinking
+    both avoids real wallclock waits. Replacing ``asyncio.sleep`` with a
+    synchronous fake keeps ``_drive`` from encountering a scheduler
+    yield. ``EXPAND_MAX_ROUNDS`` is left alone — the cap test passes
+    ``max_rounds=`` explicitly.
     """
     monkeypatch.setattr(collector_mod, "EXPAND_SETTLE_SEC", 0.01)
+    monkeypatch.setattr(collector_mod, "CSS_SETTLE_SEC", 0.01)
 
     async def _sync_sleep(seconds: float) -> None:
         time.sleep(seconds)
@@ -292,6 +294,101 @@ class TestApplyPreExtractCss:
 
         rules = _drive(apply_pre_extract_css(driver, "   \n  "))
         assert rules == 0
+
+    def test_settles_for_css_settle_sec_after_injecting(
+        self, tmp_path: Path, js_page: Page, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """The helper awaits ``CSS_SETTLE_SEC`` once, *after* the style lands.
+
+        Pins the settle so it cannot be dropped silently: the corpus stays
+        green without it (SentinelOne's fixture is frozen post-injection
+        and Accenture carries none), while the live failure it prevents is
+        total — 0 of 12 anchors on Accenture's first matcher run. A
+        sentinel duration catches an accidental reuse of
+        ``EXPAND_SETTLE_SEC`` or a hard-coded literal; the shared event
+        log pins the ordering (inject, then settle) rather than just the
+        call. Two consequences of ``asyncio.sleep`` being patched
+        module-wide: Playwright's own dispatcher yields through it during
+        ``page.evaluate`` (observed as ``sleep(0)`` events, tolerated below
+        rather than asserted, since they are Playwright internals), and a
+        recorder that itself drives the page re-enters Playwright from
+        inside that yield and deadlocks — so the fake only appends.
+        """
+        js_page.goto(_empty_page_uri(tmp_path))
+        events: list[object] = []
+
+        class _RecordingDriver(_HookTestDriver):
+            async def evaluate(self, js: str, arg: Any) -> Any:
+                events.append("evaluate")
+                return await super().evaluate(js, arg)
+
+        driver = _RecordingDriver(js_page)
+        sentinel = 0.0123
+        monkeypatch.setattr(collector_mod, "CSS_SETTLE_SEC", sentinel)
+
+        async def _record_sleep(seconds: float) -> None:
+            events.append(("sleep", seconds))
+
+        monkeypatch.setattr(collector_mod.asyncio, "sleep", _record_sleep)
+
+        rules = _drive(apply_pre_extract_css(driver, ".a { color: red; }"))
+
+        assert rules == 1
+        settle = ("sleep", sentinel)
+        # Exactly one settle of exactly CSS_SETTLE_SEC ...
+        assert events.count(settle) == 1, events
+        # ... after the injection landed, with nothing injected after it.
+        assert events.index("evaluate") < events.index(settle), events
+        assert "evaluate" not in events[events.index(settle) :], events
+
+    def test_transitioned_visibility_is_not_observable_in_the_same_tick(
+        self, tmp_path: Path, js_page: Page
+    ) -> None:
+        """Why the settle exists: a CSS transition defers the new value.
+
+        Characterizes the browser behaviour measured on Accenture, whose
+        accordion wrapper declares ``transition: visibility 0.55s``. An
+        override appended in the same tick is not observable through
+        ``checkVisibility`` — the matcher's gate — even after a forced
+        synchronous reflow, because the transition only starts at the
+        next rendering update. Once it starts, ``visibility``
+        hidden->visible interpolates to ``visible`` for the whole run, so
+        one rendering opportunity is enough. If a future Chromium makes
+        the override observable synchronously, this test fails and the
+        settle can be reconsidered.
+        """
+        p = tmp_path / "transition.html"
+        p.write_text(
+            "<!DOCTYPE html><html><head><style>"
+            ".wrap { visibility: hidden;"
+            " transition: visibility 0.55s cubic-bezier(0.85, 0, 0, 1); }"
+            "</style></head><body>"
+            '<div class="wrap"><a id="job" href="/jobs/1">job</a></div>'
+            "</body></html>",
+            encoding="utf-8",
+        )
+        js_page.goto(p.as_uri())
+
+        same_tick = js_page.evaluate(
+            """() => {
+                const a = document.getElementById('job');
+                const gate = () => a.checkVisibility({ checkVisibilityCSS: true });
+                const before = gate();
+                const el = document.createElement('style');
+                el.textContent = '.wrap { visibility: visible !important; }';
+                document.head.appendChild(el);
+                void document.body.offsetHeight;  // forced synchronous reflow
+                return { before, afterInjectSameTick: gate() };
+            }"""
+        )
+        assert same_tick == {"before": False, "afterInjectSameTick": False}
+
+        js_page.wait_for_timeout(500)
+        after_frame = js_page.evaluate(
+            "() => document.getElementById('job')"
+            ".checkVisibility({ checkVisibilityCSS: true })"
+        )
+        assert after_frame is True
 
 
 # ---------------------------------------------------------------------------

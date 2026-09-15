@@ -146,6 +146,23 @@ EXPAND_MAX_ROUNDS: int = 5
 # stamp fires. Kept short to keep the total prep budget bounded.
 EXPAND_SETTLE_SEC: float = 0.7
 
+# Seconds to wait after the pre-extract stylesheet is appended, before
+# the caller reads visibility off the DOM. When the property the payload
+# overrides is under a CSS ``transition`` (Accenture's accordion wrapper
+# declares ``transition: visibility 0.55s ...``), the new value is not
+# observable in the same tick: the transition only *starts* at the
+# browser's next rendering update, and until then ``getComputedStyle``
+# and ``checkVisibility`` keep reporting the pre-injection value — a
+# forced synchronous reflow does not help, measured. Once it starts,
+# ``visibility`` hidden->visible interpolates to ``visible`` for the
+# whole run, so the flip lands one frame after injection (~16-50 ms
+# measured), not after the declared duration; 0.3 s is generous margin.
+# Known limit: a long ``transition-delay`` on the gating property would
+# outlast this — raise the constant if such a board appears. Read at
+# call time like the walker's constants so a ``monkeypatch.setattr`` on
+# this module is honoured.
+CSS_SETTLE_SEC: float = 0.3
+
 # Attribute name stamped on visible expand targets each round. Indexed
 # per round (``data-jal-expand="0"``, ``"1"``, …) so each click selects
 # a stable single element even when the round mutates DOM order.
@@ -574,6 +591,21 @@ async def apply_pre_extract_css(driver: PageDriver, css: str) -> int:
         Number of top-level rules the browser parsed from the payload.
     """
     result = await driver.evaluate(_INJECT_CSS_JS, css)
+    # Settle before returning, so the caller's next step — the matcher,
+    # ``expand_all``, or the capture bake — observes the *applied* style.
+    # If the overridden property is under a CSS transition, the new value
+    # is not observable until the browser's next rendering update starts
+    # that transition, and a forced reflow in the same tick does not help
+    # (see ``CSS_SETTLE_SEC``). Skipping this is a total loss, not a
+    # partial one: on Accenture, whose job anchors sit in collapsed
+    # ``visibility: hidden`` accordion wrappers, the first matcher run saw
+    # 0 of 12 anchors and the paginated union came back 44 of 56 — states
+    # 2+ were rescued only by the incidental settle after each next-page
+    # click. With the settle: 12 and 56. Lives inside this function
+    # rather than at the call site so the runtime and
+    # ``scripts/capture_snapshot.py`` stay in lockstep, the same parity
+    # rule the walker's settle constants follow.
+    await asyncio.sleep(CSS_SETTLE_SEC)
     if isinstance(result, str):
         try:
             return int(result)
