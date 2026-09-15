@@ -701,12 +701,6 @@ first thing to reach for when a batch misbehaves. `--json-output` routes through
   rate-limit behaviour; record the numbers in `ARCHITECTURE.md`.
 - **T4.2** Operational runbook in `README.md`: cadence (2–3×/week), the one query that
   answers the product question, `--dry-run` first, backup = copy `data/vacantes.db`.
-- **T4.3** Follow-up *decision*, not work in this plan: revisit the blocked-board
-  dispositions in `blockers/INTEGRATION_BLOCKERS.md`. Under lab economics "three
-  postings do not justify the route" was correct; under a dataset that answers "what is
-  open right now" a blocked board is a permanent coverage gap. Instacredit (C1
-  form-submit variant, 10 postings) and HNM Systems (C22, 1 posting) may clear the bar
-  that they did not before.
 
 ## 9. Design principles
 
@@ -782,4 +776,4 @@ with the same context; only scheduling and output differ.
 | T2.4 | 2 | ✅ 25 tests on fakes — no browser, no network; ceiling tests verified to fail an unbounded scheduler; suite at **903** |
 | T3.1 | 3 | ✅ `cli/batch.py` wired into the dispatcher; selection mandatory; schema preflighted |
 | T3.2 | 3 | ✅ Five Greenhouse boards plus one browser-class board run live; every §7 acceptance item observed; suite at **932** |
-| T4.1–T4.3 | 4 | Full corpus tuned; runbook written; blocker dispositions reviewed |
+| T4.1–T4.2 | 4 | Full corpus tuned; runbook written |
