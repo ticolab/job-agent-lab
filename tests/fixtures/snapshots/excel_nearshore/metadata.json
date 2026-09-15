@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "company_name": "Excel Nearshore",
+  "job_board_url": "https://excelnearshore.com/careers/",
+  "sample_job_url": "https://excelnearshore.com/job/qa-engineer/",
+  "expected_unfiltered_count": 7,
+  "captured_at": "2026-09-15T15:42:12.224594+00:00",
+  "captured_with_filters": false,
+  "notes": ""
+}

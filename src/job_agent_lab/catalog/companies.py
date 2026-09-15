@@ -928,4 +928,11 @@ COMPANIES: list[Company] = [
             "https://jobs.aligntech.com/search-job?location_id=[40486,40341]",
         ),
     ),
+    Company(
+        name="Excel Nearshore",
+        aliases=(),
+        job_board_url="https://excelnearshore.com/careers/",
+        sample_job_url="https://excelnearshore.com/job/qa-engineer/",
+        expected_jobs=7,
+    ),
 ]
