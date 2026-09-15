@@ -15,13 +15,14 @@ thread's event loop is unusable in a full-suite run.
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Awaitable, Callable
-from datetime import timedelta
+from collections.abc import Awaitable, Callable, Sequence
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
 import pytest
 from sqlalchemy import func, select
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from tests.unit.asyncio_harness import run_async as _run
@@ -32,7 +33,7 @@ from vacantes.batch.worker import CompanyOutcome, run_company
 from vacantes.domain.company import Company, CoveoConfig
 from vacantes.domain.region import COSTA_RICA_LATAM
 from vacantes.extraction.base import STRATEGIES, RunContext, build_report
-from vacantes.persistence import models
+from vacantes.persistence import jobs_repo, models, runs_repo
 from vacantes.persistence.engine import create_engine, create_session_factory
 from vacantes.persistence.timestamps import utc_now
 
@@ -412,6 +413,116 @@ class TestFailureIsolation:
 
         assert outcome.status == "failed"
         assert outcome.error == recorded
+
+    def test_a_persistence_failure_after_extraction_is_isolated_too(
+        self, tmp_path: Path, fake: _FakeStrategy, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """A database error is that company's failure, not the batch's.
+
+        Before the persistence calls were inside the boundary, an
+        exception from the URL write escaped into ``asyncio.gather``,
+        which raises on the first failure while leaving every other task
+        running detached — their outcomes lost and their browser slots
+        held until process exit. Here the victim's write fails, the other
+        two companies must still complete, and the victim's run row must
+        be marked ``failed`` with the database's own message, since
+        ``fail_run`` itself still works in this scenario.
+        """
+        companies = [_http_company(i) for i in range(3)]
+        victim = companies[1]
+        real_replace = jobs_repo.replace_company_urls
+
+        async def locked_for_victim(
+            session: AsyncSession,
+            *,
+            company_slug: str,
+            urls: Sequence[str],
+            captured_at: datetime,
+        ) -> int:
+            if company_slug == victim.slug:
+                raise OperationalError(
+                    "INSERT INTO job_urls", {}, Exception("database is locked")
+                )
+            return await real_replace(
+                session, company_slug=company_slug, urls=urls, captured_at=captured_at
+            )
+
+        monkeypatch.setattr(jobs_repo, "replace_company_urls", locked_for_victim)
+
+        async def scenario() -> tuple[BatchResult, dict[str, Any]]:
+            factory = await _fresh_database(tmp_path / "db-failure.db")
+            result = await run_batch(companies, CTX, session_factory=factory)
+            async with factory() as session:
+                rows = (
+                    await session.execute(
+                        select(
+                            models.CompanyRun.company_slug,
+                            models.CompanyRun.status,
+                            models.CompanyRun.error_message,
+                        )
+                    )
+                ).all()
+            return result, {slug: (status, error) for slug, status, error in rows}
+
+        result, rows = _run(scenario())
+
+        assert (result.succeeded, result.failed, result.skipped) == (2, 1, 0)
+        victim_outcome = result.outcomes[1]
+        assert victim_outcome.status == "failed"
+        assert victim_outcome.error is not None
+        assert "database is locked" in victim_outcome.error
+        # The row and the outcome are the operator's two views of one
+        # failure; they must agree, and the other companies must have
+        # finished normally.
+        assert rows[victim.slug] == ("failed", victim_outcome.error)
+        assert rows[companies[0].slug][0] == "success"
+        assert rows[companies[2].slug][0] == "success"
+
+    def test_a_failure_before_the_run_row_exists_is_isolated_too(
+        self, tmp_path: Path, fake: _FakeStrategy, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Zone 1: no run row yet, so the outcome alone carries the error.
+
+        ``start_run`` raising for one company must not abort the batch,
+        and — because the row insert is what failed — that company must
+        have no ``company_runs`` row at all, while the others complete.
+        """
+        companies = [_http_company(i) for i in range(3)]
+        victim = companies[0]
+        real_start = runs_repo.start_run
+
+        async def refuse_victim(
+            session: AsyncSession, *, company_slug: str, batch_id: str
+        ) -> int:
+            if company_slug == victim.slug:
+                raise OperationalError(
+                    "INSERT INTO company_runs", {}, Exception("disk I/O error")
+                )
+            return await real_start(
+                session, company_slug=company_slug, batch_id=batch_id
+            )
+
+        monkeypatch.setattr(runs_repo, "start_run", refuse_victim)
+
+        async def scenario() -> tuple[BatchResult, list[str]]:
+            factory = await _fresh_database(tmp_path / "pre-run-failure.db")
+            result = await run_batch(companies, CTX, session_factory=factory)
+            async with factory() as session:
+                slugs = (
+                    (await session.execute(select(models.CompanyRun.company_slug)))
+                    .scalars()
+                    .all()
+                )
+            return result, list(slugs)
+
+        result, slugs_with_rows = _run(scenario())
+
+        assert (result.succeeded, result.failed, result.skipped) == (2, 1, 0)
+        assert result.outcomes[0].status == "failed"
+        assert result.outcomes[0].error is not None
+        assert "disk I/O error" in result.outcomes[0].error
+        assert victim.slug not in slugs_with_rows
+        assert set(slugs_with_rows) == {companies[1].slug, companies[2].slug}
 
     def test_a_company_over_its_timeout_is_recorded_failed(
         self, tmp_path: Path, fake: _FakeStrategy

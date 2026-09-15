@@ -137,18 +137,24 @@ Dependencies point inward and never cycle:
 ```
 Enforced today by tests/unit/test_layering.py:
 
-  cli        → catalog, domain, extraction, reporting, settings
-  extraction → domain, settings
-  reporting  → catalog
-  catalog    → domain
-  settings   → (nothing)
-  domain     → (nothing inside vacantes)
-
-Added to the allowlist as each component lands:
-
+  cli         → catalog, domain, extraction, reporting, settings
+  batch       → domain, extraction, persistence
+  extraction  → domain, settings
   persistence → domain, settings
-  batch       → catalog, domain, extraction, persistence, reporting, settings
+  reporting   → catalog
+  catalog     → domain
+  settings    → (nothing)
+  domain      → (nothing inside vacantes)
+
+Added to the allowlist when Phase 3 wires the subcommand:
+
+  cli         → + batch
 ```
+
+Both `persistence` and `batch` landed narrower than this section first anticipated,
+for one reason: a component that is *handed* what it needs — the companies to run,
+the session factory to use — does not import it. `CLAUDE.md`, `ARCHITECTURE.md`, and
+`TABNINE.md` carry the full explanation beside the same table.
 
 This is the property that makes the shared-code constraint (§3.2) structural rather
 than a matter of discipline: a strategy cannot write to the database, cannot know a

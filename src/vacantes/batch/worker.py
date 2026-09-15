@@ -7,13 +7,21 @@ an exception and becomes a recorded outcome.
 
 Two properties are load-bearing.
 
-**No single board aborts the batch.** Failure modes across 250
-third-party sites are open-ended: Playwright crashes, provider rate
-limits, DNS, a redesign that breaks a selector. Every one of them is
-caught here and written to ``company_runs`` for an operator to read.
-``KeyboardInterrupt``, ``SystemExit``, and ``asyncio.CancelledError``
-derive from ``BaseException`` and still propagate, so Ctrl-C and task
-cancellation behave normally.
+**No single company aborts the batch — not for a board failure, and not
+for a database failure either.** Failure modes across 250 third-party
+sites are open-ended: Playwright crashes, provider rate limits, DNS, a
+redesign that breaks a selector. Every one of them is caught here and
+written to ``company_runs`` for an operator to read. The boundary also
+covers this worker's own persistence calls, because of how the
+scheduler awaits it: ``asyncio.gather`` without ``return_exceptions``
+raises on the *first* exception while leaving every other task running
+detached — their outcomes lost, their browser slots held until process
+exit. A ``database is locked`` that outlasts ``busy_timeout`` is
+therefore that one company's failed outcome; if the database is
+genuinely down, the batch ends with every outcome failed and saying so,
+which an operator can see. ``KeyboardInterrupt``, ``SystemExit``, and
+``asyncio.CancelledError`` derive from ``BaseException`` and still
+propagate, so Ctrl-C and task cancellation behave normally.
 
 **A session is never held across the extraction.** Sessions are taken
 around each repository call and released before the minutes-long
@@ -24,6 +32,7 @@ SQLite, potentially a write lock — for the length of a browser session.
 from __future__ import annotations
 
 import asyncio
+import logging
 from dataclasses import dataclass
 from typing import Any, Literal
 
@@ -38,6 +47,8 @@ from vacantes.persistence.timestamps import utc_now
 OutcomeStatus = Literal["success", "failed", "skipped"]
 
 SessionFactory = async_sessionmaker[AsyncSession]
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -86,10 +97,27 @@ class CompanyOutcome:
         return cls(company=company, status="skipped")
 
 
-async def _fail(session_factory: SessionFactory, *, run_id: int, error: str) -> None:
-    """Record *error* against *run_id* in its own short-lived session."""
-    async with session_factory() as session:
-        await runs_repo.fail_run(session, run_id=run_id, error=error)
+async def _record_failure(
+    session_factory: SessionFactory, *, run_id: int, error: str
+) -> None:
+    """Record *error* against *run_id* in its own short-lived session.
+
+    Best-effort by design: if the database is what just failed, there is
+    nothing left to record into. The outcome still carries *error*, and
+    the row left ``in_progress`` is reaped to ``failed`` at the next
+    batch's startup, so the stored state converges without this write.
+    """
+    try:
+        async with session_factory() as session:
+            await runs_repo.fail_run(session, run_id=run_id, error=error)
+    except Exception:  # noqa: BLE001 — see docstring
+        logger.warning(
+            "could not record failure for run %s (%s); the row will be "
+            "reaped at the next batch",
+            run_id,
+            error,
+            exc_info=True,
+        )
 
 
 async def run_company(
@@ -128,18 +156,29 @@ async def run_company(
         The :class:`CompanyOutcome`. Never raises for a board-level
         failure.
     """
-    # One session per repository call, never one spanning several. Each
+    # The isolation boundary has three zones, each turning an exception
+    # into this company's failed outcome rather than letting it escape
+    # into ``gather``. One session per repository call throughout: each
     # repository function opens its own transaction, and a session that
     # has already autobegun one for a read cannot begin another.
-    async with session_factory() as session:
-        if await should_skip(session, company=company, policy=policy):
-            return CompanyOutcome.skipped(company)
 
-    async with session_factory() as session:
-        run_id = await runs_repo.start_run(
-            session, company_slug=company.slug, batch_id=batch_id
-        )
+    # Zone 1 — before a run row exists. If the skip check or the row
+    # insert fails there is nothing to mark ``failed``; the outcome alone
+    # carries the error.
+    try:
+        async with session_factory() as session:
+            if await should_skip(session, company=company, policy=policy):
+                return CompanyOutcome.skipped(company)
 
+        async with session_factory() as session:
+            run_id = await runs_repo.start_run(
+                session, company_slug=company.slug, batch_id=batch_id
+            )
+    except Exception as exc:  # noqa: BLE001 — the isolation boundary, pre-run
+        return CompanyOutcome.failed(company, repr(exc))
+
+    # Zone 2 — the extraction. Kept in its own ``try`` so the timeout
+    # label below can only ever come from ``wait_for``.
     try:
         report = await asyncio.wait_for(
             get_strategy(company.strategy).extract(company, ctx),
@@ -149,38 +188,47 @@ async def run_company(
         # Deliberately not `repr(exc)`: an asyncio timeout carries no
         # message, so the useful fact is the ceiling that was hit.
         message = f"timeout after {policy.timeout.total_seconds():g}s"
-        await _fail(session_factory, run_id=run_id, error=message)
+        await _record_failure(session_factory, run_id=run_id, error=message)
         return CompanyOutcome.failed(company, message)
-    except Exception as exc:  # noqa: BLE001 — the isolation boundary
+    except Exception as exc:  # noqa: BLE001 — the isolation boundary, extraction
         message = repr(exc)
-        await _fail(session_factory, run_id=run_id, error=message)
+        await _record_failure(session_factory, run_id=run_id, error=message)
         return CompanyOutcome.failed(company, message)
 
-    jobs: list[str] = report["jobs"]
-    async with session_factory() as session:
-        # `url_count` is the number of rows actually stored, which is the
-        # de-duplicated count, not `len(jobs)`. A board that emits the
-        # same posting twice would otherwise record a count that no
-        # `select count(*) from job_urls` could ever reproduce. The
-        # verdict beside it is computed from the unfiltered extraction,
-        # so the two answer different questions on purpose.
-        url_count = await jobs_repo.replace_company_urls(
-            session,
-            company_slug=company.slug,
-            urls=jobs,
-            captured_at=utc_now(),
-        )
+    # Zone 3 — persisting the result. A database error here is still
+    # this company's failure: letting it escape would abort the batch
+    # through ``gather`` while every other task ran on detached.
+    try:
+        jobs: list[str] = report["jobs"]
+        async with session_factory() as session:
+            # `url_count` is the number of rows actually stored, which is
+            # the de-duplicated count, not `len(jobs)`. A board that emits
+            # the same posting twice would otherwise record a count that
+            # no `select count(*) from job_urls` could ever reproduce. The
+            # verdict beside it is computed from the unfiltered extraction,
+            # so the two answer different questions on purpose.
+            url_count = await jobs_repo.replace_company_urls(
+                session,
+                company_slug=company.slug,
+                urls=jobs,
+                captured_at=utc_now(),
+            )
 
-    # A second transaction rather than one spanning both, for the reason
-    # above. Dying in between stores the URLs but leaves the run
-    # `in_progress`, which the next batch reaps to `failed` and re-runs —
-    # and re-running replaces the same set, so the window is harmless.
-    async with session_factory() as session:
-        await runs_repo.finish_run(
-            session,
-            run_id=run_id,
-            url_count=url_count,
-            verdict=report["metadata"]["verdict"],
-        )
+        # A second transaction rather than one spanning both, for the
+        # reason above. Dying in between stores the URLs but leaves the
+        # run `in_progress`, which the next batch reaps to `failed` and
+        # re-runs — and re-running replaces the same set, so the window
+        # is harmless.
+        async with session_factory() as session:
+            await runs_repo.finish_run(
+                session,
+                run_id=run_id,
+                url_count=url_count,
+                verdict=report["metadata"]["verdict"],
+            )
+    except Exception as exc:  # noqa: BLE001 — the isolation boundary, persistence
+        message = repr(exc)
+        await _record_failure(session_factory, run_id=run_id, error=message)
+        return CompanyOutcome.failed(company, message)
 
     return CompanyOutcome.succeeded(company, report)
