@@ -18,12 +18,6 @@
     "expected_jobs": 10
   },
   {
-    "name": "Baja Nearshore",
-    "job_board_url": "https://recruitcrm.io/jobs/View%20Openings?1759775865379",
-    "sample_job_url": "https://recruitcrm.io/apply/17726607186750106969zOp?source=Jobspage&new=yes",
-    "expected_jobs": 0
-  },
-  {
     "name": "CloudFactory",
     "job_board_url": "https://apply.workable.com/cloudfactory/",
     "sample_job_url": "https://apply.workable.com/cloudfactory/j/0443127CCF/",
