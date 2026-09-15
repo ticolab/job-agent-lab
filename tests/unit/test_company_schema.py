@@ -399,6 +399,7 @@ class TestPaginateField:
             "Hire With Near",
             "Nextern",
             "Concentrix",
+            "Accenture",
         }
         actual_paginated = {c.name for c in COMPANIES if c.paginate}
         assert actual_paginated == expected_paginated, (
@@ -550,6 +551,7 @@ class TestExpectedJobsField:
             "Speechify": 2,
             "Align Technology": 10,
             "Excel Nearshore": 7,
+            "Accenture": 56,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -782,6 +784,7 @@ class TestHooksField:
             "Boston Scientific",
             "Viant Medical",
             "Emerson",
+            "Accenture",
         }
         actual_non_inert = {c.name for c in COMPANIES if not c.hooks.is_inert}
         assert actual_non_inert == expected_non_inert, (
@@ -1036,6 +1039,7 @@ class TestPreFilterUrlsField:
             "Johnson & Johnson",
             "CommandLink",
             "Align Technology",
+            "Accenture",
         }
         actual_states = {c.name for c in COMPANIES if c.pre_filter_urls}
         assert actual_states == expected_states, (

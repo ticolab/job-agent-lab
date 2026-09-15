@@ -935,4 +935,20 @@ COMPANIES: list[Company] = [
         sample_job_url="https://excelnearshore.com/job/qa-engineer/",
         expected_jobs=7,
     ),
+    Company(
+        name="Accenture",
+        aliases=(),
+        job_board_url="https://www.accenture.com/cr-en/careers/jobsearch",
+        sample_job_url="https://www.accenture.com/cr-en/careers/jobdetails?id=R00355087_en&title=Senior+Manager+%E2%80%93+Value+Architect",
+        link_rule=LinkRule(path_prefix="/cr-en/careers/jobdetails"),
+        paginate=True,
+        expected_jobs=56,
+        hooks=RuntimeHooks(
+            pre_extract_css=(
+                ".rad-filters-vertical__job-card-content-wrapper"
+                "{visibility:visible!important;height:auto!important;}"
+            ),
+        ),
+        pre_filter_urls=("https://www.accenture.com/cr-en/careers/jobsearch",),
+    ),
 ]

@@ -1,0 +1,34 @@
+{
+  "schema_version": 2,
+  "company_name": "Accenture",
+  "job_board_url": "https://www.accenture.com/cr-en/careers/jobsearch",
+  "sample_job_url": "https://www.accenture.com/cr-en/careers/jobdetails?id=R00355087_en&title=Senior+Manager+%E2%80%93+Value+Architect",
+  "expected_unfiltered_count": 56,
+  "captured_at": "2026-09-15T17:11:15.473233+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/cr-en/careers/jobdetails",
+  "pages": [
+    {
+      "file": "pages/page-2.html",
+      "url": "https://www.accenture.com/cr-en/careers/jobsearch"
+    },
+    {
+      "file": "pages/page-3.html",
+      "url": "https://www.accenture.com/cr-en/careers/jobsearch"
+    },
+    {
+      "file": "pages/page-4.html",
+      "url": "https://www.accenture.com/cr-en/careers/jobsearch"
+    },
+    {
+      "file": "pages/page-5.html",
+      "url": "https://www.accenture.com/cr-en/careers/jobsearch"
+    }
+  ],
+  "pre_extract_css": ".rad-filters-vertical__job-card-content-wrapper{visibility:visible!important;height:auto!important;}",
+  "pre_filter_urls": [
+    "https://www.accenture.com/cr-en/careers/jobsearch"
+  ],
+  "top_url": "https://www.accenture.com/cr-en/careers/jobsearch"
+}
