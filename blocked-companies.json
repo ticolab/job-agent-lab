@@ -16,5 +16,11 @@
     "job_board_url": "https://empleos.instacredit.com/empleos/",
     "sample_job_url": "https://empleos.instacredit.com/v_empleo/?id=314&nombre=Jefe+Regional+de+Capacitaci%C3%B3n+y+Entrenamiento+Operativo",
     "expected_jobs": 11
+  },
+  {
+    "name": "HNM Systems",
+    "job_board_url": "https://hnmsystems.com/openjobs/#/jobs",
+    "sample_job_url": "https://hnmsystems.com/openjobs/#/jobs/5050",
+    "expected_jobs": 1
   }
 ]
