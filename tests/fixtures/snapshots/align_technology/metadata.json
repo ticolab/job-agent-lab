@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "Align Technology",
+  "job_board_url": "https://jobs.aligntech.com/search-job?location_id=[40486,40341]",
+  "sample_job_url": "https://jobs.aligntech.com/en/postings/e0ec4afb-a180-412c-9e86-684ca248f5e4",
+  "expected_unfiltered_count": 10,
+  "captured_at": "2026-09-15T15:18:14.506728+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pre_filter_urls": [
+    "https://jobs.aligntech.com/search-job?location_id=[40486,40341]"
+  ],
+  "top_url": "https://jobs.aligntech.com/search-job?location_id=[40486,40341]"
+}

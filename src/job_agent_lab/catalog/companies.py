@@ -918,4 +918,14 @@ COMPANIES: list[Company] = [
         strategy="greenhouse",
         expected_jobs=2,
     ),
+    Company(
+        name="Align Technology",
+        aliases=("aligntech",),
+        job_board_url="https://jobs.aligntech.com/search-job?location_id=[40486,40341]",
+        sample_job_url="https://jobs.aligntech.com/en/postings/e0ec4afb-a180-412c-9e86-684ca248f5e4",
+        expected_jobs=10,
+        pre_filter_urls=(
+            "https://jobs.aligntech.com/search-job?location_id=[40486,40341]",
+        ),
+    ),
 ]
