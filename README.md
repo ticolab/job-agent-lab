@@ -123,6 +123,13 @@ three times a week rather than continuously. The default freshness window is 20
 hours, which means a re-run on the same day costs nothing for boards that
 already succeeded and retries only the ones that did not.
 
+Expect the board count in `job_urls` to be lower than the number of companies in
+the corpus. A board with nothing open right now stores no rows, so it disappears
+from that table while still having run successfully: the first full run covered
+116 companies and 9 of them had no current postings, leaving 1504 URLs across
+107 boards. That is a successful run with an unhappy verdict, not a failure, and
+`company_runs` is where to confirm which reading applies.
+
 A full run of the current 116-company corpus takes about 16 minutes and peaks
 around 8 GB of Chromium residency at the default ceiling of 4 concurrent
 browser runs. Raising that ceiling costs proportionally more memory without
