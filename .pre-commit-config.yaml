@@ -38,4 +38,7 @@ repos:
         entry: uv run --group test pytest tests/ -x -q
         language: system
         pass_filenames: false
-        files: '^(src/vacantes/(extraction|domain)/.*|tests/.*)$'
+        # Every package under src/, not just the matcher's: cli/, batch/
+        # and persistence/ are exercised only by this suite, and a
+        # migration that drifts from models.py is caught only here too.
+        files: '^(src/vacantes/.*|migrations/.*|tests/.*)$'
