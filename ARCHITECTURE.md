@@ -7,11 +7,7 @@ rules that keep the design from decaying as new sites arrive.
 
 Per-feature semantics and the change history live in `TABNINE.md`. Per-board
 evidence — the catalogue of site behaviours that resist extraction, with the
-ground truth behind each — lives under `blockers/`. Forward-looking design
-work lives in `TRANSITION.md`, which is transient: a landed phase keeps its
-section, marked as such and annotated with how the build differed from the
-plan, while its durable rationale graduates into this document. The file is
-removed whole once the last phase lands.
+ground truth behind each — lives under `blockers/`.
 
 ## The central split
 

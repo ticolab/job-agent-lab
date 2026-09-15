@@ -10,7 +10,7 @@ For each configured company, a `browser-use` agent (OpenAI model routed via Lite
 
 Only one of the seven registered strategies drives an agent at all; the other six are plain HTTP against the ATS or search platform backing the board. "Agent" therefore names a mechanism inside `extraction/dom/`, not the system.
 
-Read `ARCHITECTURE.md` for the design rationale and invariants. Read `blockers/INTEGRATION_BLOCKERS.md` for the catalogue of site behaviours that resist extraction (referenced as C1–C22 throughout the codebase). Read `CLAUDE.md` for the equivalent guidance surface aimed at Claude Code. Read `TRANSITION.md` for the restructuring plan; landed phases stay in it, marked as such with their as-built deviations, so it doubles as the audit trail of what changed between design and delivery, and the whole file is removed when the last phase lands.
+Read `ARCHITECTURE.md` for the design rationale and invariants. Read `blockers/INTEGRATION_BLOCKERS.md` for the catalogue of site behaviours that resist extraction (referenced as C1–C22 throughout the codebase). Read `CLAUDE.md` for the equivalent guidance surface aimed at Claude Code.
 
 ## Building and Running
 
@@ -99,7 +99,7 @@ Enforced today by tests/unit/test_layering.py:
   domain      → (nothing inside vacantes)
 ```
 
-Two rows are narrower than `TRANSITION.md` §2.3 anticipated, and both for the same reason: a component that is *handed* what it needs does not import it. `persistence` does not reach `catalog` because `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`. `batch` does not reach `catalog` or `settings` either — the scheduler is given both the companies to run and the session factory to use, and its ceilings are policy that lives in `batch/policy.py`. `reporting` stays out of `batch` because rendering belongs to the CLI that drives a batch, not to the batch itself.
+Two rows are narrower than initially anticipated, and both for the same reason: a component that is *handed* what it needs does not import it. `persistence` does not reach `catalog` because `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`. `batch` does not reach `catalog` or `settings` either — the scheduler is given both the companies to run and the session factory to use, and its ceilings are policy that lives in `batch/policy.py`. `reporting` stays out of `batch` because rendering belongs to the CLI that drives a batch, not to the batch itself.
 
 The `cli → persistence` edge is that same principle seen from the other end. Something has to decide where the database lives and open the engine, and that job belongs to the outermost layer: `cli/batch.py` is the composition root, which is *why* `batch` can be handed a session factory instead of importing one.
 

@@ -10,7 +10,7 @@ Only one of the seven registered strategies drives an agent at all. The other si
 
 Two purposes share one core. The `integrate` CLI onboards and debugs one board at a time and writes a JSON artifact a human reviews before a catalog entry is committed; the `batch` scheduler runs the corpus concurrently and persists the current URL set. Both call the same `extract` coroutine with the same `RunContext`, which is what keeps the integration workflow meaningful as a correctness signal for scheduled runs.
 
-Detailed per-feature design notes (SYS-N history, matcher semantics, adapter wire contracts) live in `TABNINE.md`; architecture rationale in `ARCHITECTURE.md`; known site blocker classes (C1–C22) in `blockers/`. `TRANSITION.md` holds the restructuring plan; landed phases stay in it, marked as such with their as-built deviations, and the whole file is removed when the last phase lands.
+Detailed per-feature design notes (SYS-N history, matcher semantics, adapter wire contracts) live in `TABNINE.md`; architecture rationale in `ARCHITECTURE.md`; known site blocker classes (C1–C22) in `blockers/`.
 
 ## Commands
 
@@ -93,7 +93,7 @@ Enforced today by tests/unit/test_layering.py:
   domain      → (nothing inside vacantes)
 ```
 
-Two rows are narrower than `TRANSITION.md` §2.3 anticipated, and both for the same reason: a component that is *handed* what it needs does not import it. `persistence` does not reach `catalog` because `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`. `batch` reaches neither `catalog` nor `settings` — the scheduler is given both the companies to run and the session factory to use, and its ceilings are policy living in `batch/policy.py`. `reporting` stays out of `batch` because rendering belongs to the CLI that drives a batch, not to the batch itself.
+Two rows are narrower than initially anticipated, and both for the same reason: a component that is *handed* what it needs does not import it. `persistence` does not reach `catalog` because `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`. `batch` reaches neither `catalog` nor `settings` — the scheduler is given both the companies to run and the session factory to use, and its ceilings are policy living in `batch/policy.py`. `reporting` stays out of `batch` because rendering belongs to the CLI that drives a batch, not to the batch itself.
 
 One row came out *wider* instead, and for the same reason read backwards: `cli` reaches `persistence` because `cli/batch.py` is the **composition root** — it decides where the database lives, opens the engine, and hands the session factory down to the scheduler. That is exactly *why* `batch` needs no route to `settings` and never imports a global engine, so the edge is the inversion working rather than leaking. `ARCHITECTURE.md` carries the argument.
 
