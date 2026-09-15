@@ -910,4 +910,12 @@ COMPANIES: list[Company] = [
         expected_jobs=7,
         pre_filter_urls=("https://ats.rippling.com/en-GB/commandlink/jobs?country=CR",),
     ),
+    Company(
+        name="Speechify",
+        aliases=(),
+        job_board_url="https://job-boards.greenhouse.io/speechify",
+        sample_job_url="https://job-boards.greenhouse.io/speechify/jobs/5975117004",
+        strategy="greenhouse",
+        expected_jobs=2,
+    ),
 ]
