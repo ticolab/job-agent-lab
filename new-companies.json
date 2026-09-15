@@ -22,5 +22,95 @@
     "job_board_url": "https://apply.workable.com/cloudfactory/",
     "sample_job_url": "https://apply.workable.com/cloudfactory/j/0443127CCF/",
     "expected_jobs": 5
+  },
+  {
+    "name": "ReKluti",
+    "job_board_url": "https://easyapplyrekluti.recruitee.com/?jobs-9da8b313%5Bsearch%5D=costa%20rica",
+    "sample_job_url": "https://easyapplyrekluti.recruitee.com/o/administrador-de-base-de-datos-oracle",
+    "expected_jobs": 49
+  },
+  {
+    "name": "Atomic Invest",
+    "job_board_url": "https://www.atomicvest.com/careers",
+    "sample_job_url": "https://jobs.ashbyhq.com/atomic-invest/2dbcd665-1e90-49b0-b164-4776e85fae25?embed=js&locationId=d88d1d51-572a-46b3-85a2-a899912a3487",
+    "expected_jobs": 1
+  },
+  {
+    "name": "Appnovation",
+    "job_board_url": "https://www.appnovation.com/careers#current-openings",
+    "sample_job_url": "https://job-boards.greenhouse.io/appnovation/jobs/8708667002",
+    "expected_jobs": 5
+  },
+  {
+    "name": "Tyk",
+    "job_board_url": "https://tyk.io/tyk-current-vacancies/",
+    "sample_job_url": "https://tyk.io/jobs/site-reliability-engineer/",
+    "expected_jobs": 8
+  },
+  {
+    "name": "Sparq",
+    "job_board_url": "https://ats.rippling.com/en-GB/sparq/jobs",
+    "sample_job_url": "https://ats.rippling.com/en-GB/sparq/jobs/808bb533-70c8-40a7-86c5-5fdd6d42c31f",
+    "expected_jobs": 4
+  },
+  {
+    "name": "Power Digital Marketing",
+    "job_board_url": "https://powerdigitalmarketing.com/company/careers/",
+    "sample_job_url": "https://job-boards.greenhouse.io/powerdigitalmarketing/jobs/5185164007",
+    "expected_jobs": 48
+  },
+  {
+    "name": "Unisys",
+    "job_board_url": "https://unisys.wd5.myworkdayjobs.com/External",
+    "sample_job_url": "https://unisys.wd5.myworkdayjobs.com/en-US/External/details/QA-Tester_REQ575669?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+    "expected_jobs": 9
+  },
+  {
+    "name": "Midland Credit Management",
+    "job_board_url": "https://careers.encorecapital.com/en/search-jobs",
+    "sample_job_url": "https://careers.encorecapital.com/en/job/san-jose/risk-and-compliance-analyst/29781/100036864432",
+    "expected_jobs": 1
+  },
+  {
+    "name": "VML",
+    "job_board_url": "https://www.vml.com/careers#jobs",
+    "sample_job_url": "https://www.vml.com/careers/job/8692067002-cr-associate-qa-analyst",
+    "expected_jobs": 7
+  },
+  {
+    "name": "Oowlish",
+    "job_board_url": "https://jobs.lever.co/oowlish",
+    "sample_job_url": "https://jobs.lever.co/oowlish/4f805246-8df1-468d-9ba9-fa1dd205e0dc",
+    "expected_jobs": 1
+  },
+  {
+    "name": "Athenaworks",
+    "job_board_url": "https://athenaworks.com/careers/",
+    "sample_job_url": "https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs/536",
+    "expected_jobs": 11
+  },
+  {
+    "name": "Commit",
+    "job_board_url": "https://www.comm-it.com/commit-jobs#career-sec",
+    "sample_job_url": "https://www.comeet.com/jobs/comm-it/76.008/senior-backend-engineer/00.175-F2.50D?token=67826D067833C0CF002D48020581368&company-uid=76.008&company-name=Commit&candidate-source-storage=true&embedded=true&version=rc-310-0&referrer=https:%2F%2Fwww.comm-it.com%2F&coref=undefined&pageUrl=https%253A%252F%252Fwww.comm-it.com%252Fcommit-jobs&urlWithCompanyName=true&location=Costa%20Rica",
+    "expected_jobs": 2
+  },
+  {
+    "name": "Cargill",
+    "job_board_url": "https://careers.cargill.com/en/search-jobs",
+    "sample_job_url": "https://careers.cargill.com/en/job/alajuela/generalist-process-operator-i/23251/100409215360",
+    "expected_jobs": 60
+  },
+  {
+    "name": "McKinsey & Company",
+    "job_board_url": "https://www.mckinsey.com/careers/search-jobs?_gl=1*3xwli6*_gcl_au*ODkzNzI1NDMuMTc2MjI3OTQ4MS4xNjA2MzQ1OTM1LjE3NjM2NzM2MDguMTc2MzY3MzYyNA..&cities=San+Jose",
+    "sample_job_url": "https://www.mckinsey.com/careers/search-jobs/jobs/associate-15178",
+    "expected_jobs": 22
+  },
+  {
+    "name": "Sumo Logic ",
+    "job_board_url": "https://www.sumologic.com/company/careers#openings",
+    "sample_job_url": "https://job-boards.greenhouse.io/sumologic/jobs/7819104",
+    "expected_jobs": 1
   }
 ]
