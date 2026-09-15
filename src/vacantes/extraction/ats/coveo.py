@@ -16,7 +16,7 @@ rendered page, no DOM, no LLM — which is why the report's
 
 Why an API adapter — the C1 half that closes without click-simulation
 --------------------------------------------------------------------
-UST's board (``blockers/INTEGRATION_BLOCKERS_R2.md``) is a React SPA
+UST's board (``blockers/INTEGRATION_BLOCKERS.md``) is a React SPA
 that renders **zero** ``<a href>`` job anchors at any viewport: the
 probe reports matcher count ``0`` under both the derived prefix
 ``/en`` and the ancestor sweep ``/``, across two independent

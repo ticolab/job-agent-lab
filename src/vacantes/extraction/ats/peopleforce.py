@@ -20,7 +20,7 @@ is stay *complete*.
 PeopleForce persists exactly one location per posting and its filter
 widget is single-select, so a region that spans several cities has no
 single URL under the widget's own semantics — the shape recorded as
-C18 in ``blockers/INTEGRATION_BLOCKERS_R2.md``. The first closure for
+C18 in ``blockers/INTEGRATION_BLOCKERS.md``. The first closure for
 that was ``Company.pre_filter_urls``: declare one URL per city and
 union the results. It is correct on the day it is written and silently
 incomplete afterwards, because the declared set is frozen while the

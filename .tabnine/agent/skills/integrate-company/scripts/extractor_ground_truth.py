@@ -81,7 +81,7 @@ async def _run(
     # SYS-10: all launch sites must agree — a board is validated and run
     # under one browser environment. The plausible UA
     # (``HeadlessChrome/<v>`` → ``Chrome/<v>``) closes the C14 WAF-403
-    # class documented in ``blockers/INTEGRATION_BLOCKERS_R2.md``.
+    # class documented in ``blockers/INTEGRATION_BLOCKERS.md``.
     profile = BrowserProfile(
         headless=True,
         user_agent=await plausible_headless_ua(),

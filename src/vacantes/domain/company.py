@@ -561,7 +561,7 @@ class Company(BaseModel):
             URL sets before reporting through ``build_report`` with
             ``None`` agent-fields plus ``metadata.states_visited``.
             Motivating board: Plan A Technologies (C18 in
-            ``blockers/INTEGRATION_BLOCKERS_R2.md``) — PeopleForce
+            ``blockers/INTEGRATION_BLOCKERS.md``) — PeopleForce
             exposes one ``?location_id=<n>`` URL per city and the Costa
             Rica target spans Cartago (63939) and Heredia (51094);
             declaring both URLs here lets the runner union the two
@@ -592,7 +592,7 @@ class Company(BaseModel):
             Phenom is tenant-co-hosted and offers no platform hostname
             to allow-list (contrast the Greenhouse host validator).
             Motivating board: BCG (C12 in
-            ``blockers/INTEGRATION_BLOCKERS_R2.md``), whose country
+            ``blockers/INTEGRATION_BLOCKERS.md``), whose country
             facet is sessionStorage state rather than a URL parameter
             and whose 863-posting unfiltered board dwarfs the walker's
             ``MAX_PAGES`` — so any DOM snapshot count would be a
@@ -612,7 +612,7 @@ class Company(BaseModel):
             self-hosted enterprise ATS: every tenant serves the widget
             on its own domain (Citi's is ``jobs.citi.com``), so there
             is no platform hostname to allow-list. Motivating board:
-            Citi (C12 in ``blockers/INTEGRATION_BLOCKERS_R2.md`` — a
+            Citi (C12 in ``blockers/INTEGRATION_BLOCKERS.md`` — a
             3,529-posting unfiltered board where the walker cap would
             hit long before the region facet, and the facet is not
             URL-addressable at the page level). Routing it through the
@@ -632,7 +632,7 @@ class Company(BaseModel):
             derived from ``organization_id`` and the token-mint path is
             tenant-owned, so there is no platform hostname to
             allow-list. Motivating board: UST (the C1 half in
-            ``blockers/INTEGRATION_BLOCKERS_R2.md``), a React/Coveo SPA
+            ``blockers/INTEGRATION_BLOCKERS.md``), a React/Coveo SPA
             that renders **zero** job anchors at any viewport — the
             postings exist only in the search XHR's ``clickUri``
             fields, so no matcher extension can reach them. Unlike the

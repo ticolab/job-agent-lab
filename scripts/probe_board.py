@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Board profiler — a diagnostic that classifies a career site before configuring.
 
-Every entry in ``spike/INTEGRATION_BLOCKERS.md`` was produced by hand-driving
+Every entry in ``blockers/INTEGRATION_BLOCKERS.md`` was produced by hand-driving
 the same diagnostic checklist through Playwright MCP: count anchors per
 candidate prefix, check frames and their origins, check shadow roots, probe
 visibility, look for pagination affordances, inventory filter controls,
@@ -1116,7 +1116,7 @@ async def _probe(
             # and run under one browser environment. The plausible UA
             # (``HeadlessChrome/<v>`` → ``Chrome/<v>``) closes the C14
             # WAF-403 class documented in
-            # ``blockers/INTEGRATION_BLOCKERS_R2.md``.
+            # ``blockers/INTEGRATION_BLOCKERS.md``.
             user_agent = await plausible_headless_ua()
             page = await browser.new_page(user_agent=user_agent)
             page.on("response", _on_response)

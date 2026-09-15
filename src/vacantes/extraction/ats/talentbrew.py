@@ -18,7 +18,7 @@ no DOM, no LLM, which is why the report's ``metadata.model`` /
 Why an API adapter — the C12 closure for Citi
 ---------------------------------------------
 Citi shares BCG's C12 shape (see
-``blockers/INTEGRATION_BLOCKERS_R2.md``): 3,529 unfiltered postings
+``blockers/INTEGRATION_BLOCKERS.md``): 3,529 unfiltered postings
 sit behind a country facet whose page-level UI does not encode the
 facet into the URL, so the SYS-5 walker neither reaches everything
 (``MAX_PAGES=20`` against ~236 pages) nor can be frozen into a

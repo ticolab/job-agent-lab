@@ -55,7 +55,7 @@ RENDER_SCROLL_COUNT: int = 3
 #
 # Dev.Pro's WAF returns HTTP 403 to any browser whose User-Agent string
 # contains the substring ``HeadlessChrome`` (C14 in
-# ``blockers/INTEGRATION_BLOCKERS_R2.md``). The three-way isolation
+# ``blockers/INTEGRATION_BLOCKERS.md``). The three-way isolation
 # experiment recorded there pins the mechanism precisely: the WAF greps
 # for the literal ``HeadlessChrome`` token in the UA header — no other
 # bot-detection surface (``navigator.webdriver``, canvas fingerprint,

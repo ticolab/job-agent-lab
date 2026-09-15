@@ -3,7 +3,7 @@
 The pure derivation helper is the single "contract" every launch site
 depends on: given a Chromium UA string, strip the
 ``HeadlessChrome/<v>`` product token so the WAF class described in
-``blockers/INTEGRATION_BLOCKERS_R2.md`` (C14) does not 403 the request.
+``blockers/INTEGRATION_BLOCKERS.md`` (C14) does not 403 the request.
 The unit-level tests lock in the byte-exact transform, and the
 integration test exercises the async resolver against a real Chromium
 launch to confirm the actual UA the runtime will present to origins
@@ -31,7 +31,7 @@ from vacantes import settings
 from vacantes.settings import derive_plausible_ua, plausible_headless_ua
 
 # Representative Chromium headless UA at the time of the C14 isolation
-# experiment (Dev.Pro; see C14 in ``blockers/INTEGRATION_BLOCKERS_R2.md``).
+# experiment (Dev.Pro; see C14 in ``blockers/INTEGRATION_BLOCKERS.md``).
 # Fixed literal on purpose: the test locks the transform's byte-exact
 # behaviour, so version churn in Playwright's bundled Chromium must not
 # invalidate the golden.

@@ -93,7 +93,7 @@ class DomStrategy:
         dispatch happens *before* any call into :func:`extract_jobs`,
         so ``OPENAI_API_KEY`` is not consulted on the prefiltered path
         (structural, not conditional — closes C18 in
-        ``blockers/INTEGRATION_BLOCKERS_R2.md``). Corpus companies
+        ``blockers/INTEGRATION_BLOCKERS.md``). Corpus companies
         default to the empty tuple, so the pre-SYS-13 branch is
         byte-identical for every non-declaring entry.
         """

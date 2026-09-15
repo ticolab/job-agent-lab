@@ -455,7 +455,7 @@ before running the capture — on Deel the naive `button[aria-expanded="false"]`
 also catches nine cookie/filter/language buttons, whereas the refined
 `button[aria-expanded="false"][class*="hover:bg-neutral-50"]` isolates the
 fifteen role-count accordions cleanly (selector re-validated 2026-07-17;
-see the Deel entry in `blockers/INTEGRATION_BLOCKERS_R2.md`).
+see the Deel entry in `blockers/INTEGRATION_BLOCKERS.md`).
 
 SYS-6 also shipped a C3 prompt clause that lets the agent discover bare
 native `<select>` filter elements (by `name`/`id`/associated-label matching

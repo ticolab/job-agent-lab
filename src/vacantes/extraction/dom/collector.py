@@ -293,7 +293,7 @@ class PageDriver(Protocol):
         The JS-side click fires with ``event.isTrusted === false``.
         Pagination controls that specifically gate on ``isTrusted``
         would need a driver extension; no such board has been observed
-        (see C7 in ``spike/INTEGRATION_BLOCKERS.md`` for the class).
+        (see C7 in ``blockers/INTEGRATION_BLOCKERS.md`` for the class).
 
         Adapters must raise when no element matches ``selector``.
         """

@@ -582,7 +582,7 @@ async def _capture(
             # and run under one browser environment. The plausible UA
             # (``HeadlessChrome/<v>`` → ``Chrome/<v>``) closes the C14
             # WAF-403 class documented in
-            # ``blockers/INTEGRATION_BLOCKERS_R2.md``.
+            # ``blockers/INTEGRATION_BLOCKERS.md``.
             user_agent = await plausible_headless_ua()
             page = await browser.new_page(user_agent=user_agent)
             # SYS-13: when ``pre_filter_urls`` is non-empty the runtime

@@ -48,7 +48,7 @@ region:
   label mention none of the C3 tokens is still the location filter
   when its *option texts* include the region tokens. This closes the
   C3 residual recorded in
-  ``blockers/INTEGRATION_BLOCKERS_R2.md``: the C3 sentence above keys
+  ``blockers/INTEGRATION_BLOCKERS.md``: the C3 sentence above keys
   on attributes, so an attribute-anonymous control falls through to
   Case A and the whole board over-extracts.
 

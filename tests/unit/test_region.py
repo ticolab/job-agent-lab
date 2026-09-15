@@ -6,7 +6,7 @@ instance:
 - ``matches(location_name)`` — the API-side predicate that
   Greenhouse-style adapters will use. The positives are the concrete
   location strings recorded from Zscaler, Movable Ink, and West Monroe
-  Greenhouse boards in ``spike/INTEGRATION_BLOCKERS.md`` (plus generic
+  Greenhouse boards in ``blockers/INTEGRATION_BLOCKERS.md`` (plus generic
   variants); the negatives target the case-sensitivity trap (``CR``
   must not match ``Cracow``, ``CRM``) and the ``latin\\s+america`` word
   boundary (``Latina, Italy`` must not match).

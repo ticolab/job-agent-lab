@@ -6,7 +6,7 @@
     // page.click). Marker-bridge instead of an in-JS click is deliberate:
     // page.evaluate clicks are untrusted and known to fail on SPAs that
     // gate their pagination pipeline on real user gestures
-    // (INTEGRATION_BLOCKERS.md, C7 / BCG).
+    // (blockers/INTEGRATION_BLOCKERS.md, C7 / BCG).
     //
     // ``overrideSelector`` (SYS-12) is the explicit-CSS bypass path:
     // when set to a non-null string, the standard signal cascade below
