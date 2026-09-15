@@ -68,9 +68,9 @@ The connection URL is built by `migrations/env.py` from `settings.DATABASE_PATH`
 
 Three components sit over one shared kernel. `extraction/` owns the port and every strategy. `persistence/` owns the database. `batch/` owns concurrency and the per-company unit of work. The kernel — `domain/`, `catalog/`, `settings.py` — is the vocabulary all three speak.
 
-`extraction/` and `persistence/` exist today, alongside `cli/` and `reporting/`. `batch/` arrives in a later phase of `TRANSITION.md`.
+All three components exist today, alongside `cli/` and `reporting/`. What is still missing is the `vacantes batch` subcommand that drives the scheduler; `cli/batch.py` remains a stub until the next phase of `TRANSITION.md`, so nothing yet runs a batch from the command line.
 
-Nothing calls `persistence/` yet — the batch scheduler is its first consumer — but the schema and repositories are in place and tested. Every SQL statement in the system lives in one of three repository modules (`catalog_repo`, `jobs_repo`, `runs_repo`), so transaction boundaries and error translation have exactly one home and the data layer is testable without a scheduler. `engine.py` owns the connection URL and the four SQLite pragmas; `models.py` owns the three tables.
+Every SQL statement in the system lives in one of `persistence/`'s three repository modules (`catalog_repo`, `jobs_repo`, `runs_repo`), so transaction boundaries and error translation have exactly one home. `engine.py` owns the connection URL and the four SQLite pragmas; `models.py` owns the three tables.
 
 Dependencies point inward and never cycle:
 
@@ -78,19 +78,16 @@ Dependencies point inward and never cycle:
 Enforced today by tests/unit/test_layering.py:
 
   cli         → catalog, domain, extraction, reporting, settings
+  batch       → domain, extraction, persistence
   extraction  → domain, settings
   persistence → domain, settings
   reporting   → catalog
   catalog     → domain
   settings    → (nothing)
   domain      → (nothing inside vacantes)
-
-Added to the allowlist as each component lands:
-
-  batch       → catalog, domain, extraction, persistence, reporting, settings
 ```
 
-`persistence` notably does not import `catalog`. The catalog is the source of truth for the corpus and the database only ever projects it, so `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`.
+Two rows are narrower than `TRANSITION.md` §2.3 anticipated, and both for the same reason: a component that is *handed* what it needs does not import it. `persistence` does not reach `catalog` because `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`. `batch` does not reach `catalog` or `settings` either — the scheduler is given both the companies to run and the session factory to use, and its ceilings are policy that lives in `batch/policy.py`. `reporting` stays out of `batch` because rendering belongs to the CLI that drives a batch, not to the batch itself.
 
 `tests/unit/test_layering.py` parses every module's imports with `ast` and asserts each package imports only from its allowed set, which makes this structural rather than a matter of discipline. A strategy cannot write to the database, cannot know a batch is running, and cannot behave differently under the scheduler than under the integration CLI. The allowlist is written from the real graph, covers the packages actually present, and may only ever shrink. Because each row is the real graph rather than an intention, widening one — say `extraction → catalog` — is a deliberate allowlist edit that surfaces in review, never something a new import does silently. That `extraction` may reach neither `persistence` nor `batch` is asserted by name as well as by table, so the invariant survives a future edit to the allowlist.
 
@@ -132,6 +129,22 @@ Every timestamp crossing the persistence boundary is **naive UTC**, normalized a
 
 `slugify` lives in `domain/company.py` and is re-exported from `catalog` for its existing callers. Prefer `Company.slug` when holding an entity: it is a derived property, so the `companies` primary key, the output filename, and the snapshot directory are the same string by construction.
 
+### The batch
+
+Three modules with one responsibility each. `policy.py` decides *whether and how expensively*, `worker.py` decides *what one unit of work means*, `scheduler.py` decides *when*. The whole component is a semaphore and a gather, which is the right weight for one operator, one machine, and units of work with no dependencies between them.
+
+Concurrency is classified by **cost**, not by strategy name, which is why `concurrency_class` takes a `Company` rather than a string. Splitting on the name gets exactly one case wrong: a `coveo` company with `browser_token_key` set opens a real browser to read the JWT its own page minted into `sessionStorage`, so it costs a Chromium context despite being an API strategy. Twenty of those in the HTTP bucket would exhaust memory. A test asserts every key in `STRATEGIES` has a declared class, so an eighth adapter cannot ship without someone deciding what it costs.
+
+The two semaphores are independent on purpose. A browser run holds a Chromium context and, for `dom`, an LLM agent bounded by provider rate limits; an HTTP run is a JSON call bounded only by politeness. One shared ceiling would make the cheap bucket queue behind the expensive one.
+
+`worker.py` is the isolation boundary, and the broad `except Exception` there is correct rather than lazy: failure modes across 250 third-party sites are open-ended, and the contract is that no single board aborts the batch. `KeyboardInterrupt`, `SystemExit`, and `CancelledError` derive from `BaseException` and still propagate. An extraction returning zero jobs is a **successful run with an unhappy verdict**, never a failure — marking it failed would put honestly-empty boards in the retry path forever and hide real breakage among them.
+
+The per-company timeout lives on `BatchPolicy`, not on `RunContext`. `RunContext` is the shared port both entry points pass through, and a batch-only concern has no business widening it.
+
+Each repository call gets its **own short-lived session**. Phase 1's repositories each open their own transaction, so a session that has already autobegun one for a read cannot begin another — sharing a session across two repository calls raises `InvalidRequestError`. The same rule keeps a session from being held across the minutes-long `extract` await, where it would pin a pool connection and potentially a write lock.
+
+Crash recovery needs no checkpoint file. A killed batch leaves `in_progress` rows; the next batch reaps them to `failed` at startup, using the per-company timeout as the staleness bound since no run may legitimately exceed it; they are therefore not successes, so the freshness rule re-runs exactly those companies and skips the ones that completed.
+
 ### The deterministic matcher
 
 The matcher scans the top document, descends into every open shadow root, and enters every same-origin frame it can reach — guarded so inaccessible frames are skipped rather than fatal. Each surviving anchor is gated on CSS visibility. An anchor must be same-origin and match one of two URL shapes: the id sits in the path (`/jobs/12345-engineer`), or the id sits in the query on the prefix itself (`/careers/requirements/?pId=180`). When both shapes appear on one page the path bucket wins and the query bucket is discarded, because a query on a listing root is usually a filter facet rather than a posting.
@@ -156,7 +169,9 @@ Fixtures freeze the **unfiltered** listing. The region-filtered target lives on 
 
 Persistence tests (`tests/unit/test_persistence.py`) run against a **real SQLite file** under `tmp_path`, never `:memory:`, because an in-memory database exercises neither WAL nor `busy_timeout` and would make the pragma assertions vacuous. Its `TestMigrationParity` class applies `alembic upgrade head` to a temporary database and asserts Alembic's own `compare_metadata` finds no difference against `models.Base.metadata`, which is what catches a model field added without a migration.
 
-The repo does not use `pytest-asyncio`. Async tests are driven on a background thread with a fresh event loop, because the snapshot suite drives Chromium through Playwright's sync API and leaves a running-loop registration on the main thread's `asyncio.events` state that makes both `asyncio.run` and a main-thread `run_until_complete` raise for the rest of the session. `tests/unit/test_prefiltered.py` carries the full rationale; `test_persistence.py` reuses the pattern and additionally disposes its engines inside the scenario's own loop, since an undisposed async engine leaves aiosqlite holding a closed loop and the error surfaces in whichever test runs next.
+Batch tests (`tests/unit/test_batch.py`) use no browser and no network: a fake strategy is registered over an entry in `STRATEGIES` with `monkeypatch.setitem`, and the real scheduler, worker, and repositories run against a real SQLite file. The fake records its own per-class high-water mark, so a concurrency ceiling is *observed* rather than assumed. It also gates on an explicit target — each extraction blocks until the expected number are simultaneously live — because simply sleeping made the assertion a race against however long the workers spent in the database, and it under-counted on a fast machine.
+
+The repo does not use `pytest-asyncio`. Async tests are driven on a background thread with a fresh event loop by `tests/unit/asyncio_harness.py`, because the snapshot suite drives Chromium through Playwright's sync API and leaves a running-loop registration on the main thread's `asyncio.events` state that makes both `asyncio.run` and a main-thread `run_until_complete` raise for the rest of the session. `tests/unit/test_prefiltered.py` carries the original diagnosis. The harness also owns engine disposal: an async engine outliving its loop leaves aiosqlite holding a closed one, and the error surfaces in whichever test runs next, so `run_async` disposes every engine passed to `track_engine` on the loop that created it.
 
 Captures are produced by `scripts/capture_snapshot.py -c <handle> --expected N` (pass `--paginate` if and only if the entry has `paginate=True`).
 

@@ -38,9 +38,10 @@ The second structural decision is where code is allowed to point. Three
 components sit over one shared kernel: `extraction/` owns the port and every
 strategy, `persistence/` owns the database, and `batch/` owns concurrency and
 the definition of one company's unit of work. The kernel — `domain/`,
-`catalog/`, `settings.py` — is the vocabulary all three speak. Today
-`extraction/` and `persistence/` exist alongside `cli/` and `reporting/`;
-only `batch/` is still to arrive, in a later phase of `TRANSITION.md`.
+`catalog/`, `settings.py` — is the vocabulary all three speak. All three
+exist today, alongside `cli/` and `reporting/`. What is still to arrive is
+the command that drives a batch, in a later phase of `TRANSITION.md`, so
+nothing yet runs the scheduler from a terminal.
 
 Dependencies point inward and never cycle:
 
@@ -48,22 +49,26 @@ Dependencies point inward and never cycle:
 Enforced today by tests/unit/test_layering.py:
 
   cli         → catalog, domain, extraction, reporting, settings
+  batch       → domain, extraction, persistence
   extraction  → domain, settings
   persistence → domain, settings
   reporting   → catalog
   catalog     → domain
   settings    → (nothing)
   domain      → (nothing inside vacantes)
-
-Added to the allowlist as each component lands:
-
-  batch       → catalog, domain, extraction, persistence, reporting, settings
 ```
 
-That `persistence` may reach neither `catalog` nor anything above it is
-part of the same discipline: the catalog is the source of truth for the
-corpus and the database only ever projects it, so the projection is
-handed the companies to write rather than importing them.
+Two of those rows came out narrower than the design anticipated, and
+both for one reason: a component that is *handed* what it needs does not
+import it. `persistence` reaches neither `catalog` nor anything above
+it, because the catalog is the source of truth for the corpus and the
+database only ever projects it, so the projection is handed the
+companies to write. `batch` reaches neither `catalog` nor `settings`,
+because the scheduler is handed both the companies to run and the
+factory that opens database sessions, and its ceilings are policy rather
+than shared runtime configuration. `reporting` stays out of `batch`
+because rendering belongs to the command that drives a batch, not to the
+batch itself.
 
 This graph is not housekeeping. Two entry points share one extraction core:
 the integration CLI drives one board at a time and produces the JSON artifact a
@@ -263,6 +268,54 @@ is what makes the decision reversible — if contention ever appeared, a
 queue would slot in behind the unchanged repository interface rather
 than rippling out into the strategies or the scheduler.
 
+## Running a batch
+
+The batch is three modules with one responsibility each: one decides
+whether and how expensively a company runs, one defines what a single
+company's unit of work means, and one decides when. Together they are a
+semaphore and a gather rather than a workflow framework, which is the
+right weight for one operator, one machine, and units of work with no
+dependencies between them. Four decisions in that shape are structural.
+
+**Concurrency is classified by cost, not by strategy name.** The
+classifier takes a company rather than a strategy identifier, because
+splitting on the name gets exactly one case wrong: a Coveo board
+configured to read its search token out of page state opens a real
+browser to do so, and therefore costs a Chromium context despite being
+an API strategy. Twenty of those in the cheap bucket would exhaust
+memory. A test asserts every registered strategy has a declared class,
+so a new adapter cannot ship without someone deciding what it costs.
+Classification deliberately does not live on the strategy protocol:
+widening that protocol would make every existing strategy
+non-conforming, and it would hand a strategy knowledge of the scheduler
+that the layering rules exist to deny it.
+
+**The two ceilings are independent semaphores.** A browser run holds a
+Chromium context and, on the DOM path, an LLM agent bounded by provider
+rate limits; an HTTP run is a JSON call bounded only by politeness. One
+shared ceiling would make the cheap bucket queue behind the expensive
+one, which is the opposite of what a ceiling is for.
+
+**The worker is the failure-isolation boundary.** Failure modes across a
+corpus of third-party sites are open-ended — a crashed browser, a
+provider rate limit, DNS, a redesign that breaks a selector — so the
+contract is that no single board aborts the batch. Every board-level
+exception is caught there and written to the run history for an operator
+to read, while interrupt and cancellation still propagate so Ctrl-C
+behaves normally. An extraction returning zero jobs is a **successful
+run with an unhappy verdict**, never a failure: marking it failed would
+put honestly empty boards in the retry path forever and hide real
+breakage among them. Crash recovery needs nothing of its own here — the
+scheduler reaps abandoned runs before any company starts, and the rest
+follows from the freshness rule above.
+
+**The scheduler is handed its inputs.** It receives the companies to run
+and the factory that opens database sessions rather than importing the
+catalog or a global engine. That is what holds its layering row to three
+entries, and it is what makes the component testable: a fake strategy
+and a temporary database exercise the real scheduler, worker, and
+repositories with no browser and no network in the loop.
+
 ## The regression model
 
 Two corpora, deliberately separate.
@@ -292,8 +345,8 @@ would guarantee a flaky count.
 Where a URL rule is mirrored outside the JavaScript matcher — an API adapter
 that must filter anchors the same way — a parity test runs both engines over
 the same input and asserts identical output, so the mirror cannot silently
-diverge. Pre-commit gates the whole suite on any change under the extraction,
-navigation, or domain packages, or anywhere under `tests/`.
+diverge. Pre-commit gates the whole suite on any change under the extraction or
+domain packages, or anywhere under `tests/`.
 
 ## Integrating a board
 
@@ -325,6 +378,9 @@ design would decay.
 - Dependencies point inward. `extraction` never imports `persistence` or
   `batch`, so a strategy cannot tell which caller invoked it and cannot behave
   differently under the scheduler than under the integration CLI.
+- No single board aborts a batch. A third-party failure becomes a
+  recorded outcome, and an empty board is a success with an unhappy
+  verdict rather than a failure to retry.
 - The matcher JavaScript has exactly one copy on disk.
 - Every opt-in knob defaults to inert, so adding one cannot change any
   existing board's behaviour.

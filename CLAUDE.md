@@ -60,9 +60,7 @@ Commit messages are a **single short sentence, 100 characters max** — subject 
 
 Three components sit over one shared kernel. `extraction/` owns the port and every strategy. `persistence/` owns the database. `batch/` owns concurrency and the per-company unit of work. The kernel — `domain/`, `catalog/`, `settings.py` — is the vocabulary all three speak.
 
-`extraction/` and `persistence/` exist today, alongside `cli/` and `reporting/`. Only `batch/` is still pending, in a later phase of `TRANSITION.md`; the layering allowlist covers the packages actually present and gains a row as each lands.
-
-Nothing calls `persistence/` yet — the batch scheduler is its first consumer — but the schema and repositories are in place and tested.
+All three exist today, alongside `cli/` and `reporting/`. What is still missing is the `vacantes batch` subcommand that drives the scheduler; `cli/batch.py` remains a stub until a later phase of `TRANSITION.md`, so nothing yet runs a batch from the command line.
 
 Dependencies point inward and never cycle:
 
@@ -70,19 +68,16 @@ Dependencies point inward and never cycle:
 Enforced today by tests/unit/test_layering.py:
 
   cli         → catalog, domain, extraction, reporting, settings
+  batch       → domain, extraction, persistence
   extraction  → domain, settings
   persistence → domain, settings
   reporting   → catalog
   catalog     → domain
   settings    → (nothing)
   domain      → (nothing inside vacantes)
-
-Added to the allowlist as each component lands:
-
-  batch       → catalog, domain, extraction, persistence, reporting, settings
 ```
 
-`persistence` notably does not import `catalog`. The catalog is the source of truth for the corpus and the database only projects it, so `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`.
+Two rows are narrower than `TRANSITION.md` §2.3 anticipated, and both for the same reason: a component that is *handed* what it needs does not import it. `persistence` does not reach `catalog` because `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`. `batch` reaches neither `catalog` nor `settings` — the scheduler is given both the companies to run and the session factory to use, and its ceilings are policy living in `batch/policy.py`. `reporting` stays out of `batch` because rendering belongs to the CLI that drives a batch, not to the batch itself.
 
 `tests/unit/test_layering.py` parses every module's imports with `ast` and asserts each package imports only from its allowed set, so this is structural rather than a matter of discipline. A strategy cannot write to the database, cannot know a batch is running, and cannot behave differently under the scheduler than under the integration CLI. The allowlist is written from the real graph and may only ever shrink. Because each row is the real graph rather than an intention, widening one — say `extraction → catalog` — is a deliberate allowlist edit that surfaces in review, never something a new import does silently. That `extraction` may reach neither `persistence` nor `batch` is asserted by name as well as by table, so the invariant survives a future edit to the allowlist.
 
@@ -116,6 +111,14 @@ Every timestamp crossing the persistence boundary is **naive UTC**, normalized a
 
 `slugify` lives in `domain/company.py` and is re-exported from `catalog` for its existing callers — persistence needs it and has no route to `catalog`. Prefer `Company.slug` when holding an entity: it is a derived property, so the `companies` primary key, the output filename, and the snapshot directory are the same string by construction.
 
+### The batch
+
+`batch/` is three modules with one responsibility each. `policy.py` decides *whether and how expensively*: `concurrency_class(company)`, the frozen `BatchPolicy` (the two ceilings, the freshness window, the per-company timeout, and `force`), and `should_skip`. `worker.py` decides *what one unit of work means*: `run_company` and the frozen `CompanyOutcome` it resolves to. `scheduler.py` decides *when*: `new_batch_id`, `run_batch`, and the frozen `BatchResult` that aggregates the outcomes. The whole component is a semaphore and a gather, not a workflow framework.
+
+Four decisions in that shape are structural; `ARCHITECTURE.md` carries the reasoning behind them. Concurrency is classified by **cost** rather than strategy name, which is why `concurrency_class` takes a `Company` — a `coveo` entry with `browser_token_key` set opens a real browser and belongs in the browser bucket despite being an API strategy, and a test asserts every key in `STRATEGIES` has a declared class so an eighth adapter cannot ship unclassified. The two ceilings are independent semaphores rather than one shared one. `worker.py` is the failure-isolation boundary, where a broad `except Exception` keeps one board from aborting the batch while `KeyboardInterrupt`, `SystemExit`, and `CancelledError` still propagate, and where an extraction returning zero jobs is a successful run with an unhappy verdict rather than a failure. Crash recovery needs no checkpoint file because it falls out of the freshness rule, with the per-company timeout doubling as the staleness bound the scheduler reaps against at startup.
+
+Two rules are this file's to state. Each repository call gets its **own short-lived session**: the repositories each open their own transaction, so a session that has already autobegun one for a read cannot begin another, and sharing one across two calls raises `InvalidRequestError`. The same rule keeps a session from being held across the minutes-long `extract` await, where it would pin a pool connection and potentially a SQLite write lock. Separately, the per-company timeout lives on `BatchPolicy` and not on `RunContext` — `RunContext` is the shared port both entry points pass through, and a batch-only concern has no business widening it.
+
 ### Per-company escape hatches (all inert by default)
 
 When the agent fails a board deterministically, pin the fix on the deterministic side rather than prompt-tweaking per site: `paginate=True` (multi-page walker), `hooks.pre_extract_css` / `hooks.expand_selector` / `hooks.next_control_selector` / `hooks.filter_already_applied`, `pre_filter_urls` (agent-less union over URL variants), `LinkRule.min_depth` / `suppress_ancestor_selector`. Each default is byte-identical to the pre-feature code path. Decision guidance and the motivating board for each knob are in `TABNINE.md`.
@@ -131,7 +134,9 @@ Two independent regression corpora, don't conflate them:
 
 Persistence tests (`tests/unit/test_persistence.py`) run against a **real SQLite file** under `tmp_path`, never `:memory:` — an in-memory database exercises neither WAL nor `busy_timeout`, which would make the pragma assertions vacuous. Repository tests build the schema from `Base.metadata` so they fail for their own reason; `TestMigrationParity` in the same file closes the resulting gap by applying `alembic upgrade head` to a temporary database and asserting Alembic's own `compare_metadata` finds no difference against `models.Base.metadata`. That is what catches a model field added without a migration.
 
-The repo does not use `pytest-asyncio`. Async tests are driven on a background thread with a fresh event loop, because the snapshot suite drives Chromium through Playwright's sync API and leaves a running-loop registration on the main thread's `asyncio.events` state that makes both `asyncio.run` and a main-thread `run_until_complete` raise for the rest of the session. `tests/unit/test_prefiltered.py` carries the full rationale; `test_persistence.py` reuses the pattern and additionally disposes its engines inside the scenario's own loop.
+Batch tests (`tests/unit/test_batch.py`) use no browser and no network. A fake strategy is registered over an entry in `STRATEGIES` with `monkeypatch.setitem`, and the real scheduler, worker, and repositories then run against a real SQLite file. The fake records its own per-class high-water mark, so a concurrency ceiling is *observed* rather than assumed, and it gates on an explicit target — each extraction blocks until the expected number are simultaneously live — because simply sleeping made the assertion a race against however long the workers spent in the database and under-counted on a fast machine.
+
+The repo does not use `pytest-asyncio`. Async tests are driven on a background thread with a fresh event loop by `tests/unit/asyncio_harness.py`, which exposes `run_async`, `run_in_thread`, and `track_engine`. The harness exists because the snapshot suite drives Chromium through Playwright's sync API and leaves a running-loop registration on the main thread's `asyncio.events` state that makes both `asyncio.run` and a main-thread `run_until_complete` raise for the rest of the session; `tests/unit/test_prefiltered.py` carries the original diagnosis. It also owns engine disposal: an async engine outliving its loop leaves aiosqlite holding a closed one and the error surfaces in whichever test runs next, so `run_async` disposes every engine passed to `track_engine` on the loop that created it.
 
 ### Adding a company
 

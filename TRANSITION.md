@@ -7,7 +7,7 @@ right now.*
 
 Status: **Phase 0 landed** (2026-09-15) in four commits, except T0.9 — the GitHub
 repository rename — which is deferred by choice. **Phase 1 landed** (2026-09-15).
-Phases 2–4 are not started.
+**Phase 2 landed** (2026-09-15). Phases 3–4 are not started.
 Supersedes `ORCHESTRATION.md`, whose technical decisions are carried forward here
 where they still hold and corrected where they do not.
 
@@ -472,7 +472,26 @@ appears, a queue slots in behind the unchanged repository interface.
   `domain`/`settings`; `job-agent-lab` imports nothing new (assert via the layering
   test's edge for `cli.integrate`).
 
-## 6. Phase 2 — Batch core (`vacantes/batch/`)
+## 6. Phase 2 — Batch core (`vacantes/batch/`) — **LANDED**
+
+**As built, four deviations from the text below.** The per-company timeout lives on
+`BatchPolicy`, not on the run context: §6.5's `ctx_timeout_seconds` has no counterpart on
+the real `RunContext`, which is the frozen four-field port *both* entry points pass
+through, and widening it with a batch-only concern is exactly the divergence §3.2
+forbids. The layering row is narrower than §2.3 anticipated — `batch → domain,
+extraction, persistence` — because the scheduler is handed its companies and its session
+factory, and the ceilings are policy that lives in `batch/policy.py` rather than in
+`settings.py`. Every repository call takes **its own short-lived session**: each Phase 1
+repository opens its own transaction, so a session that has already autobegun one for a
+read cannot begin another, and sharing one raises `InvalidRequestError`. And
+`company_runs.url_count` stores the de-duplicated count returned by
+`replace_company_urls` rather than `len(jobs)`, so the recorded number is one a
+`select count(*) from job_urls` can actually reproduce.
+
+The reaper's cutoff is `now - policy.timeout`: no run may legitimately outlive the
+ceiling that bounds it, so anything older is abandoned by definition. That inference
+holds only under §3.3's one-writer deployment — two concurrent batches would let one
+reap the other's live runs.
 
 ### 6.1 Concurrency classes — corrected
 
@@ -721,8 +740,11 @@ with the same context; only scheduling and output differ.
 | T1.1 | 1 | ✅ `engine.py` pragmas asserted on a real file; `models.py` written; `data/` gitignored |
 | T1.2 | 1 | ✅ `migrations/` + `alembic.ini` at root; `env.py` reads `Base.metadata` and `settings.DATABASE_PATH`; `upgrade head` produces §5.3 exactly |
 | T1.3 | 1 | ✅ Three repositories per §5.4, plus the `list_company_urls` read helper |
-| T1.4 | 1 | ✅ 27 tests on a real SQLite file under `tmp_path`; suite at **877** |
+| T1.4 | 1 | ✅ 28 tests on a real SQLite file under `tmp_path`; suite at **878** |
 | T1.5 | 1 | ✅ `sqlalchemy>=2.0.0`, `aiosqlite>=0.20.0`, `alembic>=1.13.0` |
-| T2.1–T2.4 | 2 | §6.6 acceptance |
+| T2.1 | 2 | ✅ `policy.py`: cost classification, `BatchPolicy`, `should_skip` |
+| T2.2 | 2 | ✅ `worker.py`: `run_company`, `CompanyOutcome`, the isolation boundary |
+| T2.3 | 2 | ✅ `scheduler.py`: `run_batch`, startup reaping, catalog sync, aggregation |
+| T2.4 | 2 | ✅ 25 tests on fakes — no browser, no network; ceiling tests verified to fail an unbounded scheduler; suite at **903** |
 | T3.1–T3.2 | 3 | §7 acceptance |
 | T4.1–T4.3 | 4 | Full corpus tuned; runbook written; blocker dispositions reviewed |
