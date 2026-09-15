@@ -18,24 +18,17 @@ return ``None``.
 
 from __future__ import annotations
 
-import re
-
 from vacantes.catalog.companies import COMPANIES
-from vacantes.domain.company import Company
+from vacantes.domain.company import Company, slugify
 
+# ``slugify`` is defined in ``domain.company`` and re-exported here.
+# It moved there when the persistence layer landed: ``persistence``
+# projects the catalog into a ``companies`` table keyed by slug, and the
+# layering rule gives it a route to ``domain`` but none to ``catalog``.
+# Prefer ``Company.slug`` when you hold an entity; this function is for
+# the callers that hold only a name string (a report's ``company``
+# field, a capture script's ``--expected`` target).
 __all__ = ["COMPANIES", "find_company", "slugify"]
-
-
-def slugify(name: str) -> str:
-    """Convert a company name to a filesystem-safe slug.
-
-    Used for output filenames (``output/<slug>_<timestamp>.json``) and for
-    snapshot directories (``tests/fixtures/snapshots/<slug>/``). The rule
-    is deliberately simple — lowercase, non-alphanumerics collapsed to a
-    single underscore, no leading/trailing underscore — so slugs are
-    stable across renames of unrelated fields.
-    """
-    return re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_")
 
 
 def _acronym(name: str) -> str:

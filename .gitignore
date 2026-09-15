@@ -22,6 +22,10 @@ env/
 # Agent run outputs
 output/
 
+# SQLite database (regenerable by re-running a batch; never committed).
+# The -wal and -shm sidecars are created by WAL journal mode.
+data/
+
 # Editor / OS
 .vscode/
 .idea/

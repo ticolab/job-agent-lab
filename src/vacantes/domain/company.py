@@ -56,10 +56,31 @@ instead of during the extraction of the offending company.
 
 from __future__ import annotations
 
+import re
 from typing import Literal, Self
 from urllib.parse import urlparse
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+
+def slugify(name: str) -> str:
+    """Convert a company name to a stable, filesystem-safe slug.
+
+    Lives in the domain layer because the slug is a company's *identity*
+    under every projection of it: the output filename
+    (``output/<slug>_<timestamp>.json``), the snapshot directory
+    (``tests/fixtures/snapshots/<slug>/``), and the ``companies.slug``
+    primary key the persistence layer writes. Keeping it here is what
+    lets ``persistence`` derive a slug while importing only ``domain``
+    and ``settings`` — it has no route to ``catalog``, which re-exports
+    this function for its existing callers.
+
+    The rule is deliberately simple — lowercase, non-alphanumerics
+    collapsed to a single underscore, no leading or trailing underscore
+    — so slugs are stable across renames of unrelated fields.
+    """
+    return re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_")
+
 
 # Canonical Greenhouse board hosts. ``job-boards.greenhouse.io`` is the
 # current form; ``boards.greenhouse.io`` is the legacy host and still
@@ -657,6 +678,20 @@ class Company(BaseModel):
     phenom: PhenomConfig | None = None
     talentbrew: TalentbrewConfig | None = None
     coveo: CoveoConfig | None = None
+
+    @property
+    def slug(self) -> str:
+        """This company's stable identity, derived from :attr:`name`.
+
+        A derived property rather than a field: it is absent from
+        ``model_dump()`` and cannot be set by a catalog entry, so the
+        slug can never drift from the name it is derived from. This is
+        the accessor every consumer should prefer over calling
+        :func:`slugify` on ``name`` directly — the output filename, the
+        snapshot directory, and the ``companies.slug`` primary key are
+        then the same string by construction.
+        """
+        return slugify(self.name)
 
     @model_validator(mode="after")
     def _validate_phenom_config_presence(self) -> Self:

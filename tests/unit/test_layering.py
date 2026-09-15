@@ -56,14 +56,20 @@ ALLOWED_IMPORTS: dict[str, frozenset[str]] = {
     "catalog": frozenset({"domain"}),
     "extraction": frozenset({"domain", "settings"}),
     "reporting": frozenset({"catalog"}),
+    # Notably absent: ``catalog``. The persistence layer projects the
+    # corpus but never owns it, so ``sync_catalog`` receives the
+    # companies as an argument instead of importing ``COMPANIES``. That
+    # is also what keeps this row to two entries.
+    "persistence": frozenset({"domain", "settings"}),
     "cli": frozenset({"catalog", "domain", "extraction", "reporting", "settings"}),
 }
 
-# The two components that have not landed yet. Named explicitly so the
-# invariant that matters most — extraction cannot reach persistence or
-# the scheduler — is asserted by name rather than only implied by the
-# table above.
-FUTURE_COMPONENTS = frozenset({"persistence", "batch"})
+# The invariant that matters most, asserted by name as well as by the
+# table above so it survives a careless allowlist edit: a strategy can
+# reach neither the database nor the scheduler. Deliberately not tied to
+# which packages have landed — ``persistence`` exists now and is still
+# listed, because the rule is about direction, not about readiness.
+FORBIDDEN_FOR_EXTRACTION = frozenset({"persistence", "batch"})
 
 
 def _source_files() -> list[Path]:
@@ -188,14 +194,20 @@ class TestDependencyDirection:
         report = "\n  ".join(violations)
         assert not violations, f"layering violations:\n  {report}"
 
-    @pytest.mark.parametrize("forbidden", sorted(FUTURE_COMPONENTS))
+    @pytest.mark.parametrize("forbidden", sorted(FORBIDDEN_FOR_EXTRACTION))
     def test_extraction_never_reaches_persistence_or_batch(
         self, forbidden: str
     ) -> None:
         """The invariant that keeps onboarding evidence meaningful.
 
+        A strategy that could reach the database, or detect that a batch
+        is in progress, could behave differently under the scheduler than
+        under the integration CLI — and the JSON artifact a human reviews
+        before committing a catalog entry would stop predicting what the
+        scheduled run does.
+
         Asserted by name as well as by table so the intent survives a
-        future edit to :data:`ALLOWED_IMPORTS`.
+        careless edit to :data:`ALLOWED_IMPORTS`.
         """
         assert forbidden not in ALLOWED_IMPORTS["extraction"]
 

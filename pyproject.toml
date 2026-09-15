@@ -8,11 +8,14 @@ license = { text = "MIT" }
 requires-python = ">=3.12"
 
 dependencies = [
+    "aiosqlite>=0.20.0",
+    "alembic>=1.13.0",
     "browser-use>=0.12.0",
     "httpx>=0.27.0",
     "litellm>=1.80.0",
     "pydantic>=2.0.0",
     "python-dotenv>=1.1.0",
+    "sqlalchemy>=2.0.0",
 ]
 
 [project.optional-dependencies]
@@ -76,6 +79,12 @@ select = ["E", "F", "I", "W", "UP", "B", "C4", "SIM"]
 # the runtime payload); splitting them would defeat the point of the
 # golden and is precisely the drift the test exists to catch.
 "tests/unit/test_prompt_render.py" = ["E501"]
+# Alembic revision bodies are generated output, not hand-authored
+# source: ``--autogenerate`` emits one ``sa.Column`` or constraint per
+# line with no wrapping option. Reflowing them by hand would be undone
+# by the next generated revision. ``migrations/script.py.mako`` is
+# modernized so everything *outside* the generated body still conforms.
+"migrations/versions/*.py" = ["E501"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["vacantes"]

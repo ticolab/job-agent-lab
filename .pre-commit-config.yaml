@@ -10,7 +10,12 @@ repos:
     rev: v1.17.0
     hooks:
       - id: mypy
-        additional_dependencies: [pydantic]
+        # SQLAlchemy 2.x ships inline type hints. Without it installed
+        # here, the isolated hook environment resolves every ORM import
+        # to Any and reports `no-any-return` at each call site — errors
+        # that do not exist in the repo-wide run and would otherwise be
+        # papered over with casts.
+        additional_dependencies: [pydantic, sqlalchemy]
         args: [--config-file=pyproject.toml]
         exclude: '^\.(claude|tabnine)/.*/extractor_ground_truth\.py$'
 

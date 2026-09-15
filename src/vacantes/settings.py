@@ -25,6 +25,18 @@ DEFAULT_MAX_STEPS: int = 20
 # directory. The CLI's -o flag overrides this per invocation.
 OUTPUT_DIR: Path = Path("output")
 
+# Default SQLite database location, relative to the current working
+# directory like OUTPUT_DIR. ``data/`` is gitignored: the dataset answers
+# "what is open right now" and is fully regenerable by re-running a
+# batch, so it is never committed and backup is a file copy.
+#
+# Stored as a filesystem path rather than a driver URL because the path
+# is what an operator types (``sqlite3 data/vacantes.db '...'``) and what
+# a backup copies. ``persistence.engine`` builds the
+# ``sqlite+aiosqlite://`` URL from it, which keeps URL construction in
+# exactly one place for the eventual PostgreSQL move.
+DATABASE_PATH: Path = Path("data") / "vacantes.db"
+
 # ---------------------------------------------------------------------------
 # Shared render-settle defaults (SYS-13)
 # ---------------------------------------------------------------------------
