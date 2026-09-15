@@ -23,7 +23,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import event
+from sqlalchemy import event, inspect
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -31,6 +31,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from vacantes.persistence import models
 from vacantes.settings import DATABASE_PATH
 
 # Applied to every new connection, not once per engine: SQLite scopes
@@ -126,6 +127,36 @@ def create_session_factory(engine: AsyncEngine) -> async_sessionmaker[AsyncSessi
     that way.
     """
     return async_sessionmaker(engine, expire_on_commit=False)
+
+
+async def missing_tables(session: AsyncSession) -> tuple[str, ...]:
+    """Names of the schema's tables that are absent from the database.
+
+    A preflight for callers that would otherwise fail deep inside a
+    repository: connecting to a SQLite path that does not exist creates
+    an *empty* file quite happily, so a database that has never had
+    ``alembic upgrade head`` applied is indistinguishable from a healthy
+    one until the first statement hits a missing table. Returning the
+    names lets a caller say which migration is owed instead of
+    surfacing an ``OperationalError``.
+
+    Compares against :attr:`models.Base.metadata`, which covers the
+    three real tables and excludes Alembic's own ``alembic_version``
+    bookkeeping row — its absence says nothing about whether the schema
+    is usable.
+
+    Returns:
+        The missing names, sorted. Empty when the schema is complete.
+    """
+
+    def _table_names(connection: Any) -> list[str]:
+        return list(inspect(connection).get_table_names())
+
+    connection = await session.connection()
+    present = set(await connection.run_sync(_table_names))
+    return tuple(
+        name for name in sorted(models.Base.metadata.tables) if name not in present
+    )
 
 
 @asynccontextmanager

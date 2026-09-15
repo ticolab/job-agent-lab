@@ -68,7 +68,24 @@ ALLOWED_IMPORTS: dict[str, frozenset[str]] = {
     # windows are policy and live in ``batch/policy.py``. ``reporting``
     # belongs to the CLI that renders a batch, not to the batch itself.
     "batch": frozenset({"domain", "extraction", "persistence"}),
-    "cli": frozenset({"catalog", "domain", "extraction", "reporting", "settings"}),
+    # `batch` was anticipated by TRANSITION.md §2.3; `persistence` was
+    # not. The CLI is the composition root: it decides where the
+    # database lives, opens the engine, and hands the session factory
+    # down to the scheduler. That is the reason `batch` itself needs no
+    # route to `settings` and never imports a global engine — wiring
+    # concrete dependencies belongs to the outermost layer, so this edge
+    # is the inversion working rather than leaking.
+    "cli": frozenset(
+        {
+            "batch",
+            "catalog",
+            "domain",
+            "extraction",
+            "persistence",
+            "reporting",
+            "settings",
+        }
+    ),
 }
 
 # The invariant that matters most, asserted by name as well as by the

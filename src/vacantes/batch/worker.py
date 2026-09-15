@@ -71,6 +71,11 @@ class CompanyOutcome:
             same dict :func:`~vacantes.extraction.base.build_report`
             authors, so a caller can render it through
             :mod:`vacantes.reporting` unchanged.
+        url_count: How many rows were actually stored on success, else
+            ``None``. Carried rather than re-derived from ``report`` so
+            a caller's total is the number a ``select count(*) from
+            job_urls`` reproduces — the report's own job list may hold
+            duplicates that the stored set collapses.
         error: The recorded failure message on failure, else ``None``.
             Byte-identical to what was written to
             ``company_runs.error_message``.
@@ -79,12 +84,20 @@ class CompanyOutcome:
     company: Company
     status: OutcomeStatus
     report: dict[str, Any] | None = None
+    url_count: int | None = None
     error: str | None = None
 
     @classmethod
-    def succeeded(cls, company: Company, report: dict[str, Any]) -> CompanyOutcome:
+    def succeeded(
+        cls, company: Company, report: dict[str, Any], url_count: int
+    ) -> CompanyOutcome:
         """Build the outcome for a company that extracted successfully."""
-        return cls(company=company, status="success", report=report)
+        return cls(
+            company=company,
+            status="success",
+            report=report,
+            url_count=url_count,
+        )
 
     @classmethod
     def failed(cls, company: Company, error: str) -> CompanyOutcome:
@@ -168,6 +181,10 @@ async def run_company(
     try:
         async with session_factory() as session:
             if await should_skip(session, company=company, policy=policy):
+                logger.info(
+                    "skipped %s: already succeeded inside the window",
+                    company.slug,
+                )
                 return CompanyOutcome.skipped(company)
 
         async with session_factory() as session:
@@ -188,10 +205,12 @@ async def run_company(
         # Deliberately not `repr(exc)`: an asyncio timeout carries no
         # message, so the useful fact is the ceiling that was hit.
         message = f"timeout after {policy.timeout.total_seconds():g}s"
+        logger.warning("failed %s: %s", company.slug, message)
         await _record_failure(session_factory, run_id=run_id, error=message)
         return CompanyOutcome.failed(company, message)
     except Exception as exc:  # noqa: BLE001 — the isolation boundary, extraction
         message = repr(exc)
+        logger.warning("failed %s: %s", company.slug, message)
         await _record_failure(session_factory, run_id=run_id, error=message)
         return CompanyOutcome.failed(company, message)
 
@@ -228,7 +247,14 @@ async def run_company(
             )
     except Exception as exc:  # noqa: BLE001 — the isolation boundary, persistence
         message = repr(exc)
+        logger.warning("failed %s: %s", company.slug, message)
         await _record_failure(session_factory, run_id=run_id, error=message)
         return CompanyOutcome.failed(company, message)
 
-    return CompanyOutcome.succeeded(company, report)
+    logger.info(
+        "succeeded %s: %d url(s) stored, verdict %s",
+        company.slug,
+        url_count,
+        report["metadata"]["verdict"],
+    )
+    return CompanyOutcome.succeeded(company, report, url_count)
