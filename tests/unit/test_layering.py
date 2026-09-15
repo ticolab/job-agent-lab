@@ -61,6 +61,13 @@ ALLOWED_IMPORTS: dict[str, frozenset[str]] = {
     # companies as an argument instead of importing ``COMPANIES``. That
     # is also what keeps this row to two entries.
     "persistence": frozenset({"domain", "settings"}),
+    # Narrower than TRANSITION.md §2.3 anticipated, for the same reason
+    # as the row above: the scheduler is handed the companies to run and
+    # the session factory to use, so it reaches for neither ``catalog``
+    # nor a global engine. ``settings`` is absent too — the ceilings and
+    # windows are policy and live in ``batch/policy.py``. ``reporting``
+    # belongs to the CLI that renders a batch, not to the batch itself.
+    "batch": frozenset({"domain", "extraction", "persistence"}),
     "cli": frozenset({"catalog", "domain", "extraction", "reporting", "settings"}),
 }
 

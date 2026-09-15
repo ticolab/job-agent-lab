@@ -24,9 +24,6 @@ is the classic source of "attached to a different loop" failures.
 
 from __future__ import annotations
 
-import asyncio
-import threading
-from collections.abc import Callable, Coroutine
 from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -34,8 +31,10 @@ from typing import Any
 import pytest
 from sqlalchemy import select, text
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from tests.unit.asyncio_harness import run_async as _run
+from tests.unit.asyncio_harness import run_in_thread, track_engine
 from vacantes.domain.company import Company
 from vacantes.persistence import catalog_repo, jobs_repo, models, runs_repo
 from vacantes.persistence.engine import (
@@ -48,61 +47,6 @@ from vacantes.persistence.timestamps import as_naive_utc, utc_now
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-def _in_thread[T](fn: Callable[[], T]) -> T:
-    """Run *fn* on a background thread, re-raising anything it raises."""
-    box: dict[str, Any] = {}
-
-    def _thread_main() -> None:
-        try:
-            box["value"] = fn()
-        except BaseException as exc:  # noqa: BLE001 — re-raised below
-            box["error"] = exc
-
-    thread = threading.Thread(target=_thread_main)
-    thread.start()
-    thread.join()
-    if "error" in box:
-        raise box["error"]
-    return box["value"]  # type: ignore[no-any-return]
-
-
-# Engines created by `_fresh_database` during the scenario currently
-# running. `_run` disposes them inside the scenario's own event loop
-# before closing it: an undisposed async engine leaves aiosqlite's
-# background thread holding a reference to a closed loop, which surfaces
-# as an unhandled thread exception attributed to whichever test happens
-# to run next.
-#
-# A module-level list is safe because tests run sequentially and each
-# scenario gets its own thread, so only one is ever in flight.
-_OPEN_ENGINES: list[AsyncEngine] = []
-
-
-async def _dispose_open_engines() -> None:
-    """Dispose every engine the current scenario opened."""
-    while _OPEN_ENGINES:
-        await _OPEN_ENGINES.pop().dispose()
-
-
-def _run[T](coro: Coroutine[Any, Any, T]) -> T:
-    """Drive *coro* to completion on a background thread's own loop.
-
-    See the module docstring for why the main thread's event loop is
-    unusable in a full-suite run. Engine disposal happens here, on the
-    same loop that created the connections and before that loop closes.
-    """
-
-    def _main() -> T:
-        loop = asyncio.new_event_loop()
-        try:
-            return loop.run_until_complete(coro)
-        finally:
-            loop.run_until_complete(_dispose_open_engines())
-            loop.close()
-
-    return _in_thread(_main)
-
-
 async def _fresh_database(path: Path) -> async_sessionmaker[AsyncSession]:
     """Create the schema at *path* and return a session factory.
 
@@ -111,11 +55,12 @@ async def _fresh_database(path: Path) -> async_sessionmaker[AsyncSession]:
     because a migration is broken. :class:`TestMigrationParity` is what
     ties the two together.
 
-    The engine is registered in :data:`_OPEN_ENGINES` so :func:`_run`
-    disposes it; callers do not manage its lifecycle.
+    The engine is handed to
+    :func:`~tests.unit.asyncio_harness.track_engine`, so ``_run``
+    disposes it on the scenario's own loop; callers do not manage its
+    lifecycle.
     """
-    engine = create_engine(path)
-    _OPEN_ENGINES.append(engine)
+    engine = track_engine(create_engine(path))
     async with engine.begin() as connection:
         await connection.run_sync(models.Base.metadata.create_all)
     return create_session_factory(engine)
@@ -399,8 +344,7 @@ class TestRunLifecycle:
         """
 
         async def scenario() -> int:
-            engine = create_engine(tmp_path / "default-factory.db")
-            _OPEN_ENGINES.append(engine)
+            engine = track_engine(create_engine(tmp_path / "default-factory.db"))
             async with engine.begin() as connection:
                 await connection.run_sync(models.Base.metadata.create_all)
             # Deliberately NOT create_session_factory: SQLAlchemy's default
@@ -847,4 +791,4 @@ class TestMigrationParity:
 
         # Alembic's async env.py calls asyncio.run internally, so this
         # runs on its own thread for the same reason the async tests do.
-        assert _in_thread(apply_and_diff) == []
+        assert run_in_thread(apply_and_diff) == []
