@@ -13,9 +13,11 @@ Supersedes `ORCHESTRATION.md`, whose technical decisions are carried forward her
 where they still hold and corrected where they do not.
 
 Lifecycle: this file is transient. Each phase, once landed, graduates its durable
-rationale into `ARCHITECTURE.md` (design) and `TABNINE.md` (per-feature notes), and its
-section here is deleted — the same convention `blockers/INTEGRATION_BLOCKERS.md`
-applies to shipped boards. When the last phase lands, this file is removed.
+rationale into `ARCHITECTURE.md` (design) and `TABNINE.md` (per-feature notes). Its
+section here is **kept**, marked landed, with the as-built deviations recorded above
+the original text, so the plan doubles as the audit trail of what changed between
+design and delivery — that record has already caught two doc/test drifts. When the
+last phase lands, this file is removed whole.
 
 ## 0. Decisions
 

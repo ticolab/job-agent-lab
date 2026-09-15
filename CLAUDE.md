@@ -10,7 +10,7 @@ Only one of the seven registered strategies drives an agent at all. The other si
 
 Two purposes share one core. The `integrate` CLI onboards and debugs one board at a time and writes a JSON artifact a human reviews before a catalog entry is committed; the `batch` scheduler runs the corpus concurrently and persists the current URL set. Both call the same `extract` coroutine with the same `RunContext`, which is what keeps the integration workflow meaningful as a correctness signal for scheduled runs.
 
-Detailed per-feature design notes (SYS-N history, matcher semantics, adapter wire contracts) live in `TABNINE.md`; architecture rationale in `ARCHITECTURE.md`; known site blocker classes (C1–C22) in `blockers/`. `TRANSITION.md` holds the in-flight restructuring plan and is deleted phase by phase as each one lands.
+Detailed per-feature design notes (SYS-N history, matcher semantics, adapter wire contracts) live in `TABNINE.md`; architecture rationale in `ARCHITECTURE.md`; known site blocker classes (C1–C22) in `blockers/`. `TRANSITION.md` holds the restructuring plan; landed phases stay in it, marked as such with their as-built deviations, and the whole file is removed when the last phase lands.
 
 ## Commands
 
