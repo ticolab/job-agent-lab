@@ -1,7 +1,7 @@
 """Batch entry point: reap, sync, fan out, aggregate.
 
-:func:`run_batch` is the whole scheduler. Per ``TRANSITION.md`` §10 this
-is deliberately "a semaphore and a gather" rather than a workflow
+:func:`run_batch` is the whole scheduler. This is deliberately "a
+semaphore and a gather" rather than a workflow
 framework: one operator, one machine, independent units of work, and no
 task dependency graph to express. A framework earns its weight with
 cross-run durable state or distributed workers, neither of which exists

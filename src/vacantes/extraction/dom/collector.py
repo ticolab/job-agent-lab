@@ -40,8 +40,8 @@ SYS-12 adds the deterministic hook phase between agent handoff and
 matcher invocation. When ``collect_job_links`` is invoked with a
 non-inert :class:`~vacantes.domain.company.RuntimeHooks` (or with
 ``paginate=True``), an :class:`ActorPageDriver` is built once and the
-per-board hooks fire in the order pinned by
-``ARCHITECTURE_PROPOSAL_R2.md`` §4.5: :func:`apply_pre_extract_css`
+per-board hooks fire in a fixed order, pinned by ``TestIntegrationOrder``
+in ``tests/snapshots/test_runtime_hooks.py``: :func:`apply_pre_extract_css`
 injects a ``<style data-jal-css>`` element in the top document
 (idempotent — re-running replaces the element; invalid payloads that
 parse to zero rules raise loudly, never a silent no-op), then

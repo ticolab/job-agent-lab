@@ -27,7 +27,8 @@ warning) testable against real data rather than a synthetic fixture.
 And every record carries a **list-typed** ``raw.city``
 (``["Heredia"]``), the shape the re-verification predicate must handle.
 
-Design authority: ``spike/ARCHITECTURE_PROPOSAL_R2.md`` §4.8.3.
+The wire contract is documented on
+:func:`vacantes.extraction.ats.coveo.build_search_body`.
 """
 
 from __future__ import annotations

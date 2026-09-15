@@ -2,9 +2,9 @@
 
 Runs the corpus. The whole component is a semaphore and a gather, which
 is the appropriate weight for one operator, one machine, and units of
-work that have no dependencies on each other. ``TRANSITION.md`` §10
-records why a workflow framework is a non-goal and what would have to
-change for that to be revisited.
+work that have no dependencies on each other. A workflow framework is a
+non-goal until there is cross-run durable state or distributed workers
+to justify one; ``ARCHITECTURE.md`` ("Running a batch") records why.
 
 Three modules, one responsibility each:
 

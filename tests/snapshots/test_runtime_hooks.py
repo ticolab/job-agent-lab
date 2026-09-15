@@ -379,9 +379,8 @@ document.getElementById('hdr').addEventListener('click', () => {
 class TestIntegrationOrder:
     """CSS injection must precede expansion, expansion must precede matcher.
 
-    Pins the §4.5 execution order (documented in
-    ``ARCHITECTURE_PROPOSAL_R2.md`` and mirrored in
-    :func:`collect_job_links`): if expansion runs before the CSS
+    Pins the execution order :func:`collect_job_links` implements, and
+    is the design authority for it: if expansion runs before the CSS
     unhide, the accordion trigger is invisible and the expander's
     visibility gate skips it, so its child anchors never mount and the
     matcher returns an empty set. Running the three helpers in the

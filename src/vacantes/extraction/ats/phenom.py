@@ -220,9 +220,9 @@ def _record_matches_region(job: dict[str, Any], region: TargetRegion) -> bool:
     pair matches **or** any entry in ``multi_location_array`` does.
 
     The multi-location arm is checked unconditionally, which is a
-    deliberate widening of the contract sketched in
-    ``ARCHITECTURE_PROPOSAL_R2.md`` §4.8.1 (it consults the array only
-    "if the primary ``country`` is empty"). The recorded BCG payload
+    deliberate widening of the rule this adapter was first designed
+    with, which consulted the array only when the primary ``country``
+    was empty. The recorded BCG payload
     disproves that narrower rule: job 57516,
     ``TEMP: Global Marketing Manager - Financial Institutions``, is a
     genuine Costa Rica posting returned under the Costa Rica facet, yet

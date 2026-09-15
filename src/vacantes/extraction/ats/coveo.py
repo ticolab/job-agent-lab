@@ -231,9 +231,8 @@ def build_search_body(
     """Build the ``/rest/search/v2`` POST body for one tenant + region.
 
     This is the single expression of the wire contract — the adapter
-    holds no other request-shaping logic. The field set is the trimmed
-    template from ``ARCHITECTURE_PROPOSAL_R2.md`` §4.8.3, which
-    replicates the captured working contract minus its UI-state noise.
+    holds no other request-shaping logic. The field set is the captured
+    working browser request with its UI-state noise trimmed away.
     Three properties are load-bearing:
 
     * **No ``aq``.** Filtering is entirely facet-state-based: the

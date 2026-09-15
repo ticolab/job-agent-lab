@@ -450,8 +450,9 @@ class TestClientSideReverification:
     def test_recorded_multi_location_record_with_non_regional_primary_is_kept(
         self,
     ) -> None:
-        # The record that exposed the too-narrow rule sketched in
-        # ARCHITECTURE_PROPOSAL_R2.md §4.8.1. Job 57516 is a genuine
+        # The record that exposed the too-narrow first rule for this
+        # adapter (consult the array only when the primary country is
+        # empty). Job 57516 is a genuine
         # Costa Rica posting (returned under the CR facet, counted in
         # totalHits: 14) whose *primary* fields read United Kingdom /
         # London, with Heredia, Costa Rica only in

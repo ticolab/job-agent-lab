@@ -7,10 +7,9 @@ Two layers, following the phenom.py precedent:
   directly.
 - **The adapter** (Task 4) — driven through ``respx`` so no network
   is touched; the happy path replays the recorded payload at
-  ``tests/fixtures/api/talentbrew/citi.json`` (seeded from the
-  evidence capture at ``spike/evidence/citi_results_cr.json``).
+  ``tests/fixtures/api/talentbrew/citi.json`` (seeded from a live
+  capture of Citi's Costa Rica results).
 
-Design authority: ``spike/ARCHITECTURE_PROPOSAL_R2.md`` §4.8.2.
 JS matcher parity coverage lives in
 ``tests/snapshots/test_linkrule_parity.py`` (SYS-17 Task 5); this file
 pins the Python-side semantics directly.

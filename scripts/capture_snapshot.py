@@ -90,8 +90,8 @@ Beyond the SYS-6 ``--expand-selector`` override, capture also honours
 the other two DOM-side fields on :class:`RuntimeHooks`:
 ``pre_extract_css`` and ``next_control_selector``. Both are read
 directly from ``Company.hooks`` — no CLI flag — and threaded into the
-same execution order used at runtime (§4.5 of
-``ARCHITECTURE_PROPOSAL_R2.md``): CSS injection first, then bounded
+same execution order used at runtime, the one
+``collect_job_links`` implements: CSS injection first, then bounded
 expansion, then the bake+serialize pass, then per-frame captures,
 then the optional pagination walker with the next-control selector as
 a per-state override. All three hook values, when non-empty, are
@@ -528,8 +528,8 @@ async def _capture(
     :class:`RuntimeHooks`. ``expand_selector`` is the *resolved*
     effective value (see :func:`resolve_expand_selector` — flag
     override beats catalog); the other two are catalog-sourced only
-    (no capture-side flag). Execution order per §4.5 of
-    ``ARCHITECTURE_PROPOSAL_R2.md``: render → wait → scroll →
+    (no capture-side flag). Execution order, mirroring
+    ``collect_job_links``: render → wait → scroll →
     ``apply_pre_extract_css`` → ``expand_all`` → bake → frames →
     optional walker (threading ``next_control_selector``). CSS
     injection precedes the bake so the visibility stamps and the

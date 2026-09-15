@@ -14,8 +14,9 @@ temporary file. Wiring concrete dependencies is the outermost layer's
 job, so ``cli`` reaching both ``batch`` and ``persistence`` is the
 intended direction rather than a leak.
 
-Three decisions worth stating, because none is forced by
-``TRANSITION.md`` §7:
+Three decisions worth stating, because none is forced by the batch
+component itself; ``ARCHITECTURE.md`` ("Running a batch") carries the
+reasoning beside them:
 
 **A selection is required.** There is no bare ``vacantes batch`` that
 means "everything". The corpus is approaching 250 boards, many of which

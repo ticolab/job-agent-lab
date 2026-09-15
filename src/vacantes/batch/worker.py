@@ -157,7 +157,8 @@ async def run_company(
         company: The company to extract.
         ctx: The same :class:`RunContext` the integration CLI passes, so
             a scheduled run and an onboarding run execute identical
-            code. See ``TRANSITION.md`` §3.2.
+            code. ``ARCHITECTURE.md`` ("Components and layering")
+            carries the argument.
         session_factory: Opens one short-lived session per repository
             call.
         policy: Supplies the freshness window and the per-company

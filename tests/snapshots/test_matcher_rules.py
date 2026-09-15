@@ -288,7 +288,7 @@ class TestSuppressAncestorSelector:
     def test_shadow_root_anchor_not_suppressed_by_light_dom_host_container(
         self, page: Page
     ) -> None:
-        # Boundary semantics, per ARCHITECTURE_PROPOSAL_R2.md §4.7:
+        # Boundary semantics, for which this test is the pin:
         # ``closest()`` does not cross shadow boundaries, matching the
         # matcher's per-document scan model — each scanned document
         # applies the gate independently. So an anchor inside an open
