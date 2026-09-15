@@ -7,8 +7,9 @@ right now.*
 
 Status: **Phase 0 landed** (2026-09-15) in four commits, except T0.9 — the GitHub
 repository rename — which is deferred by choice. **Phase 1 landed** (2026-09-15).
-**Phase 2 landed** (2026-09-15). **Phase 3 landed** (2026-09-15). Phase 4 is not
-started.
+**Phase 2 landed** (2026-09-15). **Phase 3 landed** (2026-09-15). **Phase 4
+landed** (2026-09-15). All five phases are now delivered; T0.9 above is the
+only outstanding item.
 Supersedes `ORCHESTRATION.md`, whose technical decisions are carried forward here
 where they still hold and corrected where they do not.
 
@@ -695,7 +696,37 @@ first thing to reach for when a batch misbehaves. `--json-output` routes through
   and resumes; `sqlite3 data/vacantes.db 'select company_slug, count(*) from job_urls
   group by 1'` matches each board's verdict count.
 
-## 8. Phase 4 — Full corpus and operations
+## 8. Phase 4 — Full corpus and operations — **LANDED**
+
+**As built, one deviation and one correction.** The deviation: T4.1 asks for the
+ceilings to be tuned, and the measurement said to leave both where they are, so
+nothing changed in code. Recording *why* a default survived contact with the
+full corpus is the deliverable here, and it lives in `ARCHITECTURE.md` beside
+the ceilings it explains.
+
+The correction is worth keeping, because the first reading of the run was wrong.
+Grepping the run log for rate-limit evidence appeared to show hits accumulating
+as the batch progressed. They were false positives: the pattern was matching
+job-posting URLs whose ids happen to contain the digits of an HTTP status, not
+provider errors. Re-checked against log levels rather than raw substrings, the
+run contains **no provider errors at all**, which inverts the conclusion — the
+browser bucket is bounded by memory, not by the LLM provider. A tuning number
+derived from the first reading would have been confidently wrong.
+
+**What the run measured.** 116 companies (97 browser-class, 80 of those driving
+an agent) in 967 seconds, 116 successes and no failures, 1504 postings stored,
+and `company_runs.url_count` equal to `select count(*) from job_urls` for every
+one of the 116 — the Phase 3 parity check repeated corpus-wide. Peak Chromium
+residency at the default ceiling of 4 was 8214, 8425, and 8406 MB across three
+independent runs, so it tracks the ceiling rather than the workload. A ceiling
+of 8 cost 12615 MB for a wall time that fell inside the ceiling-4 noise band of
+123-141s, meaning the extra slots bought nothing at this corpus size. The HTTP
+ceiling has never bound: 19 HTTP-class boards against a ceiling of 20 finished
+in 5 seconds.
+
+**T4.3 was dropped from the plan** before this phase ran — revisiting the
+blocked-board dispositions is a judgement call about coverage, not delivery
+work, and it belongs to whoever next reads `blockers/INTEGRATION_BLOCKERS.md`.
 
 - **T4.1** Full run; tune the two ceilings against observed memory and provider
   rate-limit behaviour; record the numbers in `ARCHITECTURE.md`.
@@ -776,4 +807,5 @@ with the same context; only scheduling and output differ.
 | T2.4 | 2 | ✅ 25 tests on fakes — no browser, no network; ceiling tests verified to fail an unbounded scheduler; suite at **903** |
 | T3.1 | 3 | ✅ `cli/batch.py` wired into the dispatcher; selection mandatory; schema preflighted |
 | T3.2 | 3 | ✅ Five Greenhouse boards plus one browser-class board run live; every §7 acceptance item observed; suite at **932** |
-| T4.1–T4.2 | 4 | Full corpus tuned; runbook written |
+| T4.1 | 4 | ✅ Full corpus run: 116/116 success, 1504 URLs, 967s; both ceilings measured and kept; numbers in `ARCHITECTURE.md` |
+| T4.2 | 4 | ✅ Runbook in `README.md`: cadence, measured cost, the product query, `--dry-run` first, backup by file copy |

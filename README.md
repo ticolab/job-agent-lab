@@ -116,6 +116,31 @@ sqlite3 data/vacantes.db 'select company_slug, url from job_urls order by compan
 sqlite3 data/vacantes.db 'select company_slug, status, url_count, verdict from company_runs'
 ```
 
+### Operating it
+
+The dataset answers what is open *right now*, so it is worth refreshing two or
+three times a week rather than continuously. The default freshness window is 20
+hours, which means a re-run on the same day costs nothing for boards that
+already succeeded and retries only the ones that did not.
+
+A full run of the current 116-company corpus takes about 16 minutes and peaks
+around 8 GB of Chromium residency at the default ceiling of 4 concurrent
+browser runs. Raising that ceiling costs proportionally more memory without
+returning measurable throughput at this corpus size, so leave it alone unless
+the corpus grows enough that boards genuinely queue for a slot. `ARCHITECTURE.md`
+records the measurements behind both ceilings.
+
+Back up the dataset by copying the file. There is no export step, because the
+database is a single SQLite file and nothing else holds state:
+
+```bash
+cp data/vacantes.db "data/vacantes-$(date +%Y%m%d).db"
+```
+
+Losing it is recoverable in any case. The catalog is the source of truth for
+the corpus and the database is a projection of it plus the most recent
+extraction, so a full re-run rebuilds everything the file held.
+
 ### Adding a new company
 
 Companies are integrated through a queue file plus an agent skill, not by editing

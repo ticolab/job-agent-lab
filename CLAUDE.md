@@ -38,7 +38,7 @@ Two console scripts are registered. `vacantes` is the dispatcher with `integrate
 
 `OPENAI_API_KEY` in `.env` is required only for live `strategy="dom"` agent runs. Unit tests, snapshot tests, API strategies, and `pre_filter_urls` companies all run without it.
 
-Pre-commit gates: ruff, mypy, and the full test suite runs on any change under `src/vacantes/{extraction,domain}/` or `tests/`. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee the commit passes.
+Pre-commit gates: ruff, mypy, and the full test suite runs on any change under `src/vacantes/`, `migrations/`, or `tests/`. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee the commit passes.
 
 Alembic owns the schema. The database lives at `data/vacantes.db`, gitignored because the dataset answers "what is open right now" and is regenerable by re-running a batch.
 

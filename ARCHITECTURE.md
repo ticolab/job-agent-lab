@@ -8,8 +8,10 @@ rules that keep the design from decaying as new sites arrive.
 Per-feature semantics and the change history live in `TABNINE.md`. Per-board
 evidence — the catalogue of site behaviours that resist extraction, with the
 ground truth behind each — lives under `blockers/`. Forward-looking design
-work lives in `TRANSITION.md`, which is transient: each phase's section is
-deleted once it lands and its durable rationale graduates into this document.
+work lives in `TRANSITION.md`, which is transient: a landed phase keeps its
+section, marked as such and annotated with how the build differed from the
+plan, while its durable rationale graduates into this document. The file is
+removed whole once the last phase lands.
 
 ## The central split
 
@@ -325,6 +327,36 @@ Chromium context and, on the DOM path, an LLM agent bounded by provider
 rate limits; an HTTP run is a JSON call bounded only by politeness. One
 shared ceiling would make the cheap bucket queue behind the expensive
 one, which is the opposite of what a ceiling is for.
+
+**The defaults of 4 and 20 were confirmed by measurement, not chosen by
+feel.** The first full-corpus run — 116 companies, 97 of them
+browser-class and 80 of those driving an agent — completed in 16 minutes
+with every board succeeding and 1504 postings stored. Peak Chromium
+residency was almost perfectly reproducible across three independent
+runs at a ceiling of 4: 8214 MB, 8425 MB, and 8406 MB, the last of those
+during the full run itself. Memory is therefore a function of the
+ceiling rather than of what any particular board does, which is what
+makes the number worth writing down. (Summed RSS double-counts pages
+shared between Chromium processes, so treat it as an upper bound.)
+
+Doubling the ceiling to 8 raised peak residency to 12615 MB — about 50%
+more — while wall time landed inside the run-to-run noise of the ceiling
+of 4, whose own repeats spanned 123s and 141s on the same 16 boards. The
+extra slots bought nothing measurable because per-board time is
+dominated by page settle and third-party latency rather than by waiting
+for a slot. Raising the ceiling therefore costs memory and returns
+throughput only once the corpus is large enough that boards genuinely
+queue.
+
+The more useful finding is which resource actually binds. Across 80
+agent-driven boards at a ceiling of 4 the run produced **no provider
+rate-limit errors at all**, so on a 32 GB machine the browser bucket is
+bounded by memory long before it is bounded by the LLM provider. The
+HTTP ceiling, meanwhile, has never yet bound anything: the corpus holds
+only 19 HTTP-class boards against a ceiling of 20, and all 19 completed
+in 5 seconds with no failures. Both numbers are worth re-measuring when
+the corpus grows, and the browser one is worth re-measuring on a machine
+with different memory.
 
 **The worker is the failure-isolation boundary.** Failure modes across a
 corpus of third-party sites are open-ended — a crashed browser, a

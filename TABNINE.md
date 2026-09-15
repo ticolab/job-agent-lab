@@ -10,7 +10,7 @@ For each configured company, a `browser-use` agent (OpenAI model routed via Lite
 
 Only one of the seven registered strategies drives an agent at all; the other six are plain HTTP against the ATS or search platform backing the board. "Agent" therefore names a mechanism inside `extraction/dom/`, not the system.
 
-Read `ARCHITECTURE.md` for the design rationale and invariants. Read `blockers/INTEGRATION_BLOCKERS.md` for the catalogue of site behaviours that resist extraction (referenced as C1–C22 throughout the codebase). Read `CLAUDE.md` for the equivalent guidance surface aimed at Claude Code. Read `TRANSITION.md` for the in-flight restructuring plan; it is transient and each phase's section is deleted once that phase lands and its durable rationale has graduated into `ARCHITECTURE.md` and this file.
+Read `ARCHITECTURE.md` for the design rationale and invariants. Read `blockers/INTEGRATION_BLOCKERS.md` for the catalogue of site behaviours that resist extraction (referenced as C1–C22 throughout the codebase). Read `CLAUDE.md` for the equivalent guidance surface aimed at Claude Code. Read `TRANSITION.md` for the restructuring plan; landed phases stay in it, marked as such with their as-built deviations, so it doubles as the audit trail of what changed between design and delivery, and the whole file is removed when the last phase lands.
 
 ## Building and Running
 
@@ -50,7 +50,7 @@ uv run --group test pytest tests/unit/           # browser-free
 uv run --group test pytest tests/snapshots/      # needs Chromium
 ```
 
-Pre-commit gates ruff, mypy, and the full test suite on any change under `src/vacantes/{extraction,domain}/` or `tests/`. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee that the commit passes.
+Pre-commit gates ruff, mypy, and the full test suite on any change under `src/vacantes/`, `migrations/`, or `tests/`. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee that the commit passes.
 
 Alembic owns the schema. The database lives at `data/vacantes.db` by default, which is gitignored because the dataset answers "what is open right now" and is regenerable by re-running a batch:
 
