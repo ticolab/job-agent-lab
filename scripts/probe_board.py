@@ -8,7 +8,7 @@ visibility, look for pagination affordances, inventory filter controls,
 fingerprint the ATS, and watch the network for JSON job APIs. That checklist
 is mechanisable — this script is the mechanisation.
 
-Usage (from the repo root, so ``job_agent_lab`` is importable)::
+Usage (from the repo root, so ``vacantes`` is importable)::
 
     uv run python scripts/probe_board.py -u <job_board_url> -s <sample_job_url>
     uv run python scripts/probe_board.py -u <url> -s <url> --json > report.json
@@ -82,12 +82,12 @@ from urllib.parse import urlparse
 # root on ``sys.path`` via ``src`` layout registration in ``pyproject.toml``.
 from playwright.async_api import Frame, Page, Response, async_playwright
 
-from job_agent_lab.extraction.dom import (
+from vacantes.extraction.dom import (
     EXTRACT_JOB_LINKS_JS,
     FIND_NEXT_CONTROL_JS,
 )
-from job_agent_lab.extraction.dom.rules import derive_path_prefix
-from job_agent_lab.settings import plausible_headless_ua
+from vacantes.extraction.dom.rules import derive_path_prefix
+from vacantes.settings import plausible_headless_ua
 
 # ---------------------------------------------------------------------------
 # Constants

@@ -2,12 +2,12 @@
 """Run the deterministic extractor against a freshly-rendered page.
 
 This is "Appendix B" of the integrate-company workflow: it runs the actual
-``job_agent_lab.navigation.controller.build_controller`` extractor (the same
+``vacantes.extraction.dom.agent.controller.build_controller`` extractor (the same
 code the lab uses end-to-end) over a real rendered DOM, with no LLM in the loop.
 Use it as the fast, free iteration loop while finding a working
 ``(job_board_url, sample_job_url)`` combination.
 
-Run from the job-agent-lab repo so ``job_agent_lab`` is importable. See
+Run from the job-agent-lab repo so ``vacantes`` is importable. See
 ``--help`` for the full argument list. For lazy-loaded sites, raise ``--wait``
 and/or pass ``--scroll N``. For boards whose full listing is partitioned
 across multiple DOM states advanced by an in-page "next" control (SYS-5:
@@ -52,9 +52,9 @@ import sys
 from browser_use.browser.profile import BrowserProfile
 from browser_use.browser.session import BrowserSession
 
-from job_agent_lab.domain.company import RuntimeHooks
-from job_agent_lab.navigation.controller import build_controller
-from job_agent_lab.settings import plausible_headless_ua
+from vacantes.domain.company import RuntimeHooks
+from vacantes.extraction.dom.agent.controller import build_controller
+from vacantes.settings import plausible_headless_ua
 
 
 async def _run(

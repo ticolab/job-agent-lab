@@ -31,4 +31,4 @@ repos:
         entry: uv run --group test pytest tests/ -x -q
         language: system
         pass_filenames: false
-        files: '^(src/job_agent_lab/(extraction|navigation|domain)/.*|tests/.*)$'
+        files: '^(src/vacantes/(extraction|domain)/.*|tests/.*)$'

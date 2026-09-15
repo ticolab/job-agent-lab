@@ -25,8 +25,8 @@ from typing import Any
 import pytest
 from playwright.sync_api import Page
 
-from job_agent_lab.extraction.dom import EXTRACT_JOB_LINKS_JS
 from tests.snapshots.test_extractor_snapshots import _inject_base_href
+from vacantes.extraction.dom import EXTRACT_JOB_LINKS_JS
 
 
 def _make_state_html(anchors: list[tuple[str, str]]) -> str:

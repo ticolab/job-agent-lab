@@ -11,7 +11,7 @@ file matches that split.
 
 The two helpers under test are :func:`apply_pre_extract_css` and
 :func:`expand_all` in
-:mod:`job_agent_lab.extraction.dom.collector`. Both run under an
+:mod:`vacantes.extraction.dom.collector`. Both run under an
 :class:`ActorPageDriver` at runtime; here they are driven against a
 :class:`_HookTestDriver` wrapping a sync-Playwright ``Page`` on tiny
 ``file://`` pages so the assertions are against real Chromium
@@ -50,8 +50,8 @@ from typing import Any
 import pytest
 from playwright.sync_api import Browser, BrowserContext, Page
 
-from job_agent_lab.extraction.dom import collector as collector_mod
-from job_agent_lab.extraction.dom.collector import (
+from vacantes.extraction.dom import collector as collector_mod
+from vacantes.extraction.dom.collector import (
     _EXPAND_MARKER,
     apply_pre_extract_css,
     expand_all,

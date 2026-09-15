@@ -24,7 +24,7 @@ from pathlib import Path
 
 import pytest
 
-from job_agent_lab.domain.company import RuntimeHooks
+from vacantes.domain.company import RuntimeHooks
 
 _SCRIPTS_DIR = Path(__file__).resolve().parent.parent.parent / "scripts"
 _CAPTURE_PATH = _SCRIPTS_DIR / "capture_snapshot.py"
@@ -179,7 +179,7 @@ class TestPreFilterUrlsMetadata:
         set and the SYS-13-specific field is the only variable across
         cases — anything else changing would confound the assertions.
         """
-        from job_agent_lab.domain.company import Company
+        from vacantes.domain.company import Company
 
         return Company(
             name="Example Corp",
@@ -341,7 +341,7 @@ class TestSuppressAncestorSelectorMetadata:
     """
 
     def _stub_company(self, suppress: str | None = None) -> Company:  # type: ignore[name-defined]  # noqa: F821
-        from job_agent_lab.domain.company import Company, LinkRule
+        from vacantes.domain.company import Company, LinkRule
 
         return Company(
             name="Example Corp",
@@ -416,7 +416,7 @@ class TestPerStateFrames:
     """
 
     def _stub_company(self, pre_filter_urls: tuple[str, ...] = ()) -> Company:  # type: ignore[name-defined]  # noqa: F821
-        from job_agent_lab.domain.company import Company
+        from vacantes.domain.company import Company
 
         return Company(
             name="Example Corp",
@@ -531,7 +531,7 @@ class TestPerStatePages:
     """
 
     def _stub_company(self, pre_filter_urls: tuple[str, ...] = ()) -> Company:  # type: ignore[name-defined]  # noqa: F821
-        from job_agent_lab.domain.company import Company
+        from vacantes.domain.company import Company
 
         return Company(
             name="Example Corp",

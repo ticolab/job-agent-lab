@@ -26,7 +26,7 @@ from __future__ import annotations
 import pytest
 from playwright.sync_api import Error, Page
 
-from job_agent_lab.extraction.dom import EXTRACT_JOB_LINKS_JS
+from vacantes.extraction.dom import EXTRACT_JOB_LINKS_JS
 
 _ORIGIN = "https://example.com"
 _PREFIX = "/jobs"

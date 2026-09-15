@@ -1,4 +1,4 @@
-"""Unit tests for ``job_agent_lab.catalog``.
+"""Unit tests for ``vacantes.catalog``.
 
 Locks the handle-resolution contract that the CLI, the capture script,
 and the ``integrate-company`` skill all rely on. The contract has two
@@ -19,8 +19,8 @@ from __future__ import annotations
 
 import pytest
 
-from job_agent_lab.catalog import _acronym, find_company, slugify
-from job_agent_lab.domain.company import Company, LinkRule
+from vacantes.catalog import _acronym, find_company, slugify
+from vacantes.domain.company import Company, LinkRule
 
 
 class TestSlugify:
@@ -93,17 +93,17 @@ class TestFindCompany:
 
     def test_alias_resolves(self, monkeypatch: pytest.MonkeyPatch) -> None:
         gap = _company("Growth Acceleration Partners", aliases=("gap",))
-        monkeypatch.setattr("job_agent_lab.catalog.COMPANIES", [gap])
+        monkeypatch.setattr("vacantes.catalog.COMPANIES", [gap])
         assert find_company("gap") is gap
 
     def test_acronym_resolves(self, monkeypatch: pytest.MonkeyPatch) -> None:
         sumo = _company("Sumo Logic")
-        monkeypatch.setattr("job_agent_lab.catalog.COMPANIES", [sumo])
+        monkeypatch.setattr("vacantes.catalog.COMPANIES", [sumo])
         assert find_company("sl") is sumo
 
     def test_substring_resolves(self, monkeypatch: pytest.MonkeyPatch) -> None:
         akamai = _company("Akamai")
-        monkeypatch.setattr("job_agent_lab.catalog.COMPANIES", [akamai])
+        monkeypatch.setattr("vacantes.catalog.COMPANIES", [akamai])
         assert find_company("kama") is akamai
 
     def test_insertion_order_wins_across_companies(
@@ -114,18 +114,18 @@ class TestFindCompany:
         # which rule triggered — rule precedence is intra-company only.
         slack = _company("Slack")
         sumo = _company("Sumo Logic")
-        monkeypatch.setattr("job_agent_lab.catalog.COMPANIES", [slack, sumo])
+        monkeypatch.setattr("vacantes.catalog.COMPANIES", [slack, sumo])
         assert find_company("sl") is slack
 
     def test_case_insensitive(self, monkeypatch: pytest.MonkeyPatch) -> None:
         gap = _company("Growth Acceleration Partners", aliases=("gap",))
-        monkeypatch.setattr("job_agent_lab.catalog.COMPANIES", [gap])
+        monkeypatch.setattr("vacantes.catalog.COMPANIES", [gap])
         assert find_company("GAP") is gap
         assert find_company("  gAp  ") is gap
 
     def test_miss_returns_none(self, monkeypatch: pytest.MonkeyPatch) -> None:
         akurey = _company("Akurey")
-        monkeypatch.setattr("job_agent_lab.catalog.COMPANIES", [akurey])
+        monkeypatch.setattr("vacantes.catalog.COMPANIES", [akurey])
         assert find_company("nonexistent") is None
 
     def test_empty_query_matches_first_company(
@@ -137,5 +137,5 @@ class TestFindCompany:
         # change it.
         first = _company("Akurey")
         second = _company("Zencore")
-        monkeypatch.setattr("job_agent_lab.catalog.COMPANIES", [first, second])
+        monkeypatch.setattr("vacantes.catalog.COMPANIES", [first, second])
         assert find_company("") is first

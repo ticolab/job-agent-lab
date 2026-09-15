@@ -37,8 +37,8 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
-from job_agent_lab.extraction.dom import EXTRACT_JOB_LINKS_JS
-from job_agent_lab.extraction.dom.collector import EXPAND_MAX_ROUNDS, expand_all
+from vacantes.extraction.dom import EXTRACT_JOB_LINKS_JS
+from vacantes.extraction.dom.collector import EXPAND_MAX_ROUNDS, expand_all
 
 _capture_path = Path(__file__).resolve().parent / "capture_snapshot.py"
 _spec = importlib.util.spec_from_file_location("capture_snapshot", _capture_path)

@@ -1,6 +1,6 @@
 """Termination-behaviour tests for the SYS-5 pagination walker.
 
-The walker in :mod:`job_agent_lab.extraction.dom.collector` composes
+The walker in :mod:`vacantes.extraction.dom.collector` composes
 discovery, click, settle, and per-state collection into a loop with
 five terminating conditions:
 
@@ -55,8 +55,8 @@ from typing import Any, cast
 import pytest
 from playwright.sync_api import Browser, BrowserContext, Page
 
-from job_agent_lab.extraction.dom import collector as collector_mod
-from job_agent_lab.extraction.dom.collector import walk_and_collect
+from vacantes.extraction.dom import collector as collector_mod
+from vacantes.extraction.dom.collector import walk_and_collect
 
 _PREFIX = "/jobs"
 

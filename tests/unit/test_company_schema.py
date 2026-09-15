@@ -15,8 +15,8 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from job_agent_lab.catalog import COMPANIES, slugify
-from job_agent_lab.domain.company import (
+from vacantes.catalog import COMPANIES, slugify
+from vacantes.domain.company import (
     Company,
     CoveoConfig,
     LinkRule,

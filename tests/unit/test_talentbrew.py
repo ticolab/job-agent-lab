@@ -31,15 +31,15 @@ import httpx
 import pytest
 import respx
 
-from job_agent_lab.domain.company import Company, LinkRule, TalentbrewConfig
-from job_agent_lab.domain.region import COSTA_RICA_LATAM
-from job_agent_lab.extraction.ats.talentbrew import (
+from vacantes.domain.company import Company, LinkRule, TalentbrewConfig
+from vacantes.domain.region import COSTA_RICA_LATAM
+from vacantes.extraction.ats.talentbrew import (
     TalentbrewStrategy,
     apply_link_rule,
     build_query_params,
     parse_anchor_hrefs,
 )
-from job_agent_lab.extraction.base import RunContext
+from vacantes.extraction.base import RunContext
 
 # ---------------------------------------------------------------------------
 # parse_anchor_hrefs
@@ -472,7 +472,7 @@ def _load_citi_fixture() -> dict[str, Any]:
 
 def _make_company(**overrides: Any) -> Company:
     """Build a Citi-shaped ``strategy=\"talentbrew\"`` company."""
-    from job_agent_lab.domain.company import TalentbrewConfig
+    from vacantes.domain.company import TalentbrewConfig
 
     defaults: dict[str, Any] = {
         "name": "Citi",
@@ -921,7 +921,7 @@ class TestMaxPagesCap:
             n = int(request.url.params["CurrentPage"])
             return httpx.Response(200, json=_synth_page(10, page_offset=n * 100))
 
-        _logger = "job_agent_lab.extraction.ats.talentbrew"
+        _logger = "vacantes.extraction.ats.talentbrew"
         with (
             respx.mock() as mock,
             caplog.at_level(logging.WARNING, logger=_logger),
@@ -985,7 +985,7 @@ class TestNeverRaises:
     ) -> None:
         # Inject a helper failure well inside the extract() try/except
         # to prove no exception escapes the strategy.
-        from job_agent_lab.extraction.ats import talentbrew as tb
+        from vacantes.extraction.ats import talentbrew as tb
 
         def _boom(*args: Any, **kwargs: Any) -> Any:
             raise RuntimeError("synthetic downstream failure")

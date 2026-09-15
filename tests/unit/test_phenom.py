@@ -40,16 +40,16 @@ import httpx
 import pytest
 import respx
 
-from job_agent_lab.domain.company import Company, LinkRule, PhenomConfig
-from job_agent_lab.domain.region import COSTA_RICA_LATAM
-from job_agent_lab.extraction.ats.phenom import (
+from vacantes.domain.company import Company, LinkRule, PhenomConfig
+from vacantes.domain.region import COSTA_RICA_LATAM
+from vacantes.extraction.ats.phenom import (
     PhenomStrategy,
     _record_matches_region,
     build_request_body,
     slugify_title,
     synthesize_job_url,
 )
-from job_agent_lab.extraction.base import RunContext
+from vacantes.extraction.base import RunContext
 
 # The tenant-hosted endpoint the adapter POSTs to. Composed from the
 # company's ``job_board_url`` origin plus ``PhenomConfig.endpoint_path``

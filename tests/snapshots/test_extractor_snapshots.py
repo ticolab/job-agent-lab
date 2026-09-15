@@ -22,7 +22,7 @@ three keys. At collection time this module discovers every well-formed
 snapshot directory and parametrizes a single test function over them.
 
 For each snapshot the test runs the production matcher JavaScript
-(``EXTRACT_JOB_LINKS_JS``, imported from ``job_agent_lab.extraction.dom``)
+(``EXTRACT_JOB_LINKS_JS``, imported from ``vacantes.extraction.dom``)
 against the frozen top-document HTML inside a real Chromium page, then repeats
 the matcher run against each captured frame document, each captured
 pagination-state document, and each captured pre-filter-URL state
@@ -57,8 +57,8 @@ from urllib.parse import urlparse
 import pytest
 from playwright.sync_api import Page
 
-from job_agent_lab.extraction.dom import EXTRACT_JOB_LINKS_JS
-from job_agent_lab.extraction.dom.rules import derive_path_prefix
+from vacantes.extraction.dom import EXTRACT_JOB_LINKS_JS
+from vacantes.extraction.dom.rules import derive_path_prefix
 
 SNAPSHOTS_DIR = Path(__file__).parent.parent / "fixtures" / "snapshots"
 

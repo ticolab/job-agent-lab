@@ -21,7 +21,7 @@ from __future__ import annotations
 
 from playwright.sync_api import sync_playwright
 
-from job_agent_lab.extraction.dom import EXTRACT_JOB_LINKS_JS
+from vacantes.extraction.dom import EXTRACT_JOB_LINKS_JS
 
 BASE_URL = "https://example.test/careers"
 ORIGIN = "https://example.test"

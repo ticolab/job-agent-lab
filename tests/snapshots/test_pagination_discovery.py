@@ -30,7 +30,7 @@ from typing import Any, cast
 import pytest
 from playwright.sync_api import Page
 
-from job_agent_lab.extraction.dom import FIND_NEXT_CONTROL_JS
+from vacantes.extraction.dom import FIND_NEXT_CONTROL_JS
 
 # Discovery does not care about origin — only DOM shape — but a stable
 # base is still injected so any relative anchors resolve rather than

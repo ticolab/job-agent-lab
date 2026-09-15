@@ -1,5 +1,5 @@
 [project]
-name = "job-agent-lab"
+name = "vacantes"
 version = "0.1.0"
 description = "Agentic browser-based job listing extraction — research sandbox for testing robustness across many career sites"
 authors = [{ name = "Ronald Rodriguez", email = "ronald.rodriguez@luxor.tech" }]
@@ -30,19 +30,25 @@ test = [
 ]
 
 [project.scripts]
-job-agent-lab = "job_agent_lab.cli:main"
+# ``vacantes`` is the dispatcher: subcommands ``integrate`` and ``batch``.
+# ``job-agent-lab`` is a frozen alias pointing straight at the integrate
+# parser's own ``main()`` rather than through the dispatcher, so its
+# argument surface is identical to the pre-rename CLI by construction.
+# Every doc, skill, and habit built around the old command keeps working.
+vacantes = "vacantes.cli.main:main"
+job-agent-lab = "vacantes.cli.integrate:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/job_agent_lab"]
+packages = ["src/vacantes"]
 # Ship the deterministic-matcher JS asset inside the wheel. This is the
 # single source of truth loaded by extraction.dom via importlib.resources;
 # without an explicit include, hatchling would skip non-Python files under
 # the package tree.
-include = ["src/job_agent_lab/extraction/dom/assets/*.js"]
+include = ["src/vacantes/extraction/dom/assets/*.js"]
 
 # ===== RUFF (Linting & Formatting) =====
 [tool.ruff]
@@ -63,7 +69,7 @@ select = ["E", "F", "I", "W", "UP", "B", "C4", "SIM"]
 # continuations (one accidental space breaks the runtime string) or
 # word-boundary splits that silently drift the prompt. SYS-6 will
 # refactor this file into region-parametrised clauses.
-"src/job_agent_lab/navigation/prompt.py" = ["E501"]
+"src/vacantes/extraction/dom/agent/prompt.py" = ["E501"]
 # ``test_prompt_render.py`` embeds the pre-SYS-4 ``GOAL_PROMPT`` and
 # Case C tool description as byte-identical golden literals. Each
 # paragraph of the golden is one physical line by design (mirroring
@@ -72,7 +78,7 @@ select = ["E", "F", "I", "W", "UP", "B", "C4", "SIM"]
 "tests/unit/test_prompt_render.py" = ["E501"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["job_agent_lab"]
+known-first-party = ["vacantes"]
 
 # ===== MYPY (Type Checking) =====
 [tool.mypy]

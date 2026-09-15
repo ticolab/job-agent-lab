@@ -1,4 +1,4 @@
-"""Unit + integration tests for ``job_agent_lab.settings``'s UA helpers.
+"""Unit + integration tests for ``vacantes.settings``'s UA helpers.
 
 The pure derivation helper is the single "contract" every launch site
 depends on: given a Chromium UA string, strip the
@@ -27,8 +27,8 @@ from typing import Any
 
 import pytest
 
-from job_agent_lab import settings
-from job_agent_lab.settings import derive_plausible_ua, plausible_headless_ua
+from vacantes import settings
+from vacantes.settings import derive_plausible_ua, plausible_headless_ua
 
 # Representative Chromium headless UA at the time of the C14 isolation
 # experiment (Dev.Pro; see C14 in ``blockers/INTEGRATION_BLOCKERS_R2.md``).

@@ -43,23 +43,23 @@ import httpx
 import pytest
 import respx
 
-from job_agent_lab.domain.company import (
+from vacantes.domain.company import (
     Company,
     CoveoConfig,
     LinkRule,
     RuntimeHooks,
 )
-from job_agent_lab.domain.region import COSTA_RICA_LATAM
-from job_agent_lab.extraction.ats import browser_token as bt
-from job_agent_lab.extraction.ats.browser_token import extract_token
-from job_agent_lab.extraction.ats.coveo import (
+from vacantes.domain.region import COSTA_RICA_LATAM
+from vacantes.extraction.ats import browser_token as bt
+from vacantes.extraction.ats.browser_token import extract_token
+from vacantes.extraction.ats.coveo import (
     CoveoStrategy,
     _city_entries,
     _record_matches_region,
     build_search_body,
     search_endpoint_url,
 )
-from job_agent_lab.extraction.base import RunContext
+from vacantes.extraction.base import RunContext
 
 _ORG = "ustglobalproduction4ggrtx7v"
 _SEARCH_HUB = "prod-jobs-search-hub"

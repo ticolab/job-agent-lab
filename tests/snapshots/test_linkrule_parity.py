@@ -1,7 +1,7 @@
 """JS↔Python parity test for the URL-layer matcher semantics.
 
 The Talentbrew adapter (SYS-17) filters absolutized hrefs through
-:func:`~job_agent_lab.extraction.ats.talentbrew.apply_link_rule`, a
+:func:`~vacantes.extraction.ats.talentbrew.apply_link_rule`, a
 Python mirror of the URL-layer half of
 ``extraction/dom/assets/collect_links.js``. Two implementations of the
 same semantics is a maintenance hazard, so this test executes the
@@ -30,12 +30,12 @@ from urllib.parse import urljoin
 
 from playwright.sync_api import Page
 
-from job_agent_lab.extraction.ats.talentbrew import (
+from tests.snapshots.test_extractor_snapshots import _inject_base_href
+from vacantes.extraction.ats.talentbrew import (
     apply_link_rule,
     parse_anchor_hrefs,
 )
-from job_agent_lab.extraction.dom import EXTRACT_JOB_LINKS_JS
-from tests.snapshots.test_extractor_snapshots import _inject_base_href
+from vacantes.extraction.dom import EXTRACT_JOB_LINKS_JS
 
 _ORIGIN = "https://example.test"
 _BASE_URL = _ORIGIN + "/careers"

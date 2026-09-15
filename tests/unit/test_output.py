@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`job_agent_lab.reporting.output`.
+"""Unit tests for :mod:`vacantes.reporting.output`.
 
 Focused on the SYS-9 additions:
 
@@ -24,7 +24,7 @@ from typing import Any
 
 import pytest
 
-from job_agent_lab.reporting.output import _verdict_line, print_summary
+from vacantes.reporting.output import _verdict_line, print_summary
 
 
 def _meta(

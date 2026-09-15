@@ -23,9 +23,9 @@ from typing import Any
 
 import pytest
 
-import job_agent_lab.cli as cli_mod
-from job_agent_lab.cli import _has_non_match, run_extraction
-from job_agent_lab.domain.company import Company
+import vacantes.cli.integrate as cli_mod
+from vacantes.cli.integrate import _has_non_match, run_extraction
+from vacantes.domain.company import Company
 
 
 def _run(coro: Any) -> Any:
@@ -68,7 +68,7 @@ def _report(verdict: str, company: str = "Test", found: int = 0) -> dict[str, An
 
     The ``(expected_jobs, verdict, total_jobs_found)`` triple is kept
     internally consistent so downstream consumers of the report (in
-    particular :func:`job_agent_lab.reporting.output._verdict_line`,
+    particular :func:`vacantes.reporting.output._verdict_line`,
     which asserts non-``None`` ``expected_jobs`` on ``under``/``over``
     branches) accept the fixture as if it had come out of
     ``build_report``.

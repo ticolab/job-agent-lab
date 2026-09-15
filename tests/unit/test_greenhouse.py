@@ -30,7 +30,7 @@ Two layers of coverage:
     with ``error=None`` — an honest zero, not a broken board.
 
 All tests use synchronous ``pytest`` functions that drive the async
-:meth:`~job_agent_lab.extraction.ats.greenhouse.GreenhouseStrategy.extract`
+:meth:`~vacantes.extraction.ats.greenhouse.GreenhouseStrategy.extract`
 via ``asyncio.run(...)``. This keeps the test file free of extra
 async-runner plugins (the repo does not use ``pytest-asyncio``).
 """
@@ -47,13 +47,13 @@ import httpx
 import pytest
 import respx
 
-from job_agent_lab.domain.company import Company
-from job_agent_lab.domain.region import COSTA_RICA_LATAM
-from job_agent_lab.extraction.ats.greenhouse import (
+from vacantes.domain.company import Company
+from vacantes.domain.region import COSTA_RICA_LATAM
+from vacantes.extraction.ats.greenhouse import (
     GreenhouseStrategy,
     board_token,
 )
-from job_agent_lab.extraction.base import RunContext
+from vacantes.extraction.base import RunContext
 
 # The public JSON-API host the strategy hits. Kept as a module-level
 # constant here so the respx routes stay readable; the same value is

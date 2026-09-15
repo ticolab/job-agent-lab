@@ -44,7 +44,7 @@ from playwright.sync_api import Page, sync_playwright
 
 REPO_ROOT = Path(__file__).parent.parent
 FIXTURES_DIR = REPO_ROOT / "tests" / "fixtures" / "snapshots"
-JS_ASSET = "src/job_agent_lab/extraction/dom/assets/collect_links.js"
+JS_ASSET = "src/vacantes/extraction/dom/assets/collect_links.js"
 
 
 def _load_old_js() -> str:
