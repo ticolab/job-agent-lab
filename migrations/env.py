@@ -33,6 +33,9 @@ target_metadata = Base.metadata
 # `sqlalchemy.url` in alembic.ini: two sources for one path is how a
 # migration ends up applied to a different file than the application
 # reads. alembic.ini therefore leaves the URL empty and this fills it.
+# `vacantes batch --database PATH` has no counterpart here; the
+# `VACANTES_DB` environment variable, read by `vacantes.settings`, is
+# how a migration is pointed at the same non-default file.
 #
 # Conditional rather than unconditional so an explicit value still wins,
 # which is what lets a test apply the migrations to a temporary database

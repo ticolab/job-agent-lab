@@ -60,7 +60,7 @@ uv run alembic revision --autogenerate -m "..."    # new revision from models.py
 sqlite3 data/vacantes.db 'select * from job_urls'  # query it directly
 ```
 
-The connection URL is built by `migrations/env.py` from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth.
+The connection URL is built by `migrations/env.py` from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth. The path defaults to `data/vacantes.db` and is overridden by the `VACANTES_DB` shell variable (not a `.env` key: Alembic never loads `.env`). `vacantes batch --database PATH` points one run elsewhere, but Alembic has no such flag, so a non-default database is migrated with `VACANTES_DB=PATH uv run alembic upgrade head`; the schema preflight prints that exact command when it applies.
 
 `vacantes batch` is the only writer. A selection is mandatory — there is no bare invocation that means "the whole corpus" — because a full run drives hundreds of boards, many of them paying for a browser and an LLM:
 

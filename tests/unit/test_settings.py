@@ -23,12 +23,19 @@ from __future__ import annotations
 import asyncio
 import threading
 from collections.abc import Iterator
+from pathlib import Path
 from typing import Any
 
 import pytest
 
 from vacantes import settings
-from vacantes.settings import derive_plausible_ua, plausible_headless_ua
+from vacantes.settings import (
+    DATABASE_ENV_VAR,
+    DEFAULT_DATABASE_PATH,
+    database_path_from_env,
+    derive_plausible_ua,
+    plausible_headless_ua,
+)
 
 # Representative Chromium headless UA at the time of the C14 isolation
 # experiment (Dev.Pro; see C14 in ``blockers/INTEGRATION_BLOCKERS.md``).
@@ -154,3 +161,30 @@ class TestPlausibleHeadlessUa:
         # instance is returned on the second call, no re-launch of
         # Chromium.
         assert first is second
+
+
+# ---------------------------------------------------------------------------
+# Database path resolution
+# ---------------------------------------------------------------------------
+
+
+class TestDatabasePathFromEnv:
+    """The one environment variable settings reads, as a pure function.
+
+    Tested over an explicit mapping rather than by mutating the process
+    environment and reloading the module, because every importer has
+    already bound ``DATABASE_PATH`` by name and a reload would leave them
+    holding the old object while the test observed a new one.
+    """
+
+    def test_unset_falls_back_to_the_default(self) -> None:
+        assert database_path_from_env({}) == DEFAULT_DATABASE_PATH
+        assert Path("data") / "vacantes.db" == DEFAULT_DATABASE_PATH
+
+    def test_a_set_variable_wins(self) -> None:
+        resolved = database_path_from_env({DATABASE_ENV_VAR: "/srv/vacantes/live.db"})
+        assert resolved == Path("/srv/vacantes/live.db")
+
+    def test_a_blank_variable_is_treated_as_unset(self) -> None:
+        """``VACANTES_DB=`` must not resolve to a database named ``""``."""
+        assert database_path_from_env({DATABASE_ENV_VAR: "  "}) == DEFAULT_DATABASE_PATH

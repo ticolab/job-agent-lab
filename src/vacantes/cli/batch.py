@@ -71,7 +71,12 @@ from vacantes.domain.region import COSTA_RICA_LATAM
 from vacantes.extraction.base import RunContext
 from vacantes.persistence.engine import database, missing_tables
 from vacantes.reporting.output import save_result
-from vacantes.settings import DATABASE_PATH, DEFAULT_MAX_STEPS, DEFAULT_MODEL
+from vacantes.settings import (
+    DATABASE_ENV_VAR,
+    DATABASE_PATH,
+    DEFAULT_MAX_STEPS,
+    DEFAULT_MODEL,
+)
 
 BATCH_SUMMARY = "Run the corpus concurrently and persist results."
 
@@ -228,7 +233,12 @@ def add_batch_arguments(parser: argparse.ArgumentParser) -> None:
         "--database",
         metavar="PATH",
         default=None,
-        help=f"SQLite database to write (default: {DATABASE_PATH}).",
+        help=(
+            f"SQLite database to write (default: {DATABASE_PATH}, or the "
+            f"{DATABASE_ENV_VAR} environment variable). Alembic has no such "
+            f"flag and reads only {DATABASE_ENV_VAR}, so a database named "
+            "here must be migrated with that variable set."
+        ),
     )
     parser.add_argument(
         "-m",
@@ -443,6 +453,19 @@ async def _plan(
     _print_plan(to_run, fresh, policy)
 
 
+def _migrate_hint(path: Path | None) -> str:
+    """The command that migrates the database this run would open.
+
+    Alembic reads ``settings.DATABASE_PATH`` and has no flag of its own,
+    so when ``--database`` names a different file the bare command would
+    migrate the wrong one and the operator would be sent in a circle.
+    The hint then carries the environment variable Alembic *does* read.
+    """
+    if path is None or path == DATABASE_PATH:
+        return "uv run alembic upgrade head"
+    return f"{DATABASE_ENV_VAR}={path} uv run alembic upgrade head"
+
+
 async def _run(args: argparse.Namespace) -> None:
     """Open the database, then either plan or run the batch."""
     companies = select_companies(args)
@@ -455,7 +478,7 @@ async def _run(args: argparse.Namespace) -> None:
         if absent:
             _fail(
                 f"Database schema is missing table(s): {', '.join(absent)}. "
-                "Run 'uv run alembic upgrade head' first."
+                f"Run '{_migrate_hint(path)}' first."
             )
 
         if args.dry_run:

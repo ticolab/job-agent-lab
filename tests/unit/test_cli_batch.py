@@ -42,6 +42,7 @@ from vacantes.extraction.base import STRATEGIES, RunContext, build_report
 from vacantes.persistence import models
 from vacantes.persistence.engine import create_engine, create_session_factory
 from vacantes.persistence.timestamps import utc_now
+from vacantes.settings import DATABASE_ENV_VAR
 
 # ---------------------------------------------------------------------
 # Helpers
@@ -328,6 +329,42 @@ class TestSchemaPreflight:
         assert "alembic upgrade head" in message
         assert "company_runs" in message
         assert fake.calls == []
+
+    def test_a_non_default_database_gets_a_hint_alembic_can_follow(
+        self,
+        catalog: list[Company],
+        fake: _FakeStrategy,
+        tmp_path: Path,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """Alembic has no ``--database``; it reads ``VACANTES_DB``.
+
+        A bare ``alembic upgrade head`` would migrate the default file
+        and send the operator in a circle, so the hint must carry the
+        variable and the path they actually named.
+        """
+        path = tmp_path / "elsewhere.db"
+        with pytest.raises(SystemExit):
+            _run(cli_batch._run(_args("-c", "alpha", "--database", str(path))))
+        message = capsys.readouterr().err
+        assert f"{DATABASE_ENV_VAR}={path} uv run alembic upgrade head" in message
+
+    def test_the_default_database_gets_the_bare_command(
+        self,
+        catalog: list[Company],
+        fake: _FakeStrategy,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """Naming the default explicitly must not prefix a redundant variable."""
+        path = tmp_path / "default.db"
+        monkeypatch.setattr("vacantes.cli.batch.DATABASE_PATH", path)
+        with pytest.raises(SystemExit):
+            _run(cli_batch._run(_args("-c", "alpha", "--database", str(path))))
+        message = capsys.readouterr().err
+        assert "Run 'uv run alembic upgrade head' first." in message
+        assert DATABASE_ENV_VAR not in message
 
 
 # ---------------------------------------------------------------------

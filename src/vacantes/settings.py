@@ -16,6 +16,8 @@ this module remains a plain constant.
 
 from __future__ import annotations
 
+import os
+from collections.abc import Mapping
 from pathlib import Path
 
 DEFAULT_MODEL: str = "gpt-4.1-mini"
@@ -35,7 +37,35 @@ OUTPUT_DIR: Path = Path("output")
 # a backup copies. ``persistence.engine`` builds the
 # ``sqlite+aiosqlite://`` URL from it, which keeps URL construction in
 # exactly one place for the eventual PostgreSQL move.
-DATABASE_PATH: Path = Path("data") / "vacantes.db"
+DEFAULT_DATABASE_PATH: Path = Path("data") / "vacantes.db"
+
+# The one environment variable this module reads. It exists because two
+# programs must agree on where the database is — ``vacantes batch``,
+# which writes it, and ``alembic``, which migrates it — and only one of
+# them has a command-line flag. ``vacantes batch --database PATH`` can
+# point a run anywhere, but Alembic reads this module and nothing else,
+# so without a shared knob the preflight's "run alembic upgrade head"
+# would migrate the default file rather than the one the operator named.
+#
+# A *shell* variable, deliberately not a ``.env`` key: Alembic never
+# loads ``.env``, and a value that reached one program but not the other
+# would recreate exactly the split this variable exists to close.
+DATABASE_ENV_VAR: str = "VACANTES_DB"
+
+
+def database_path_from_env(environ: Mapping[str, str] = os.environ) -> Path:
+    """Resolve the database path from *environ*, falling back to the default.
+
+    A pure function over a mapping so the resolution rule is testable
+    without reloading this module or mutating the process environment.
+    A set-but-blank variable is treated as unset rather than as a path
+    named ``""``.
+    """
+    raw = environ.get(DATABASE_ENV_VAR, "").strip()
+    return Path(raw) if raw else DEFAULT_DATABASE_PATH
+
+
+DATABASE_PATH: Path = database_path_from_env()
 
 # ---------------------------------------------------------------------------
 # Shared render-settle defaults (SYS-13)

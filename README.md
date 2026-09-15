@@ -80,6 +80,10 @@ the question at the top of this file.
 Apply the migrations before the first run. Pointing at a path that does not
 exist creates an empty database quite happily, so the batch checks the schema
 first and names the tables it is missing rather than failing part-way through.
+The database defaults to `data/vacantes.db`; set the `VACANTES_DB` shell variable
+to move it, and both the batch and Alembic will follow. `--database PATH` moves a
+single run instead, in which case migrate that file with
+`VACANTES_DB=PATH uv run alembic upgrade head`.
 
 ```bash
 uv run alembic upgrade head                      # once, and after any schema change
