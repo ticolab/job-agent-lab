@@ -243,8 +243,10 @@ class TestPreFilterUrlsMetadata:
             "https://example.com/careers?location=latam",
         )
         company = self._stub_company(pre_filter_urls=pre_filter_urls)
-        states: list[tuple[int, str, str, list[tuple[str, str, str]]]] = [
-            (2, pre_filter_urls[1], "<html><body>state 2</body></html>", []),
+        states: list[
+            tuple[int, str, str, list[tuple[str, str, str]], list[tuple[int, str, str]]]
+        ] = [
+            (2, pre_filter_urls[1], "<html><body>state 2</body></html>", [], []),
         ]
         write_snapshot(
             tmp_path,
@@ -441,7 +443,9 @@ class TestPerStateFrames:
             "https://example.com/careers?pr=1",
         )
         company = self._stub_company(pre_filter_urls=pre_filter_urls)
-        states: list[tuple[int, str, str, list[tuple[str, str, str]]]] = [
+        states: list[
+            tuple[int, str, str, list[tuple[str, str, str]], list[tuple[int, str, str]]]
+        ] = [
             (
                 2,
                 pre_filter_urls[1],
@@ -453,6 +457,7 @@ class TestPerStateFrames:
                         "<html><body><a href='/jobs/2'>Job</a></body></html>",
                     )
                 ],
+                [],  # pages (no walker within this state)
             ),
         ]
         write_snapshot(
@@ -494,6 +499,127 @@ class TestPerStateFrames:
         stale_dir = tmp_path / "states" / "state-2-frames"
         stale_dir.mkdir(parents=True)
         stale_file = stale_dir / "6-board_iframe.html"
+        stale_file.write_text("<html><body><a href='/jobs/99'>Stale</a></body></html>")
+        write_snapshot(
+            tmp_path,
+            self._stub_company(),
+            "<html><body>fresh state 1</body></html>",
+            [],
+            [],
+            [],
+            0,
+            "unit test",
+        )
+        assert not stale_file.exists()
+
+
+class TestPerStatePages:
+    """Pin per-state page freezing in ``_write_snapshot`` (declaring × paginate).
+
+    Accenture is the first board to need both axes at once: one
+    ``pre_filter_urls`` state whose listing is paged behind a ``Next``
+    button that never changes the URL, so the pages cannot be
+    decomposed into further pre-filter URLs. The runtime already
+    composes the two (``_extract_prefiltered`` forwards
+    ``Company.paginate`` into every per-state ``collect_job_links``);
+    this pins the capture-side counterpart: a state entry gains a
+    nested ``pages`` list only when the walker collected states >= 2
+    within it, written under ``states/state-N-pages/page-M.html`` — the
+    sibling-directory convention ``state-N-frames/`` established — so
+    every fixture without the combination keeps byte-identical
+    metadata.
+    """
+
+    def _stub_company(self, pre_filter_urls: tuple[str, ...] = ()) -> Company:  # type: ignore[name-defined]  # noqa: F821
+        from job_agent_lab.domain.company import Company
+
+        return Company(
+            name="Example Corp",
+            job_board_url="https://example.com/careers",
+            sample_job_url="https://example.com/jobs/1",
+            pre_filter_urls=pre_filter_urls,
+        )
+
+    def test_state_pages_are_written_and_recorded(self, tmp_path: Path) -> None:
+        """A state carrying walker pages emits a nested ``pages`` list + files.
+
+        Path shape matters as much as the metadata: the harness reads
+        each page straight from ``metadata.states[*].pages[*].file``.
+        """
+        import json
+
+        write_snapshot = _capture_module._write_snapshot
+        pre_filter_urls = (
+            "https://example.com/careers?region=cr",
+            "https://example.com/careers?region=latam",
+        )
+        company = self._stub_company(pre_filter_urls=pre_filter_urls)
+        states: list[
+            tuple[int, str, str, list[tuple[str, str, str]], list[tuple[int, str, str]]]
+        ] = [
+            (
+                2,
+                pre_filter_urls[1],
+                "<html><body>state 2 page 1</body></html>",
+                [],
+                [
+                    (
+                        2,
+                        pre_filter_urls[1],
+                        "<html><body>state 2 page 2</body></html>",
+                    ),
+                    (
+                        3,
+                        pre_filter_urls[1],
+                        "<html><body>state 2 page 3</body></html>",
+                    ),
+                ],
+            ),
+        ]
+        write_snapshot(
+            tmp_path,
+            company,
+            "<html><body>state 1</body></html>",
+            [],  # frames (state 1)
+            [],  # pages (state 1)
+            states,
+            0,
+            "unit test",
+        )
+        metadata = json.loads((tmp_path / "metadata.json").read_text())
+        assert metadata["states"] == [
+            {
+                "file": "states/state-2.html",
+                "url": pre_filter_urls[1],
+                "pages": [
+                    {
+                        "file": "states/state-2-pages/page-2.html",
+                        "url": pre_filter_urls[1],
+                    },
+                    {
+                        "file": "states/state-2-pages/page-3.html",
+                        "url": pre_filter_urls[1],
+                    },
+                ],
+            }
+        ]
+        for page_idx in (2, 3):
+            page_path = tmp_path / "states" / "state-2-pages" / f"page-{page_idx}.html"
+            assert page_path.exists()
+            assert f"state 2 page {page_idx}" in page_path.read_text()
+
+    def test_stale_state_pages_swept_on_recapture(self, tmp_path: Path) -> None:
+        """Orphan per-state page files are deleted on re-capture.
+
+        Same silent-over-count hazard the ``states/``, ``pages/``, and
+        ``state-N-frames/`` sweeps exist for: a state whose walker now
+        finds fewer pages must not leave a stale ``page-M.html`` behind
+        for the harness to union back in.
+        """
+        write_snapshot = _capture_module._write_snapshot
+        stale_dir = tmp_path / "states" / "state-2-pages"
+        stale_dir.mkdir(parents=True)
+        stale_file = stale_dir / "page-7.html"
         stale_file.write_text("<html><body><a href='/jobs/99'>Stale</a></body></html>")
         write_snapshot(
             tmp_path,

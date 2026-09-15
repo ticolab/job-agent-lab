@@ -119,11 +119,23 @@ emitted together on declaring captures (``pre_filter_urls`` verbatim,
 ``top_url`` = state 1 URL, ``states`` = list of ``{file, url}``);
 non-declaring fixtures skip all three and stay byte-identical to
 their pre-SYS-13 shape. Frames are walked on state 1 only (SYS-5
-limitation carried forward). The flag combination
-``--paginate`` × declaring is refused at the CLI layer — the runtime
-can in principle handle per-state × per-page, but the frozen fixture
-layout for the combined case is deferred until a real board demands
-it.
+limitation carried forward).
+
+Declaring × paginate
+--------------------
+A declaring board whose per-state listing is itself paged combines the
+two axes — Accenture is the first: one ``pre_filter_urls`` state, five
+pages behind a ``Next`` button that never changes the URL, so the pages
+cannot be decomposed into further pre-filter URLs. ``--paginate`` on a
+declaring capture drives :func:`walk_and_collect` *within* each state,
+exactly as the runtime's ``_extract_prefiltered`` does when
+``Company.paginate=True``. State 1's pages land in the existing
+top-level ``pages/page-M.html`` (that key already means "pagination
+states of the top document"); each state N ≥ 2 gets its own
+``states/state-N-pages/page-M.html`` sidecar, recorded as a nested
+``pages`` list on the state entry — the sibling-directory convention
+``state-N-frames/`` established. Both keys stay additive-optional, so
+every fixture without the combination replays byte-identically.
 """
 
 from __future__ import annotations
@@ -133,6 +145,7 @@ import asyncio
 import json
 import re
 import sys
+from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -475,7 +488,7 @@ async def _capture(
     str,
     list[tuple[str, str, str]],
     list[tuple[int, str, str]],
-    list[tuple[int, str, str, list[tuple[str, str, str]]]],
+    list[tuple[int, str, str, list[tuple[str, str, str]], list[tuple[int, str, str]]]],
     int,
 ]:
     """Render, bake, and serialize; return top HTML, frames, pages, states, and count.
@@ -484,8 +497,10 @@ async def _capture(
     per same-origin-ancestor-chain frame that contains ≥1 anchor, for the
     initial (state 1) DOM. On the ``pre_filter_urls`` path each state
     ≥ 2 carries its own such list as the 4th element of its ``states``
-    tuple; on the ``paginate`` path frames remain state-1-only, matching
-    the boards the walker targets.
+    tuple, and its own pagination pages ``(page_index, url, html)`` as
+    the 5th (empty unless ``paginate`` is also on); on the ``paginate``
+    path frames remain state-1-only, matching the boards the walker
+    targets.
 
     ``pages`` is a list of ``(state_index, url, html)`` tuples, empty
     unless ``paginate`` is True. When paginate is on the walker drives
@@ -545,10 +560,11 @@ async def _capture(
     the union across every state's matcher run — the same union
     :func:`_extract_prefiltered` computes at runtime — so the
     ``--expected`` sanity check aligns with the harness assertion.
-    Combining ``pre_filter_urls`` with ``paginate=True`` is guarded
-    at the CLI layer in :func:`main`: the per-state × per-page
-    fixture layout is deferred, so the flag combo exits before
-    reaching ``_capture``.
+    With ``paginate`` also on, the walker runs *within* each state —
+    state 1's pages go to ``pages``, state N's to the 5th element of
+    its ``states`` tuple — mirroring ``_extract_prefiltered``, which
+    forwards ``Company.paginate`` into every per-state
+    ``collect_job_links`` call.
     """
     parsed = urlparse(job_board_url)
     top_origin = f"{parsed.scheme}://{parsed.netloc}"
@@ -620,30 +636,88 @@ async def _capture(
             frames = await _capture_same_origin_frames(page, top_origin)
 
             pages: list[tuple[int, str, str]] = []
-            states: list[tuple[int, str, str, list[tuple[str, str, str]]]] = []
+            states: list[
+                tuple[
+                    int,
+                    str,
+                    str,
+                    list[tuple[str, str, str]],
+                    list[tuple[int, str, str]],
+                ]
+            ] = []
             extracted: int
 
-            if pre_filter_urls:
-                # SYS-13 agent-less multi-state union. ``paginate`` is
-                # guaranteed False here — the CLI layer rejects the
-                # combination in :func:`main` before ``_capture`` is
-                # entered, matching the runtime capability (per-state
-                # × per-page works today) with a fixture-layout
-                # limitation (per-state × per-page frozen files are
-                # deferred). State 1 was already rendered, hooked, and
-                # baked above; now we run the matcher against state 1
-                # to seed the union, then walk states 2..N applying
-                # the same execution order (goto → wait → scroll →
-                # hooks 1–2 → bake → frames) and unioning per-state
-                # matcher runs. Each state's same-origin frames are
-                # frozen alongside it, so an iframe-hosted listing
-                # replays at every state and not just the first.
-                union: set[str] = set()
-                urls_1 = await page.evaluate(
+            def _bake_pages_into(
+                sink: list[tuple[int, str, str]],
+            ) -> Callable[[int], Awaitable[None]]:
+                # Walker callback factory: bake each state ≥ 2 the walker
+                # announces into ``sink``. State 1 is always baked by the
+                # caller before the walker starts, so ``on_state(1)`` is
+                # a no-op from the capture's perspective. A factory rather
+                # than one closure because the declaring branch needs a
+                # fresh sink per pre-filter state.
+                async def _on_state(state_idx: int) -> None:
+                    if state_idx == 1:
+                        return
+                    state_url = page.url
+                    state_html, _ = await _bake_and_serialize(page)
+                    sink.append((state_idx, state_url, state_html))
+
+                return _on_state
+
+            async def _walk(sink: list[tuple[int, str, str]]) -> set[str]:
+                # SYS-12: thread ``next_control_selector`` through to
+                # the walker as a per-state override — if set, the
+                # walker's next-control JS skips signals 1–6 and
+                # single-shot-matches the CSS selector instead
+                # (documented in ``find_next_control.js``). ``driver``
+                # is the same adapter used for css injection and
+                # expansion above. Bound to a typed local before
+                # returning: the pre-commit mypy hook type-checks only
+                # the staged files, where the collector import resolves
+                # to ``Any`` and a bare ``return await`` trips
+                # ``no-any-return`` — the same reason ``_single_shot``
+                # below binds its result.
+                collected: set[str] = await walk_and_collect(
+                    driver,
+                    prefix,
+                    top_origin,
+                    min_depth,
+                    on_state=_bake_pages_into(sink),
+                    next_control_override=next_control_selector,
+                    suppress_selector=suppress_selector,
+                )
+                return collected
+
+            async def _single_shot() -> list[str]:
+                result: list[str] = await page.evaluate(
                     EXTRACT_JOB_LINKS_JS,
                     [prefix, top_origin, min_depth, suppress_selector],
                 )
-                union.update(urls_1)
+                return result
+
+            if pre_filter_urls:
+                # SYS-13 agent-less multi-state union. State 1 was
+                # already rendered, hooked, and baked above; now we run
+                # the matcher against state 1 to seed the union, then
+                # walk states 2..N applying the same execution order
+                # (goto → wait → scroll → hooks 1–2 → bake → frames)
+                # and unioning per-state matcher runs. Each state's
+                # same-origin frames are frozen alongside it, so an
+                # iframe-hosted listing replays at every state and not
+                # just the first. With ``paginate`` on, the walker runs
+                # *within* each state — the same composition
+                # ``_extract_prefiltered`` performs at runtime by
+                # forwarding ``Company.paginate`` into every per-state
+                # ``collect_job_links`` call. State 1's pages land in
+                # the top-level ``pages`` (the key already means
+                # "pagination states of the top document"); state N's
+                # land in the 5th element of its ``states`` tuple.
+                union: set[str] = set()
+                if paginate:
+                    union.update(await _walk(pages))
+                else:
+                    union.update(await _single_shot())
                 for idx, url in enumerate(pre_filter_urls[1:], start=2):
                     await page.goto(url)
                     await asyncio.sleep(wait_s)
@@ -660,48 +734,30 @@ async def _capture(
                         await apply_pre_extract_css(driver, pre_extract_css)
                     if expand_selector is not None:
                         await expand_all(driver, expand_selector)
+                    # The state's URL and first-page HTML are frozen
+                    # *before* any walker click, so ``state-N.html`` is
+                    # the state's landing page and its URL is the one the
+                    # runtime navigated to.
+                    state_url = page.url
                     state_html, _ = await _bake_and_serialize(page)
                     # Freeze this state's same-origin frames too. Boards
                     # that keep their listing in an iframe (iCIMS) carry
                     # zero anchors in the state's top document, so without
                     # this the frozen state is an empty shell.
                     state_frames = await _capture_same_origin_frames(page, top_origin)
-                    state_urls = await page.evaluate(
-                        EXTRACT_JOB_LINKS_JS,
-                        [prefix, top_origin, min_depth, suppress_selector],
+                    state_pages: list[tuple[int, str, str]] = []
+                    if paginate:
+                        union.update(await _walk(state_pages))
+                    else:
+                        union.update(await _single_shot())
+                    states.append(
+                        (idx, state_url, state_html, state_frames, state_pages)
                     )
-                    union.update(state_urls)
-                    states.append((idx, page.url, state_html, state_frames))
                 extracted = len(union)
             elif paginate:
                 # Drive the runtime walker and bake each state ≥ 2 as
-                # the walker announces it via ``on_state``. State 1 is
-                # already baked above, so ``on_state(1)`` is a no-op
-                # from the capture's perspective.
-                async def _on_state(state_idx: int) -> None:
-                    if state_idx == 1:
-                        return
-                    state_url = page.url
-                    state_html, _ = await _bake_and_serialize(page)
-                    pages.append((state_idx, state_url, state_html))
-
-                # SYS-12: thread ``next_control_selector`` through to
-                # the walker as a per-state override — if set, the
-                # walker's next-control JS skips signals 1–6 and
-                # single-shot-matches the CSS selector instead
-                # (documented in ``find_next_control.js``). ``driver``
-                # is the same adapter used for css injection and
-                # expansion above.
-                collected = await walk_and_collect(
-                    driver,
-                    prefix,
-                    top_origin,
-                    min_depth,
-                    on_state=_on_state,
-                    next_control_override=next_control_selector,
-                    suppress_selector=suppress_selector,
-                )
-                extracted = len(collected)
+                # the walker announces it via ``on_state``.
+                extracted = len(await _walk(pages))
             else:
                 # Single-shot sanity count — byte-identical to the
                 # pre-SYS-5 code path.
@@ -738,7 +794,9 @@ def _write_snapshot(
     html: str,
     frames: list[tuple[str, str, str]],
     pages: list[tuple[int, str, str]],
-    states: list[tuple[int, str, str, list[tuple[str, str, str]]]],
+    states: list[
+        tuple[int, str, str, list[tuple[str, str, str]], list[tuple[int, str, str]]]
+    ],
     expected: int,
     notes: str,
     *,
@@ -797,11 +855,16 @@ def _write_snapshot(
         # fewer of them) must not leave orphans behind to be replayed.
         for old in states_dir.glob("state-*-frames/*.html"):
             old.unlink()
+        # ... and per-state page subtrees (declaring × paginate): a
+        # re-capture with fewer walker pages in state N must not leave
+        # an orphan ``page-M.html`` behind to be unioned back in.
+        for old in states_dir.glob("state-*-pages/*.html"):
+            old.unlink()
 
     states_meta: list[dict[str, Any]] = []
     if states:
         states_dir.mkdir(exist_ok=True)
-        for state_idx, url, state_html, state_frames in states:
+        for state_idx, url, state_html, state_frames, state_pages in states:
             filename = f"state-{state_idx}.html"
             (states_dir / filename).write_text(state_html, encoding="utf-8")
             entry: dict[str, Any] = {"file": f"states/{filename}", "url": url}
@@ -826,6 +889,26 @@ def _write_snapshot(
                         }
                     )
                 entry["frames"] = state_frames_meta
+            # ``pages`` on a state entry follows the identical
+            # additive-optional rule: emitted only when the walker
+            # collected states ≥ 2 *within* this pre-filter state
+            # (declaring × paginate), written under
+            # ``states/state-N-pages/page-M.html`` — the sibling-directory
+            # convention ``state-N-frames/`` established.
+            if state_pages:
+                pages_subdir = states_dir / f"state-{state_idx}-pages"
+                pages_subdir.mkdir(exist_ok=True)
+                state_pages_meta: list[dict[str, str]] = []
+                for page_idx, page_url, page_html in state_pages:
+                    page_file = f"page-{page_idx}.html"
+                    (pages_subdir / page_file).write_text(page_html, encoding="utf-8")
+                    state_pages_meta.append(
+                        {
+                            "file": f"states/state-{state_idx}-pages/{page_file}",
+                            "url": page_url,
+                        }
+                    )
+                entry["pages"] = state_pages_meta
             states_meta.append(entry)
 
     metadata: dict[str, Any] = {
@@ -956,7 +1039,10 @@ def _parse_args() -> argparse.Namespace:
             "Drive the SYS-5 pagination walker while capturing. States "
             "≥ 2 are baked into 'pages/page-N.html' with a conditional "
             "'pages' entry in metadata; state 1 uses the existing "
-            "'page.html' + 'frames/' layout. Omit for the byte-identical "
+            "'page.html' + 'frames/' layout. On a company declaring "
+            "pre_filter_urls the walker runs within each state: state 1's "
+            "pages use 'pages/', each later state's use "
+            "'states/state-N-pages/'. Omit for the byte-identical "
             "pre-SYS-5 single-state capture. Mutually exclusive with "
             "--expand-selector."
         ),
@@ -998,24 +1084,11 @@ def main() -> None:
     slug = slugify(company.name)
     out_dir = SNAPSHOTS_DIR / slug
 
-    # SYS-13 flag mutex. The runtime supports declaring × walker in
-    # principle (nothing in ``_extract_prefiltered`` rules out
-    # ``paginate=True`` per state) but the frozen fixture layout for
-    # per-state × per-page HTML is not yet specified — a declaring
-    # capture with ``--paginate`` would need a ``states/state-N/
-    # pages/page-M.html`` tree that the harness does not know how to
-    # replay. Defer until a real board demands it; for now, refuse
-    # the combination at the CLI layer so no fixture is written in a
-    # shape the harness cannot consume.
-    if args.paginate and company.pre_filter_urls:
-        print(
-            f"--paginate is not supported for companies declaring "
-            f"pre_filter_urls (got {len(company.pre_filter_urls)} state(s) "
-            f"on {company.name}). The runtime unions per-state matcher "
-            f"runs without walking pages within each state; the fixture "
-            f"layout for the combined case is deferred."
-        )
-        sys.exit(2)
+    # SYS-13 × SYS-5: ``--paginate`` on a declaring company is supported.
+    # The walker runs within each pre-filter state, as the runtime's
+    # ``_extract_prefiltered`` does; state 1's pages land in the
+    # top-level ``pages/`` and each later state's in
+    # ``states/state-N-pages/``. See the module docstring.
 
     if not _confirm_overwrite(out_dir, force=args.force):
         print("Aborted.")
@@ -1092,6 +1165,9 @@ def main() -> None:
         print(f"   pages captured: {len(pages)} (states 2..{1 + len(pages)})")
     if states:
         print(f"   states captured: {len(states)} (states 2..{1 + len(states)})")
+    state_page_total = sum(len(state[4]) for state in states)
+    if state_page_total:
+        print(f"   per-state pages captured: {state_page_total}")
     if effective_expand_selector is not None:
         print(f"   expand-selector recorded: {effective_expand_selector!r}")
     if pre_extract_css is not None:

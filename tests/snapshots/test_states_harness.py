@@ -8,7 +8,7 @@ gap by building a synthetic snapshot on disk under ``tmp_path`` with a
 hand-authored ``states/`` subdirectory and a ``top_url`` metadata key,
 then asserting the harness returns the correct union count.
 
-Three tests pin the SYS-13 harness contract:
+Four tests pin the SYS-13 harness contract:
 
 1. Multi-state union with a cross-state duplicate — proves the union
    deduplicates rather than collapsing to a single state or
@@ -19,6 +19,11 @@ Three tests pin the SYS-13 harness contract:
 3. ``top_url`` overrides ``job_board_url`` for the state-1 replay —
    proves the harness genuinely threads ``metadata.top_url`` into the
    ``<base href>`` injection rather than treating it as decorative.
+4. Nested per-state ``pages`` (declaring × paginate) — runs the *real*
+   harness function on a synthetic fixture whose state 2 carries its
+   own ``states/state-2-pages/`` sidecar, then deletes the nested key
+   and proves the real harness under-counts by exactly that page's
+   contribution.
 
 The synthetic fixture uses a fake ``https://example.test`` origin so
 the matcher's same-origin check succeeds without depending on any
@@ -31,9 +36,11 @@ import json
 from pathlib import Path
 from typing import Any
 
+import pytest
 from playwright.sync_api import Page
 
 from job_agent_lab.extraction.dom import EXTRACT_JOB_LINKS_JS
+from tests.snapshots import test_extractor_snapshots as harness
 from tests.snapshots.test_extractor_snapshots import _inject_base_href
 
 
@@ -246,3 +253,82 @@ def test_top_url_governs_state_1_base_href(page: Page, tmp_path: Path) -> None:
         )
     )
     assert len(urls) == metadata["expected_unfiltered_count"]
+
+
+def test_state_pages_union_through_the_real_harness(page: Page, tmp_path: Path) -> None:
+    """Declaring × paginate: nested per-state ``pages`` union in the real harness.
+
+    Unlike the three tests above, this one calls the production harness
+    function itself rather than re-implementing its loop, so it pins the
+    code path the corpus actually runs. Anchor sets: state 1 {A}; state
+    1's page 2 (top-level ``pages/``) {B}; state 2 {C}; state 2's page 2
+    (``states/state-2-pages/``) {D, A} with A an intentional cross-doc
+    duplicate. Union {A, B, C, D} = 4. The negative control then drops
+    the nested ``pages`` key and asserts the real harness reports 3 —
+    proving the nested loop contributes exactly that document, rather
+    than the count happening to match for another reason.
+    """
+    fixture = tmp_path / "synthetic_state_pages"
+    fixture.mkdir()
+    (fixture / "page.html").write_text(
+        _make_state_html([("/careers/job-a", "A")]), encoding="utf-8"
+    )
+    (fixture / "pages").mkdir()
+    (fixture / "pages" / "page-2.html").write_text(
+        _make_state_html([("/careers/job-b", "B")]), encoding="utf-8"
+    )
+    states_dir = fixture / "states"
+    states_dir.mkdir()
+    (states_dir / "state-2.html").write_text(
+        _make_state_html([("/careers/job-c", "C")]), encoding="utf-8"
+    )
+    (states_dir / "state-2-pages").mkdir()
+    (states_dir / "state-2-pages" / "page-2.html").write_text(
+        _make_state_html([("/careers/job-d", "D"), ("/careers/job-a", "A-again")]),
+        encoding="utf-8",
+    )
+
+    state_entry: dict[str, Any] = {
+        "file": "states/state-2.html",
+        "url": "https://example.test/careers?location=latam",
+        "pages": [
+            {
+                "file": "states/state-2-pages/page-2.html",
+                "url": "https://example.test/careers?location=latam",
+            }
+        ],
+    }
+    metadata: dict[str, Any] = {
+        "schema_version": 2,
+        "company_name": "Synthetic Declaring Paginated",
+        "job_board_url": "https://example.test/careers",
+        "sample_job_url": "https://example.test/careers/job-a",
+        "expected_unfiltered_count": 4,
+        "captured_at": "2026-09-15T00:00:00+00:00",
+        "captured_with_filters": False,
+        "notes": "synthetic fixture for the nested state-pages harness test",
+        "pre_filter_urls": [
+            "https://example.test/careers?location=cr",
+            "https://example.test/careers?location=latam",
+        ],
+        "top_url": "https://example.test/careers?location=cr",
+        "pages": [
+            {
+                "file": "pages/page-2.html",
+                "url": "https://example.test/careers?location=cr",
+            }
+        ],
+        "states": [state_entry],
+    }
+    meta_path = fixture / "metadata.json"
+    meta_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+
+    # Positive: the real harness unions all four documents.
+    harness.test_extractor_matches_expected_count(fixture, page)
+
+    # Negative control: without the nested key the real harness must
+    # under-count by exactly state 2's page contribution (D).
+    del state_entry["pages"]
+    meta_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+    with pytest.raises(AssertionError, match=r"matcher returned 3 links"):
+        harness.test_extractor_matches_expected_count(fixture, page)

@@ -234,6 +234,7 @@ def test_extractor_matches_expected_count(
     # document is an anchorless shell. Absent on every other fixture,
     # which therefore replays byte-identically.
     state_frame_count = 0
+    state_page_count = 0
     for state_entry in states_meta:
         state_html = (snapshot_dir / state_entry["file"]).read_text(encoding="utf-8")
         urls.update(_run_matcher(state_html, state_entry["url"]))
@@ -244,16 +245,34 @@ def test_extractor_matches_expected_count(
                 encoding="utf-8"
             )
             urls.update(_run_matcher(frame_html, frame_entry["url"]))
+        # A state entry may likewise carry its own ``pages`` list — the
+        # walker's states ≥ 2 *within* that pre-filter state (declaring ×
+        # paginate; Accenture is the first). Same union semantics as the
+        # top-level ``pages`` key, which holds state 1's pages. Absent on
+        # every other fixture, which therefore replays byte-identically.
+        state_pages: list[dict[str, str]] = state_entry.get("pages", [])
+        for page_entry in state_pages:
+            state_page_count += 1
+            state_page_html = (snapshot_dir / page_entry["file"]).read_text(
+                encoding="utf-8"
+            )
+            urls.update(_run_matcher(state_page_html, page_entry["url"]))
 
     actual = len(urls)
     doc_count = (
-        1 + len(frames_meta) + len(pages_meta) + len(states_meta) + state_frame_count
+        1
+        + len(frames_meta)
+        + len(pages_meta)
+        + len(states_meta)
+        + state_frame_count
+        + state_page_count
     )
     assert actual == expected, (
         f"{metadata['company_name']}: matcher returned {actual} links across "
         f"{doc_count} doc(s) "
         f"(1 top + {len(frames_meta)} frame(s) + {len(pages_meta)} page(s) "
         f"+ {len(states_meta)} state(s) "
-        f"+ {state_frame_count} state-frame(s)), "
+        f"+ {state_frame_count} state-frame(s) "
+        f"+ {state_page_count} state-page(s)), "
         f"expected {expected} (snapshot: {snapshot_dir.name})"
     )
