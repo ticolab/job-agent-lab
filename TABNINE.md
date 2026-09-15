@@ -52,31 +52,45 @@ uv run --group test pytest tests/snapshots/      # needs Chromium
 
 Pre-commit gates ruff, mypy, and the full test suite on any change under `src/vacantes/{extraction,domain}/` or `tests/`. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee that the commit passes.
 
+Alembic owns the schema. The database lives at `data/vacantes.db` by default, which is gitignored because the dataset answers "what is open right now" and is regenerable by re-running a batch:
+
+```bash
+uv run alembic upgrade head                        # create or migrate the database
+uv run alembic revision --autogenerate -m "..."    # new revision from models.py
+sqlite3 data/vacantes.db 'select * from job_urls'  # query it directly
+```
+
+The connection URL is built by `migrations/env.py` from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth. No command writes to the database yet — the batch scheduler is the first consumer.
+
 ## Architecture
 
 ### Components and the shared kernel
 
 Three components sit over one shared kernel. `extraction/` owns the port and every strategy. `persistence/` owns the database. `batch/` owns concurrency and the per-company unit of work. The kernel — `domain/`, `catalog/`, `settings.py` — is the vocabulary all three speak.
 
-Only `extraction/` exists today, alongside `cli/` and `reporting/`. `persistence/` and `batch/` arrive in later phases of `TRANSITION.md`.
+`extraction/` and `persistence/` exist today, alongside `cli/` and `reporting/`. `batch/` arrives in a later phase of `TRANSITION.md`.
+
+Nothing calls `persistence/` yet — the batch scheduler is its first consumer — but the schema and repositories are in place and tested. Every SQL statement in the system lives in one of three repository modules (`catalog_repo`, `jobs_repo`, `runs_repo`), so transaction boundaries and error translation have exactly one home and the data layer is testable without a scheduler. `engine.py` owns the connection URL and the four SQLite pragmas; `models.py` owns the three tables.
 
 Dependencies point inward and never cycle:
 
 ```
 Enforced today by tests/unit/test_layering.py:
 
-  cli        → catalog, domain, extraction, reporting, settings
-  extraction → domain, settings
-  reporting  → catalog
-  catalog    → domain
-  settings   → (nothing)
-  domain     → (nothing inside vacantes)
+  cli         → catalog, domain, extraction, reporting, settings
+  extraction  → domain, settings
+  persistence → domain, settings
+  reporting   → catalog
+  catalog     → domain
+  settings    → (nothing)
+  domain      → (nothing inside vacantes)
 
 Added to the allowlist as each component lands:
 
-  persistence → domain, settings
   batch       → catalog, domain, extraction, persistence, reporting, settings
 ```
+
+`persistence` notably does not import `catalog`. The catalog is the source of truth for the corpus and the database only ever projects it, so `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`.
 
 `tests/unit/test_layering.py` parses every module's imports with `ast` and asserts each package imports only from its allowed set, which makes this structural rather than a matter of discipline. A strategy cannot write to the database, cannot know a batch is running, and cannot behave differently under the scheduler than under the integration CLI. The allowlist is written from the real graph, covers the packages actually present, and may only ever shrink. Because each row is the real graph rather than an intention, widening one — say `extraction → catalog` — is a deliberate allowlist edit that surfaces in review, never something a new import does silently. That `extraction` may reach neither `persistence` nor `batch` is asserted by name as well as by table, so the invariant survives a future edit to the allowlist.
 
@@ -104,6 +118,20 @@ The `extraction/dom/agent/` package holds the agent wiring, and it lives under `
 
 The `reporting/output.py` module writes JSON output to `./output/` and prints the terminal summary. It never authors the report shape itself; that lives in `build_report`. It stays top-level rather than CLI-private because both `integrate` and batch's optional JSON output render through it.
 
+### The database
+
+Three tables, and the split between two of them is load-bearing. `job_urls` answers *what is open*; `company_runs` answers *did we successfully look, and when*. A single `updated_at` column spanning both would make a failed run indistinguishable from a successful one, so a board that broke this morning would look "done" this afternoon and would silently stop being retried. `companies` is a third table and a pure projection of `catalog.COMPANIES`, refreshed at the start of every batch so the database is self-describing; it is never an owner, and rows for companies removed from the catalog are deliberately left in place because deleting one would cascade into its URLs and runs.
+
+The freshness rule keys on **successes only** (`status = 'success'`), which is what keeps failures eligible for retry and successes from being repeated inside the window. Crash recovery then falls out of that rule rather than needing a mechanism of its own: a killed batch leaves `in_progress` rows, the next batch reaps them into `failed`, and because they are not successes the affected companies re-run while genuinely-completed ones are skipped. No checkpoint file exists.
+
+A successful extraction replaces a company's URL set wholesale — delete-and-insert inside one transaction. No history is kept by design, and this cannot leave a stale posting behind the way upsert-plus-prune can. The transaction is the failure boundary: a crash before, during, or after leaves either the previous snapshot or the new one, never a partial set.
+
+Two of the four SQLite pragmas in `engine.py` are correctness, not tuning. Without `busy_timeout`, concurrent workers produce intermittent `database is locked` errors; without `foreign_keys=ON`, SQLite ignores every `REFERENCES` clause and the `ON DELETE CASCADE` declarations become documentation. A unit test asserts all four on a real file, which is why the persistence tests never use `:memory:` — an in-memory database exercises neither of those two settings.
+
+Every timestamp crossing the persistence boundary is **naive UTC**, normalized at the repository boundary by `persistence/timestamps.py`. This is an invariant rather than a convention: SQLite stores a `DateTime` as an ISO-8601 string and compares lexicographically, so an aware value's `+00:00` suffix would order incorrectly against a naive one and misjudge the freshness predicate with nothing failing loudly.
+
+`slugify` lives in `domain/company.py` and is re-exported from `catalog` for its existing callers. Prefer `Company.slug` when holding an entity: it is a derived property, so the `companies` primary key, the output filename, and the snapshot directory are the same string by construction.
+
 ### The deterministic matcher
 
 The matcher scans the top document, descends into every open shadow root, and enters every same-origin frame it can reach — guarded so inaccessible frames are skipped rather than fatal. Each surviving anchor is gated on CSS visibility. An anchor must be same-origin and match one of two URL shapes: the id sits in the path (`/jobs/12345-engineer`), or the id sits in the query on the prefix itself (`/careers/requirements/?pId=180`). When both shapes appear on one page the path bucket wins and the query bucket is discarded, because a query on a listing root is usually a filter facet rather than a posting.
@@ -125,6 +153,10 @@ API-strategy companies contribute recorded payloads under `tests/fixtures/api/<a
 Fixtures freeze the **unfiltered** listing. The region-filtered target lives on the `Company.expected_jobs` field and is validated by the live run against the report layer's verdict. Conflating them would produce failures that localize to neither.
 
 `tests/snapshots/test_linkrule_parity.py` pins the Talentbrew Python URL-bucketing mirror to the shipped JS matcher — matcher edits must keep both in sync.
+
+Persistence tests (`tests/unit/test_persistence.py`) run against a **real SQLite file** under `tmp_path`, never `:memory:`, because an in-memory database exercises neither WAL nor `busy_timeout` and would make the pragma assertions vacuous. Its `TestMigrationParity` class applies `alembic upgrade head` to a temporary database and asserts Alembic's own `compare_metadata` finds no difference against `models.Base.metadata`, which is what catches a model field added without a migration.
+
+The repo does not use `pytest-asyncio`. Async tests are driven on a background thread with a fresh event loop, because the snapshot suite drives Chromium through Playwright's sync API and leaves a running-loop registration on the main thread's `asyncio.events` state that makes both `asyncio.run` and a main-thread `run_until_complete` raise for the rest of the session. `tests/unit/test_prefiltered.py` carries the full rationale; `test_persistence.py` reuses the pattern and additionally disposes its engines inside the scenario's own loop, since an undisposed async engine leaves aiosqlite holding a closed loop and the error surfaces in whichever test runs next.
 
 Captures are produced by `scripts/capture_snapshot.py -c <handle> --expected N` (pass `--paginate` if and only if the entry has `paginate=True`).
 

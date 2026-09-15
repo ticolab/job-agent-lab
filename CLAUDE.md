@@ -40,6 +40,16 @@ Two console scripts are registered. `vacantes` is the dispatcher with `integrate
 
 Pre-commit gates: ruff, mypy, and the full test suite runs on any change under `src/vacantes/{extraction,domain}/` or `tests/`. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee the commit passes.
 
+Alembic owns the schema. The database lives at `data/vacantes.db`, gitignored because the dataset answers "what is open right now" and is regenerable by re-running a batch.
+
+```bash
+uv run alembic upgrade head                        # create or migrate the database
+uv run alembic revision --autogenerate -m "..."    # new revision from models.py
+sqlite3 data/vacantes.db 'select * from job_urls'  # query it directly
+```
+
+`migrations/env.py` builds the connection URL from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth. No command writes to the database yet — the batch scheduler is its first consumer.
+
 Commit directly to `main` — no feature branches in this repo. Never bypass the pre-commit hooks with `--no-verify`; if an auto-fixer modifies a file, re-stage and commit again.
 
 Commit messages are a **single short sentence, 100 characters max** — subject line only, no body. Reasoning belongs in the code, the design docs, or `blockers/`, not in the commit message.
@@ -50,25 +60,29 @@ Commit messages are a **single short sentence, 100 characters max** — subject 
 
 Three components sit over one shared kernel. `extraction/` owns the port and every strategy. `persistence/` owns the database. `batch/` owns concurrency and the per-company unit of work. The kernel — `domain/`, `catalog/`, `settings.py` — is the vocabulary all three speak.
 
-Only `extraction/` exists today, alongside `cli/` and `reporting/`. `persistence/` and `batch/` arrive in later phases of `TRANSITION.md`; the layering allowlist covers the packages actually present and gains a row as each lands.
+`extraction/` and `persistence/` exist today, alongside `cli/` and `reporting/`. Only `batch/` is still pending, in a later phase of `TRANSITION.md`; the layering allowlist covers the packages actually present and gains a row as each lands.
+
+Nothing calls `persistence/` yet — the batch scheduler is its first consumer — but the schema and repositories are in place and tested.
 
 Dependencies point inward and never cycle:
 
 ```
 Enforced today by tests/unit/test_layering.py:
 
-  cli        → catalog, domain, extraction, reporting, settings
-  extraction → domain, settings
-  reporting  → catalog
-  catalog    → domain
-  settings   → (nothing)
-  domain     → (nothing inside vacantes)
+  cli         → catalog, domain, extraction, reporting, settings
+  extraction  → domain, settings
+  persistence → domain, settings
+  reporting   → catalog
+  catalog     → domain
+  settings    → (nothing)
+  domain      → (nothing inside vacantes)
 
 Added to the allowlist as each component lands:
 
-  persistence → domain, settings
   batch       → catalog, domain, extraction, persistence, reporting, settings
 ```
+
+`persistence` notably does not import `catalog`. The catalog is the source of truth for the corpus and the database only projects it, so `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`.
 
 `tests/unit/test_layering.py` parses every module's imports with `ast` and asserts each package imports only from its allowed set, so this is structural rather than a matter of discipline. A strategy cannot write to the database, cannot know a batch is running, and cannot behave differently under the scheduler than under the integration CLI. The allowlist is written from the real graph and may only ever shrink. Because each row is the real graph rather than an intention, widening one — say `extraction → catalog` — is a deliberate allowlist edit that surfaces in review, never something a new import does silently. That `extraction` may reach neither `persistence` nor `batch` is asserted by name as well as by table, so the invariant survives a future edit to the allowlist.
 
@@ -90,6 +104,18 @@ Adding a strategy requires extending the `StrategyName` literal in `domain/compa
 - `extraction/dom/agent/` — the agent wiring, which lives here because `extraction/dom/strategy.py` is its only consumer: `prompt.py` (`GOAL_PROMPT` clause constants + `build_goal_prompt(region)`), `runner.py` (agent/session build), `controller.py` (registers the `extract_job_links` tool).
 - `reporting/output.py` — JSON output to `./output/` (gitignored) + terminal summary. Kept top-level rather than CLI-private because both `integrate` and batch's optional JSON output render through it.
 
+### The database
+
+`persistence/` holds `engine.py` (the connection URL built from `settings.DATABASE_PATH`, the four SQLite pragmas, `create_session_factory`, and a `database()` context manager), `models.py` (the three tables), `timestamps.py`, and three repository modules: `catalog_repo` (`sync_catalog`), `jobs_repo` (`replace_company_urls`, `list_company_urls`), and `runs_repo` (`start_run`, `finish_run`, `fail_run`, `has_fresh_success`, `reap_stale_runs`). Every SQL statement in the system lives in one of those three, so transaction boundaries and error translation have exactly one home.
+
+Four schema rules are load-bearing; `ARCHITECTURE.md` carries the reasoning behind them. `job_urls` answers *what is open* and `company_runs` answers *did we successfully look, and when*, so they are separate tables and must stay separate. `companies` is a projection of `catalog.COMPANIES` that never prunes an entry which left the catalog, because deleting a row cascades into its URLs and runs. Freshness keys on successes only, which keeps failures eligible for retry and makes crash recovery a consequence of the rule rather than a mechanism of its own. A successful extraction replaces a company's URL set by delete-and-insert inside one transaction, so a crash leaves either the previous snapshot or the new one.
+
+Two of the four pragmas are correctness rather than tuning. Without `busy_timeout`, concurrent workers produce intermittent `database is locked` errors; without `foreign_keys=ON`, SQLite ignores every `REFERENCES` clause and the `ON DELETE CASCADE` declarations become documentation.
+
+Every timestamp crossing the persistence boundary is **naive UTC**, normalized at the repository boundary by `timestamps.py`. SQLite stores a `DateTime` as an ISO-8601 string and compares it lexicographically, so an aware value's `+00:00` suffix would order incorrectly against a naive one and misjudge the freshness predicate with nothing failing loudly.
+
+`slugify` lives in `domain/company.py` and is re-exported from `catalog` for its existing callers — persistence needs it and has no route to `catalog`. Prefer `Company.slug` when holding an entity: it is a derived property, so the `companies` primary key, the output filename, and the snapshot directory are the same string by construction.
+
 ### Per-company escape hatches (all inert by default)
 
 When the agent fails a board deterministically, pin the fix on the deterministic side rather than prompt-tweaking per site: `paginate=True` (multi-page walker), `hooks.pre_extract_css` / `hooks.expand_selector` / `hooks.next_control_selector` / `hooks.filter_already_applied`, `pre_filter_urls` (agent-less union over URL variants), `LinkRule.min_depth` / `suppress_ancestor_selector`. Each default is byte-identical to the pre-feature code path. Decision guidance and the motivating board for each knob are in `TABNINE.md`.
@@ -102,6 +128,10 @@ Two independent regression corpora, don't conflate them:
 - **API companies**: recorded payloads under `tests/fixtures/api/<ats>/` with respx-mocked tests in `tests/unit/`. Greenhouse filenames are the board *token*, not the company slug.
 
 `tests/snapshots/test_linkrule_parity.py` pins the Talentbrew Python URL-bucketing mirror to the shipped JS matcher — matcher edits must keep both in sync.
+
+Persistence tests (`tests/unit/test_persistence.py`) run against a **real SQLite file** under `tmp_path`, never `:memory:` — an in-memory database exercises neither WAL nor `busy_timeout`, which would make the pragma assertions vacuous. Repository tests build the schema from `Base.metadata` so they fail for their own reason; `TestMigrationParity` in the same file closes the resulting gap by applying `alembic upgrade head` to a temporary database and asserting Alembic's own `compare_metadata` finds no difference against `models.Base.metadata`. That is what catches a model field added without a migration.
+
+The repo does not use `pytest-asyncio`. Async tests are driven on a background thread with a fresh event loop, because the snapshot suite drives Chromium through Playwright's sync API and leaves a running-loop registration on the main thread's `asyncio.events` state that makes both `asyncio.run` and a main-thread `run_until_complete` raise for the rest of the session. `tests/unit/test_prefiltered.py` carries the full rationale; `test_persistence.py` reuses the pattern and additionally disposes its engines inside the scenario's own loop.
 
 ### Adding a company
 

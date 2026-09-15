@@ -38,27 +38,32 @@ The second structural decision is where code is allowed to point. Three
 components sit over one shared kernel: `extraction/` owns the port and every
 strategy, `persistence/` owns the database, and `batch/` owns concurrency and
 the definition of one company's unit of work. The kernel — `domain/`,
-`catalog/`, `settings.py` — is the vocabulary all three speak. Today only
-`extraction/` exists alongside `cli/` and `reporting/`; `persistence/` and
-`batch/` arrive in later phases of `TRANSITION.md`.
+`catalog/`, `settings.py` — is the vocabulary all three speak. Today
+`extraction/` and `persistence/` exist alongside `cli/` and `reporting/`;
+only `batch/` is still to arrive, in a later phase of `TRANSITION.md`.
 
 Dependencies point inward and never cycle:
 
 ```
 Enforced today by tests/unit/test_layering.py:
 
-  cli        → catalog, domain, extraction, reporting, settings
-  extraction → domain, settings
-  reporting  → catalog
-  catalog    → domain
-  settings   → (nothing)
-  domain     → (nothing inside vacantes)
+  cli         → catalog, domain, extraction, reporting, settings
+  extraction  → domain, settings
+  persistence → domain, settings
+  reporting   → catalog
+  catalog     → domain
+  settings    → (nothing)
+  domain      → (nothing inside vacantes)
 
 Added to the allowlist as each component lands:
 
-  persistence → domain, settings
   batch       → catalog, domain, extraction, persistence, reporting, settings
 ```
+
+That `persistence` may reach neither `catalog` nor anything above it is
+part of the same discipline: the catalog is the source of truth for the
+corpus and the database only ever projects it, so the projection is
+handed the companies to write rather than importing them.
 
 This graph is not housekeeping. Two entry points share one extraction core:
 the integration CLI drives one board at a time and produces the JSON artifact a
@@ -210,6 +215,53 @@ it is being scored against.
 The verdict layer is also the designated detector for configuration rot. A
 selector, facet id, or pre-filter URL that stops working degrades to a lower
 count on the next live run rather than failing silently.
+
+## Persisting the result
+
+A batch's output is a database rather than a pile of JSON artifacts:
+SQLite behind SQLAlchemy's async layer, with three tables — `companies`,
+`company_runs`, and `job_urls`. Four decisions in that shape are
+structural rather than incidental.
+
+**What is open and whether we looked are separate tables.** `job_urls`
+answers the first question and `company_runs` the second. Their
+lifetimes differ — the URL set is replaced wholesale on every success
+while the run history accumulates — and a single `updated_at` spanning
+both would make a failed run indistinguishable from a successful one. A
+board that broke this morning would look done this afternoon and would
+silently stop being retried. `companies` is the third table and a pure
+projection of the catalog, refreshed at the start of every batch so the
+database is self-describing; it is never an owner.
+
+**Freshness keys on successes, and crash recovery falls out of that
+rule.** The skip decision asks whether a company *succeeded* recently,
+not whether it was attempted, which keeps failures eligible for retry
+and successes from being repeated inside the window. A batch killed
+mid-run leaves rows still marked in progress; the next batch reaps them
+to failed, and because they are not successes the affected companies
+re-run while genuinely-completed ones are skipped. Resumption is
+therefore not a separate mechanism, and there is no checkpoint file to
+keep correct.
+
+**A successful extraction replaces the URL set wholesale** — delete and
+insert inside one transaction, with no history kept by design. That is
+simpler than upsert-plus-prune and, unlike it, cannot leave a stale
+posting behind, because there is no "which rows did I not see this
+time" bookkeeping to get wrong. The transaction is the failure
+boundary: a crash before, during, or after leaves either the previous
+snapshot or the new one and never a partial set, so the database stays
+safe to query while a batch is writing.
+
+**Workers write directly, with no queue between them and the
+database.** A queue plus a single writer earns its complexity when
+write throughput saturates the database, when writes need batching, or
+when several processes need coordinated ordering, and none of those
+holds here: each company produces one transaction of a few dozen rows
+after minutes of extraction, so the database is idle almost all of the
+time. Every statement lives in one of three repository modules, which
+is what makes the decision reversible — if contention ever appeared, a
+queue would slot in behind the unchanged repository interface rather
+than rippling out into the strategies or the scheduler.
 
 ## The regression model
 
