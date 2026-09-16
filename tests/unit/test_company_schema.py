@@ -556,6 +556,7 @@ class TestExpectedJobsField:
             "Perform": 1,
             "Baja Nearshore": 17,
             "ReKluti": 49,
+            "Atomic Invest": 1,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None

@@ -988,4 +988,11 @@ COMPANIES: list[Company] = [
             "https://easyapplyrekluti.recruitee.com/?jobs-9da8b313%5Bsearch%5D=costa%20rica",
         ),
     ),
+    Company(
+        name="Atomic Invest",
+        aliases=("atomicvest",),
+        job_board_url="https://jobs.ashbyhq.com/atomic-invest?locationId=d88d1d51-572a-46b3-85a2-a899912a3487",
+        sample_job_url="https://jobs.ashbyhq.com/atomic-invest/2dbcd665-1e90-49b0-b164-4776e85fae25",
+        expected_jobs=1,
+    ),
 ]
