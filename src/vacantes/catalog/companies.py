@@ -1078,4 +1078,12 @@ COMPANIES: list[Company] = [
             "https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs?location=Remote%20from%20Costa%20Rica",
         ),
     ),
+    Company(
+        name="Commit",
+        aliases=("commit",),
+        job_board_url="https://www.comeet.com/jobs/comm-it/76.008?location=Costa%20Rica",
+        sample_job_url="https://www.comeet.com/jobs/comm-it/76.008/senior-backend-engineer/00.175-F2.50D",
+        link_rule=LinkRule(path_prefix="/jobs/comm-it/76.008"),
+        expected_jobs=2,
+    ),
 ]

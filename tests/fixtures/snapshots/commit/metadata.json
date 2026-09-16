@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "company_name": "Commit",
+  "job_board_url": "https://www.comeet.com/jobs/comm-it/76.008?location=Costa%20Rica",
+  "sample_job_url": "https://www.comeet.com/jobs/comm-it/76.008/senior-backend-engineer/00.175-F2.50D",
+  "expected_unfiltered_count": 2,
+  "captured_at": "2026-09-16T15:58:24.812560+00:00",
+  "captured_with_filters": false,
+  "notes": "First directly-reachable Comeet tenant (Sequoia Connect is Comeet-backed but proxied onto its own domain, so its shape does not transfer). job_board_url is the ATS host comeet.com/jobs/comm-it/76.008, not comm-it.com/commit-jobs, which is a cross-origin marketing page embedding the board. path_prefix must be given explicitly: job URLs are /jobs/comm-it/<company-uid>/<title-slug>/<job-uid>, so derivation from any sample yields a title-specific stem that matches only that one posting - the correct prefix is /jobs/comm-it/76.008 with postings at depth 2. All 158 unfiltered anchors sit at depth 2 with nothing at depth 1, so no min_depth is needed. The location filter is URL-addressable as ?location=Costa%20Rica and reduces 158 to 2. No pre_filter_urls: this is the Smarsh shape rather than the doola/REAP one - the Comeet dropdown offers exactly one matching option, 'Costa Rica (2)', with no competing LATAM or city-level variant, so Case B's preference rule has nothing to re-pick. The agent interacts with the widget on most runs (5-8 steps) and still returned 2 on 6 of 6. The two comeet.co social iframes are cross-origin and contribute no anchors.",
+  "path_prefix": "/jobs/comm-it/76.008"
+}
