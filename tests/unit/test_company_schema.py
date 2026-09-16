@@ -12,6 +12,9 @@ pre-legacy ``TypedDict`` shape plus manual review.
 
 from __future__ import annotations
 
+from pathlib import Path
+from typing import ClassVar
+
 import pytest
 from pydantic import ValidationError
 
@@ -400,6 +403,7 @@ class TestPaginateField:
             "Nextern",
             "Concentrix",
             "Accenture",
+            "McKinsey & Company",
         }
         actual_paginated = {c.name for c in COMPANIES if c.paginate}
         assert actual_paginated == expected_paginated, (
@@ -568,6 +572,7 @@ class TestExpectedJobsField:
             "Athenaworks": 11,
             "Commit": 2,
             "Cargill": 60,
+            "McKinsey & Company": 24,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1063,6 +1068,7 @@ class TestPreFilterUrlsField:
             "Sparq",
             "Oowlish",
             "Athenaworks",
+            "McKinsey & Company",
         }
         actual_states = {c.name for c in COMPANIES if c.pre_filter_urls}
         assert actual_states == expected_states, (
@@ -1767,4 +1773,51 @@ class TestCoveoStrategyPresenceValidator:
             f"strategy='coveo' corpus set drift: "
             f"unexpected={actual_coveo - expected_coveo}, "
             f"missing={expected_coveo - actual_coveo}"
+        )
+
+
+class TestSnapshotCoverage:
+    """Every ``strategy="dom"`` entry must ship a regression snapshot.
+
+    ``tests/snapshots/test_extractor_snapshots.py`` *discovers* fixture
+    directories rather than enumerating the catalog, so a DOM company
+    with no ``tests/fixtures/snapshots/<slug>/`` is silently skipped: the
+    suite stays green while that board has zero matcher coverage. This
+    test closes that hole from the catalog side — it is the only place
+    that notices the absence.
+
+    The whitelist below is for boards where the capture *tooling*, not
+    the board, is the obstacle, and it should stay as close to empty as
+    possible. Adding a name here is a deliberate acceptance that a
+    matcher change can break that board without any test failing.
+    """
+
+    # McKinsey's edge refuses the raw-Playwright Chromium that
+    # ``scripts/capture_snapshot.py`` and ``scripts/probe_board.py``
+    # launch (``net::ERR_HTTP2_PROTOCOL_ERROR`` on ``goto``), while
+    # accepting the browser-use ``BrowserSession`` that the runtime and
+    # ``extractor_ground_truth.py`` use. The split is exactly along the
+    # launch mechanism, not the User-Agent — the plausible UA that closed
+    # C14 is already applied at every site, and forcing HTTP/1.1 with
+    # ``--disable-http2`` swaps the protocol error for a timeout rather
+    # than fixing it. So extraction is healthy (24 of 24 on three
+    # consecutive runs through ``pre_filter_urls``) while no page can be
+    # frozen. Retire this entry by making the two scripts launch through
+    # ``BrowserSession`` as the ground-truth diagnostic already does; the
+    # capture is then an ordinary one.
+    _SNAPSHOTLESS_DOM_COMPANIES: ClassVar[set[str]] = {"McKinsey & Company"}
+
+    def test_dom_companies_without_a_snapshot_are_whitelisted(self) -> None:
+        snapshots_dir = (
+            Path(__file__).resolve().parent.parent / "fixtures" / "snapshots"
+        )
+        missing = {
+            c.name
+            for c in COMPANIES
+            if c.strategy == "dom" and not (snapshots_dir / c.slug).is_dir()
+        }
+        assert missing == self._SNAPSHOTLESS_DOM_COMPANIES, (
+            f"dom-strategy snapshot coverage drift: "
+            f"unexpected={missing - self._SNAPSHOTLESS_DOM_COMPANIES}, "
+            f"recovered={self._SNAPSHOTLESS_DOM_COMPANIES - missing}"
         )

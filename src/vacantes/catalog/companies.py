@@ -1100,4 +1100,15 @@ COMPANIES: list[Company] = [
             results_path="/en/search-jobs/results",
         ),
     ),
+    Company(
+        name="McKinsey & Company",
+        aliases=("mckinsey",),
+        job_board_url="https://www.mckinsey.com/careers/search-jobs?cities=San+Jose",
+        sample_job_url="https://www.mckinsey.com/careers/search-jobs/jobs/associate-15178",
+        paginate=True,
+        expected_jobs=24,
+        pre_filter_urls=(
+            "https://www.mckinsey.com/careers/search-jobs?cities=San+Jose",
+        ),
+    ),
 ]
