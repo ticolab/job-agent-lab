@@ -202,11 +202,30 @@ class DomStrategy:
         union: set[str] = set()
         error_str: str | None = None
 
+        # Per-board settle, defaulting to the shared constants. A board
+        # whose listing hydrates slower than the global would otherwise
+        # have the matcher run against an empty document and return a
+        # confident zero; ``hooks.render_wait_sec`` raises the floor for
+        # that one board without moving it for the other 106. The
+        # schema guarantees these are only set alongside
+        # ``pre_filter_urls``, i.e. only on this code path, so capture
+        # and runtime still observe the same DOM.
+        wait_s = (
+            company.hooks.render_wait_sec
+            if company.hooks.render_wait_sec is not None
+            else RENDER_WAIT_SEC
+        )
+        scroll_n = (
+            company.hooks.render_scroll_count
+            if company.hooks.render_scroll_count is not None
+            else RENDER_SCROLL_COUNT
+        )
+
         try:
             await browser_session.start()
             for url in company.pre_filter_urls:
                 await browser_session.navigate_to(url)
-                await asyncio.sleep(RENDER_WAIT_SEC)
+                await asyncio.sleep(wait_s)
                 page = await browser_session.get_current_page()
                 if page is None:
                     # Same defensive shape as collect_job_links' own
@@ -216,7 +235,7 @@ class DomStrategy:
                     raise RuntimeError(
                         f"BrowserSession returned no page after navigating to {url}"
                     )
-                for _ in range(RENDER_SCROLL_COUNT):
+                for _ in range(scroll_n):
                     await page.evaluate(
                         "() => { window.scrollBy(0, window.innerHeight); }"
                     )

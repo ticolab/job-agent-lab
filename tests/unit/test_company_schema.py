@@ -404,6 +404,7 @@ class TestPaginateField:
             "Concentrix",
             "Accenture",
             "McKinsey & Company",
+            "Edwards Lifesciences",
         }
         actual_paginated = {c.name for c in COMPANIES if c.paginate}
         assert actual_paginated == expected_paginated, (
@@ -574,6 +575,7 @@ class TestExpectedJobsField:
             "Cargill": 60,
             "McKinsey & Company": 24,
             "TD SYNNEX": 28,
+            "Edwards Lifesciences": 18,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -638,6 +640,8 @@ class TestRuntimeHooksSchema:
             "next_control_selector",
             "filter_already_applied",
             "pre_extract_css",
+            "render_wait_sec",
+            "render_scroll_count",
         }
 
     def test_frozen(self) -> None:
@@ -807,6 +811,13 @@ class TestHooksField:
             "Viant Medical",
             "Emerson",
             "Accenture",
+            # First entry whose only non-inert hooks are the settle
+            # overrides rather than a selector or a CSS payload. Its
+            # listing's first anchor lands at 46-50s, so the global 8s
+            # settle read an unhydrated document; render_wait_sec=60
+            # with render_scroll_count=6 is what makes the agent-less
+            # path deterministic. See the Edwards snapshot notes.
+            "Edwards Lifesciences",
         }
         actual_non_inert = {c.name for c in COMPANIES if not c.hooks.is_inert}
         assert actual_non_inert == expected_non_inert, (
@@ -1070,6 +1081,7 @@ class TestPreFilterUrlsField:
             "Oowlish",
             "Athenaworks",
             "McKinsey & Company",
+            "Edwards Lifesciences",
         }
         actual_states = {c.name for c in COMPANIES if c.pre_filter_urls}
         assert actual_states == expected_states, (
@@ -1787,6 +1799,75 @@ class TestCoveoStrategyPresenceValidator:
             f"unexpected={actual_coveo - expected_coveo}, "
             f"missing={expected_coveo - actual_coveo}"
         )
+
+
+class TestRenderSettleOverrides:
+    """The settle overrides are confined to the path that reads them.
+
+    ``RENDER_WAIT_SEC`` / ``RENDER_SCROLL_COUNT`` are consumed in one
+    runtime place — the agent-less ``_extract_prefiltered``. On an
+    agent-driven board the agent alone decides when to invoke the
+    matcher, so an override there would move what ``capture_snapshot``
+    freezes while leaving the runtime untouched: a fixture the runtime
+    cannot reproduce, which is worse than a no-op. The validator makes
+    that a catalog-import error.
+    """
+
+    _BOARD = "https://example.com/careers"
+    _SAMPLE = "https://example.com/careers/1"
+
+    def test_settle_with_pre_filter_urls_is_accepted(self) -> None:
+        c = Company(
+            name="T",
+            job_board_url=self._BOARD,
+            sample_job_url=self._SAMPLE,
+            hooks=RuntimeHooks(render_wait_sec=60, render_scroll_count=6),
+            pre_filter_urls=(self._BOARD,),
+        )
+        assert c.hooks.render_wait_sec == 60
+        assert c.hooks.render_scroll_count == 6
+
+    def test_settle_without_pre_filter_urls_is_rejected(self) -> None:
+        with pytest.raises(ValidationError, match="require non-empty pre_filter_urls"):
+            Company(
+                name="T",
+                job_board_url=self._BOARD,
+                sample_job_url=self._SAMPLE,
+                hooks=RuntimeHooks(render_wait_sec=60),
+            )
+
+    def test_either_field_alone_trips_the_validator(self) -> None:
+        for hooks in (
+            RuntimeHooks(render_wait_sec=60),
+            RuntimeHooks(render_scroll_count=6),
+        ):
+            with pytest.raises(ValidationError, match="pre_filter_urls"):
+                Company(
+                    name="T",
+                    job_board_url=self._BOARD,
+                    sample_job_url=self._SAMPLE,
+                    hooks=hooks,
+                )
+
+    def test_settle_names_itself_in_the_require_dom_error(self) -> None:
+        # The require-dom validator enumerates hook names by hand; a
+        # field missing from that list reports an empty set and hides
+        # which knob was wrong.
+        with pytest.raises(ValidationError, match="render_wait_sec"):
+            Company(
+                name="T",
+                job_board_url="https://job-boards.greenhouse.io/t",
+                sample_job_url="https://job-boards.greenhouse.io/t/jobs/1",
+                strategy="greenhouse",
+                hooks=RuntimeHooks(render_wait_sec=60),
+            )
+
+    def test_defaults_leave_hooks_inert(self) -> None:
+        # The whole design rests on this: new fields must not flip any
+        # of the 100+ existing entries out of inert.
+        assert RuntimeHooks().is_inert is True
+        assert RuntimeHooks().render_wait_sec is None
+        assert RuntimeHooks().render_scroll_count is None
 
 
 class TestSnapshotCoverage:

@@ -472,6 +472,21 @@ class RuntimeHooks(BaseModel):
             limitation). Motivating board: SentinelOne (C17) — anchors
             hidden by a Tailwind ``.md:hidden`` class-gated rule,
             unhidden by ``.md\\:hidden{display:block!important}``.
+        render_wait_sec: Per-board override for
+            ``settings.RENDER_WAIT_SEC``, the seconds the agent-less
+            runner sleeps after navigation before scrolling. ``None``
+            inherits the global. Raise it for boards whose listing
+            hydrates slower than the global default, where the matcher
+            would otherwise run against an empty document and return a
+            confident zero. Motivating board: Edwards Lifesciences —
+            an Algolia/React-InstantSearch listing on Next.js that
+            renders nothing at 8s or 12s and the full first page at 30s.
+        render_scroll_count: Per-board override for
+            ``settings.RENDER_SCROLL_COUNT``, the viewport-height
+            scrolls performed after the wait. ``None`` inherits the
+            global. Travels with ``render_wait_sec`` because a slow
+            board usually also lazy-loads more rows per scroll than the
+            global count reaches.
     """
 
     model_config = ConfigDict(frozen=True, extra="forbid")
@@ -480,6 +495,8 @@ class RuntimeHooks(BaseModel):
     next_control_selector: str | None = None
     filter_already_applied: bool = False
     pre_extract_css: str | None = None
+    render_wait_sec: int | None = Field(default=None, ge=1)
+    render_scroll_count: int | None = Field(default=None, ge=0)
 
     @property
     def is_inert(self) -> bool:
@@ -931,6 +948,8 @@ class Company(BaseModel):
                 ("next_control_selector", None),
                 ("filter_already_applied", False),
                 ("pre_extract_css", None),
+                ("render_wait_sec", None),
+                ("render_scroll_count", None),
             )
             if getattr(self.hooks, name) != default
         )
@@ -960,6 +979,39 @@ class Company(BaseModel):
                 f"paginate=True; the walker is the only consumer of "
                 f"the override, so setting it on a single-shot entry "
                 f"would be silently ignored."
+            )
+        return self
+
+    @model_validator(mode="after")
+    def _validate_render_settle_requires_pre_filter_urls(self) -> Self:
+        """Settle overrides require non-empty ``pre_filter_urls``.
+
+        ``RENDER_WAIT_SEC`` / ``RENDER_SCROLL_COUNT`` are read in
+        exactly one runtime place —
+        :meth:`~vacantes.extraction.dom.strategy.DomStrategy._extract_prefiltered`,
+        the agent-less multi-state runner. On an agent-driven board the
+        agent decides when to invoke the matcher and no settle is
+        applied, so an override there would change what
+        ``capture_snapshot`` freezes while leaving the runtime
+        untouched — silently breaking the very invariant the shared
+        constants exist to hold (``settings``: "Byte-matching the
+        capture recipe here is what keeps the runtime and the frozen
+        fixtures observing the same DOM"). That is worse than a no-op,
+        so reject it at catalog-import time rather than ship a fixture
+        the runtime cannot reproduce. Same shape as the
+        ``next_control_selector`` / ``paginate`` rule above.
+        """
+        overrides = sorted(
+            name
+            for name in ("render_wait_sec", "render_scroll_count")
+            if getattr(self.hooks, name) is not None
+        )
+        if overrides and not self.pre_filter_urls:
+            raise ValueError(
+                f"hooks {overrides!r} require non-empty pre_filter_urls; "
+                f"the settle is applied only by the agent-less runner, so "
+                f"on an agent-driven entry the override would move the "
+                f"captured fixture without moving the runtime."
             )
         return self
 

@@ -91,12 +91,46 @@ DATABASE_PATH: Path = database_path_from_env()
 #    runtime and the frozen fixtures observing the same DOM.
 #
 # Kept as module-level constants (not a settings class) matching every
-# other value in this file; the capture flags override them per
-# invocation for one-off tuning, and the runtime consumer reads them
-# directly (no override — the runtime path has no operator surface for
-# this and never has needed one).
+# other value in this file. Both consumers resolve a three-level chain:
+# an explicit ``--wait`` / ``--scroll`` capture flag, else the board's
+# ``RuntimeHooks.render_wait_sec`` / ``render_scroll_count``, else these
+# defaults. The per-board level was added for Edwards Lifesciences,
+# whose Algolia/React-InstantSearch listing renders nothing at 8s and
+# its full first page at 30s — the matcher was returning a confident
+# zero against an unhydrated document. The schema confines those
+# overrides to ``pre_filter_urls`` boards, which is exactly the runtime
+# path that reads these constants, so raising a board's settle moves
+# its capture and its runtime together and the byte-matching above
+# still holds.
 RENDER_WAIT_SEC: int = 8
 RENDER_SCROLL_COUNT: int = 3
+
+# Navigation ceiling for the capture-side tools, which call Playwright's
+# ``page.goto`` directly. Playwright defaults to 30s and waits for the
+# ``load`` event; a board slow enough to need a raised
+# ``RuntimeHooks.render_wait_sec`` is usually also slow enough that
+# ``load`` has not fired by then, so the capture dies on navigation
+# before the settle it was configured with ever runs. Edwards
+# Lifesciences is the case: it needs a 60s settle and times out on the
+# 30s default. Resolved as ``max(this, settle + margin)`` at the call
+# sites rather than a flat constant, so a board that raises its settle
+# raises its navigation ceiling with it and the two cannot drift.
+# The runtime is unaffected: browser-use's ``navigate_to`` does not
+# impose this ceiling (Edwards runs green at ~78s end to end).
+NAVIGATION_TIMEOUT_SEC: int = 30
+NAVIGATION_TIMEOUT_MARGIN_SEC: int = 30
+
+
+def navigation_timeout_ms(wait_s: int) -> int:
+    """Return the ``page.goto`` timeout in ms for a given settle.
+
+    ``max(NAVIGATION_TIMEOUT_SEC, wait_s + NAVIGATION_TIMEOUT_MARGIN_SEC)``
+    — never below Playwright's own default, and always comfortably
+    above the configured settle so the navigation ceiling scales with
+    the board rather than capping it.
+    """
+    return max(NAVIGATION_TIMEOUT_SEC, wait_s + NAVIGATION_TIMEOUT_MARGIN_SEC) * 1000
+
 
 # ---------------------------------------------------------------------------
 # browser-environment layer — plausible User-Agent

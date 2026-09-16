@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "company_name": "Edwards Lifesciences",
+  "job_board_url": "https://www.edwards.com/careers/jobsearch?country=Costa%20Rica",
+  "sample_job_url": "https://www.edwards.com/job/50732/rep-hr-solutions",
+  "expected_unfiltered_count": 18,
+  "captured_at": "2026-09-16T17:55:44.163531+00:00",
+  "captured_with_filters": false,
+  "notes": "Algolia / React-InstantSearch listing on Next.js, same-origin on edwards.com. The ?country=Costa%20Rica filter is URL-addressable via the 'Select country / region' combobox, which performs a real navigation. Prefix /job is an explicit override: derivation from any sample yields the id-specific /job/<id>. Board paginates at 10 per page, hence paginate=True, and 18 matches the page's own 'Showing 1-10 of 18 results' counter. This is the board that motivated hooks.render_wait_sec: its first job anchor appears at 46-50s (measured over three trials: 46s, 50s, 49s) and is reliably ZERO at 8s, 12s, 20s and 30s, so the global 8s settle had the matcher run against an unhydrated document and return a confident zero. render_wait_sec=60 gives roughly 10s of margin over the observed worst case; 4 of 4 live runs return 18. It also motivated settings.navigation_timeout_ms: Playwright's 30s goto default fired before the settle ever ran, because this board's load event does not arrive inside 30s either. If it ever regresses to an under-count the fix is a higher ceiling, or replacing the fixed sleep with a poll-until-anchors-appear whose ceiling this value becomes. Capture reads the same two hook fields with no flags passed, so the frozen fixture and the runtime observe the same DOM by construction.",
+  "path_prefix": "/job",
+  "pages": [
+    {
+      "file": "pages/page-2.html",
+      "url": "https://www.edwards.com/careers/jobsearch?country=Costa%20Rica"
+    }
+  ],
+  "pre_filter_urls": [
+    "https://www.edwards.com/careers/jobsearch?country=Costa%20Rica"
+  ],
+  "top_url": "https://www.edwards.com/careers/jobsearch?country=Costa%20Rica"
+}

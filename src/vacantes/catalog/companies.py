@@ -1121,4 +1121,17 @@ COMPANIES: list[Company] = [
         expected_jobs=28,
         phenom=PhenomConfig(page_id="page11-ds", locale="en_us"),
     ),
+    Company(
+        name="Edwards Lifesciences",
+        aliases=("edwards",),
+        job_board_url="https://www.edwards.com/careers/jobsearch?country=Costa%20Rica",
+        sample_job_url="https://www.edwards.com/job/50732/rep-hr-solutions",
+        link_rule=LinkRule(path_prefix="/job"),
+        paginate=True,
+        expected_jobs=18,
+        hooks=RuntimeHooks(render_wait_sec=60, render_scroll_count=6),
+        pre_filter_urls=(
+            "https://www.edwards.com/careers/jobsearch?country=Costa%20Rica",
+        ),
+    ),
 ]

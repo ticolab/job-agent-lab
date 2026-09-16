@@ -167,6 +167,7 @@ from vacantes.settings import (
     RENDER_SCROLL_COUNT,
     RENDER_WAIT_SEC,
     launch_capture_browser,
+    navigation_timeout_ms,
     plausible_headless_ua,
 )
 
@@ -411,6 +412,46 @@ def resolve_expand_selector(
     return flag_override if flag_override is not None else hooks.expand_selector
 
 
+def resolve_render_settle(
+    hooks: RuntimeHooks, wait_override: int | None, scroll_override: int | None
+) -> tuple[int, int]:
+    """Return the effective ``(wait_s, scroll_n)`` for a capture run.
+
+    Three-level precedence, same asymmetry as
+    :func:`resolve_expand_selector`: an explicit ``--wait`` / ``--scroll``
+    flag wins, else the catalog's ``RuntimeHooks`` override, else the
+    shared ``settings`` constants. Resolved independently per value, so
+    a board can override only the wait and inherit the global scroll
+    count.
+
+    The catalog level is what keeps a slow board's frozen fixture and
+    its runtime observing the same DOM: ``_extract_prefiltered`` reads
+    the same two hook fields, so a capture with no flags reproduces the
+    runtime settle exactly. The flag level exists for the same reason
+    the expand-selector flag does — an integrator dialling in a settle
+    should not have to edit the catalog on every attempt.
+    """
+    wait_s = (
+        wait_override
+        if wait_override is not None
+        else (
+            hooks.render_wait_sec
+            if hooks.render_wait_sec is not None
+            else RENDER_WAIT_SEC
+        )
+    )
+    scroll_n = (
+        scroll_override
+        if scroll_override is not None
+        else (
+            hooks.render_scroll_count
+            if hooks.render_scroll_count is not None
+            else RENDER_SCROLL_COUNT
+        )
+    )
+    return wait_s, scroll_n
+
+
 class _PlaywrightPageDriver:
     """Adapter satisfying :class:`PageDriver` over a Playwright ``Page``.
 
@@ -593,7 +634,7 @@ async def _capture(
             # sync with what the harness will replay. Empty tuple keeps
             # the single-state code path byte-identical.
             state_1_url = pre_filter_urls[0] if pre_filter_urls else job_board_url
-            await page.goto(state_1_url)
+            await page.goto(state_1_url, timeout=navigation_timeout_ms(wait_s))
             await asyncio.sleep(wait_s)
             for _ in range(scroll_n):
                 await page.evaluate("() => { window.scrollBy(0, window.innerHeight); }")
@@ -721,7 +762,7 @@ async def _capture(
                 else:
                     union.update(await _single_shot())
                 for idx, url in enumerate(pre_filter_urls[1:], start=2):
-                    await page.goto(url)
+                    await page.goto(url, timeout=navigation_timeout_ms(wait_s))
                     await asyncio.sleep(wait_s)
                     for _ in range(scroll_n):
                         await page.evaluate(
@@ -1014,14 +1055,22 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--wait",
         type=int,
-        default=RENDER_WAIT_SEC,
-        help="Seconds to wait after navigation for JS rendering (default %(default)s).",
+        default=None,
+        help=(
+            "Seconds to wait after navigation for JS rendering. Overrides "
+            "the company's hooks.render_wait_sec, which itself overrides "
+            f"the {RENDER_WAIT_SEC}s default."
+        ),
     )
     parser.add_argument(
         "--scroll",
         type=int,
-        default=RENDER_SCROLL_COUNT,
-        help="Viewport-height scrolls to perform after the wait (default %(default)s).",
+        default=None,
+        help=(
+            "Viewport-height scrolls to perform after the wait. Overrides "
+            "the company's hooks.render_scroll_count, which itself overrides "
+            f"the {RENDER_SCROLL_COUNT} default."
+        ),
     )
     parser.add_argument(
         "--notes",
@@ -1107,13 +1156,14 @@ def main() -> None:
     )
     pre_extract_css = company.hooks.pre_extract_css
     next_control_selector = company.hooks.next_control_selector
+    wait_s, scroll_n = resolve_render_settle(company.hooks, args.wait, args.scroll)
     try:
         html, frames, pages, states, extracted = asyncio.run(
             _capture(
                 company.job_board_url,
                 company.sample_job_url,
-                args.wait,
-                args.scroll,
+                wait_s,
+                scroll_n,
                 path_prefix=company.link_rule.path_prefix,
                 min_depth=company.link_rule.min_depth,
                 suppress_selector=company.link_rule.suppress_ancestor_selector,

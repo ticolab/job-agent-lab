@@ -87,7 +87,11 @@ from vacantes.extraction.dom import (
     FIND_NEXT_CONTROL_JS,
 )
 from vacantes.extraction.dom.rules import derive_path_prefix
-from vacantes.settings import launch_capture_browser, plausible_headless_ua
+from vacantes.settings import (
+    launch_capture_browser,
+    navigation_timeout_ms,
+    plausible_headless_ua,
+)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -1121,7 +1125,7 @@ async def _probe(
             user_agent = await plausible_headless_ua()
             page = await browser.new_page(user_agent=user_agent)
             page.on("response", _on_response)
-            await page.goto(job_board_url)
+            await page.goto(job_board_url, timeout=navigation_timeout_ms(wait_s))
             await asyncio.sleep(wait_s)
             for _ in range(scroll_n):
                 await page.evaluate("() => { window.scrollBy(0, window.innerHeight); }")

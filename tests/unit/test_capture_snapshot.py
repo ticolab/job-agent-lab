@@ -25,6 +25,13 @@ from pathlib import Path
 import pytest
 
 from vacantes.domain.company import RuntimeHooks
+from vacantes.settings import (
+    NAVIGATION_TIMEOUT_MARGIN_SEC,
+    NAVIGATION_TIMEOUT_SEC,
+    RENDER_SCROLL_COUNT,
+    RENDER_WAIT_SEC,
+    navigation_timeout_ms,
+)
 
 _SCRIPTS_DIR = Path(__file__).resolve().parent.parent.parent / "scripts"
 _CAPTURE_PATH = _SCRIPTS_DIR / "capture_snapshot.py"
@@ -37,6 +44,7 @@ _capture_module = importlib.util.module_from_spec(_spec)
 sys.modules["capture_snapshot"] = _capture_module
 _spec.loader.exec_module(_capture_module)
 resolve_expand_selector = _capture_module.resolve_expand_selector
+resolve_render_settle = _capture_module.resolve_render_settle
 
 
 class TestResolveExpandSelectorPrecedence:
@@ -632,3 +640,89 @@ class TestPerStatePages:
             "unit test",
         )
         assert not stale_file.exists()
+
+
+class TestResolveRenderSettlePrecedence:
+    """Three-level precedence for the capture settle: flag > hooks > global.
+
+    The settle is the one capture input that must agree with the
+    runtime: ``DomStrategy._extract_prefiltered`` reads the same two
+    hook fields, so a capture run with no flags has to reproduce the
+    runtime's wait and scroll exactly or the frozen fixture records a
+    DOM the runtime never sees. These cases pin that the catalog level
+    is honoured (the agreement), that the flag still wins (the
+    integrator's iteration loop), and that the two values resolve
+    independently so a board can raise only one of them.
+    """
+
+    def test_globals_when_nothing_is_set(self) -> None:
+        assert resolve_render_settle(RuntimeHooks(), None, None) == (
+            RENDER_WAIT_SEC,
+            RENDER_SCROLL_COUNT,
+        )
+
+    def test_hooks_override_the_globals(self) -> None:
+        hooks = RuntimeHooks(render_wait_sec=60, render_scroll_count=6)
+        assert resolve_render_settle(hooks, None, None) == (60, 6)
+
+    def test_flags_beat_the_hooks(self) -> None:
+        hooks = RuntimeHooks(render_wait_sec=60, render_scroll_count=6)
+        assert resolve_render_settle(hooks, 12, 2) == (12, 2)
+
+    def test_each_value_resolves_independently(self) -> None:
+        # Only the wait is overridden in the catalog; the scroll count
+        # must still fall through to the global rather than being
+        # dragged along with it.
+        hooks = RuntimeHooks(render_wait_sec=60)
+        assert resolve_render_settle(hooks, None, None) == (60, RENDER_SCROLL_COUNT)
+        # ...and symmetrically for a flag supplying only one side.
+        assert resolve_render_settle(RuntimeHooks(), None, 5) == (RENDER_WAIT_SEC, 5)
+
+    def test_zero_scrolls_is_honoured_not_treated_as_unset(self) -> None:
+        # 0 is falsy; a truthiness-based resolver would silently replace
+        # it with the global. A board that must NOT scroll is a real
+        # configuration, so the resolver tests against None.
+        assert resolve_render_settle(
+            RuntimeHooks(render_scroll_count=0), None, None
+        ) == (
+            RENDER_WAIT_SEC,
+            0,
+        )
+        assert resolve_render_settle(RuntimeHooks(), None, 0) == (RENDER_WAIT_SEC, 0)
+
+
+class TestNavigationTimeout:
+    """The ``goto`` ceiling scales with the settle instead of capping it.
+
+    Playwright's default is 30s and it waits for ``load``. A board slow
+    enough to need a raised settle is usually slow enough that ``load``
+    has not fired by then — Edwards Lifesciences dies on navigation at
+    30s while needing a 60s settle — so a flat ceiling would make the
+    settle unreachable. These pin that the ceiling never drops below
+    Playwright's own default and always clears the configured settle.
+    """
+
+    def test_never_below_the_playwright_default(self) -> None:
+        # The floor is a guarantee, not the usual outcome: with a 30s
+        # margin even the 8s global settle resolves above it. What must
+        # hold is that no settle can produce a ceiling tighter than
+        # Playwright's own 30s default.
+        for settle in (0, 1, RENDER_WAIT_SEC, 60):
+            assert navigation_timeout_ms(settle) >= NAVIGATION_TIMEOUT_SEC * 1000
+
+    def test_default_settle_gets_the_margin_not_the_floor(self) -> None:
+        # Documents the actual default-path value so a margin change is
+        # a visible edit rather than a silent one.
+        assert (
+            navigation_timeout_ms(RENDER_WAIT_SEC)
+            == (RENDER_WAIT_SEC + NAVIGATION_TIMEOUT_MARGIN_SEC) * 1000
+        )
+
+    def test_clears_a_raised_settle_with_margin(self) -> None:
+        # The Edwards case: a 60s settle must not be capped by a 30s nav.
+        assert navigation_timeout_ms(60) == (60 + NAVIGATION_TIMEOUT_MARGIN_SEC) * 1000
+        assert navigation_timeout_ms(60) > 60 * 1000
+
+    def test_monotonic_in_the_settle(self) -> None:
+        values = [navigation_timeout_ms(w) for w in (1, 8, 30, 60, 120)]
+        assert values == sorted(values)
