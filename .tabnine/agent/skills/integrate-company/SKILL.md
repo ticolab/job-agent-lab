@@ -456,6 +456,23 @@ also catches nine cookie/filter/language buttons, whereas the refined
 fifteen role-count accordions cleanly (selector re-validated 2026-07-17;
 see the Deel entry in `blockers/INTEGRATION_BLOCKERS.md`).
 
+**Slow-hydrating boards need a settle, not more retries.** `--wait` /
+`--scroll` are for *dialling in* a value; a board that permanently needs
+more than the 8s global records it in the catalog as
+`hooks.render_wait_sec` / `hooks.render_scroll_count`, so the runtime and
+every future capture use it automatically and the two cannot drift. The
+schema restricts those fields to entries with non-empty `pre_filter_urls`
+— the agent-less runner is the only path that applies a settle, so an
+override on an agent-driven board would move the frozen fixture without
+moving the runtime. Measure before guessing: poll the page once per second
+for anchors rather than bisecting `--wait`, because the failure looks
+identical (a confident zero) at every value below the real hydration time.
+Edwards Lifesciences is the motivating board — zero anchors at 8s, 12s,
+20s and 30s, first anchor at 46-50s across three trials, so it ships
+`render_wait_sec=60`. A capture at a raised settle records it in
+`metadata.render_wait_sec` for provenance, because such a fixture cannot
+be re-derived by re-running at the default.
+
 SYS-6 also shipped a C3 prompt clause that lets the agent discover bare
 native `<select>` filter elements (by `name`/`id`/associated-label matching
 tokens like `country`/`location`/`region`/`office`/`city`/`pais`/`país`),

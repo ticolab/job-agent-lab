@@ -30,10 +30,13 @@ import pytest
 
 from vacantes import settings
 from vacantes.settings import (
+    BROWSER_LAUNCH_ARGS,
+    CAPTURE_BROWSER_CHANNEL,
     DATABASE_ENV_VAR,
     DEFAULT_DATABASE_PATH,
     database_path_from_env,
     derive_plausible_ua,
+    launch_capture_browser,
     plausible_headless_ua,
 )
 
@@ -188,3 +191,126 @@ class TestDatabasePathFromEnv:
     def test_a_blank_variable_is_treated_as_unset(self) -> None:
         """``VACANTES_DB=`` must not resolve to a database named ``""``."""
         assert database_path_from_env({DATABASE_ENV_VAR: "  "}) == DEFAULT_DATABASE_PATH
+
+
+class _FakePage:
+    """Minimal ``Page`` stand-in exposing only what the launcher uses."""
+
+    def __init__(self, ua: str) -> None:
+        self._ua = ua
+        self.closed = False
+
+    async def evaluate(self, _script: str) -> str:
+        return self._ua
+
+    async def close(self) -> None:
+        self.closed = True
+
+
+class _FakeBrowser:
+    def __init__(self, ua: str) -> None:
+        self.ua = ua
+        self.pages: list[_FakePage] = []
+
+    async def new_page(self, **_kwargs: Any) -> _FakePage:
+        page = _FakePage(self.ua)
+        self.pages.append(page)
+        return page
+
+
+class _FakeChromium:
+    """Records launch kwargs; optionally fails the channelled launch."""
+
+    def __init__(self, *, channel_error: BaseException | None, ua: str) -> None:
+        self._channel_error = channel_error
+        self._ua = ua
+        self.calls: list[dict[str, Any]] = []
+
+    async def launch(self, **kwargs: Any) -> _FakeBrowser:
+        self.calls.append(kwargs)
+        if "channel" in kwargs and self._channel_error is not None:
+            raise self._channel_error
+        return _FakeBrowser(self._ua)
+
+
+class _FakePlaywright:
+    def __init__(self, chromium: _FakeChromium) -> None:
+        self.chromium = chromium
+
+
+class TestLaunchCaptureBrowser:
+    """The capture-side launcher: channel preference, fallback, and UA source.
+
+    Driven against a fake Playwright rather than a real browser. The
+    behaviours worth pinning are policy, not rendering: which channel is
+    tried first, what happens when it is missing, which exceptions are
+    treated as "Chrome absent", and — the bug this class was written
+    for — that the returned UA comes from the instance that actually
+    launched rather than from the module-level
+    :func:`plausible_headless_ua` cache, which is derived from a
+    *different* binary and would advertise the wrong major version.
+    """
+
+    _CHROME_UA = (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "HeadlessChrome/153.0.0.0 Safari/537.36"
+    )
+
+    def test_prefers_the_configured_channel(self) -> None:
+        chromium = _FakeChromium(channel_error=None, ua=self._CHROME_UA)
+        result = _run(launch_capture_browser(_FakePlaywright(chromium)))  # type: ignore[arg-type]
+        assert len(chromium.calls) == 1
+        assert chromium.calls[0]["channel"] == CAPTURE_BROWSER_CHANNEL
+        assert result.browser is not None
+
+    def test_standing_args_are_passed_on_both_paths(self) -> None:
+        # The keychain suppression and the AutomationControlled flag must
+        # survive the fallback; a board that only needed the flag (Edwards)
+        # still has to work on a machine without Chrome.
+        from playwright.async_api import Error as PlaywrightError
+
+        for err in (None, PlaywrightError("Unsupported chromium channel")):
+            chromium = _FakeChromium(channel_error=err, ua=self._CHROME_UA)
+            _run(launch_capture_browser(_FakePlaywright(chromium)))  # type: ignore[arg-type]
+            for call in chromium.calls:
+                assert call["args"] == list(BROWSER_LAUNCH_ARGS)
+
+    def test_falls_back_to_the_bundled_build_without_a_channel(self) -> None:
+        from playwright.async_api import Error as PlaywrightError
+
+        chromium = _FakeChromium(
+            channel_error=PlaywrightError('Unsupported chromium channel "chrome"'),
+            ua=self._CHROME_UA,
+        )
+        result = _run(launch_capture_browser(_FakePlaywright(chromium)))  # type: ignore[arg-type]
+        assert len(chromium.calls) == 2
+        assert "channel" in chromium.calls[0]
+        assert "channel" not in chromium.calls[1]
+        assert result.browser is not None
+
+    def test_a_non_playwright_launch_failure_is_not_swallowed(self) -> None:
+        # The except clause is narrowed to Playwright's own error so an
+        # unrelated failure surfaces as itself instead of being relabelled
+        # "Chrome not installed" and retried identically.
+        chromium = _FakeChromium(channel_error=RuntimeError("disk full"), ua="x")
+        with pytest.raises(RuntimeError, match="disk full"):
+            _run(launch_capture_browser(_FakePlaywright(chromium)))  # type: ignore[arg-type]
+        assert len(chromium.calls) == 1
+
+    def test_ua_is_read_from_the_launched_instance_and_stripped(self) -> None:
+        # The regression this guards: pairing a bundled-Chromium UA with a
+        # real-Chrome engine. The returned UA must derive from the browser
+        # handed back, with the C14 HeadlessChrome token removed.
+        chromium = _FakeChromium(channel_error=None, ua=self._CHROME_UA)
+        result = _run(launch_capture_browser(_FakePlaywright(chromium)))  # type: ignore[arg-type]
+        assert result.user_agent == derive_plausible_ua(self._CHROME_UA)
+        assert "HeadlessChrome" not in result.user_agent
+        assert "153.0.0.0" in result.user_agent
+
+    def test_the_ua_probe_page_is_closed(self) -> None:
+        # The probe page is an artifact of reading the UA; leaving it open
+        # would leak a tab into every capture run.
+        chromium = _FakeChromium(channel_error=None, ua=self._CHROME_UA)
+        result = _run(launch_capture_browser(_FakePlaywright(chromium)))  # type: ignore[arg-type]
+        assert result.browser.pages[0].closed is True

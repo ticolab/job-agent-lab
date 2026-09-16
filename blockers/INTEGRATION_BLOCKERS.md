@@ -52,6 +52,14 @@ not the same as every board of that shape being integrated.
 | C20 | **Exclusive** accordion: opening one section closes the others, so no DOM state ever holds the full listing — and each section may carry its own cap | **Open** — needs a nested multi-state walk; neither `expand_selector` nor the pagination walker expresses it |
 | C21 | Apply-decoy: the board's only buttons matching the Case B `Search/Apply/Submit/Filter` vocabulary are job-application affordances (`Apply Here`, `View and Apply`), and clicking one leaves the listing page | Closed — Case B anti-scope guard in `navigation/prompt.py` naming the job-application labels and stating no click is needed when selecting the option already updates the listings |
 | C22 | Hash-routed SPA: postings are well-formed `<a>`, but the job id lives **only** in the URL fragment (`#/jobs/5050`), which the matcher strips by design — every posting collapses to the board root | **Open** — needs a third link shape (id-in-fragment) with its own prefix semantics; no config knob reaches it |
+| C23 | The **capture-side** browser is refused by a host the runtime reaches: `capture_snapshot` / `probe_board` drive Playwright directly while the runtime uses browser-use's `BrowserSession`, so a board can extract cleanly and still be impossible to freeze | Closed — `settings.launch_capture_browser` prefers a real-Chrome channel and adds `--disable-blink-features=AutomationControlled`. Two exemplars, each needing a different half: Edwards Lifesciences (automation surface) and McKinsey & Company (`ERR_HTTP2_PROTOCOL_ERROR` against the bundled build) |
+| C24 | The listing hydrates slower than the global render settle, so the matcher runs against an empty document and returns a confident zero — indistinguishable from a board with no matching jobs | Closed — `hooks.render_wait_sec` / `render_scroll_count`, with `settings.navigation_timeout_ms` scaling the `goto` ceiling so a cold `load` cannot kill the capture first. Exemplar: Edwards Lifesciences, first anchor at 46-50s |
+
+C23 and C24 are capture/runtime-environment classes rather than page-shape
+ones: neither is about what the board renders, and both were found by a
+board extracting correctly while the tooling around it failed. They are
+recorded because the symptom — a snapshot that cannot be taken, or a
+confident zero — reads like a blocker in the board and is not.
 
 Three open classes sit **below every strategy**: C1 and C22 on the DOM path
 and C20 in the DOM state machine. None is reachable by a prompt change; C22 is
