@@ -1068,4 +1068,14 @@ COMPANIES: list[Company] = [
             "https://jobs.lever.co/oowlish?location=San%20Jos%C3%A9%2C%20San%20Jose%2C%20Costa%20Rica",
         ),
     ),
+    Company(
+        name="Athenaworks",
+        aliases=(),
+        job_board_url="https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs?location=Remote%20from%20Costa%20Rica",
+        sample_job_url="https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs/536",
+        expected_jobs=11,
+        pre_filter_urls=(
+            "https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs?location=Remote%20from%20Costa%20Rica",
+        ),
+    ),
 ]

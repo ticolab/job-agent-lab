@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "Athenaworks",
+  "job_board_url": "https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs?location=Remote%20from%20Costa%20Rica",
+  "sample_job_url": "https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs/536",
+  "expected_unfiltered_count": 11,
+  "captured_at": "2026-09-16T15:00:53.485941+00:00",
+  "captured_with_filters": false,
+  "notes": "First Recruiterflow tenant. job_board_url is the ATS host (recruiterflow.com/db_<tenant-hash>/jobs), not athenaworks.com/careers/, which is a cross-origin marketing page. The location filter IS URL-addressable as ?location=<exact option text>, but the option text is the full label 'Remote from Costa Rica' - ?location=Costa%20Rica matches nothing. The control is a selectize widget over a hidden <select id=job-filter-by-location> whose DOM <select> carries only the 'Locations' placeholder; the 36 real options live in selectize's JS store and render as .option divs when opened, which is why a <select>-option census reports zero location tokens and the sibling #job-filter-by-search reads as a bare search box. Selecting an option performs a real navigation, so the filter is a URL, not client state. Two competing Costa Rica options exist - 'Remote from Costa Rica' (11 postings) and a lowercase duplicate 'remote costa rica' (2) - and the 2 are a strict subset of the 11, so one pre_filter_urls entry suffices and no union is needed. pre_filter_urls is used defensively rather than to fix an observed failure: the agent path went 5 of 5 at 11, but it interacts with the widget on some runs (4-6 steps) and picking the lowercase option would silently yield 2, which is the competing-in-region-option hazard the Smarsh entry describes. Unfiltered board is 18 and does not paginate - 'Show more' reveals nothing further.",
+  "pre_filter_urls": [
+    "https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs?location=Remote%20from%20Costa%20Rica"
+  ],
+  "top_url": "https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs?location=Remote%20from%20Costa%20Rica"
+}
