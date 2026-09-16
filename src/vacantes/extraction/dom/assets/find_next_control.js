@@ -8,7 +8,7 @@
     // gate their pagination pipeline on real user gestures
     // (blockers/INTEGRATION_BLOCKERS.md, C7 / BCG).
     //
-    // ``overrideSelector`` (SYS-12) is the explicit-CSS bypass path:
+    // ``overrideSelector`` is the explicit-CSS bypass path:
     // when set to a non-null string, the standard signal cascade below
     // is skipped entirely and the first ``document.querySelector``
     // match is stamped instead — no visibility gate, no enabled gate,
@@ -101,7 +101,7 @@
         stale.removeAttribute(MARKER);
     }
 
-    // SYS-12 override branch: when an explicit CSS selector is
+    // override branch: when an explicit CSS selector is
     // provided, the standard signal cascade below is skipped
     // entirely. First ``querySelector`` match wins, no filtering. A
     // null return propagates as ``found: false`` so the walker

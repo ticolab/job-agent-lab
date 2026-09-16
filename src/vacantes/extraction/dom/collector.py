@@ -8,7 +8,7 @@ owns the Python-side call convention: pass ``[base_path, origin]`` as the
 JS arg, tolerate the double-encoded-string return shape by re-parsing it,
 and normalise ``None`` / missing results to an empty list.
 
-Under matcher v2 (SYS-2) the frame / shadow-DOM walk runs **inside** the
+Under matcher v2 the frame / shadow-DOM walk runs **inside** the
 JS asset, in the top frame's execution context, so this module deliberately
 performs no driver-side frame iteration and does not touch ``page.frames``.
 Cross-origin frames are structurally unreachable from an in-page walk and
@@ -22,13 +22,13 @@ tool just calls ``collect_job_links`` and packages the result as an
 ``ActionResult``. That keeps the browser-use integration and the DOM
 work independently testable.
 
-SYS-5 adds the pagination walker. When ``collect_job_links`` is invoked
+ adds the pagination walker. When ``collect_job_links`` is invoked
 with ``paginate=True`` (threaded from the ``Company.paginate`` flag), it
 delegates to :func:`walk_and_collect`, which composes discovery
 (``FIND_NEXT_CONTROL_JS``), a driver-side click on the stamped
 ``[data-jal-next]`` marker, a poll-for-change settle phase, and a
 per-state matcher run whose href sets are unioned across states. The
-default ``paginate=False`` path is byte-identical to the pre-SYS-5
+default ``paginate=False`` path is byte-identical to the single-page
 single-shot behaviour and remains unchanged. The three surfaces that
 consume the walker (runtime, capture script, tests) each supply their
 own :class:`PageDriver` adapter: the runtime uses :class:`ActorPageDriver`
@@ -36,7 +36,7 @@ over the browser-use page handle; the capture script provides a
 Playwright adapter; tests use whichever fits their fixtures. This keeps
 the walker loop itself directly unit-testable and never reimplemented.
 
-SYS-12 adds the deterministic hook phase between agent handoff and
+ adds the deterministic hook phase between agent handoff and
 matcher invocation. When ``collect_job_links`` is invoked with a
 non-inert :class:`~vacantes.domain.company.RuntimeHooks` (or with
 ``paginate=True``), an :class:`ActorPageDriver` is built once and the
@@ -53,7 +53,7 @@ markers, sleep :data:`EXPAND_SETTLE_SEC`, re-query — terminate on a
 zero-stamp round or at the ``max_rounds`` cap), then the single-shot
 matcher or :func:`walk_and_collect` runs against the prepared DOM. The
 inert-hooks + ``paginate=False`` path constructs no driver and stays
-byte-identical to the pre-SYS-12 shape.
+byte-identical to the pre-hooks shape.
 
 Two scope limitations apply to the injected stylesheet. First, it lives
 in the top document's ``<head>`` — light DOM only, matching the walker
@@ -85,7 +85,7 @@ from vacantes.extraction.dom import (
 # Walker tuning constants
 #
 # These are module-level so tests can monkeypatch them to shrink real-time
-# waits and capture callers (SYS-5 Task 4) can import ``MAX_PAGES`` as the
+# waits and capture callers can import ``MAX_PAGES`` as the
 # single source of truth for the cap. The walker reads each constant at
 # call time (not at function-definition time) so a ``monkeypatch.setattr``
 # is honoured for the current test.
@@ -93,7 +93,7 @@ from vacantes.extraction.dom import (
 
 # Hard cap on the number of DOM states the walker will collect from a
 # single :func:`walk_and_collect` invocation. Motivated by the two live
-# boards SYS-5 targets (Techwarely 2 pages, BCG 2 pages) plus generous
+# boards targets (Techwarely 2 pages, BCG 2 pages) plus generous
 # headroom; a legitimate board exceeding this cap should raise the
 # constant with evidence, per the ticket's open item.
 MAX_PAGES: int = 20
@@ -122,7 +122,7 @@ _NEXT_MARKER_SELECTOR: str = "[data-jal-next]"
 
 
 # ---------------------------------------------------------------------------
-# Expansion tuning constants (SYS-12)
+# Expansion tuning constants
 #
 # Read at call time from :func:`expand_all` so a ``monkeypatch.setattr``
 # on this module honours the change for the current test (mirrors the
@@ -134,7 +134,7 @@ _NEXT_MARKER_SELECTOR: str = "[data-jal-next]"
 
 # Hard cap on the number of stamp/click rounds :func:`expand_all` will
 # run against a single ``expand_selector`` invocation. Motivated by the
-# two live boards SYS-12 targets whose accordion trees flatten inside
+# two live boards targets whose accordion trees flatten inside
 # 1–2 rounds (Deel role tiles, Progress "Show more"); five gives
 # comfortable headroom for a plausible nested-accordion board that
 # arrives later.
@@ -256,9 +256,9 @@ _CLEAR_EXPAND_MARKERS_JS: str = """
 #
 #   1. :class:`ActorPageDriver` (below) — the runtime adapter used
 #      inside ``collect_job_links``.
-#   2. The capture script (SYS-5 Task 4) — a small Playwright adapter
+# 2. The capture script — a small Playwright adapter
 #      the ``scripts/capture_snapshot.py`` module defines locally.
-#   3. Walker tests (SYS-5 Task 3) — a test-local adapter over an
+# 3. Walker tests — a test-local adapter over an
 #      explicit JS-enabled Playwright context.
 #
 # The protocol is deliberately narrow: everything the loop needs and
@@ -365,7 +365,7 @@ async def _run_matcher(
 ) -> list[str]:
     """Run the matcher once against the driver's current DOM state.
 
-    ``suppress_selector`` (SYS-14) mirrors
+    ``suppress_selector`` mirrors
     ``Company.link_rule.suppress_ancestor_selector`` and is passed as the
     matcher's fourth argument; ``None`` disables the gate. Every walker
     invocation (state-1 collect, settle probe, per-state collect) routes
@@ -392,7 +392,7 @@ async def _find_next(
 
     When ``override`` is a non-``None`` string, the JS asset bypasses
     its six-signal cascade and stamps ``document.querySelector(override)``
-    directly (SYS-12 ``next_control_selector`` hook). A ``None`` value
+    directly (``next_control_selector`` hook). A ``None`` value
     (the default) runs the normal cascade.
     """
     result = await driver.evaluate(FIND_NEXT_CONTROL_JS, [dry_run, override])
@@ -493,13 +493,13 @@ async def walk_and_collect(
         next_control_override: Optional CSS selector passed to every
             discovery pass. When set, the JS asset's six-signal
             cascade is skipped and the first ``document.querySelector``
-            match on each state is stamped as the Next control (SYS-12
+            match on each state is stamped as the Next control (
             ``RuntimeHooks.next_control_selector``). The override is
             re-evaluated per state — this is deliberate: SPAs may
             mount a fresh Next affordance on every advance, so the
             same-selector-per-state semantics match how a human would
             click through.
-        suppress_selector: Optional CSS selector (SYS-14, mirrors
+        suppress_selector: Optional CSS selector (mirrors
             ``Company.link_rule.suppress_ancestor_selector``) applied to
             every matcher run in the walk — state 1, the settle probes,
             and each per-state collect. Uniformity matters: the settle
@@ -561,7 +561,7 @@ async def walk_and_collect(
 
 
 # ---------------------------------------------------------------------------
-# Hook execution (SYS-12)
+# Hook execution
 # ---------------------------------------------------------------------------
 
 
@@ -739,29 +739,29 @@ async def collect_job_links(
             links share the prefix at shallow depths and real postings
             live deeper (C9: Databricks, Avionyx/iCIMS).
         paginate: When ``False`` (default) run a single matcher pass
-            over the current DOM state — byte-identical to the pre-SYS-5
+            over the current DOM state — byte-identical to the single-page
             behaviour when ``hooks`` is inert. When ``True`` delegate to
             :func:`walk_and_collect`, which walks paginated states via
             the ``FIND_NEXT_CONTROL_JS`` discovery pass and a
             driver-side click. Paginated results are returned sorted
             for run-to-run determinism.
         hooks: Optional :class:`RuntimeHooks` executed between agent
-            handoff and matcher invocation (SYS-12). ``None`` and an
+            handoff and matcher invocation. ``None`` and an
             inert :class:`RuntimeHooks` are equivalent — both keep the
             single-shot ``paginate=False`` path byte-identical to the
-            pre-SYS-12 shape. When non-inert (or under ``paginate=True``
+            pre-hooks shape. When non-inert (or under ``paginate=True``
             regardless of hooks) an :class:`ActorPageDriver` is built
             once and the hooks fire in the order documented at module
             scope: pre-extract CSS injection, then bounded expand
             rounds, then the matcher (or the walker) runs against the
             prepared DOM. ``filter_already_applied`` is read by the
             prompt-rendering layer only and is not consulted here.
-        suppress_selector: Optional CSS selector (SYS-14, mirrors
+        suppress_selector: Optional CSS selector (mirrors
             ``Company.link_rule.suppress_ancestor_selector``). Anchors
             whose ``closest(selector)`` is non-null are dropped by the
             matcher, after its visibility gate and before URL
             bucketing. ``None`` (the default) disables the gate and is
-            byte-identical to the pre-SYS-14 matcher. Unlike ``hooks``,
+            byte-identical to the legacy matcher. Unlike ``hooks``,
             this is *not* page preparation — it never touches the DOM,
             it only narrows what the matcher counts, so it applies
             uniformly on the inert fast path, the single-shot driver
@@ -771,9 +771,9 @@ async def collect_job_links(
     if page is None:
         return []
 
-    # Inert path: no hooks, no pagination → the pre-SYS-12 single-shot
+    # Inert path: no hooks, no pagination → the pre-hooks single-shot
     # shape. Construct no driver, no adapter overhead — the runtime
-    # cost of the 51 pre-SYS-12 corpus companies must not regress.
+    # cost of the 51 pre-hooks corpus companies must not regress.
     # ``suppress_selector`` rides along as the matcher's fourth
     # argument here rather than forcing the driver path: it is a
     # matcher argument, not a page mutation, so it costs nothing.
@@ -789,7 +789,7 @@ async def collect_job_links(
 
     driver = ActorPageDriver(page)
 
-    # SYS-12 hook phase — fires in the pinned order (CSS then expand)
+    # hook phase — fires in the pinned order (CSS then expand)
     # before either the single-shot matcher or the walker sees the DOM.
     # Skipped entirely when hooks are inert (``paginate=True`` alone).
     if hooks is not None and not hooks.is_inert:

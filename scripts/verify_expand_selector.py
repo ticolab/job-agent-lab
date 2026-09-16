@@ -1,4 +1,4 @@
-"""SYS-6 Task 2 verifier for the ``--expand-selector`` capture flag.
+"""for the ``--expand-selector`` capture flag.
 
 Loads a synthetic accordion page whose anchors mount only when a
 ``button[aria-expanded="false"]`` header is clicked (mirroring the C4
@@ -10,7 +10,7 @@ loop and bake+serialize routine against it. Asserts three properties:
      ``--expand-selector`` sees an empty listing region.
   2. **With expansion.** After :func:`expand_all` runs (via the
      capture script's ``_PlaywrightPageDriver`` adapter, mirroring the
-     SYS-12 unified expansion path), the serialized HTML must contain
+     unified expansion path), the serialized HTML must contain
      every expected anchor href, and the click counter must match the
      number of accordion headers (proving each header is clicked
      exactly once).
@@ -57,7 +57,7 @@ _PlaywrightPageDriver = _capture_module._PlaywrightPageDriver
 # that starts empty.
 HTML = """<!DOCTYPE html>
 <html>
-<head><title>SYS-6 expand-selector verify</title></head>
+<head><title> expand-selector verify</title></head>
 <body>
   <button aria-expanded="false" id="hdr1">Engineering — 3 open roles</button>
   <div id="body1"></div>
@@ -119,7 +119,7 @@ async def main() -> None:
             baseline_anchor_count: int = int(baseline_result["anchorCount"])
 
             # (2) With expansion: run the capture-side loop, then bake.
-            # SYS-12: the bounded loop now lives on the collector and
+            # the bounded loop now lives on the collector and
             # is driven via ``_PlaywrightPageDriver`` — this verify
             # script exercises the same code path the capture script
             # uses at runtime, so a regression in either surface

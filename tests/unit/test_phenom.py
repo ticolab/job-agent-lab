@@ -1,4 +1,4 @@
-"""Unit tests for the Phenom ``refineSearch`` adapter (SYS-15).
+"""Unit tests for the Phenom ``refineSearch`` adapter.
 
 Two layers, matching the plan's split:
 
@@ -12,13 +12,13 @@ Two layers, matching the plan's split:
 
 - **The adapter**, driven through ``respx`` so no network is touched.
   The happy path replays the recorded payload at
-  ``tests/fixtures/api/phenom/bcg.json``, seeded verbatim from the
-  evidence capture at ``spike/evidence/bcg_widgets_cr_size100.json``.
-  That fixture is BCG's regression artifact *in place of* a DOM
+  ``tests/fixtures/api/phenom/bcg.json``, seeded from the original
+  evidence capture. That fixture is BCG's regression artifact *in place of*
+  a DOM
   snapshot — the substitution that closes C12 — so it is asserted
   against exactly, including the 14-job count it froze. The live board
   has since drifted to 13; fixtures record history, live runs record
-  the present, and conflating the two is what the SYS-9 verdict layer
+  the present, and conflating the two is what the verdict layer
   exists to surface.
 
 The ``_run`` worker-thread helper is copied from
@@ -252,7 +252,7 @@ class TestExtractHappyPathRecorded:
         assert meta["agent_steps"] is None
         assert meta["agent_completed"] is None
         assert meta["agent_had_errors"] is None
-        # SYS-9 verdict fields flow automatically through build_report.
+        # verdict fields flow automatically through build_report.
         assert meta["expected_jobs"] == 14
         assert meta["verdict"] == "match"
         assert meta["total_jobs_found"] == 14

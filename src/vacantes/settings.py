@@ -5,7 +5,7 @@ directory) rather than *what* it runs against (companies live in
 ``catalog``) or *how it decides* (prompt lives in ``extraction.dom.agent.prompt``).
 
 Kept as plain module-level constants where possible; a settings class is
-unnecessary until an environment variable earns one. The SYS-10 browser-
+unnecessary until an environment variable earns one. The browser-
 environment layer breaks this rule deliberately: the plausible-UA
 resolver is a coroutine backed by a module-level cache because obtaining
 the launch-time User-Agent requires an actual headless Chromium probe
@@ -68,7 +68,7 @@ def database_path_from_env(environ: Mapping[str, str] = os.environ) -> Path:
 DATABASE_PATH: Path = database_path_from_env()
 
 # ---------------------------------------------------------------------------
-# Shared render-settle defaults (SYS-13)
+# Shared render-settle defaults
 # ---------------------------------------------------------------------------
 #
 # Two consumers rely on the same "navigate → wait → scroll" recipe to
@@ -77,7 +77,7 @@ DATABASE_PATH: Path = database_path_from_env()
 # 1. ``scripts/capture_snapshot.py`` — the capture-side settle before
 #    baking ``page.html`` (its ``--wait`` / ``--scroll`` argparse flags
 #    default to these values).
-# 2. ``DomStrategy._extract_prefiltered`` (SYS-13) — the runtime
+# 2. ``DomStrategy._extract_prefiltered`` — the runtime
 #    per-state settle in the agent-less multi-state path, executed
 #    once per URL in ``Company.pre_filter_urls`` before invoking the
 #    matcher. Byte-matching the capture recipe here is what keeps the
@@ -92,7 +92,7 @@ RENDER_WAIT_SEC: int = 8
 RENDER_SCROLL_COUNT: int = 3
 
 # ---------------------------------------------------------------------------
-# SYS-10: browser-environment layer — plausible User-Agent
+# browser-environment layer — plausible User-Agent
 # ---------------------------------------------------------------------------
 #
 # Dev.Pro's WAF returns HTTP 403 to any browser whose User-Agent string

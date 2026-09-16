@@ -1,7 +1,7 @@
-"""In-Chromium tests for the SYS-12 hook-execution helpers.
+"""In-Chromium tests for the hook-execution helpers.
 
 This module pins the helper *primitives in isolation*. Two siblings
-own the rest of the SYS-12 surface: ``test_runtime_hooks.py`` is the
+own the rest of the surface: ``test_runtime_hooks.py`` is the
 canonical file for the *joint* mechanics (two or more helpers plus the
 matcher running against the same DOM, including §4.5 execution order
 and the combined css + override walk across paginated states), and

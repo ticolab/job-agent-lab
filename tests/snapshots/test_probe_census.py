@@ -170,7 +170,7 @@ class TestFilterCensusJs:
         self, page: Page, probe: ModuleType
     ) -> None:
         # A ``<select name="country">`` with an option for Costa Rica —
-        # exactly the shape the SYS-6 C3 clause teaches the agent to
+        # exactly the shape the C3 clause teaches the agent to
         # drive. The probe reports it under section 5.
         page.set_content(
             """

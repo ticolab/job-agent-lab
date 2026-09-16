@@ -1,4 +1,4 @@
-"""Borrow a bearer token a tenant's own page minted (SYS-19, C19 seam).
+"""Borrow a bearer token a tenant's own page minted (the browser-token path, C19 seam).
 
 Some tenants put their token-mint endpoint behind fingerprint-based bot
 management. UST is the motivating case: ``www.ust.com`` answers **403**
@@ -33,7 +33,7 @@ importable — and unit-testable — without the browser stack.
 **Why the launch recipe is copied rather than shared.** The profile
 below mirrors
 :meth:`~vacantes.extraction.dom.strategy.DomStrategy._extract_prefiltered`
-exactly: the SYS-10 plausible User-Agent and the two Chromium flags that
+exactly: the plausible User-Agent and the two Chromium flags that
 suppress the macOS keychain prompt. The UA is not cosmetic here — it is
 the C14 closure, and a default headless UA advertising ``HeadlessChrome``
 is precisely what a bot-management gate greps for. Every launch site in

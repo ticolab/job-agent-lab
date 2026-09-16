@@ -11,11 +11,11 @@ lifting is delegated to sibling packages:
 
 - ``extraction.base.get_strategy`` looks up the strategy the CLI dispatches
   through — ``DomStrategy`` for the default DOM path,
-  ``GreenhouseStrategy`` for the Greenhouse-API path (SYS-4 Task 3).
+  ``GreenhouseStrategy`` for the Greenhouse-API path.
 - ``reporting.output`` renders the result to console and JSON on disk.
 - ``catalog`` supplies the ``COMPANIES`` list and ``find_company`` lookup.
 - ``domain.region.COSTA_RICA_LATAM`` supplies the target region every run
-  is scoped to (parameterising the region per-run is SYS-6).
+  is scoped to (parameterising the region per-run is).
 - ``settings`` supplies ``DEFAULT_MODEL``, ``DEFAULT_MAX_STEPS``,
   ``OUTPUT_DIR``.
 
@@ -68,7 +68,7 @@ async def run_extraction(args: argparse.Namespace) -> None:
 
     # One ``RunContext`` per invocation: the model / headless / step-cap
     # knobs are process-wide (parsed once from argv) and the region is
-    # hard-wired to ``COSTA_RICA_LATAM`` until SYS-6 parameterises it.
+    # hard-wired to ``COSTA_RICA_LATAM`` until parameterises it.
     ctx = RunContext(
         model=args.model,
         headless=not args.headed,
@@ -82,7 +82,7 @@ async def run_extraction(args: argparse.Namespace) -> None:
         f"Headless: {not args.headed}"
     )
 
-    # SYS-9: accumulate every per-company report so the ``--strict``
+    # accumulate every per-company report so the ``--strict``
     # exit gate can inspect the corpus-wide set of verdicts *after*
     # every company has been processed and saved. Draining the loop
     # first (rather than short-circuiting on the first non-match)
@@ -102,7 +102,7 @@ async def run_extraction(args: argparse.Namespace) -> None:
     if args.strict and _has_non_match(results):
         # Post-loop gate. The default path (``--strict`` off) never
         # reaches this branch, so corpus behaviour is byte-identical
-        # to the pre-SYS-9 CLI.
+        # to the pre-verdict CLI.
         sys.exit(1)
 
 
@@ -115,7 +115,7 @@ def _has_non_match(results: list[dict]) -> bool:
     forcing function for backfilling the corpus's human counts.
     Empty ``results`` returns ``False`` (nothing ran → nothing to
     fail on); the CLI still exits 0 in that edge case, matching
-    the pre-SYS-9 no-op semantics.
+    the pre-verdict no-op semantics.
     """
     return any(r["metadata"]["verdict"] != "match" for r in results)
 

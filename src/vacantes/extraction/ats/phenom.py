@@ -1,4 +1,4 @@
-"""Phenom People ``refineSearch`` API strategy (SYS-15).
+"""Phenom People ``refineSearch`` API strategy.
 
 Phenom hosts its job-search widget on the *tenant's own* domain — BCG's
 answers at ``https://careers.bcg.com/widgets`` — and serves the whole
@@ -12,7 +12,7 @@ no DOM, no LLM, which is why the report's ``metadata.model`` /
 
 Why an API adapter at all — the C12 closure
 -------------------------------------------
-BCG's DOM path is *runtime*-clean: the SYS-5 walker extracts its
+BCG's DOM path is *runtime*-clean: the pagination walker extracts its
 filtered board correctly. What it cannot have is an honest snapshot
 regression artifact. The country facet is sessionStorage state rather
 than a URL parameter, so a captured page cannot be replayed in the
@@ -97,7 +97,7 @@ Under-fetch is reported, not paginated. The request asks for
 ``size:100`` in one call; BCG's Costa Rica facet returns 14, roughly a
 seventh of that. If a region ever exceeds the page size the adapter
 emits what it received and logs a warning naming the shortfall — the
-SYS-9 verdict layer then flips ``verdict="under"``, which is its job. A
+verdict layer then flips ``verdict="under"``, which is its job. A
 pagination loop is deliberately not built ahead of a board that needs
 one.
 """

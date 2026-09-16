@@ -25,7 +25,7 @@ region-scoped extraction:
   is deliberately absent from ``filter_tokens``.
 
 ``COSTA_RICA_LATAM`` is the canonical instance and the only region
-SYS-4 needs. Additional regions can be added as sibling module
+current needs. Additional regions can be added as sibling module
 constants when a second target region is on-boarded.
 """
 

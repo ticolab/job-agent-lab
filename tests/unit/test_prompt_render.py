@@ -1,14 +1,14 @@
 """Golden byte-identity tests for the region-parametrised prompt renders.
 
-SYS-4 Task 1 extracts the region-specific tokens (intro noun phrase,
+ extracts the region-specific tokens (intro noun phrase,
 quoted / unquoted option list, preference pair) from ``GOAL_PROMPT``
 and the ``report_no_matching_location_filter`` tool description into
 :class:`vacantes.domain.region.TargetRegion`. That refactor was
 behaviourally invisible to the agent — the model received the exact
-same bytes it did in the pre-SYS-4 literals — and the goldens below
-were the frozen pre-SYS-4 strings copied verbatim.
+same bytes it did in the legacy literals — and the goldens below
+were the frozen legacy strings copied verbatim.
 
-SYS-6 Task 4 lands the first deliberate clause-content change on top
+ lands the first deliberate clause-content change on top
 of that baseline: two new C3 sentences (native ``<select>`` vocab in
 1a, ISO country codes + Search/Apply/Submit click in Case B) and one
 new C4 block (collapsed-section reveal preamble in STEP 2 plus a
@@ -30,7 +30,7 @@ from vacantes.extraction.dom.agent.controller import build_no_match_description
 from vacantes.extraction.dom.agent.prompt import GOAL_PROMPT, build_goal_prompt
 
 # ---------------------------------------------------------------------------
-# Golden: GOAL_PROMPT for COSTA_RICA_LATAM (SYS-6 Task 4 render).
+# Golden: GOAL_PROMPT for COSTA_RICA_LATAM.
 # ---------------------------------------------------------------------------
 GOLDEN_GOAL_PROMPT: str = """You are on a company career page with a job board listing open positions. Your task is to return the URLs for job listings that apply to the target region (Costa Rica or Latin America).
 
@@ -61,7 +61,7 @@ IMPORTANT:
 """
 
 # ---------------------------------------------------------------------------
-# Golden: Case C tool description for COSTA_RICA_LATAM (pre-SYS-4 literal).
+# Golden: Case C tool description for COSTA_RICA_LATAM (legacy literal).
 # ---------------------------------------------------------------------------
 GOLDEN_NO_MATCH_DESCRIPTION: str = (
     "Report that this job board has a location or region filter, but "
@@ -74,7 +74,7 @@ GOLDEN_NO_MATCH_DESCRIPTION: str = (
 
 
 class TestGoalPromptGolden:
-    """``GOAL_PROMPT`` must render byte-identical to the pre-SYS-4 literal."""
+    """``GOAL_PROMPT`` must render byte-identical to the legacy literal."""
 
     def test_module_constant_matches_golden(self) -> None:
         assert GOAL_PROMPT == GOLDEN_GOAL_PROMPT
@@ -88,7 +88,7 @@ class TestGoalPromptGolden:
 
 
 class TestNoMatchDescriptionGolden:
-    """The Case C tool description must render byte-identical to the pre-SYS-4 literal."""
+    """The Case C tool description must render byte-identical to the legacy literal."""
 
     def test_build_no_match_description_costa_rica_latam_matches_golden(self) -> None:
         assert (
@@ -97,7 +97,7 @@ class TestNoMatchDescriptionGolden:
 
 
 class TestExpectedJobsNeverLeaksToPrompt:
-    """SYS-9: ``expected_jobs`` MUST NOT enter the agent-visible surface.
+    """``expected_jobs`` MUST NOT enter the agent-visible surface.
 
     The verdict layer is a runtime *judge* — an out-of-band scoreboard
     that classifies a run after it finishes. Threading the human count
@@ -145,7 +145,7 @@ class TestExpectedJobsNeverLeaksToPrompt:
 
 # ---------------------------------------------------------------------------
 # Golden: GOAL_PROMPT for COSTA_RICA_LATAM with filter_already_applied=True
-# (SYS-12 Task 4). The rendered prompt inserts one NOTE clause between the
+# . The rendered prompt inserts one NOTE clause between the
 # intro paragraph and STEP 1; every other byte matches ``GOLDEN_GOAL_PROMPT``
 # above.
 # ---------------------------------------------------------------------------
@@ -181,14 +181,14 @@ IMPORTANT:
 
 
 class TestFilterAlreadyAppliedGolden:
-    """SYS-12 conditional-clause switch on ``build_goal_prompt``.
+    """conditional-clause switch on ``build_goal_prompt``.
 
     ``filter_already_applied=True`` inserts a single NOTE clause between
     the intro paragraph and STEP 1. The invariant guarded here is
     twofold:
 
     1. **True render is byte-identical to the frozen golden** — every
-       byte outside the inserted clause must match the pre-SYS-12
+       byte outside the inserted clause must match the pre-hooks
        shape so future clause edits ripple through both goldens in the
        same commit and a byte-drift can never sneak in undocumented.
     2. **False render never carries the clause** — a regression that

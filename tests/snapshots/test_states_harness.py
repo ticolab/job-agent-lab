@@ -1,21 +1,21 @@
-"""Harness-side test for the SYS-13 ``states`` fixture dimension.
+"""Harness-side test for the ``states`` fixture dimension.
 
 The main snapshot harness in :mod:`test_extractor_snapshots` gains a
-``states`` union loop under SYS-13, mirroring the ``pages`` loop from
-SYS-5. No corpus fixture today declares ``pre_filter_urls`` so no
+``states`` union loop, mirroring the ``pages`` loop from
+. No corpus fixture today declares ``pre_filter_urls`` so no
 committed fixture exercises the new code path; this module fills that
 gap by building a synthetic snapshot on disk under ``tmp_path`` with a
 hand-authored ``states/`` subdirectory and a ``top_url`` metadata key,
 then asserting the harness returns the correct union count.
 
-Four tests pin the SYS-13 harness contract:
+Four tests pin the harness contract:
 
 1. Multi-state union with a cross-state duplicate — proves the union
    deduplicates rather than collapsing to a single state or
    concatenating with double-counting.
-2. Absent ``states`` key — a pre-SYS-13 fixture takes the same code
+2. Absent ``states`` key — a single-state fixture takes the same code
    path with the states dimension collapsing to zero contributions
-   (byte-stability pin for every corpus fixture that predates SYS-13).
+   (byte-stability pin for every corpus fixture that predates).
 3. ``top_url`` overrides ``job_board_url`` for the state-1 replay —
    proves the harness genuinely threads ``metadata.top_url`` into the
    ``<base href>`` injection rather than treating it as decorative.
@@ -156,7 +156,7 @@ def test_states_absent_leaves_state_1_behaviour_unchanged(
 ) -> None:
     """A fixture without a ``states`` key matches state 1 alone.
 
-    Guards the SYS-13 additive-optional invariant: fixtures captured
+    Guards the additive-optional invariant: fixtures captured
     without ``pre_filter_urls`` declaring must behave identically. The
     synthetic state 1 here has two anchors, no ``states`` entry, and
     no ``top_url`` entry; the expected count is therefore exactly 2
@@ -177,7 +177,7 @@ def test_states_absent_leaves_state_1_behaviour_unchanged(
         "expected_unfiltered_count": 2,
         "captured_at": "2026-08-01T00:00:00+00:00",
         "captured_with_filters": False,
-        "notes": "synthetic single-state fixture (SYS-13 byte-stability pin)",
+        "notes": "synthetic single-state fixture (byte-stability pin)",
     }
     (fixture / "metadata.json").write_text(
         json.dumps(metadata, indent=2, ensure_ascii=False), encoding="utf-8"

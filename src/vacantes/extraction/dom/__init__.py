@@ -7,7 +7,7 @@ Two JavaScript assets live under ``extraction/dom/assets/`` and are the
   matcher. Walks the current DOM state and returns the list of job-link
   hrefs.
 - ``find_next_control.js`` (loaded as :data:`FIND_NEXT_CONTROL_JS`,
-  SYS-5) — the pagination-discovery pass. Locates the "next page"
+) — the pagination-discovery pass. Locates the "next page"
   affordance by generic signals, stamps it with a ``data-jal-next``
   marker attribute for a driver-side click, and returns a descriptor.
   Only consulted when ``Company.paginate`` is ``True``; the single-shot
@@ -17,7 +17,7 @@ Both assets are loaded via ``importlib.resources`` so runtime, capture
 script, snapshot tests, and the skill's ground-truth script all execute
 the exact same bytes in the page.
 
-The matcher (v2, SYS-2) walks the top document plus every open shadow root
+The matcher (v2) walks the top document plus every open shadow root
 and same-origin ``iframe``/``frame`` ``contentDocument`` reachable from it,
 in-page. Cross-origin and closed-shadow subtrees are structurally opaque
 and skipped. Each candidate anchor is gated on CSS visibility
@@ -34,7 +34,7 @@ and in ``CLAUDE.md``/``TABNINE.md``.
 from importlib.resources import files
 
 # The matcher takes ``[basePath, careerOrigin, minDepth, suppressSelector]``
-# — the last two defaulted (``1`` and ``null``) so pre-SYS-3 / pre-SYS-14
+# — the last two defaulted (``1`` and ``null``) so legacy / legacy
 # callers passing a shorter array keep exact current behaviour — and returns
 # a list of href strings for anchors that match the job-link pattern:
 # same-origin, visible, not inside a suppressed container, fragment-
@@ -44,7 +44,7 @@ from importlib.resources import files
 # same page, id-in-path wins (the Lever fix — id-in-query on the listing
 # root is a filter facet, not a real job).
 #
-# ``suppressSelector`` (SYS-14) drops anchors whose ``closest(selector)`` is
+# ``suppressSelector`` drops anchors whose ``closest(selector)`` is
 # non-null, applied after the visibility gate and before bucketing. It
 # closes C16 — sections whose anchors are URL-indistinguishable from real
 # postings (Ulteig's UKG "Featured opportunities"). Invalid selectors throw

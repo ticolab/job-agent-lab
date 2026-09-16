@@ -400,8 +400,10 @@ class TestFingerprintTable:
                 f"{fp.platform} has no signals on any axis"
             )
 
-    def test_location_tokens_include_sys6_additions(self, probe: ModuleType) -> None:
-        # The SYS-6 C3 clause taught the agent about ``pais`` / ``país``
+    def test_location_tokens_include_c3_prompt_additions(
+        self, probe: ModuleType
+    ) -> None:
+        # The C3 clause taught the agent about ``pais`` / ``país``
         # and ``city`` / ``region``. If those disappear from the probe's
         # token list, boards the agent recognises will silently drop out
         # of the filter-census output.

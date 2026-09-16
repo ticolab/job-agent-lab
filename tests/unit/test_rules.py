@@ -3,7 +3,7 @@
 The three examples in the function's own docstring are the "contract" the
 runtime, the capture script, and the snapshot suite all rely on. This
 file locks them in as executable assertions, plus adds trailing-slash
-and root-path edge cases that surfaced during the SYS-1 catalog audit.
+and root-path edge cases that surfaced during the catalog audit.
 """
 
 from __future__ import annotations

@@ -1,8 +1,8 @@
-"""Harness-side test for the SYS-14 ``suppress_ancestor_selector`` key.
+"""Harness-side test for the ``suppress_ancestor_selector`` key.
 
 ``tests/snapshots/test_extractor_snapshots.py`` gains a fourth matcher
 argument sourced from ``metadata.get("suppress_ancestor_selector")``. The
-corpus committed today is entirely pre-SYS-14 (no fixture sets the key),
+corpus committed today is entirely legacy (no fixture sets the key),
 so the corpus alone never exercises the new branch. This module fills
 that gap.
 
@@ -17,7 +17,7 @@ driving the production function proves the wiring; an inline
 re-implementation would pass even if the harness ignored the key
 entirely.
 
-The fixture mirrors the C16 shape that motivates SYS-14: a Ulteig-style
+The fixture mirrors the C16 shape that motivates: a Ulteig-style
 "Featured opportunities" container whose anchors are indistinguishable
 from the real postings at the URL layer (same origin, same prefix, same
 depth), so only the container gate can separate them.
@@ -68,7 +68,7 @@ def _write_fixture(root: Path, *, suppress: str | None, expected: int) -> Path:
         "expected_unfiltered_count": expected,
         "captured_at": "2026-08-02T00:00:00+00:00",
         "captured_with_filters": True,
-        "notes": "synthetic fixture for the SYS-14 suppression harness test",
+        "notes": "synthetic fixture for the suppression harness test",
     }
     # Additive-optional, exactly as ``_write_snapshot`` emits it.
     if suppress is not None:
@@ -103,7 +103,7 @@ def test_same_fixture_without_the_key_counts_every_anchor(
 
     This is the byte-stability half of the contract. It pins that the
     harness's default (key absent → ``None`` → gate disabled) is what
-    every pre-SYS-14 fixture relies on, and it proves the previous
+    every legacy fixture relies on, and it proves the previous
     test's result comes from the recorded selector rather than from
     something incidental in the markup.
     """
@@ -116,7 +116,7 @@ def test_recorded_selector_mismatch_is_a_loud_failure(
 ) -> None:
     """A fixture whose recorded count ignores its own selector fails.
 
-    Guards against the fixture-authoring mistake the SYS-14 fixture
+    Guards against the fixture-authoring mistake the suppression fixture
     policy exists to prevent: capturing Ulteig *without* suppression
     (recording the drifting featured section into the count) and then
     adding the selector afterwards. The harness must not paper over the

@@ -14,20 +14,20 @@ consumes it. API strategies (Greenhouse and future siblings) emit
 loop; :func:`print_summary` renders each ``None`` as ``n/a`` rather
 than the literal ``None`` string.
 
-SYS-9 additive keys consumed here: ``metadata.expected_jobs`` (the
-human-counted target, ``None`` if never counted) and
+Verdict-related additive keys consumed here: ``metadata.expected_jobs``
+(the human-counted target, ``None`` if never counted) and
 ``metadata.verdict`` (one of ``"match"``/``"under"``/``"over"``/
 ``"unverified"``). :func:`print_summary` renders both through the
 ``Verdict:`` line built by :func:`_verdict_line`, and the CLI's
 ``--strict`` gate reads ``metadata.verdict`` verbatim to decide the
 exit code — this module never mutates either value.
 
-SYS-13 additive key consumed here: ``metadata.states_visited``, an
+States-related additive key consumed here: ``metadata.states_visited``, an
 optional integer emitted only by the agent-less multi-state
 ``DomStrategy._extract_prefiltered`` path (see :func:`build_report`
 for the serialisation contract). :func:`print_summary` renders a
 ``States:`` line right after the verdict when the key is present and
-omits the line entirely otherwise, keeping every pre-SYS-13 report's
+omits the line entirely otherwise, keeping every single-state report's
 console rendering byte-identical.
 """
 
@@ -63,9 +63,9 @@ def _fmt(value: Any) -> str:
 
 
 def _verdict_line(meta: dict[str, Any]) -> str:
-    """Render the SYS-9 verdict as a single ``Verdict:`` line.
+    """Render the verdict as a single ``Verdict:`` line.
 
-    Format is fixed by the SYS-9 plan:
+    Format is fixed by the plan:
 
     - ``Verdict:  match`` (double space after label; no delta).
     - ``Verdict:  under — found N, expected M (-K)`` where ``K = M - N``,
@@ -125,10 +125,10 @@ def print_summary(result: dict[str, Any]) -> None:
     print(f"  Done:     {_fmt(meta['agent_completed'])}")
     print(f"  Errors:   {_fmt(meta['agent_had_errors'])}")
     print(f"  {_verdict_line(meta)}")
-    # SYS-13 additive line: rendered only when the report came from the
+    # additive line: rendered only when the report came from the
     # agent-less multi-state path (build_report omits the key from
     # metadata otherwise, so every agent + Greenhouse report's console
-    # rendering stays byte-identical to pre-SYS-13).
+    # rendering stays byte-identical to single-state).
     if "states_visited" in meta:
         print(f"  States:   {meta['states_visited']}")
 

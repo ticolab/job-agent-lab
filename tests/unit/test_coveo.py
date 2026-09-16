@@ -1,4 +1,4 @@
-"""Unit tests for the Coveo adapter (SYS-18).
+"""Unit tests for the Coveo adapter.
 
 Two layers, following the phenom/talentbrew precedent:
 
@@ -10,7 +10,7 @@ Two layers, following the phenom/talentbrew precedent:
   fixture — the captured JWT must never land in git.
 
 Fixture provenance is worth stating precisely, because it is *not* the
-evidence capture. ``spike/evidence/ust_coveo_cr.json`` records the
+original evidence capture. The original evidence capture recorded the
 **browser's** contract: ``totalCount: 20`` with only 10 ``results``,
 because the widget asks for ``numberOfResults: 10``. The committed
 fixture instead records the **adapter's** contract — captured live on
@@ -937,7 +937,7 @@ class TestUnderFetchWarning:
 
 
 # ---------------------------------------------------------------------------
-# SYS-19: the browser-borrowed token source.
+# the browser-borrowed token source.
 # ---------------------------------------------------------------------------
 
 _BROWSER_KEY = "searchToken_en_us"
@@ -1159,7 +1159,7 @@ class TestBrowserPathRecordedPayload:
         assert result["metadata"]["verdict"] == "match"
 
     def test_click_uri_emitted_verbatim(self, monkeypatch: Any) -> None:
-        # SYS-18's sharpest rule, re-pinned on the new token path:
+        # the Coveo adapter's sharpest rule, re-pinned on the new token path:
         # raw.jobid disagrees with the clickUri tail on every record, so
         # a reconstructed URL would not resolve.
         async def _fake(url: str, key: str, *, headless: bool) -> str:

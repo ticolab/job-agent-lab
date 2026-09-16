@@ -1,8 +1,8 @@
-"""Harness-side test for the SYS-5 ``pages`` fixture dimension.
+"""Harness-side test for the ``pages`` fixture dimension.
 
 The main snapshot harness in :mod:`test_extractor_snapshots` gains a
-``pages`` union loop under SYS-5, mirroring the ``frames`` loop from
-SYS-2. The 37-fixture corpus committed today is SYS-2-only (no
+``pages`` union loop, mirroring the ``frames`` loop from
+. The 37-fixture corpus committed today is single-state (no
 ``pages`` key), so the corpus by itself does not exercise the new code
 path. This module fills that gap by building a synthetic snapshot on
 disk under ``tmp_path`` with a hand-authored ``pages/`` subdirectory
@@ -147,8 +147,8 @@ def test_pages_absent_leaves_state_1_behaviour_unchanged(
 ) -> None:
     """A fixture without a ``pages`` key matches state 1 alone.
 
-    Guards the SYS-5 additive invariant: fixtures captured without
-    ``--paginate`` (i.e. every SYS-2 fixture in the corpus today) must
+    Guards the additive invariant: fixtures captured without
+    ``--paginate`` (i.e. every fixture in the corpus today) must
     behave identically. The synthetic state 1 here has two anchors and
     no ``pages`` entry; the expected count is therefore exactly 2.
     """

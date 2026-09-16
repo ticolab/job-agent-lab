@@ -1,14 +1,14 @@
 """Company schema: pydantic models describing a career-site test target.
 
 ``LinkRule`` is the declarative description of what a valid job link looks
-like on the company's board. It currently carries ``path_prefix`` (SYS-1,
-overrides the derived prefix when the default "strip the last path segment"
-heuristic doesn't fit) and ``min_depth`` (SYS-3, requires the id-in-path
+like on the company's board. It currently carries ``path_prefix``
+(overrides the derived prefix when the default "strip the last path
+segment" heuristic doesn't fit) and ``min_depth`` (requires the id-in-path
 tail to be at least N segments deep — the fix for boards like Databricks
 whose chrome links share the job-link prefix at depth 1 while real
 postings live deeper).
 
-``Company`` carries ``strategy`` (SYS-4, dispatches between the DOM
+``Company`` carries ``strategy`` (dispatches between the DOM
 matcher and API adapters like Greenhouse) alongside the identity and
 matcher inputs. The ``StrategyName`` ``Literal`` is the single
 authoritative list of registered strategies — adding a new strategy
@@ -16,7 +16,7 @@ means extending this literal *and* registering an implementation in
 :mod:`vacantes.extraction`; a unit test asserts the two stay in
 sync.
 
-``RuntimeHooks`` (SYS-12) is a nested frozen sub-model carrying four
+``RuntimeHooks`` is a nested frozen sub-model carrying four
 opt-in per-board knobs that the deterministic side applies between
 agent handoff and matcher invocation: ``pre_extract_css`` (extract-time
 stylesheet injection to unhide anchors CSS-gated by a marketing class),
@@ -32,7 +32,7 @@ cross-field validators enforce that non-inert hooks require
 phase entirely) and that ``next_control_selector`` requires
 ``paginate=True`` (the override is only meaningful inside the walker).
 
-``pre_filter_urls`` (SYS-13) is the agent-less multi-state escape hatch
+``pre_filter_urls`` is the agent-less multi-state escape hatch
 for boards whose location filter can only be applied via URL and whose
 target region maps to several such URLs (C18 — Plan A Technologies'
 PeopleForce board exposes one ``?location_id=<n>`` URL per city, and the
@@ -125,7 +125,7 @@ class LinkRule(BaseModel):
             must contain, counted from the segment immediately after
             ``path_prefix``. This is a floor, not an exact match: at the
             default of ``1`` every anchor whose path starts with
-            ``<prefix>/`` is kept (byte-identical to the pre-SYS-3
+            ``<prefix>/`` is kept (byte-identical to the legacy
             matcher). Raise it when the board's chrome links share the
             job-link prefix at shallow depths while real postings live
             deeper — Databricks (C9) has ``/company/careers/<team>``
@@ -136,7 +136,7 @@ class LinkRule(BaseModel):
             branch is gated; the id-in-query fallback (Akurey, 10Pearls
             shape) is unaffected because it never enters the depth check.
         suppress_ancestor_selector: Optional CSS selector identifying a
-            container whose anchors are *never* job links (SYS-14, C16).
+            container whose anchors are *never* job links (C16).
             During matching an anchor is dropped when
             ``anchor.closest(selector)`` returns non-null. The gate runs
             **after** the visibility gate and **before** URL bucketing,
@@ -170,7 +170,7 @@ class LinkRule(BaseModel):
             mechanism is UltiPro-family-generic. An invalid selector is
             a loud error rather than a silent no-op: the matcher
             validates it once per invocation and throws a named error.
-            Selectors rot on board redesigns; the SYS-9 verdict layer
+            Selectors rot on board redesigns; the verdict layer
             is the designated detector.
     """
 
@@ -182,7 +182,7 @@ class LinkRule(BaseModel):
 
 
 class PhenomConfig(BaseModel):
-    """Tenant parameters for the Phenom ``refineSearch`` API (SYS-15).
+    """Tenant parameters for the Phenom ``refineSearch`` API.
 
     Phenom People hosts its search widget on the *tenant's own* domain
     (BCG's lives at ``careers.bcg.com/widgets``), so unlike Greenhouse
@@ -215,7 +215,7 @@ class PhenomConfig(BaseModel):
 
 
 class TalentbrewConfig(BaseModel):
-    """Tenant parameters for the Talentbrew/Radancy results API (SYS-17).
+    """Tenant parameters for the Talentbrew/Radancy results API.
 
     Talentbrew (also branded Radancy) is a self-hosted enterprise ATS:
     every tenant serves the search widget on its own domain (Citi's
@@ -273,16 +273,15 @@ class TalentbrewConfig(BaseModel):
 
 
 class CoveoConfig(BaseModel):
-    """Tenant parameters for the Coveo search API (SYS-18).
+    """Tenant parameters for the Coveo search API.
 
     Coveo is a search *platform* rather than an ATS: the search
     endpoint itself is a platform constant
     (``https://{organization_id}.org.coveo.com/rest/search/v2``), but
     the **token-mint path is tenant-owned**, which is the load-bearing
     reason ``token_url`` is config rather than a derived constant. The
-    P1 capture (``spike/evidence/ust_coveo_token.NOTES.txt``) pins
-    this: there is no Coveo-platform-hosted anonymous-token endpoint
-    to call — UST's own front door at
+    evidence capture pins this: there is no Coveo-platform-hosted
+    anonymous-token endpoint to call — UST's own front door at
     ``https://www.ust.com/services/search`` proxies Coveo's
     ``/rest/search/token`` and answers anonymously, and the same notes
     record a *second* same-host variant
@@ -328,7 +327,7 @@ class CoveoConfig(BaseModel):
             the mint path is tenant-owned and need not share
             ``job_board_url``'s origin. ``None`` on tenants whose mint
             is unreachable over HTTP — see ``browser_token_key``.
-        browser_token_key: SYS-19 alternative token source: the
+        browser_token_key: alternative token source: the
             ``sessionStorage`` key under which the tenant's own page
             stores the JWT it minted during a normal browser load. Set
             this *instead of* ``token_url`` when the mint origin sits
@@ -365,7 +364,7 @@ class CoveoConfig(BaseModel):
 
     @model_validator(mode="after")
     def _validate_exactly_one_token_source(self) -> Self:
-        """Exactly one of ``token_url`` / ``browser_token_key`` (SYS-19).
+        """Exactly one of ``token_url`` / ``browser_token_key`` must be set.
 
         Both directions are errors for the same reason the rest of this
         module rejects unread config: the adapter reads whichever field
@@ -400,13 +399,13 @@ class CoveoConfig(BaseModel):
 
 
 class RuntimeHooks(BaseModel):
-    """Per-board deterministic page-preparation knobs (SYS-12).
+    """Per-board deterministic page-preparation knobs.
 
     Every field is opt-in and defaults to a value that leaves the
-    pre-SYS-12 code paths byte-identical. Non-inert hooks are executed
+    pre-hooks code paths byte-identical. Non-inert hooks are executed
     by the deterministic collector (never the agent) between agent
-    handoff and matcher invocation, in the order pinned by the
-    architecture proposal §4.5: ``pre_extract_css`` inject → expansion
+    handoff and matcher invocation, in a pinned order:
+    ``pre_extract_css`` inject → expansion
     rounds → matcher (or walker, with ``next_control_selector`` as the
     discovery override). ``filter_already_applied`` is the sole
     prompt-side hook — it renders a conditional clause into
@@ -449,7 +448,7 @@ class RuntimeHooks(BaseModel):
             important-modifier class
             (``button.\\!bg-primary``), which resolves uniquely on
             the board today; a redesign that restyles it is caught at
-            the SYS-9 verdict layer as an ``under``.
+            the verdict layer as an ``under``.
         filter_already_applied: When ``True``, ``build_goal_prompt``
             renders a conditional clause between the intro and Step 1a
             telling the agent the location filter is already carried by
@@ -525,10 +524,10 @@ class Company(BaseModel):
             API strategies ignore this field.
         strategy: Which extraction strategy handles this company. The
             default ``"dom"`` runs the browser-use agent + deterministic
-            matcher; ``"greenhouse"`` (SYS-4 Task 3) hits the Greenhouse
+            matcher; ``"greenhouse"`` hits the Greenhouse
             job-boards API and filters by
             :meth:`~vacantes.domain.region.TargetRegion.matches`.
-        paginate: SYS-5 opt-in for boards whose full listing is split
+        paginate: opt-in for boards whose full listing is split
             across multiple DOM states advanced by clicking an in-page
             "next" control (Techwarely, BCG). When ``True`` and
             ``strategy="dom"``, the collector delegates to
@@ -540,13 +539,13 @@ class Company(BaseModel):
             until no control is found, a click yields no new links, or
             ``MAX_PAGES=20`` is hit. Defaults to
             ``False`` — every corpus company today collects in a single
-            pass and is byte-identical to the pre-SYS-5 behaviour. Only
+            pass and is byte-identical to the single-page behaviour. Only
             meaningful for ``strategy="dom"``; the Greenhouse API
             strategy pages internally at the request level.
-        expected_jobs: SYS-9 human-counted, region-filtered live target
+        expected_jobs: human-counted, region-filtered live target
             from the integration queue. ``None`` (the default) means the
             entry has never been counted — every catalog entry that
-            predates SYS-9 carries ``None``, no backfill is done. ``0``
+            predates carries ``None``, no backfill is done. ``0``
             is a legitimate value: a Case-C board that has no listings
             in the target region has a well-defined expectation of zero.
             This value is *never* adjusted to match observed reality —
@@ -559,9 +558,9 @@ class Company(BaseModel):
             Deliberately absent from any agent-visible surface (never
             interpolated into ``extraction.dom.agent.prompt``) so the LLM cannot
             curve-fit to the count.
-        hooks: SYS-12 nested :class:`RuntimeHooks` bag of opt-in per-board
+        hooks: nested :class:`RuntimeHooks` bag of opt-in per-board
             page-preparation knobs. Defaults to ``RuntimeHooks()`` — the
-            inert value that leaves every pre-SYS-12 code path
+            inert value that leaves every pre-hooks code path
             byte-identical. See :class:`RuntimeHooks` for per-field
             semantics and board exemplars. Two cross-field validators
             below enforce (a) non-inert hooks require ``strategy="dom"``
@@ -569,10 +568,10 @@ class Company(BaseModel):
             phase entirely) and (b) ``next_control_selector`` requires
             ``paginate=True`` (the override is only meaningful inside
             the walker).
-        pre_filter_urls: SYS-13 opt-in for boards whose location filter
+        pre_filter_urls: opt-in for boards whose location filter
             can only be applied via URL and whose target region maps to
             several such URLs. Defaults to ``()`` — the empty tuple that
-            leaves every pre-SYS-13 code path byte-identical (the
+            leaves every single-state code path byte-identical (the
             ``DomStrategy.extract`` dispatch branch is a no-op when this
             field is empty). When non-empty, ``DomStrategy`` skips the
             browser-use agent entirely: one ``BrowserSession`` visits
@@ -590,12 +589,12 @@ class Company(BaseModel):
             loop, closing C18 structurally. No ``OPENAI_API_KEY`` is
             consumed on this path — the agent is never constructed.
             Fragility of the declared URLs (a city id changing upstream,
-            a query-string schema change) is caught at the SYS-9
-            verdict layer: a stale URL that no longer matches any
-            postings degrades to zero anchors for that state, and the
-            union count falls below ``expected_jobs`` producing a
-            ``verdict="under"``. Two cross-field validators below
-            enforce (a) non-empty ``pre_filter_urls`` requires
+            a query-string schema change) is caught at the verdict layer:
+            a stale URL that no longer matches any postings degrades to
+            zero anchors for that state, and the union count falls below
+            ``expected_jobs`` producing a ``verdict="under"``. Two
+            cross-field validators below enforce (a) non-empty
+            ``pre_filter_urls`` requires
             ``strategy="dom"`` (the runner lives in :class:`DomStrategy`
             and the Greenhouse API path never navigates URLs) and (b)
             every declared URL shares origin with ``job_board_url``
@@ -606,7 +605,7 @@ class Company(BaseModel):
             non-empty ``pre_filter_urls`` is *not* rejected — the flag
             is prompt-side only and is simply never read on the
             agent-less path.
-        phenom: SYS-15 tenant config for ``strategy="phenom"``. ``None``
+        phenom: tenant config for ``strategy="phenom"``. ``None``
             (the default) for every other strategy — a cross-field
             validator enforces both directions, and that presence check
             is the *entire* schema-time gate for this strategy because
@@ -625,7 +624,7 @@ class Company(BaseModel):
             synthesizes posting URLs from it; that requirement is
             enforced at extract time rather than here (the payload
             carries no board URL to validate against at import).
-        talentbrew: SYS-17 tenant config for ``strategy="talentbrew"``.
+        talentbrew: tenant config for ``strategy="talentbrew"``.
             ``None`` (the default) for every other strategy — a
             cross-field validator enforces both directions, and that
             presence check is the *entire* schema-time gate for this
@@ -646,7 +645,7 @@ class Company(BaseModel):
             ``/job/<city>/<slug>/<career-site-id>/<job-id>`` sample URL
             yields the too-specific ``/job/heredia/<slug>/287`` — that
             requirement is enforced at extract time rather than here.
-        coveo: SYS-18 tenant config for ``strategy="coveo"``. ``None``
+        coveo: tenant config for ``strategy="coveo"``. ``None``
             (the default) for every other strategy — a cross-field
             validator enforces both directions, and that presence
             check is the *entire* schema-time gate: the search host is
@@ -695,7 +694,7 @@ class Company(BaseModel):
 
     @model_validator(mode="after")
     def _validate_phenom_config_presence(self) -> Self:
-        """``strategy="phenom"`` ⇔ ``phenom`` config present (SYS-15).
+        """``strategy="phenom"`` ⇔ ``phenom`` config present.
 
         Both directions are enforced. A ``strategy="phenom"`` entry
         without the config cannot build a request body at all (there is
@@ -727,7 +726,7 @@ class Company(BaseModel):
 
     @model_validator(mode="after")
     def _validate_talentbrew_config_presence(self) -> Self:
-        """``strategy="talentbrew"`` ⇔ ``talentbrew`` config present (SYS-17).
+        """``strategy="talentbrew"`` ⇔ ``talentbrew`` config present.
 
         Both directions are enforced. A ``strategy="talentbrew"`` entry
         without the config cannot build a request at all — the tenant's
@@ -762,7 +761,7 @@ class Company(BaseModel):
 
     @model_validator(mode="after")
     def _validate_coveo_config_presence(self) -> Self:
-        """``strategy="coveo"`` ⇔ ``coveo`` config present (SYS-18).
+        """``strategy="coveo"`` ⇔ ``coveo`` config present.
 
         Both directions are enforced, mirroring the Phenom and
         Talentbrew validators. A ``strategy="coveo"`` entry without the
@@ -804,7 +803,7 @@ class Company(BaseModel):
         canonical Greenhouse board URL — a known Greenhouse host plus a
         non-empty first path segment (the board token). This validator
         is the *belt*; the actual token-extraction helper the runtime
-        uses (SYS-4 Task 3) is the braces.
+        uses is the braces.
 
         Non-``greenhouse`` strategies bypass this check entirely — the
         DOM strategy validates URLs at runtime through same-origin
@@ -973,7 +972,7 @@ class Company(BaseModel):
         the Greenhouse API strategy hits the boards API directly and
         never navigates URLs, so ``pre_filter_urls`` would be silently
         ignored. Reject at catalog-import time so the mismatch surfaces
-        at startup rather than at extraction time. Mirrors the SYS-12
+        at startup rather than at extraction time. Mirrors the
         ``hooks``-require-``dom`` rule; same error-message style.
 
         Empty tuple (the default) bypasses this check on any strategy.

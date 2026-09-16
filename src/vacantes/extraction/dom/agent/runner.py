@@ -6,7 +6,7 @@ task prompt into a fully-configured ``Agent`` ready to ``.run()``.
 
 The agent-tuning knobs (``use_vision=False``, ``max_actions_per_step=3``,
 ``max_failures=3``, ``use_judge=False`` with its rationale comment) are
-kept **verbatim** from the pre-SYS-1 ``agent.py`` — SYS-3 will introduce
+kept **verbatim** from the pre- ``agent.py`` — will introduce
 per-company overrides but this phase preserves runtime behaviour to the
 byte.
 
@@ -38,7 +38,7 @@ async def build_agent(
 ) -> tuple[Agent, BrowserSession]:
     """Assemble the runtime ``Agent`` + ``BrowserSession`` for one run.
 
-    ``async`` because the SYS-10 browser-environment layer resolves the
+    ``async`` because the browser-environment layer resolves the
     plausible User-Agent via a headless Chromium probe before wiring
     the ``BrowserProfile``. ``BrowserProfile.user_agent`` maps to
     Chromium's ``--user-agent=`` launch flag, so the UA must be known
@@ -50,7 +50,7 @@ async def build_agent(
     The plausible UA is applied unconditionally, including on headed
     runs: the transform is a byte-identical no-op when the input UA
     does not carry the ``HeadlessChrome`` token, so headed runs remain
-    byte-compatible with the pre-SYS-10 behaviour while the invariant
+    byte-compatible with the legacy behaviour while the invariant
     "every launch site presents the same UA" stays unconditional.
 
     Args:
@@ -60,9 +60,9 @@ async def build_agent(
             tools (see ``extraction.dom.agent.controller.build_controller``).
         model: OpenAI model identifier (e.g. ``"gpt-4.1-mini"``).
         headless: Whether to launch Chromium headless.
-        filter_already_applied: SYS-12 :attr:`RuntimeHooks.filter_already_applied`.
+        filter_already_applied: :attr:`RuntimeHooks.filter_already_applied`.
             When ``False`` (default) the task prompt is the module-level
-            :data:`GOAL_PROMPT` — byte-identical to the pre-SYS-12 shape.
+            :data:`GOAL_PROMPT` — byte-identical to the pre-hooks shape.
             When ``True`` the task prompt is re-rendered via
             :func:`~vacantes.extraction.dom.agent.prompt.build_goal_prompt`
             with ``filter_already_applied=True``, inserting the "filter
@@ -72,7 +72,7 @@ async def build_agent(
     """
     llm = ChatLiteLLM(model=f"openai/{model}", temperature=1)
 
-    # SYS-10: all launch sites must agree — a board is validated (probe,
+    # all launch sites must agree — a board is validated (probe,
     # capture, ground truth) and run (this Agent) under one browser
     # environment.
     user_agent = await plausible_headless_ua()

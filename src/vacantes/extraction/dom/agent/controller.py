@@ -52,7 +52,7 @@ def build_no_match_description(region: TargetRegion) -> str:
     prose, not as quoted string enumerations). ``build_controller``
     passes the result straight to the action decorator; a golden test
     in ``tests/unit/test_prompt_render.py`` pins the
-    :data:`COSTA_RICA_LATAM` render byte-identical to the pre-SYS-4
+    :data:`COSTA_RICA_LATAM` render byte-identical to the legacy
     literal.
     """
     return (
@@ -91,37 +91,37 @@ def build_controller(
             Simplicant's ``/jobs/<id-slug>/detail``).
         min_depth: Minimum path-tail depth in the id-in-path branch of
             the matcher (mirrors ``LinkRule.min_depth``). The default of
-            ``1`` is byte-identical to the pre-SYS-3 matcher; raise it
+            ``1`` is byte-identical to the legacy matcher; raise it
             when the board's chrome links share the prefix at shallow
             depths and real postings live deeper (C9: Databricks,
             Avionyx/iCIMS).
-        suppress_selector: SYS-14 container-suppression selector
+        suppress_selector: container-suppression selector
             (mirrors ``LinkRule.suppress_ancestor_selector``). Anchors
             inside a matching ancestor are dropped by the matcher. Use
             it when a board renders a section whose anchors are
             URL-indistinguishable from the real postings (C16: Ulteig's
             UKG "Featured opportunities"). ``None`` (the default) is
-            byte-identical to the pre-SYS-14 matcher.
-        paginate: SYS-5 opt-in for boards that partition their listing
+            byte-identical to the legacy matcher.
+        paginate: opt-in for boards that partition their listing
             across multiple DOM states (Techwarely, BCG). When ``True``
             the registered ``extract_job_links`` tool delegates to
             :func:`~vacantes.extraction.dom.collector.walk_and_collect`,
             which advances state via a driver-side click on the
             ``[data-jal-next]`` marker stamped by the discovery JS. The
-            default of ``False`` is byte-identical to the pre-SYS-5
+            default of ``False`` is byte-identical to the single-page
             single-shot code path.
         region: Target :class:`TargetRegion` whose ``filter_tokens`` are
             rendered into the Case C tool description. Defaults to
             :data:`COSTA_RICA_LATAM` so existing callers (the CLI, the
-            ground-truth script) keep their pre-SYS-4 signatures.
-        hooks: SYS-12 :class:`RuntimeHooks` executed between agent
+            ground-truth script) keep their legacy signatures.
+        hooks: :class:`RuntimeHooks` executed between agent
             handoff and matcher invocation. This is the **single
             normalisation site** for the plumbing chain — ``None`` is
             converted to an inert :class:`RuntimeHooks` here and the
             normalised value is forwarded verbatim to
             :func:`~vacantes.extraction.dom.collector.collect_job_links`.
             Downstream consumers gate on :attr:`RuntimeHooks.is_inert`
-            (never ``is None``) so the pre-SYS-12 code path is exactly
+            (never ``is None``) so the pre-hooks code path is exactly
             recovered when the caller passes ``None`` or an inert
             instance. ``filter_already_applied`` is read by the
             prompt-rendering layer only (see

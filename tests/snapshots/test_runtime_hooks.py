@@ -1,6 +1,6 @@
-"""Collector-level hook-mechanic pins against real Chromium (SYS-12).
+"""Collector-level hook-mechanic pins against real Chromium.
 
-This module is the canonical file for the *joint* SYS-12 hook mechanics
+This module is the canonical file for the *joint* hook mechanics
 — behaviours that involve two or more of :func:`apply_pre_extract_css`,
 :func:`expand_all`, ``walk_and_collect``'s ``next_control_override``,
 and the matcher itself running together on the same DOM. It complements

@@ -4,19 +4,18 @@
 per-company task text. Its region-specific *tokens* — the intro noun
 phrase, the quoted filter-option list, and the preferred/fallback
 preference pair — are rendered from a :class:`TargetRegion` via
-:func:`build_goal_prompt` (SYS-4), and ``GOAL_PROMPT`` itself is the
+:func:`build_goal_prompt`, and ``GOAL_PROMPT`` itself is the
 :data:`COSTA_RICA_LATAM` render.
 
-SYS-6 decomposes the previously monolithic f-string into six named
+The decomposed prompt splits the previously monolithic f-string into six named
 clause constants (``_INTRO_CLAUSE``, ``_STEP_1A_IDENTIFY_CLAUSE``,
 ``_STEP_1B_INSPECT_CLAUSE``, ``_STEP_1C_DECIDE_CLAUSE``,
 ``_STEP_2_EXTRACT_CLAUSE``, ``_IMPORTANT_BULLETS_CLAUSE``) that
 :func:`build_goal_prompt` concatenates in order and then interpolates
-via :meth:`str.format` — the "assembled from clauses" shape called out
-in ``ARCHITECTURE_PROPOSAL.md`` §4.5.
+via :meth:`str.format` — the "assembled from clauses" shape.
 
-SYS-6 Task 4 ships two capability additions on top of the decomposed
-skeleton (plan decision 2):
+The decomposed prompt ships two capability additions on top of the base
+skeleton:
 
 * **C3 — native ``<select>`` vocabulary + submit-click.** ``1a`` gains
   a sentence teaching the agent that a native ``<select>`` element is
@@ -40,7 +39,7 @@ clause-level wording only, not a change to the region's
 ``filter_tokens`` list. Golden tests in
 ``tests/unit/test_prompt_render.py`` pin the assembled render.
 
-SYS-16 appends two sentences to ``1a`` (C3.1), both region-agnostic —
+The C3.1 clause appends two sentences to ``1a`` (C3.1), both region-agnostic —
 the first reuses the ``{quoted}`` placeholder rather than naming any
 region:
 
@@ -66,14 +65,13 @@ region:
   to the visible widget is what makes option-text discovery
   actionable.
 
-Measurement note (SYS-16): the C3.1 clause is a *non-regression*
+Measurement note: the C3.1 clause is a *non-regression*
 change on the corpus as it stands, not a demonstrated capability win.
 No board currently in the corpus or the queue exposes a **visible**
-attribute-anonymous control that the pre-SYS-16 prompt misses —
+attribute-anonymous control that the legacy prompt misses —
 Dev.Pro, the motivating board, is discovered correctly by the existing
 combobox sentence (3/3 pre-clause runs opened its ``Location``
-widget). See ``spike/SYS_16_RESULTS.md`` for the full measurement
-table.
+widget).
 
 Each clause is authored as a triple-quoted string with real newlines
 in the source (rather than escape sequences), so file round-trips
@@ -91,10 +89,10 @@ from __future__ import annotations
 from vacantes.domain.region import COSTA_RICA_LATAM, TargetRegion
 
 # ---------------------------------------------------------------------------
-# Prompt clauses (SYS-6 §4.5).
+# Prompt clauses.
 #
 # Each clause carries its own trailing newline(s) so concatenation
-# reproduces the pre-SYS-6 monolithic triple-quoted f-string shape. The
+# reproduces the monolithic triple-quoted f-string shape. The
 # ``{intro_label}``, ``{quoted}``, and ``{preference}`` placeholders are
 # resolved once by :func:`build_goal_prompt` via :meth:`str.format`.
 #
@@ -167,16 +165,16 @@ def build_goal_prompt(
 ) -> str:
     """Render ``GOAL_PROMPT`` for the given :class:`TargetRegion`.
 
-    Concatenates the six clause constants (SYS-6 §4.5) and resolves
+    Concatenates the six clause constants and resolves
     their region-specific placeholders — ``{intro_label}``, ``{quoted}``,
     and ``{preference}`` — in one :meth:`str.format` pass. The
     surrounding STEP 1 / STEP 2 sequence and the Case A / Case B / Case C
     decision tree are hard-coded in the clause bodies; the goldens in
     ``tests/unit/test_prompt_render.py`` pin the assembled render.
 
-    ``filter_already_applied`` (SYS-12 :attr:`RuntimeHooks.filter_already_applied`)
+    ``filter_already_applied`` (:attr:`RuntimeHooks.filter_already_applied`)
     is a conditional-clause switch. When ``False`` (the default) the
-    render is byte-identical to the pre-SYS-12 shape — every existing
+    render is byte-identical to the pre-hooks shape — every existing
     golden stays untouched. When ``True`` the
     ``_FILTER_ALREADY_APPLIED_CLAUSE`` sentence is inserted between
     the intro and STEP 1, telling the agent that the page URL already

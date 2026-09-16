@@ -1,6 +1,6 @@
 """Unit tests for :mod:`vacantes.reporting.output`.
 
-Focused on the SYS-9 additions:
+Focused on the additions:
 
 - :func:`_verdict_line` renders each of the four verdicts in the exact
   format the plan mandates (double space, em-dash, signed delta) and
@@ -12,7 +12,7 @@ Focused on the SYS-9 additions:
   ``unverified`` — that combination is the most likely to break if
   the ``_fmt`` / verdict interaction ever regresses.
 
-The pre-SYS-9 ``save_result`` / ``print_summary`` shape (``Company:``,
+The pre-verdict ``save_result`` / ``print_summary`` shape (``Company:``,
 ``URL:``, ``Strategy:``, ``Jobs:`` etc.) is exercised indirectly by
 the golden runs in the snapshot harness and the CLI integration; the
 tests here focus specifically on the verdict-line contract.
@@ -62,7 +62,7 @@ class TestVerdictLine:
 
     def test_over_verdict_renders_signed_positive_delta(self) -> None:
         # +36: the canonical "board grew unexpectedly" case from the
-        # SYS-9 plan's example.
+        # plan's example.
         line = _verdict_line(
             _meta(verdict="over", expected_jobs=3, total_jobs_found=39)
         )
@@ -189,7 +189,7 @@ class TestPrintSummaryVerdictLine:
     def test_verdict_line_precedes_error_when_error_present(
         self, capsys: pytest.CaptureFixture[str]
     ) -> None:
-        # Ordering matters: SYS-9 plan puts the verdict line between
+        # Ordering matters: plan puts the verdict line between
         # ``Errors:`` and the ``Error:`` string block. Lock it here
         # so a future refactor doesn't accidentally swap them.
         report = self._full_report("under", 5, 0)

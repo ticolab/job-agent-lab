@@ -7,7 +7,7 @@ protocol so the CLI can dispatch through
 API strategies (:class:`~vacantes.extraction.ats.greenhouse.GreenhouseStrategy`
 and future siblings).
 
-The heavy lifting is unchanged from pre-SYS-4:
+The heavy lifting is unchanged from legacy:
 
 - :func:`~vacantes.extraction.dom.agent.controller.build_controller` — the two
   custom tools the agent uses (``extract_job_links``,
@@ -76,17 +76,17 @@ class DomStrategy:
         consumed indirectly: the agent's ``GOAL_PROMPT`` and Case C
         tool description were already rendered from
         :data:`~vacantes.domain.region.COSTA_RICA_LATAM` at import
-        time (SYS-4 Task 1); parameterising them per-call is SYS-6.
+        time; parameterising them per-call is.
 
-        SYS-12: ``company.hooks`` is threaded through to
+        ``company.hooks`` is threaded through to
         :func:`extract_jobs` so the deterministic pre-extract stages
         (CSS injection, expand rounds, walker override, filter-applied
         prompt clause) fire during the run. Corpus companies default to
         an inert :class:`~vacantes.domain.company.RuntimeHooks`
         (pydantic default), which is a byte-identical no-op relative to
-        the pre-SYS-12 code path.
+        the pre-hooks code path.
 
-        SYS-13: When ``company.pre_filter_urls`` is non-empty, dispatches
+        When ``company.pre_filter_urls`` is non-empty, dispatches
         to :meth:`_extract_prefiltered` — an agent-less multi-state
         union path that skips the LLM entirely and never imports
         :func:`~vacantes.extraction.dom.agent.runner.build_agent`. The
@@ -94,7 +94,7 @@ class DomStrategy:
         so ``OPENAI_API_KEY`` is not consulted on the prefiltered path
         (structural, not conditional — closes C18 in
         ``blockers/INTEGRATION_BLOCKERS.md``). Corpus companies
-        default to the empty tuple, so the pre-SYS-13 branch is
+        default to the empty tuple, so the single-state branch is
         byte-identical for every non-declaring entry.
         """
         if company.pre_filter_urls:
@@ -117,12 +117,12 @@ class DomStrategy:
     async def _extract_prefiltered(
         self, company: Company, ctx: RunContext
     ) -> dict[str, Any]:
-        """Agent-less multi-state union path (SYS-13).
+        """Agent-less multi-state union path.
 
         Navigates a fresh :class:`BrowserSession` across every URL in
         ``company.pre_filter_urls`` in declaration order, running the
         deterministic matcher (or, when ``company.paginate=True``, the
-        SYS-5 pagination walker) at each state via
+        pagination walker) at each state via
         :func:`~vacantes.extraction.dom.collector.collect_job_links`
         and unioning the URL sets across states. No
         :class:`~browser_use.agent.service.Agent` is constructed, no
@@ -139,16 +139,16 @@ class DomStrategy:
         (``asyncio.sleep(RENDER_WAIT_SEC)`` followed by
         ``RENDER_SCROLL_COUNT`` iterations of ``window.scrollBy`` +
         ``asyncio.sleep(1)``) is byte-identical to the loop in
-        ``scripts/capture_snapshot.py`` (SYS-13 Task 2 promoted both
+        ``scripts/capture_snapshot.py`` ( promoted both
         constants from capture-local literals to
         :mod:`vacantes.settings` for exactly this parity). Each
         state's DOM is therefore the same shape at matcher time
         on-disk as it is live, closing the harness-vs-runtime drift
         class before it opens.
 
-        SYS-12 hooks (``pre_extract_css``, ``expand_selector``,
+        hooks (``pre_extract_css``, ``expand_selector``,
         ``next_control_selector``) run once *per state* — a fresh hard
-        navigation between states resets the DOM, so the SYS-12
+        navigation between states resets the DOM, so the
         CSS-persistence limitation never applies here (re-injection
         happens naturally on each state). ``filter_already_applied``
         is prompt-side only and this path renders no prompt, so the
@@ -184,7 +184,7 @@ class DomStrategy:
             else derive_path_prefix(company.sample_job_url)
         )
 
-        # SYS-10 launch invariant: every launch site (probe, capture,
+        # launch invariant: every launch site (probe, capture,
         # ground truth, agent, and now the agent-less prefiltered
         # path) agrees on the plausible UA + keychain-suppression
         # flags. Constructed *outside* the try block so the
@@ -288,28 +288,28 @@ async def extract_jobs(
             ``extraction.dom.agent.controller.build_controller`` for details.
         min_depth: Minimum path-tail depth in the id-in-path branch of
             the matcher (mirrors ``LinkRule.min_depth``). Default of
-            ``1`` is byte-identical to the pre-SYS-3 matcher. See
+            ``1`` is byte-identical to the legacy matcher. See
             ``extraction.dom.agent.controller.build_controller`` for details.
-        suppress_selector: SYS-14 container-suppression selector
+        suppress_selector: container-suppression selector
             (mirrors ``LinkRule.suppress_ancestor_selector``). ``None``
-            is byte-identical to the pre-SYS-14 matcher. See
+            is byte-identical to the legacy matcher. See
             ``extraction.dom.agent.controller.build_controller`` for details.
-        paginate: SYS-5 opt-in (mirrors ``Company.paginate``). When
+        paginate: opt-in (mirrors ``Company.paginate``). When
             ``True`` the collector delegates to
             :func:`~vacantes.extraction.dom.collector.walk_and_collect`,
             which unions matcher results across paginated DOM states via
             a driver-side click. Default ``False`` is byte-identical to
-            the pre-SYS-5 single-shot behaviour.
-        expected_jobs: SYS-9 human-counted target (mirrors
+            the single-shot behaviour.
+        expected_jobs: human-counted target (mirrors
             ``Company.expected_jobs``). Threaded straight through to
             :func:`~vacantes.extraction.base.build_report` so the
             emitted ``metadata.verdict`` reflects the run's
             found-vs-expected classification. ``None`` (the default)
-            preserves the pre-SYS-9 legacy signature — scripts and
+            preserves the pre-verdict legacy signature — scripts and
             internal callers that construct an ``extract_jobs`` call
             without a ``Company`` instance stay working, and their
             reports emit ``verdict="unverified"``.
-        hooks: SYS-12 :class:`~vacantes.domain.company.RuntimeHooks`
+        hooks: :class:`~vacantes.domain.company.RuntimeHooks`
             executed between agent handoff and matcher invocation.
             Forwarded verbatim to :func:`build_controller` (the single
             normalisation site), where ``None`` is converted to an
@@ -319,7 +319,7 @@ async def extract_jobs(
             the flag, NOT a second normalisation site (no local
             variable holds a normalised hooks object outside the
             argument to :func:`build_controller`). Default ``None``
-            preserves the pre-SYS-12 legacy signature.
+            preserves the pre-hooks legacy signature.
         model: OpenAI model identifier.
         headless: Run browser in headless mode.
         max_steps: Maximum agent steps before stopping.
@@ -444,7 +444,7 @@ def _build_output(
     the actual report shape. The DOM strategy always emits concrete
     integer / boolean agent fields — ``0`` / ``False`` / ``True`` when
     ``history`` is ``None`` (agent failed before completing a step) —
-    to stay byte-compatible with the pre-SYS-4 report; API strategies
+    to stay byte-compatible with the legacy report; API strategies
     emit ``None`` for the same fields.
 
     ``expected_jobs`` is passed through unchanged from

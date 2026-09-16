@@ -1,4 +1,4 @@
-"""SYS-2 Task 1 scratch verifier for the v2 matcher JS.
+"""scratch verifier for the v2 matcher JS.
 
 Loads a synthetic page that exercises the four behavioural changes:
   - Recursive collector across open (declarative) shadow DOM, including
@@ -14,7 +14,7 @@ with ``wait_until='domcontentloaded'``), then asserts the exact expected
 set.
 
 Not a pytest test — this is a one-shot verification script and is not part
-of the corpus (synthetic ≠ corpus, per SYS_2_PLAN Task 1).
+of the corpus (synthetic ≠ corpus).
 """
 
 from __future__ import annotations
@@ -37,7 +37,7 @@ PATH_PREFIX = "/jobs"
 #   https://other.test/jobs/x — cross-origin, must be dropped
 HTML = """<!DOCTYPE html>
 <html>
-<head><title>SYS-2 scratch</title></head>
+<head><title>scratch</title></head>
 <body>
   <a href="/jobs/light">Light DOM job</a>
   <a href="/jobs/light#apply">Light DOM job (fragment dupe)</a>

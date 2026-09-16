@@ -1,4 +1,4 @@
-"""Unit tests for the Talentbrew adapter's pure helpers (SYS-17 Task 2).
+"""Unit tests for the Talentbrew adapter's pure helpers.
 
 Two layers, following the phenom.py precedent:
 
@@ -11,7 +11,7 @@ Two layers, following the phenom.py precedent:
   capture of Citi's Costa Rica results).
 
 JS matcher parity coverage lives in
-``tests/snapshots/test_linkrule_parity.py`` (SYS-17 Task 5); this file
+``tests/snapshots/test_linkrule_parity.py``; this file
 pins the Python-side semantics directly.
 """
 
@@ -354,9 +354,8 @@ class TestBuildQueryParams:
         )
 
     def test_captured_constants_verbatim(self) -> None:
-        # Pin every constant against the evidence curl at
-        # ``spike/evidence/citi_results_cr.curl.txt``. A silent
-        # change to any of these fails here.
+        # Pin every constant against the original recorded evidence
+        # curl. A silent change to any of these fails here.
         params = build_query_params(self._config(), page=1)
         assert params["TotalContentResults"] == ""
         assert params["Distance"] == "50"
@@ -449,10 +448,9 @@ class TestBuildQueryParams:
 # TalentbrewStrategy (Task 3 — respx-mocked adapter tests)
 # ---------------------------------------------------------------------------
 
-# Citi is the SYS-17 anchor tenant. Composed from the recorded
-# ``spike/evidence/citi_results_cr.curl.txt`` URL so any mismatch
-# between the test setup and the evidence surfaces as a failed respx
-# route match rather than a silent skip.
+# Citi is the anchor tenant. Composed from the recorded evidence curl URL
+# so any mismatch between the test setup and the recorded contract
+# surfaces as a failed respx route match rather than a silent skip.
 _CITI_ORIGIN = "https://jobs.citi.com"
 _CITI_ENDPOINT = f"{_CITI_ORIGIN}/search-jobs/results"
 _CITI_PATH_PREFIX = "/job"

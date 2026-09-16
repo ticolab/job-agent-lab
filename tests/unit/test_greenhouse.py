@@ -1,4 +1,4 @@
-"""Unit tests for the Greenhouse API strategy (SYS-4 Task 3).
+"""Unit tests for the Greenhouse API strategy.
 
 Two layers of coverage:
 
@@ -12,7 +12,7 @@ Two layers of coverage:
 
   * Per-tenant happy paths against **live-recorded** fixtures at
     ``tests/fixtures/api/greenhouse/{zscaler,movableink,westmonroe4}.json``.
-    The expected result sets are pinned to recorded reality per SYS-4
+    The expected result sets are pinned to recorded reality per
     Decision 6 (fixture drift protocol): Zscaler 2 URLs (both
     ``Escazu, CRI``); Movable Ink 3 URLs pinned to gh_jid
     7383476/7395559/7315086; West Monroe 11 URLs (grew from the plan's
@@ -207,14 +207,13 @@ class TestBoardToken:
 class TestExtractHappyPathRecorded:
     """Per-tenant expected URLs, pinned to recorded fixtures.
 
-    The numbers below are recorded reality as of SYS-4 Task 3
-    fixture capture (see Decision 6 in ``spike/SYS_4_PLAN.md``):
-    Zscaler 2, Movable Ink 3, West Monroe 11. The plan AC listed
-    9 for West Monroe; the board grew by 2 postings between AC
-    authoring and fixture capture — see the SYS-4 Task 3 commit
-    message for the drift record. Elastic 3 was added post-SYS-4
-    when Elastic was integrated (queue ``expected_jobs=3``, matches
-    recorded payload's CR count exactly).
+    The numbers below are recorded reality as of fixture capture:
+    Zscaler 2, Movable Ink 3, West Monroe 11. West Monroe grew by 2
+    postings between the initial integration count (9) and fixture
+    capture (11); the tests pin the recorded reality rather than the
+    older count. Elastic 3 was added later when Elastic was integrated
+    (queue ``expected_jobs=3``, matches recorded payload's CR count
+    exactly).
     """
 
     def test_zscaler(self) -> None:
@@ -288,7 +287,7 @@ class TestExtractHappyPathRecorded:
         # Elastic's ``absolute_url`` has a tenant-configured quirk:
         # the ``gh_jid`` query parameter is doubled
         # (``?gh_jid=X&gh_jid=X``). The strategy emits ``absolute_url``
-        # verbatim from the payload (SYS-4 contract), so the doubled
+        # verbatim from the payload (contract), so the doubled
         # form is pinned here as recorded reality — it is *not* a bug
         # in the strategy and the test would fail loudly if the
         # strategy ever started to normalise the URL.
@@ -317,7 +316,7 @@ class TestExtractHappyPathRecorded:
         # exactly those. The queue's ``expected_jobs=16`` reflects
         # the *tenant total*, not the CR-filtered count — a drift
         # from the L11 queue-authoring convention (queue values are
-        # supposed to be the filtered target). Per SYS-4 Decision 6
+        # supposed to be the filtered target). Per
         # we pin to recorded reality and document the drift in the
         # commit; the test asserts 2, not 16.
         #
@@ -362,7 +361,7 @@ class TestExtractHappyPathRecorded:
         # Newsela's tenant-total drift, this is a third drift shape
         # — likely stale (a snapshot from months earlier when Armis
         # had more CR postings) or a broader-region filter at
-        # queue-authoring time. Per SYS-4 Decision 6 the test pins
+        # queue-authoring time. Per the test pins
         # to recorded reality: 1, not 11.
         payload = _load_fixture("armissecurity")
         with respx.mock(assert_all_called=True) as mock:

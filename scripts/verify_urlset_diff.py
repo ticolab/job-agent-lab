@@ -7,7 +7,7 @@ adds one shadow-DOM anchor would preserve the count while silently
 shifting the set. This script runs both the committed and working-tree
 matcher JS against every snapshot fixture and asserts per-fixture set
 equality after fragment-strip normalisation of the committed side
-(fragment collapse is the one intentional non-identity SYS-2 introduced;
+(fragment collapse is the one intentional non-identity introduced;
 future matcher changes that deliberately alter URL shape will need this
 predicate adjusted).
 

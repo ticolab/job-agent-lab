@@ -7,17 +7,17 @@ Seven strategies are registered here at import time:
 - :class:`~vacantes.extraction.ats.greenhouse.GreenhouseStrategy` —
   the Greenhouse job-boards API adapter.
 - :class:`~vacantes.extraction.ats.phenom.PhenomStrategy` — the
-  Phenom People ``refineSearch`` API adapter (SYS-15). Its motivating
+  Phenom People ``refineSearch`` API adapter. Its motivating
   board, BCG, is runtime-clean on the DOM path but has no freezable
   DOM snapshot; a recorded API payload is its regression artifact
   instead, which is how C12 closes for BCG.
 - :class:`~vacantes.extraction.ats.talentbrew.TalentbrewStrategy`
-  — the Talentbrew (Radancy) results-API adapter (SYS-17). Motivating
+  — the Talentbrew (Radancy) results-API adapter. Motivating
   board Citi shares BCG's C12 shape; Talentbrew's cleaner
   URL-addressable facet contract closes it here through a recorded
   API payload at ``tests/fixtures/api/talentbrew/<handle>.json``.
 - :class:`~vacantes.extraction.ats.coveo.CoveoStrategy` — the
-  Coveo ``/rest/search/v2`` API adapter (SYS-18). Motivating board UST
+  Coveo ``/rest/search/v2`` API adapter. Motivating board UST
   is a C1 case rather than C12: its React SPA renders **zero** job
   anchors at any viewport, so the postings are unreachable by any
   matcher extension and exist only as ``clickUri`` values in the

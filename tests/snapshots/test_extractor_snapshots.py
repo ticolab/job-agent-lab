@@ -4,19 +4,19 @@ Each subdirectory under ``tests/fixtures/snapshots/<slug>/`` represents one
 integrated company and contains at least two files: ``page.html`` (the
 frozen rendered DOM of the company's listing page at capture time) and
 ``metadata.json`` (company identifiers plus the expected unfiltered job
-count). Schema-v2 fixtures (SYS-2) may additionally contain a ``frames/``
+count). Schema-v2 fixtures may additionally contain a ``frames/``
 subdirectory with one HTML file per captured same-origin frame; each frame
-is recorded in ``metadata.frames`` as ``{file, url}``. SYS-5 adds an
+is recorded in ``metadata.frames`` as ``{file, url}``. adds an
 optional ``pages/`` subdirectory carrying later paginated DOM states
 (``pages/page-N.html`` for N ≥ 2) with a matching ``metadata.pages`` list
 of ``{file, url}`` entries; only fixtures captured with
-``capture_snapshot.py --paginate`` emit this key. SYS-13 adds an optional
+``capture_snapshot.py --paginate`` emit this key. adds an optional
 ``states/`` subdirectory carrying the pre-filter-URL states of an
 agent-less multi-state fixture (``states/state-N.html`` for N ≥ 2), a
 matching ``metadata.states`` list of ``{file, url}`` entries, and a
 ``metadata.top_url`` key recording the URL state 1 was rendered from
 (equal to ``pre_filter_urls[0]``, not ``job_board_url`` — the runtime
-never visits ``job_board_url`` on the SYS-13 path). Only fixtures whose
+never visits ``job_board_url`` on the prefiltered path). Only fixtures whose
 ``Company`` entry declares non-empty ``pre_filter_urls`` emit these
 three keys. At collection time this module discovers every well-formed
 snapshot directory and parametrizes a single test function over them.
@@ -29,15 +29,15 @@ pagination-state document, and each captured pre-filter-URL state
 (each loaded under its own recorded base href). The href sets returned by
 every run are unioned and compared against
 ``expected_unfiltered_count`` — mirroring the runtime behaviour where the
-matcher walks same-origin frames itself in-page, the SYS-5 walker unions
+matcher walks same-origin frames itself in-page, the pagination walker unions
 matches across pagination states when ``Company.paginate=True``, and the
-SYS-13 prefiltered path unions matches across each declared URL when
+ prefiltered path unions matches across each declared URL when
 ``Company.pre_filter_urls`` is non-empty.
 
 v1 fixtures (no ``frames``, ``pages``, or ``states`` keys) take the exact
 same code path with the absent dimensions collapsing to zero
-contributions, so no v1, SYS-2, SYS-5, or SYS-12 snapshot moves as a
-result of the SYS-13 additions. Because the matcher source is imported
+contributions, so no v1, or snapshot moves as a
+result of the additions. Because the matcher source is imported
 directly from the production module, there is no risk of the test drifting
 out of sync with the live extractor.
 
@@ -141,13 +141,13 @@ def test_extractor_matches_expected_count(
 
     For v2 fixtures the returned URL sets from the top document and every
     recorded frame document are unioned before the count comparison —
-    mirroring the runtime's in-page frame walk. SYS-5 adds an additional
-    per-``pages`` union on top of that: fixtures captured with
-    ``--paginate`` carry ``pages/page-N.html`` for each successive
-    pagination state N ≥ 2, and the matcher runs against each state under
-    its own recorded base href. Fixtures without either key (v1) or with
-    only ``frames`` (default SYS-2) take the same union code path with the
-    absent dimensions collapsing to zero contributions.
+    mirroring the runtime's in-page frame walk. The paginated-fixture flow
+    adds an additional per-``pages`` union on top of that: fixtures
+    captured with ``--paginate`` carry ``pages/page-N.html`` for each
+    successive pagination state N ≥ 2, and the matcher runs against each
+    state under its own recorded base href. Fixtures without either key
+    (v1) or with only ``frames`` (default) take the same union code path
+    with the absent dimensions collapsing to zero contributions.
 
     Failures include the company name, the actual-vs-expected diff, and
     the number of documents unioned so any regression localises to a
@@ -172,12 +172,12 @@ def test_extractor_matches_expected_count(
     # skip derivation entirely.
     override: str | None = metadata.get("path_prefix")
     prefix = override if override is not None else derive_path_prefix(sample_job_url)
-    # ``min_depth`` is an additive-optional key introduced by SYS-3; v1
+    # ``min_depth`` is an additive-optional key introduced; v1
     # fixtures and default-floor v2 fixtures omit it, and the fallback of
     # 1 leaves matcher behaviour byte-identical for those.
     min_depth: int = metadata.get("min_depth", 1)
-    # ``suppress_ancestor_selector`` (SYS-14) is another additive-optional
-    # key: absent on every pre-SYS-14 fixture, where ``None`` disables the
+    # ``suppress_ancestor_selector`` is another additive-optional
+    # key: absent on every legacy fixture, where ``None`` disables the
     # matcher's suppression gate. Fixtures captured with suppression active
     # (Ulteig / C16) must replay under the same selector, otherwise the
     # replay would count the suppressed section the capture excluded.
@@ -193,9 +193,9 @@ def test_extractor_matches_expected_count(
         )
         return list(result or [])
 
-    # Top document — always present. SYS-13 declaring fixtures render
+    # Top document — always present. declaring fixtures render
     # state 1 from ``pre_filter_urls[0]``, so the top-doc replay URL is
-    # ``metadata.top_url`` when set; every pre-SYS-13 fixture omits this
+    # ``metadata.top_url`` when set; every single-state fixture omits this
     # key and falls through to ``job_board_url`` byte-identically.
     top_url: str = metadata.get("top_url", job_board_url)
     top_html = (snapshot_dir / "page.html").read_text(encoding="utf-8")
@@ -209,7 +209,7 @@ def test_extractor_matches_expected_count(
         frame_html = (snapshot_dir / entry["file"]).read_text(encoding="utf-8")
         urls.update(_run_matcher(frame_html, entry["url"]))
 
-    # Captured pagination pages (SYS-5) — present only on fixtures
+    # Captured pagination pages — present only on fixtures
     # captured with ``--paginate``. Same union semantics as frames; the
     # per-state URL matters for boards whose Next control performs a full
     # navigation, and is harmless when successive states share the same
@@ -219,7 +219,7 @@ def test_extractor_matches_expected_count(
         page_html = (snapshot_dir / entry["file"]).read_text(encoding="utf-8")
         urls.update(_run_matcher(page_html, entry["url"]))
 
-    # Captured pre-filter-URL states (SYS-13) — present only on fixtures
+    # Captured pre-filter-URL states — present only on fixtures
     # whose ``Company`` entry declared non-empty ``pre_filter_urls``.
     # Identical union semantics to ``pages``: each state doc replays
     # under its recorded URL. The runtime path (``DomStrategy`` prefilter

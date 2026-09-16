@@ -1,4 +1,4 @@
-"""SYS-2 Task 3 scratch verifier for capture v2's shadow-DOM serialization.
+"""scratch verifier for capture v2's shadow-DOM serialization.
 
 Loads a synthetic page with an open shadow root attached at runtime, runs
 the capture script's in-page bake+serialize routine against it, and
@@ -31,7 +31,7 @@ _BAKE_AND_SERIALIZE_JS = _capture_module._BAKE_AND_SERIALIZE_JS
 
 HTML = """<!DOCTYPE html>
 <html>
-<head><title>SYS-2 shadow spot-check</title></head>
+<head><title>shadow spot-check</title></head>
 <body>
   <div id='host'></div>
   <a href='/jobs/hidden' style='display: none;'>Hidden</a>

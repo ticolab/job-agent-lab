@@ -94,7 +94,7 @@ def compute_verdict(found: int, expected: int | None) -> str:
 
     - ``"unverified"`` when ``expected is None`` — the catalog entry has
       never been counted, so no judgement is possible. This is the
-      state every pre-SYS-9 catalog entry lands in (no backfill).
+      state every pre-verdict catalog entry lands in (no backfill).
     - ``"match"`` when ``found == expected``.
     - ``"under"`` when ``found < expected``.
     - ``"over"`` when ``found > expected``.
@@ -150,19 +150,19 @@ def build_report(
     The report is the on-disk JSON payload
     :func:`vacantes.reporting.output.save_result` writes and the
     input :func:`~vacantes.reporting.output.print_summary`
-    renders. The shape is byte-compatible with the pre-SYS-4
+    renders. The shape is byte-compatible with the legacy
     ``_build_output`` dict *modulo three additive-key rounds*:
 
-    - SYS-4: ``metadata.strategy`` (present on every run).
-    - SYS-9: ``metadata.expected_jobs`` and ``metadata.verdict``,
+    - ``metadata.strategy`` is present on every run.
+    - ``metadata.expected_jobs`` and ``metadata.verdict`` are
       appended *after* ``metadata.error`` so the serialisation order
-      of every pre-SYS-9 key is byte-identical.
-    - SYS-13: ``metadata.states_visited``, appended *after*
+      of every pre-verdict key is byte-identical.
+    - ``metadata.states_visited`` is appended *after*
       ``metadata.verdict`` **only when the ``states_visited`` argument
-      is not ``None``**. Every pre-SYS-13 caller passes ``None`` (the
+      is not ``None``**. Every single-state caller passes ``None`` (the
       default) and their reports stay byte-identical — the key is
       absent from those dicts, not present-with-null. The agent-less
-      multi-state ``DomStrategy._extract_prefiltered`` path (SYS-13)
+      multi-state ``DomStrategy._extract_prefiltered`` path
       is the sole current producer of a non-``None`` value; it passes
       ``len(company.pre_filter_urls)``.
 
@@ -199,10 +199,10 @@ def build_report(
             target (``Company.expected_jobs``). ``None`` when the
             company has never been counted, in which case the emitted
             verdict is ``"unverified"``.
-        states_visited: SYS-13 additive metadata for the agent-less
+        states_visited: additive metadata for the agent-less
             multi-state union path. ``None`` (the default) omits the
             key entirely from ``metadata`` for byte-identical parity
-            with pre-SYS-13 reports; an integer value is appended to
+            with single-state reports; an integer value is appended to
             ``metadata`` after ``verdict``. ``DomStrategy._extract_prefiltered``
             is the sole current producer and passes
             ``len(company.pre_filter_urls)`` — even on the error path,
@@ -224,7 +224,7 @@ def build_report(
         "expected_jobs": expected_jobs,
         "verdict": compute_verdict(len(jobs), expected_jobs),
     }
-    # Conditional additive key (SYS-13). Every pre-SYS-13 caller passes
+    # Conditional additive key. Every single-state caller passes
     # states_visited=None (the default) and the key is absent from their
     # metadata — this is a load-bearing byte-stability property for the
     # agent + Greenhouse report shapes, honoured by JSON serialisation

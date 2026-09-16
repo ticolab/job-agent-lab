@@ -1,11 +1,10 @@
-"""Unit tests for the SYS-13 agent-less multi-state union path.
+"""Unit tests for the agent-less multi-state union path.
 
 Drives :meth:`DomStrategy._extract_prefiltered` directly with a stub
 :class:`BrowserSession` and monkeypatched
 :func:`collect_job_links` / :func:`plausible_headless_ua`, so no
 network is opened and no Chromium binary is launched. The five
-acceptance-criteria bullets in ``spike/SYS_13_PLAN.md`` Task 4 map to
-one test class each below.
+acceptance-criteria areas map to one test class each below.
 
 ``asyncio.sleep`` is monkeypatched to an immediate no-op at the
 ``strategy`` module's re-bound symbol (walker-test precedent) so the
@@ -196,7 +195,7 @@ def patched(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
         # The keyword-only signature deliberately mirrors the real
         # ``collect_job_links``: a production call that grows a new
         # keyword fails loudly here rather than silently going
-        # unasserted. ``suppress_selector`` (SYS-14) is defaulted so
+        # unasserted. ``suppress_selector`` is defaulted so
         # this stub stays usable from any test that does not care about
         # it, but it *is* recorded below so per-state threading can be
         # asserted.
@@ -336,7 +335,7 @@ class TestPerStateThreading:
     def test_suppress_ancestor_selector_threads_to_every_state(
         self, ctx: RunContext, patched: dict[str, Any]
     ) -> None:
-        # SYS-14 threading on the SYS-13 path: the selector is a matcher
+        # threading on the prefiltered path: the selector is a matcher
         # argument, so it must reach *every* per-state collect. A board
         # that needs container suppression needs it on all of its
         # pre-filter states, not just the first.
@@ -481,7 +480,7 @@ class TestErrorPath:
 class TestReportShapeByteStability:
     """The ``states_visited`` key is absent when the caller omits the kwarg.
 
-    Byte-stability guard on :func:`build_report`: pre-SYS-13 callers
+    Byte-stability guard on :func:`build_report`: single-state callers
     (agent DOM path, Greenhouse strategy, any future caller that does
     not opt in) pass ``None`` as the default and must produce a
     ``metadata`` dict without the key at all — not present-with-null.

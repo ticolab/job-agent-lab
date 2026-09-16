@@ -1,4 +1,4 @@
-"""Coveo search-API adapter (SYS-18).
+"""Coveo search-API adapter.
 
 Fifth extraction strategy through the port (after ``dom``,
 ``greenhouse``, ``phenom``, ``talentbrew``) and the last of the three
@@ -30,8 +30,7 @@ data than the DOM ever would.
 
 The auth story — a tenant-owned mint path
 -----------------------------------------
-The formerly-open auth question is pinned by the P1 capture
-(``spike/evidence/ust_coveo_token.NOTES.txt``). There is **no**
+The auth question is pinned by evidence capture. There is **no**
 Coveo-platform-hosted anonymous-token endpoint to call. The tenant's
 own front door proxies Coveo's ``/rest/search/token`` and answers
 anonymously: ``GET https://www.ust.com/services/search`` returns
@@ -52,7 +51,7 @@ whatsoever. Two consequences shape this module:
   in-page ``fetch`` of the mint path behaves identically with and
   without the parameter, so it is not a gate.
 
-**The httpx mint path is unreachable on gated tenants; SYS-19 borrows
+**The httpx mint path is unreachable on gated tenants; the browser-token seam borrows
 instead (2026-08-15).** ``www.ust.com`` moved behind Cloudflare Bot
 Management after the 2026-07-22 capture and answers **HTTP 403** to
 every :mod:`httpx` request — a plain ``GET`` of the careers page
@@ -61,7 +60,7 @@ block is on the *client*, not the request shape. That is C19, and it
 defeats any HTTP client regardless of headers, so no amount of header
 work reopens it.
 
-What does work is not minting at all. A real Chromium (SYS-10 plausible
+What does work is not minting at all. A real Chromium (plausible
 UA) loads the page ``200``, its own XHR mints normally, and the JWT
 lands in ``sessionStorage['searchToken_en_us']``; reading that stored
 value is not a request and is not gated.
@@ -132,9 +131,9 @@ alternative is an adapter that silently truncates the first tenant
 whose region exceeds the page size. The loop advances while the
 response's ``totalCount`` exceeds the number of records seen so far
 *and* the last page returned at least one record; a defensive
-``_MAX_PAGES`` cap mirrors the SYS-5 walker. Ending short of
+``_MAX_PAGES`` cap mirrors the pagination walker. Ending short of
 ``totalCount`` logs a warning naming the shortfall and emits what was
-collected — the SYS-9 verdict layer then flips ``under``, which is its
+collected — the verdict layer then flips ``under``, which is its
 job. Note ``totalCount`` counts the server's facet-filtered set, so it
 is the right paging bound but *not* the expected emit count: the
 client-side re-verification can legitimately drop records below it.
@@ -185,8 +184,8 @@ anchor to freeze. Its regression artifact is a recorded payload at
 ``tests/fixtures/api/coveo/<handle>.json``, which is the UST half of
 C1's closure. The committed payload records *this adapter's* contract
 (20 records, captured through :func:`build_search_body` on 2026-08-04)
-rather than the browser's 10-record page-size capture in
-``spike/evidence/`` — replaying the latter would pin a contract the
+rather than a browser-side capture of the page-size default —
+replaying the latter would pin a contract the
 adapter never issues. Two hygiene rules attach: the search fixture is
 scrubbed of ``indexToken`` / ``searchUid``, and the token fixture
 carries a **synthetic** value — the captured JWT must never land in
@@ -218,7 +217,7 @@ _REQUEST_TIMEOUT = httpx.Timeout(30.0)
 # docstring's pagination section.
 _PAGE_SIZE = 100
 
-# Defensive cap on the pagination loop, mirroring the SYS-5 walker's
+# Defensive cap on the pagination loop, mirroring the pagination walker
 # ``MAX_PAGES``. At ``_PAGE_SIZE`` records per call this bounds a run
 # at 1,000 records — far above any region-filtered facet observed, and
 # a loud warning fires if it is ever reached.
@@ -505,7 +504,7 @@ class CoveoStrategy:
             total_count: int | None = None
             records_seen = 0
 
-            # SYS-19: two token sources, exactly one set (the schema
+            # two token sources, exactly one set (the schema
             # validator enforces that). ``browser_token_key`` borrows the
             # JWT the tenant's own page minted into sessionStorage —
             # required where the mint origin is behind bot management and

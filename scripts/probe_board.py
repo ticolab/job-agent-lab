@@ -15,7 +15,7 @@ Usage (from the repo root, so ``vacantes`` is importable)::
 
 The probe renders the board once in headless Chromium with the same launch
 arguments the production agent uses, then emits a structured report covering
-seven sections in the order specified by ``spike/SYS_7_TICKET.md``:
+seven sections:
 
     1. Anchor census per candidate prefix (derived + each ancestor) —
        matcher-truth headline from ``EXTRACT_JOB_LINKS_JS`` alongside
@@ -32,7 +32,7 @@ seven sections in the order specified by ``spike/SYS_7_TICKET.md``:
     4. Pagination affordances — ``FIND_NEXT_CONTROL_JS`` in ``dryRun`` mode
        (no marker, no click). Zero new discovery logic (C7 signal).
     5. Filter-control census — native ``<select>`` elements with location
-       tokens (SYS-6 token list), ``[role=combobox]`` wrappers, checkbox
+       tokens (filter-token list), ``[role=combobox]`` wrappers, checkbox
        facet clusters, bare search boxes (C2/C3 signals).
     6. Platform fingerprints — a table-driven signal matcher against
        (host, DOM, network) for the evidenced platforms (Greenhouse, Lever,
@@ -100,7 +100,7 @@ DEFAULT_WAIT_S: int = 8
 # Default number of viewport-height scrolls after the wait, ditto.
 DEFAULT_SCROLL_N: int = 3
 
-# The SYS-6 filter-token list. Kept here as a module-level constant so
+# The filter-token list. Kept here as a module-level constant so
 # tests can import it, and so it stays in sync with the token list
 # recorded in ``navigation/prompt.py``. Any change to that runtime list
 # should be mirrored here or a filter that the agent would recognise
@@ -478,7 +478,7 @@ _FILTER_CENSUS_JS = r"""
 
     // ARIA comboboxes — a wrapper or trigger with role=combobox, or a
     // button whose aria-haspopup indicates a listbox. This is the shape
-    // that Deel and Zencore's location filters take, and that pre-SYS-6
+    // that Deel and Zencore's location filters take, and that legacy
     // GOAL_PROMPT already covered.
     const comboboxes = [];
     for (const el of document.querySelectorAll(
@@ -919,7 +919,7 @@ def build_suggestion(
         notes.append(
             "Hidden-anchor share is unusually high on the derived prefix — "
             "the board may be applying a client-side filter via display: "
-            "none (C8, closed by SYS-2 visibility gate; reported here so a "
+            "none (C8, closed visibility gate; reported here so a "
             "reader can sanity-check the resulting count)."
         )
     if zero_anchor_with_api:
@@ -1112,7 +1112,7 @@ async def _probe(
             args=["--password-store=basic", "--use-mock-keychain"],
         )
         try:
-            # SYS-10: all launch sites must agree — a board is validated
+            # all launch sites must agree — a board is validated
             # and run under one browser environment. The plausible UA
             # (``HeadlessChrome/<v>`` → ``Chrome/<v>``) closes the C14
             # WAF-403 class documented in

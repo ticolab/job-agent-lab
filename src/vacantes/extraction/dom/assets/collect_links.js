@@ -10,7 +10,7 @@
     //     contentDocument access; we catch and skip. Cross-origin anchors
     //     would need a driver-side frame walk, which the runtime's page
     //     handle does not expose — that gap is tracked separately.
-    // ``minDepth`` (SYS-3, defaulted so any pre-SYS-3 caller keeps exact
+    // ``minDepth`` (defaulted so any legacy caller keeps exact
     // current behaviour) is a *floor*, not an exact match, applied inside
     // the id-in-path branch only. A depth of N keeps every anchor whose
     // path has ≥N segments after the prefix — the C9 shape (Databricks,
@@ -23,7 +23,7 @@
     // components after ``split('/')``) inflate ``depth`` accordingly; no
     // board in the current corpus emits them, so this is documented rather
     // than special-cased.
-    // ``suppressSelector`` (SYS-14, defaulted so any pre-SYS-14 caller keeps
+    // ``suppressSelector`` (defaulted so any legacy caller keeps
     // exact current behaviour) drops an anchor when
     // ``anchor.closest(suppressSelector)`` is non-null. It closes the C16
     // shape: a board section whose anchors share the origin, prefix, depth,
@@ -95,7 +95,7 @@
     // execute and a typo'd selector would silently behave like "no
     // suppression". That is the exact failure mode a config-level knob must
     // not have, so probe the selector against a node that always exists and
-    // rethrow with the offending value named. Mirrors the SYS-12
+    // rethrow with the offending value named. Mirrors the
     // ``_INJECT_CSS_JS`` zero-rule guard: config typos fail the run.
     //
     // Scope note: this catches *unparseable* selectors, not everything a
@@ -123,7 +123,7 @@
         if (!href) continue;
         if (!isVisible(a)) continue;
 
-        // Container suppression (SYS-14). After visibility, before
+        // Container suppression. After visibility, before
         // bucketing — see the header comment for why that placement is
         // load-bearing.
         if (suppressSelector !== null && suppressSelector !== undefined) {

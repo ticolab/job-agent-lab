@@ -2,12 +2,12 @@
 integrity of the production ``COMPANIES`` catalog.
 
 The schema tests lock the validation contract at the Company/LinkRule
-level, including the SYS-4 ``strategy`` field and its Greenhouse-host
+level, including the ``strategy`` field and its Greenhouse-host
 model validator. The catalog integrity tests protect against silent
 corruption of the shipped list — duplicated entries, empty required
 fields, and broken snapshot ↔ catalog cross-references. Together they
 close the loop that used to be enforced only implicitly by the
-pre-SYS-1 ``TypedDict`` shape plus manual review.
+pre-legacy ``TypedDict`` shape plus manual review.
 """
 
 from __future__ import annotations
@@ -94,7 +94,7 @@ class TestLinkRuleSchema:
         assert LinkRule(path_prefix="/jobs").path_prefix == "/jobs"
 
     def test_default_min_depth_is_one(self) -> None:
-        # Byte-identical-to-pre-SYS-3 default: every anchor under
+        # Byte-identical-to-legacy default: every anchor under
         # ``<prefix>/`` is kept, no floor applied.
         assert LinkRule().min_depth == 1
 
@@ -117,8 +117,8 @@ class TestLinkRuleSchema:
             rule.min_depth = 3  # type: ignore[misc]
 
     def test_default_suppress_ancestor_selector_is_none(self) -> None:
-        # SYS-14 default: no container suppression, byte-identical to
-        # the pre-SYS-14 matcher (the JS gate is skipped entirely when
+        # default: no container suppression, byte-identical to
+        # the legacy matcher (the JS gate is skipped entirely when
         # the fourth argument is null).
         assert LinkRule().suppress_ancestor_selector is None
 
@@ -152,7 +152,7 @@ class TestLinkRuleSchema:
         )
 
     def test_extra_field_forbidden(self) -> None:
-        # ``max_depth`` is on the SYS-3 "deliberately not added" list;
+        # ``max_depth`` is on the "deliberately not added" list;
         # this guards against it being added by accident and also serves
         # as the rejected-extra-field case now that ``min_depth`` is a
         # real field.
@@ -160,7 +160,7 @@ class TestLinkRuleSchema:
             LinkRule(max_depth=3)  # type: ignore[call-arg]
 
     def test_suppress_ancestor_selector_corpus_entries_are_whitelisted(self) -> None:
-        # SYS-14 landed with strict "no corpus opt-in yet" so the
+        # landed with strict "no corpus opt-in yet" so the
         # full-fixture sweep and ``verify_urlset_diff.py`` identity in
         # that commit were meaningful. Ulteig (C16, the motivating
         # board) is the first opt-in, landed by the follow-up
@@ -226,7 +226,7 @@ class TestCompaniesCatalogIntegrity:
 
 
 class TestStrategyField:
-    """SYS-4 additions to ``Company``: the ``strategy`` field + Greenhouse
+    """additions to ``Company``: the ``strategy`` field + Greenhouse
     host validator.
 
     The DOM path is the default and covered by every other test in this
@@ -237,7 +237,7 @@ class TestStrategyField:
     """
 
     def test_default_strategy_is_dom(self) -> None:
-        # Backwards compatibility with every pre-SYS-4 entry in the
+        # Backwards compatibility with every legacy entry in the
         # catalog: an entry that predates the ``strategy`` field must
         # still parse to ``strategy="dom"`` without change.
         c = Company(
@@ -307,7 +307,7 @@ class TestStrategyField:
 
     def test_non_greenhouse_strategy_bypasses_host_check(self) -> None:
         # The validator must be a strict no-op for ``strategy="dom"`` --
-        # otherwise every existing catalog entry (37 of 37 at SYS-4
+        # otherwise every existing catalog entry (37 of 37
         # Task 2) would fail its host check on import.
         c = Company(
             name="Any DOM Site",
@@ -318,19 +318,19 @@ class TestStrategyField:
 
 
 class TestPaginateField:
-    """SYS-5 addition to ``Company``: the opt-in ``paginate`` flag.
+    """addition to ``Company``: the opt-in ``paginate`` flag.
 
     The walker itself is exercised in
     ``tests/snapshots/test_pagination_walker.py``; here we only pin the
     schema-time contract — default, storage, immutability, type gate,
-    and the invariant that no corpus company opts in at SYS-5 landing
-    time. Techwarely and BCG (the boards SYS-5 unblocks) are integrated
+    and the invariant that no corpus company opts in at landing
+    time. Techwarely and BCG (the boards the pagination walker unblocks) are integrated
     through the standard ``integrate-company`` workflow in follow-up
     commits, at which point their entries will flip this bit.
     """
 
     def test_default_paginate_is_false(self) -> None:
-        # A minimal Company keeps the pre-SYS-5 single-shot code path
+        # A minimal Company keeps the single-shot code path
         # by default. The walker is never loaded for these entries.
         c = Company(
             name="Example",
@@ -376,12 +376,12 @@ class TestPaginateField:
             )
 
     def test_paginate_true_corpus_entries_are_whitelisted(self) -> None:
-        # SYS-5 shipped as opt-in; only boards whose pagination is
+        # shipped as opt-in; only boards whose pagination is
         # live-validated through the standard integrate-company workflow
         # should carry the flag. Techwarely (integrated 2026-07-17) is
-        # the first corpus entry to flip this bit. BCG, the other SYS-5
+        # the first corpus entry to flip this bit. BCG, the other
         # live-validation board, is deliberately absent: it integrated as
-        # ``strategy="phenom"`` (SYS-15), which bypasses the walker
+        # ``strategy="phenom"``, which bypasses the walker
         # entirely, so its runtime pagination never became a catalog
         # opt-in. Any
         # other corpus entry with paginate=True is a red flag — either
@@ -410,7 +410,7 @@ class TestPaginateField:
 
 
 class TestExpectedJobsField:
-    """SYS-9 addition to ``Company``: the human-counted ``expected_jobs`` target.
+    """addition to ``Company``: the human-counted ``expected_jobs`` target.
 
     Locks the schema-level contract for the new field. The verdict
     computation itself (and the way ``expected_jobs=None`` maps to
@@ -424,9 +424,9 @@ class TestExpectedJobsField:
     """
 
     def test_default_expected_jobs_is_none(self) -> None:
-        # Backwards compatibility: every pre-SYS-9 catalog entry must
+        # Backwards compatibility: every pre-verdict catalog entry must
         # still parse to ``expected_jobs=None`` without touching the
-        # entry — the SYS-9 plan explicitly forbids backfilling the 57
+        # entry — the plan explicitly forbids backfilling the 57
         # existing rows.
         c = Company(
             name="Example",
@@ -481,9 +481,9 @@ class TestExpectedJobsField:
             c.expected_jobs = 4  # type: ignore[misc]
 
     def test_no_corpus_entry_carries_expected_jobs_yet(self) -> None:
-        # SYS-9 landed with strict "no backfill of existing entries";
-        # every one of the pre-SYS-9 corpus rows had to still be ``None``
-        # at SYS-9 merge time. Svitla (integrated 2026-08-05) is the
+        # landed with strict "no backfill of existing entries";
+        # every one of the pre-verdict corpus rows had to still be ``None``
+        # at merge time. Svitla (integrated 2026-08-05) is the
         # first corpus entry to flip this to a real integer through the
         # standard ``integrate-company`` workflow, so the test tightens
         # to a whitelist mirror of ``TestPaginateField.
@@ -571,7 +571,7 @@ class TestExpectedJobsField:
 
 
 class TestRuntimeHooksSchema:
-    """SYS-12 addition: the nested ``RuntimeHooks`` sub-model.
+    """addition: the nested ``RuntimeHooks`` sub-model.
 
     These tests pin the schema-level contract on the hooks bag itself
     — defaults, immutability, extra-field rejection, and the
@@ -583,7 +583,7 @@ class TestRuntimeHooksSchema:
     def test_defaults_are_inert(self) -> None:
         # The whole point of the default: every field maps to a "no-op"
         # value so an entry that does not opt in is byte-identical to
-        # the pre-SYS-12 code paths.
+        # the pre-hooks code paths.
         h = RuntimeHooks()
         assert h.expand_selector is None
         assert h.next_control_selector is None
@@ -640,7 +640,7 @@ class TestRuntimeHooksSchema:
 
 
 class TestHooksField:
-    """SYS-12 addition on ``Company``: the ``hooks`` field + its two
+    """addition on ``Company``: the ``hooks`` field + its two
     cross-field validators.
 
     The schema-time contract: any non-inert hooks require
@@ -751,8 +751,8 @@ class TestHooksField:
         assert c.hooks.next_control_selector == "button.next"
 
     def test_corpus_entries_have_inert_hooks(self) -> None:
-        # SYS-12 landed with strict "no corpus opt-in yet"; every
-        # pre-SYS-12 catalog entry carried the inert default. Svitla
+        # landed with strict "no corpus opt-in yet"; every
+        # pre-hooks catalog entry carried the inert default. Svitla
         # (integrated 2026-08-05) is the first corpus entry to opt in
         # to a non-inert hook (``filter_already_applied=True`` guarding
         # the ``?country=10`` URL pre-filter against agent re-toggle),
@@ -795,7 +795,7 @@ class TestHooksField:
 
 
 class TestPreFilterUrlsField:
-    """SYS-13 addition on ``Company``: the ``pre_filter_urls`` tuple + its
+    """addition on ``Company``: the ``pre_filter_urls`` tuple + its
     two cross-field validators.
 
     The schema-time contract: non-empty ``pre_filter_urls`` requires
@@ -810,10 +810,10 @@ class TestPreFilterUrlsField:
     """
 
     def test_default_pre_filter_urls_is_empty_tuple(self) -> None:
-        # Backwards compatibility: every pre-SYS-13 catalog entry must
+        # Backwards compatibility: every single-state catalog entry must
         # still parse to ``pre_filter_urls=()`` without touching the
         # entry — the empty tuple is the sentinel that keeps
-        # ``DomStrategy.extract`` on the pre-SYS-13 agent path.
+        # ``DomStrategy.extract`` on the single-state agent path.
         c = Company(
             name="Example",
             job_board_url="https://example.com/careers",
@@ -1020,7 +1020,7 @@ class TestPreFilterUrlsField:
         # preferred shape — ``paginate=True`` would be — but the walker's
         # pager discovery is scoped to the light DOM of the top document
         # by design, and every iCIMS pager lives inside
-        # ``#icims_content_iframe``. The exposure is bounded by SYS-9:
+        # ``#icims_content_iframe``. The exposure is bounded :
         # a page-count change makes the union short, the verdict flips to
         # ``under``, and the next live run says so.
         expected_states: set[str] = {
@@ -1050,7 +1050,7 @@ class TestPreFilterUrlsField:
 
 
 class TestPhenomConfigSchema:
-    """SYS-15: the ``PhenomConfig`` model itself."""
+    """: the ``PhenomConfig`` model itself."""
 
     def test_page_id_is_required(self) -> None:
         # There is no way to derive a tenant's Phenom page id from its
@@ -1083,7 +1083,7 @@ class TestPhenomConfigSchema:
 
 
 class TestPhenomStrategyPresenceValidator:
-    """SYS-15: ``strategy="phenom"`` ⇔ ``phenom`` config, both directions.
+    """: ``strategy="phenom"`` ⇔ ``phenom`` config, both directions.
 
     Presence is the *entire* schema-time gate for this strategy. Phenom
     is tenant-co-hosted — BCG's widget answers on ``careers.bcg.com``,
@@ -1156,7 +1156,7 @@ class TestPhenomStrategyPresenceValidator:
         assert c.phenom is None
 
     def test_phenom_strategy_corpus_entries_are_whitelisted(self) -> None:
-        # SYS-15 landed with no corpus opt-in at all; BCG — the board
+        # landed with no corpus opt-in at all; BCG — the board
         # that motivated the adapter — was integrated by the follow-up
         # ``integrate-company`` commit this whitelist now records. Its
         # regression artifact is the recorded API payload at
@@ -1193,7 +1193,7 @@ class TestPhenomStrategyPresenceValidator:
 
 
 class TestTalentbrewConfigSchema:
-    """SYS-17: the ``TalentbrewConfig`` model itself.
+    """: the ``TalentbrewConfig`` model itself.
 
     Structurally mirrors :class:`TestPhenomConfigSchema` — both configs
     are tenant-parameter carriers guarded by ``frozen=True`` and
@@ -1258,7 +1258,7 @@ class TestTalentbrewConfigSchema:
 
 
 class TestTalentbrewStrategyPresenceValidator:
-    """SYS-17: ``strategy="talentbrew"`` ⇔ ``talentbrew`` config.
+    """: ``strategy="talentbrew"`` ⇔ ``talentbrew`` config.
 
     Presence is the *entire* schema-time gate for this strategy.
     Talentbrew (a.k.a. Radancy) is a self-hosted enterprise ATS —
@@ -1359,7 +1359,7 @@ class TestTalentbrewStrategyPresenceValidator:
         assert c.talentbrew is None
 
     def test_talentbrew_strategy_corpus_entries_are_whitelisted(self) -> None:
-        # SYS-17 landed with no corpus opt-in; Citi — the board that
+        # landed with no corpus opt-in; Citi — the board that
         # motivated the adapter — was integrated by the follow-up
         # ``integrate-company`` commit this whitelist now records. Its
         # regression artifact is the recorded API payload at
@@ -1368,7 +1368,7 @@ class TestTalentbrewStrategyPresenceValidator:
         # deliberately *not* a DOM snapshot — that substitution is
         # Citi's C12 closure, so the absence of a
         # ``tests/fixtures/snapshots/citi/`` directory is correct
-        # rather than an omission. Mirrors the SYS-15 landing
+        # rather than an omission. Mirrors the landing
         # discipline pinned by
         # ``test_phenom_strategy_corpus_entries_are_whitelisted`` —
         # every subsequent Talentbrew tenant MUST be added here in the
@@ -1455,7 +1455,7 @@ class TestTalentbrewStrategyPresenceValidator:
 
 
 class TestCoveoConfigSchema:
-    """SYS-18: the ``CoveoConfig`` model itself.
+    """: the ``CoveoConfig`` model itself.
 
     Third in the tenant-parameter-carrier family after
     :class:`TestPhenomConfigSchema` and
@@ -1467,7 +1467,7 @@ class TestCoveoConfigSchema:
     server-side query pipeline when wrong, and both token sources are
     tenant-owned with documented per-tenant variance.
 
-    SYS-19 changed the shape: ``organization_id`` and ``search_hub``
+    the browser-token addition changed the shape: ``organization_id`` and ``search_hub``
     stay unconditionally required, while the token source became a
     two-member union — exactly one of ``token_url`` (mint over HTTP)
     or ``browser_token_key`` (borrow the page-minted JWT out of
@@ -1498,9 +1498,9 @@ class TestCoveoConfigSchema:
             )
 
     def test_a_token_source_is_required(self) -> None:
-        # SYS-19: neither source set is rejected at import rather than
+        # neither source set is rejected at import rather than
         # at the first live run — the adapter cannot authenticate at
-        # all without one. (Before SYS-19 this asserted that
+        # all without one. (Before the browser-token path this asserted that
         # ``token_url`` specifically was required; the union replaced
         # that, and the raise is now on the union validator.)
         with pytest.raises(ValidationError, match="requires a token source"):
@@ -1533,7 +1533,7 @@ class TestCoveoConfigSchema:
         assert cfg.token_url is None
 
     def test_token_url_alone_is_accepted(self) -> None:
-        # The pre-SYS-19 shape stays valid for ungated tenants.
+        # The legacy shape stays valid for ungated tenants.
         cfg = CoveoConfig(
             organization_id="ustglobalproduction4ggrtx7v",
             search_hub="prod-jobs-search-hub",
@@ -1577,7 +1577,7 @@ class TestCoveoConfigSchema:
 
 
 class TestCoveoStrategyPresenceValidator:
-    """SYS-18: ``strategy="coveo"`` ⇔ ``coveo`` config, both directions.
+    """: ``strategy="coveo"`` ⇔ ``coveo`` config, both directions.
 
     Presence is the *entire* schema-time gate. There are two reasons no
     host validator belongs here, and both are stronger than the
@@ -1704,8 +1704,8 @@ class TestCoveoStrategyPresenceValidator:
         assert c.coveo is None
 
     def test_coveo_strategy_corpus_entries_are_whitelisted(self) -> None:
-        # SYS-18 landed with no corpus opt-in and this assertion pinned
-        # the empty set; SYS-19 is the follow-up integration it
+        # the Coveo adapter landed with no corpus opt-in and this assertion pinned
+        # the empty set; the browser-token addition is the follow-up integration it
         # anticipated, so it tightens into the whitelist mirror every
         # other API strategy uses.
         #

@@ -1,4 +1,4 @@
-"""Unit tests for the SYS-9 ``--strict`` CLI gate.
+"""Unit tests for the ``--strict`` CLI gate.
 
 Two surfaces:
 
@@ -9,7 +9,7 @@ Two surfaces:
   ``get_strategy`` to control the verdict shape, then assert that:
   (a) every company still gets processed and saved regardless of
   strict mode (draining the loop before deciding the exit code is
-  the SYS-9 contract), and (b) the process exits 1 iff ``--strict``
+  the contract), and (b) the process exits 1 iff ``--strict``
   is set *and* the run produced at least one non-match verdict.
 """
 
@@ -110,7 +110,7 @@ class TestHasNonMatch:
     """``_has_non_match`` is a pure verdict-set predicate."""
 
     def test_empty_returns_false(self) -> None:
-        # No runs → nothing to fail on. Matches the pre-SYS-9 no-op
+        # No runs → nothing to fail on. Matches the pre-verdict no-op
         # semantics where a CLI invocation that matched zero
         # companies exited 0.
         assert _has_non_match([]) is False
@@ -189,7 +189,7 @@ class TestRunExtractionStrictGate:
         capsys: pytest.CaptureFixture[str],
     ) -> None:
         # Default corpus behaviour: unverified runs must not crash
-        # the CLI. This is the byte-identical-to-pre-SYS-9 case.
+        # the CLI. This is the byte-identical-to-pre-verdict case.
         companies = [_make_company("A"), _make_company("B")]
         monkeypatch.setattr(cli_mod, "COMPANIES", companies)
         fake = _FakeStrategy({"A": "match", "B": "unverified"})
@@ -198,7 +198,7 @@ class TestRunExtractionStrictGate:
         # No SystemExit: strict is off, the gate is not consulted.
         _run(run_extraction(_make_args(strict=False, output_dir=tmp_path)))
         # Both companies must have produced JSON artefacts on disk —
-        # draining the loop is the SYS-9 contract regardless of
+        # draining the loop is the contract regardless of
         # strict mode.
         saved = list(tmp_path.glob("*.json"))
         assert len(saved) == 2

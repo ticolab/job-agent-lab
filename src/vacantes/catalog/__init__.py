@@ -6,7 +6,7 @@ user-supplied handle (``-c gap``) to a specific entry. Handle resolution
 lives here — not in ``cli`` — because ``scripts/capture_snapshot.py`` also
 needs it.
 
-Handle-matching precedence, preserved from the pre-SYS-1 CLI:
+Handle-matching precedence, preserved from the pre- CLI:
 
 1. exact match against any ``aliases`` entry (case-insensitive),
 2. exact match against the company's auto-derived acronym,

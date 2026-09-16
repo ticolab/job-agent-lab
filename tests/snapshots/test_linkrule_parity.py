@@ -1,6 +1,6 @@
 """JS↔Python parity test for the URL-layer matcher semantics.
 
-The Talentbrew adapter (SYS-17) filters absolutized hrefs through
+The Talentbrew adapter filters absolutized hrefs through
 :func:`~vacantes.extraction.ats.talentbrew.apply_link_rule`, a
 Python mirror of the URL-layer half of
 ``extraction/dom/assets/collect_links.js``. Two implementations of the

@@ -1,4 +1,4 @@
-"""Unit tests for the SYS-4 strategy port.
+"""Unit tests for the strategy port.
 
 Covers three surfaces of :mod:`vacantes.extraction.base`:
 
@@ -182,7 +182,7 @@ class TestBuildReportShape:
 
     def test_metadata_strategy_key_is_present_on_every_report(self) -> None:
         # The additive ``metadata.strategy`` key is the one deliberate
-        # output-contract change from SYS-4. If it ever silently
+        # output-contract change. If it ever silently
         # disappears from ``build_report``, this test breaks first —
         # before ``print_summary`` starts KeyErroring in production.
         report = build_report(
@@ -238,7 +238,7 @@ class TestRunContext:
 
 
 class TestVerdictSemantics:
-    """SYS-9: ``compute_verdict`` and its downstream ``metadata.verdict``.
+    """``compute_verdict`` and its downstream ``metadata.verdict``.
 
     Verdict classification is a pure function of the ``found`` and
     ``expected`` pair; every case worth naming is enumerated here as a
@@ -252,7 +252,7 @@ class TestVerdictSemantics:
     @pytest.mark.parametrize(
         ("found", "expected", "verdict"),
         [
-            # None → unverified: every pre-SYS-9 catalog entry lands
+            # None → unverified: every pre-verdict catalog entry lands
             # here until it is human-counted.
             (0, None, "unverified"),
             (5, None, "unverified"),

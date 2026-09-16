@@ -133,7 +133,7 @@ class TestDerivePlausibleUa:
 class TestPlausibleHeadlessUa:
     """Integration checks against a real Playwright Chromium launch.
 
-    Marked P1 in the SYS-10 plan: same cost class as the snapshot suite
+    Marked P1 in the plan: same cost class as the snapshot suite
     (a real headless launch, ~0.5 s). The unit-level pure-transform
     tests above are the P0 fast path.
     """

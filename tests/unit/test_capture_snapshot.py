@@ -6,7 +6,7 @@ integration workflow. To exercise its pure helpers from pytest we load
 it as a sibling file via :mod:`importlib.util`, following the precedent
 set by ``scripts/verify_expand_selector.py`` and ``scripts/verify_capture_v2.py``.
 
-Coverage today is the SYS-12 ``resolve_expand_selector`` precedence
+Coverage today is the ``resolve_expand_selector`` precedence
 rule: the ``--expand-selector`` CLI flag overrides
 ``Company.hooks.expand_selector`` when both are present; the catalog
 value is used when only the catalog is set; ``None`` when neither is.
@@ -53,7 +53,7 @@ class TestResolveExpandSelectorPrecedence:
     def test_neither_hook_nor_flag_returns_none(self) -> None:
         """Inert hook + no flag → no expansion runs during capture.
 
-        This is the pre-SYS-6 baseline: every company whose entry does
+        This is the legacy baseline: every company whose entry does
         not opt into expansion, invoked without the flag, produces a
         byte-stable v2 fixture with no ``expand_selector`` metadata key
         emitted (guaranteed downstream in ``_write_snapshot``'s
@@ -65,7 +65,7 @@ class TestResolveExpandSelectorPrecedence:
     def test_flag_only_returns_flag(self) -> None:
         """Inert hook + flag set → flag drives the capture.
 
-        The pre-SYS-12 ``--expand-selector`` use case: an integrator
+        The pre-hooks ``--expand-selector`` use case: an integrator
         discovers the selector via probe/GT iteration and re-runs the
         capture with the flag before touching the catalog. The flag's
         value is what mounts the anchors.
@@ -76,7 +76,7 @@ class TestResolveExpandSelectorPrecedence:
     def test_catalog_only_returns_catalog(self) -> None:
         """Non-inert hook + no flag → catalog value drives the capture.
 
-        The steady-state SYS-12 case: the selector has been settled and
+        The steady-state case: the selector has been settled and
         moved into ``Company.hooks.expand_selector``; the integrator
         re-captures without the flag and the same effective selector
         still runs. This is how a hook-configured board's fixture is
@@ -146,7 +146,7 @@ class TestResolveExpandSelectorEmptyString:
 
 
 class TestPreFilterUrlsMetadata:
-    """Pin the SYS-13 fixture-shape contract in ``_write_snapshot``.
+    """Pin the fixture-shape contract in ``_write_snapshot``.
 
     The runtime code path for a declaring ``Company`` (non-empty
     ``pre_filter_urls``) is agent-less: :func:`DomStrategy._extract_prefiltered`
@@ -165,8 +165,8 @@ class TestPreFilterUrlsMetadata:
     - ``states`` — the list of ``{file, url}`` entries for states 2..N,
       mirroring the ``frames`` / ``pages`` convention
 
-    Non-declaring captures skip all three so every existing SYS-2/5/6/12
-    fixture stays byte-identical under SYS-13's schema. The tests below
+    Non-declaring captures skip all three so every existing legacy
+    fixture stays byte-identical under the new schema. The tests below
     exercise both branches plus the ``states/`` stale-file hygiene that
     parallels the ``pages/`` sweep — a fixture converted from declaring
     back to single-shot must not carry orphan ``state-N.html`` files.
@@ -176,7 +176,7 @@ class TestPreFilterUrlsMetadata:
         """Build a minimal ``Company`` with the given prefilter URLs.
 
         Kept as a helper so the three tests all share the same field
-        set and the SYS-13-specific field is the only variable across
+        set and the prefilter-specific field is the only variable across
         cases — anything else changing would confound the assertions.
         """
         from vacantes.domain.company import Company
@@ -189,12 +189,12 @@ class TestPreFilterUrlsMetadata:
         )
 
     def test_non_declaring_capture_omits_sys13_keys(self, tmp_path: Path) -> None:
-        """Empty ``pre_filter_urls`` + empty ``states`` → no SYS-13 keys.
+        """Empty ``pre_filter_urls`` + empty ``states`` → no keys.
 
-        This is the byte-stability invariant: every pre-SYS-13 fixture
-        (SYS-2 single-shot, SYS-5 paginated, SYS-6 expand-on-capture,
-        SYS-12 hook-configured) must continue to produce metadata with
-        the exact same key set after the SYS-13 changes land. If any of
+        This is the byte-stability invariant: every single-state fixture
+        ( single-shot, paginated, expand-on-capture,
+        hook-configured) must continue to produce metadata with
+        the exact same key set after the changes land. If any of
         ``pre_filter_urls`` / ``top_url`` / ``states`` appears here the
         additive-optional contract is broken and every existing fixture
         would need to be recaptured to stay in sync.
@@ -325,7 +325,7 @@ class TestPreFilterUrlsMetadata:
 
 
 class TestSuppressAncestorSelectorMetadata:
-    """Pin the SYS-14 additive-optional metadata key in ``_write_snapshot``.
+    """Pin the additive-optional metadata key in ``_write_snapshot``.
 
     A fixture captured from a board with container suppression active
     (Ulteig / C16) has the suppressed section *absent from its recorded
@@ -336,7 +336,7 @@ class TestSuppressAncestorSelectorMetadata:
     fail by exactly the section's size.
 
     The converse is the byte-stability invariant: a board with no
-    suppression must emit no key, so every pre-SYS-14 fixture keeps its
+    suppression must emit no key, so every legacy fixture keeps its
     exact metadata key set.
     """
 
@@ -393,7 +393,7 @@ if __name__ == "__main__":
 class TestPerStateFrames:
     """Pin per-state frame freezing in ``_write_snapshot``.
 
-    Through SYS-13 the capture script froze same-origin frames for state
+    Through the capture script froze same-origin frames for state
     1 only, and the docstring called frames on states >= 2 a documented
     non-goal. That held as long as no corpus board combined the two axes:
     every frame-bearing fixture was single-state, and every multi-state
@@ -432,7 +432,7 @@ class TestPerStateFrames:
         much as the metadata: the harness reads each frame straight from
         ``metadata.states[*].frames[*].file``, so a mismatch between the
         recorded path and the written file is exactly the "metadata claims
-        a file the harness cannot load" bug the SYS-13 tests guard against
+        a file the harness cannot load" bug the tests guard against
         one level up.
         """
         import json

@@ -1,4 +1,4 @@
-"""Termination-behaviour tests for the SYS-5 pagination walker.
+"""Termination-behaviour tests for the pagination walker.
 
 The walker in :mod:`vacantes.extraction.dom.collector` composes
 discovery, click, settle, and per-state collection into a loop with
@@ -417,7 +417,7 @@ class TestSettleTimeout:
 
 
 # ---------------------------------------------------------------------------
-# SYS-12: next_control_override bypass path
+# next_control_override bypass path
 # ---------------------------------------------------------------------------
 
 

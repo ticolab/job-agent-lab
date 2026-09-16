@@ -21,7 +21,7 @@ The handle resolves with the same rules as the main CLI (alias, acronym,
 or name substring). Pass ``--force`` to overwrite an existing snapshot
 without prompting.
 
-Schema v2 (SYS-2)
+Schema v2
 -----------------
 The capture now bakes CSS visibility state into the serialized HTML
 (anchors that fail the matcher's visibility gate get an inline
@@ -35,7 +35,7 @@ recorded in ``metadata.frames`` as ``{file, url}`` so the harness can
 replay them under the correct base href. Simple boards (no captured
 frames) omit the ``frames`` key entirely for byte-stable metadata.
 
-Pagination (SYS-5)
+Pagination
 ------------------
 Passing ``--paginate`` drives the same
 :func:`~vacantes.extraction.dom.collector.walk_and_collect` loop
@@ -46,12 +46,12 @@ baked and written as ``pages/page-N.html`` (N ≥ 2) with a conditional
 ``metadata.pages: [{file, url}]`` list mirroring the ``frames``
 convention. The harness unions state 1 + frames + pages just like it
 unions state 1 + frames today. Frames are captured for state 1 only
-— a documented limitation, matching the boards SYS-5 targets
-(Techwarely and BCG both have their frames-if-any at state 1). Boards
-run without ``--paginate`` produce the exact SYS-2 fixture shape with
+— a documented limitation, matching the boards the pagination walker
+targets (Techwarely and BCG both have their frames-if-any at state 1).
+Boards run without ``--paginate`` produce the exact fixture shape with
 no ``pages`` key emitted.
 
-Expand-on-capture (SYS-6, SYS-12)
+Expand-on-capture
 ---------------------------------
 Passing ``--expand-selector <css>`` clicks every visible element
 matching the selector after the render+scroll settle and before the
@@ -61,7 +61,7 @@ as soon as a round finds no visible matches. This exists so boards
 whose listings sit behind collapsed department accordions (Deel is
 the canonical C4 case) can be captured with their anchors already
 mounted in the frozen HTML — the runtime agent handles the same job
-in-page under the SYS-6 prompt clause, and the fixture must reflect
+in-page under the prompt clause, and the fixture must reflect
 the same DOM state to keep the harness honest. The user-supplied
 selector is recorded as ``metadata.expand_selector`` (conditional key
 — omitted when the flag is not set, byte-stable with prior fixtures).
@@ -71,7 +71,7 @@ is untested. Runtime expansion of accordions in production is the
 agent's job under GOAL_PROMPT §STEP 2, not the collector's — this
 flag is capture-side only.
 
-Under SYS-12 the bounded expansion loop has been extracted into
+Under the bounded expansion loop has been extracted into
 :func:`~vacantes.extraction.dom.collector.expand_all` — one
 production loop shared between runtime (driven by ``ActorPageDriver``)
 and capture (driven by :class:`_PlaywrightPageDriver`). Its cap
@@ -84,9 +84,9 @@ via the probe/GT workflow doesn't have to re-edit the catalog on
 every attempt. When only the catalog value is set the flag can be
 omitted and the same effective selector still runs.
 
-Runtime hooks (SYS-12)
+Runtime hooks
 ----------------------
-Beyond the SYS-6 ``--expand-selector`` override, capture also honours
+Beyond the ``--expand-selector`` override, capture also honours
 the other two DOM-side fields on :class:`RuntimeHooks`:
 ``pre_extract_css`` and ``next_control_selector``. Both are read
 directly from ``Company.hooks`` — no CLI flag — and threaded into the
@@ -99,9 +99,9 @@ recorded verbatim as conditional metadata keys (``pre_extract_css``,
 ``expand_selector``, ``next_control_selector``) so a re-capture
 producing byte-different HTML can be traced back to the exact hook
 payload. Fixtures for companies with the inert-default hook stay
-byte-stable with the pre-SYS-12 schema.
+byte-stable with the pre-hooks schema.
 
-Pre-filter URLs (SYS-13)
+Pre-filter URLs
 ------------------------
 Boards whose location filter is expressible as a stable set of URL
 variants declare them on ``Company.pre_filter_urls`` (a tuple of
@@ -118,7 +118,7 @@ the harness assertion. Three additive-optional metadata keys are
 emitted together on declaring captures (``pre_filter_urls`` verbatim,
 ``top_url`` = state 1 URL, ``states`` = list of ``{file, url}``);
 non-declaring fixtures skip all three and stay byte-identical to
-their pre-SYS-13 shape. Frames are walked on state 1 only (SYS-5
+their single-state shape. Frames are walked on state 1 only (
 limitation carried forward).
 
 Declaring × paginate
@@ -176,7 +176,7 @@ SNAPSHOTS_DIR = (
 
 # The bounded expansion loop lives in
 # :func:`~vacantes.extraction.dom.collector.expand_all` as of
-# SYS-12 — one production loop, two adapters (runtime uses
+# — one production loop, two adapters (runtime uses
 # ``ActorPageDriver``; capture uses ``_PlaywrightPageDriver`` below).
 # The round cap and settle-sleep constants live on the collector
 # module (``EXPAND_MAX_ROUNDS`` and ``EXPAND_SETTLE_SEC``) so the two
@@ -347,8 +347,8 @@ async def _capture_same_origin_frames(
     frame is chrome (a tracking pixel, a video embed) and freezing it would
     only inflate the fixture.
 
-    Called once for state 1 and once per SYS-13 state >= 2. Per-state frames
-    were a documented non-goal through SYS-13 because no corpus board
+    Called once for state 1 and once per state >= 2. Per-state frames
+    were a documented non-goal because no corpus board
     combined same-origin frame descent with ``pre_filter_urls``: every
     frame-bearing fixture was single-state, and every multi-state fixture
     kept its anchors in the top document. Auxis is the first board where
@@ -524,7 +524,7 @@ async def _capture(
     Company) still produces a state-1-only fixture on demand.
 
     ``pre_extract_css``, ``expand_selector``, and
-    ``next_control_selector`` (SYS-12) mirror the fields on
+    ``next_control_selector`` mirror the fields on
     :class:`RuntimeHooks`. ``expand_selector`` is the *resolved*
     effective value (see :func:`resolve_expand_selector` — flag
     override beats catalog); the other two are catalog-sourced only
@@ -543,8 +543,8 @@ async def _capture(
     is legal — the argparse ``--paginate`` ⟷ ``--expand-selector``
     mutex is a *flag*-level constraint.
 
-    ``pre_filter_urls`` (SYS-13) mirrors ``Company.pre_filter_urls``:
-    an empty tuple (the pre-SYS-13 default and every non-declaring
+    ``pre_filter_urls`` mirrors ``Company.pre_filter_urls``:
+    an empty tuple (the single-state default and every non-declaring
     board) leaves navigation byte-identical — state 1 renders from
     ``job_board_url`` and ``states`` returns empty. A non-empty tuple
     switches capture into agent-less multi-state mode: state 1
@@ -555,7 +555,7 @@ async def _capture(
     fetched, settled, and baked as ``states/state-N.html``.
     Per-state execution order matches state 1: goto → wait → scroll
     → ``apply_pre_extract_css`` → ``expand_all`` → bake. Frames are
-    walked on state 1 only (SYS-5 limitation carried forward). When
+    walked on state 1 only (single-state limitation carried forward). When
     ``pre_filter_urls`` is non-empty the reported extractor count is
     the union across every state's matcher run — the same union
     :func:`_extract_prefiltered` computes at runtime — so the
@@ -578,18 +578,18 @@ async def _capture(
             args=["--password-store=basic", "--use-mock-keychain"],
         )
         try:
-            # SYS-10: all launch sites must agree — a board is validated
+            # all launch sites must agree — a board is validated
             # and run under one browser environment. The plausible UA
             # (``HeadlessChrome/<v>`` → ``Chrome/<v>``) closes the C14
             # WAF-403 class documented in
             # ``blockers/INTEGRATION_BLOCKERS.md``.
             user_agent = await plausible_headless_ua()
             page = await browser.new_page(user_agent=user_agent)
-            # SYS-13: when ``pre_filter_urls`` is non-empty the runtime
+            # when ``pre_filter_urls`` is non-empty the runtime
             # never visits ``job_board_url``, so state 1 must render
             # from ``pre_filter_urls[0]`` to keep the frozen fixture in
             # sync with what the harness will replay. Empty tuple keeps
-            # the pre-SYS-13 code path byte-identical.
+            # the single-state code path byte-identical.
             state_1_url = pre_filter_urls[0] if pre_filter_urls else job_board_url
             await page.goto(state_1_url)
             await asyncio.sleep(wait_s)
@@ -597,14 +597,14 @@ async def _capture(
                 await page.evaluate("() => { window.scrollBy(0, window.innerHeight); }")
                 await asyncio.sleep(1)
 
-            # SYS-12 §4.5 execution order: css → expand → bake →
+            # execution order: css → expand → bake →
             # frames → walker. The Playwright adapter is constructed
             # once here and reused across every hook that needs it,
             # mirroring the runtime's single-``ActorPageDriver``
             # convention inside ``collect_job_links``.
             driver = _PlaywrightPageDriver(page)
 
-            # SYS-12 pre-extract CSS injection. Runs *before* expansion
+            # pre-extract CSS injection. Runs *before* expansion
             # so any stylesheet-hidden accordion trigger becomes
             # visibility-gate-visible in time for ``expand_all`` to
             # click it, and *before* the bake so the injected
@@ -615,7 +615,7 @@ async def _capture(
                 rule_count = await apply_pre_extract_css(driver, pre_extract_css)
                 print(f"   pre-extract-css: {rule_count} rule(s) parsed")
 
-            # SYS-6/SYS-12: expand accordions before the bake so their
+            # hooks-and-prompt: expand accordions before the bake so their
             # anchors are captured in the frozen HTML. The bounded
             # loop lives in ``collector.expand_all`` — one production
             # loop, driven here via ``_PlaywrightPageDriver`` and at
@@ -628,8 +628,8 @@ async def _capture(
             top_html, _ = await _bake_and_serialize(page)
 
             # Enumerate captureable frames for state 1. Identical walk
-            # to the pre-SYS-5 flow, now expressed once in
-            # ``_capture_same_origin_frames`` so the SYS-13 state loop
+            # to the single-page flow, now expressed once in
+            # ``_capture_same_origin_frames`` so the state loop
             # below can freeze each state's frames with exactly the same
             # semantics (see that helper's docstring for why per-state
             # frames stopped being a non-goal).
@@ -666,7 +666,7 @@ async def _capture(
                 return _on_state
 
             async def _walk(sink: list[tuple[int, str, str]]) -> set[str]:
-                # SYS-12: thread ``next_control_selector`` through to
+                # thread ``next_control_selector`` through to
                 # the walker as a per-state override — if set, the
                 # walker's next-control JS skips signals 1–6 and
                 # single-shot-matches the CSS selector instead
@@ -697,7 +697,7 @@ async def _capture(
                 return result
 
             if pre_filter_urls:
-                # SYS-13 agent-less multi-state union. State 1 was
+                # agent-less multi-state union. State 1 was
                 # already rendered, hooked, and baked above; now we run
                 # the matcher against state 1 to seed the union, then
                 # walk states 2..N applying the same execution order
@@ -760,7 +760,7 @@ async def _capture(
                 extracted = len(await _walk(pages))
             else:
                 # Single-shot sanity count — byte-identical to the
-                # pre-SYS-5 code path.
+                # single-page code path.
                 urls = await page.evaluate(
                     EXTRACT_JOB_LINKS_JS,
                     [prefix, top_origin, min_depth, suppress_selector],
@@ -841,7 +841,7 @@ def _write_snapshot(
             (pages_dir / filename).write_text(page_html, encoding="utf-8")
             pages_meta.append({"file": f"pages/{filename}", "url": url})
 
-    # SYS-13: ``states/`` mirrors ``pages/`` hygiene — cleared on every
+    # ``states/`` mirrors ``pages/`` hygiene — cleared on every
     # capture so a fixture converted from declaring back to single-shot
     # (or vice-versa) never carries stale state-N files. Only the
     # capture-emitted state-N indexes get files; state 1 lives in the
@@ -932,9 +932,9 @@ def _write_snapshot(
     # under SNAPSHOT_SCHEMA_VERSION 2 — the new key is additive-optional.
     if company.link_rule.min_depth != 1:
         metadata["min_depth"] = company.link_rule.min_depth
-    # ``suppress_ancestor_selector`` (SYS-14) follows the same
+    # ``suppress_ancestor_selector`` follows the same
     # additive-optional convention — recorded only when the Company entry
-    # sets one, so every pre-SYS-14 fixture stays byte-for-byte comparable.
+    # sets one, so every legacy fixture stays byte-for-byte comparable.
     # Recording it is what lets the harness replay the frozen HTML under
     # the same matcher arguments the runtime used; a fixture captured with
     # suppression active would otherwise over-count on replay by exactly
@@ -948,35 +948,35 @@ def _write_snapshot(
     if frames_meta:
         metadata["frames"] = frames_meta
     # ``pages`` is likewise conditional — captures without ``--paginate``
-    # never emit the key, so every existing SYS-2 fixture stays byte-for-
-    # byte comparable under SYS-5.
+    # never emit the key, so every existing fixture stays byte-for-
+    # byte comparable.
     if pages_meta:
         metadata["pages"] = pages_meta
-    # ``expand_selector`` (SYS-6) is another additive-optional key. Absent
-    # from every pre-SYS-6 fixture; present only on fixtures whose capture
+    # ``expand_selector`` is another additive-optional key. Absent
+    # from every legacy fixture; present only on fixtures whose capture
     # invocation passed ``--expand-selector``. Recorded verbatim so a
     # re-capture producing a byte-different HTML can be traced back to
     # the selector that mounted the anchors.
     if expand_selector is not None:
         metadata["expand_selector"] = expand_selector
-    # ``pre_extract_css`` and ``next_control_selector`` (SYS-12) follow
+    # ``pre_extract_css`` and ``next_control_selector`` follow
     # the same additive-optional convention. Recorded verbatim from
     # ``Company.hooks`` when set, so a re-capture producing a
     # byte-different HTML can be traced back to the hook payload that
-    # produced it. Absent from every pre-SYS-12 fixture and from every
-    # SYS-12 fixture whose Company has the inert-default hook.
+    # produced it. Absent from every pre-hooks fixture and from every
+    # hooks fixture whose Company has the inert-default hook.
     if pre_extract_css is not None:
         metadata["pre_extract_css"] = pre_extract_css
     if next_control_selector is not None:
         metadata["next_control_selector"] = next_control_selector
-    # SYS-13 additive-optional keys. All three are present together (or
+    # additive-optional keys. All three are present together (or
     # not at all): a declaring capture emits ``pre_filter_urls`` verbatim
     # so the runtime code path is auditable from the fixture, ``top_url``
     # so the harness knows which URL to replay ``page.html`` under (the
     # runtime never visits ``job_board_url`` on this path), and ``states``
     # so the harness enumerates the additional state-N files to union.
     # Non-declaring fixtures skip all three and stay byte-identical to
-    # their pre-SYS-13 shape.
+    # their single-state shape.
     if company.pre_filter_urls:
         metadata["pre_filter_urls"] = list(company.pre_filter_urls)
         metadata["top_url"] = company.pre_filter_urls[0]
@@ -1027,7 +1027,7 @@ def _parse_args() -> argparse.Namespace:
         help="Optional free-text notes about the board (saved in metadata).",
     )
     # ``--paginate`` and ``--expand-selector`` are mutually exclusive at
-    # the argparse layer: SYS-6 has never validated the interaction and
+    # the argparse layer: has never validated the interaction and
     # no board in the current corpus needs both. If a board later demands
     # both (e.g. paginate through pages whose per-page listings are
     # accordion-hidden), this mutex is where that decision reopens.
@@ -1036,14 +1036,14 @@ def _parse_args() -> argparse.Namespace:
         "--paginate",
         action="store_true",
         help=(
-            "Drive the SYS-5 pagination walker while capturing. States "
+            "Drive the pagination walker while capturing. States "
             "≥ 2 are baked into 'pages/page-N.html' with a conditional "
             "'pages' entry in metadata; state 1 uses the existing "
             "'page.html' + 'frames/' layout. On a company declaring "
             "pre_filter_urls the walker runs within each state: state 1's "
             "pages use 'pages/', each later state's use "
             "'states/state-N-pages/'. Omit for the byte-identical "
-            "pre-SYS-5 single-state capture. Mutually exclusive with "
+            "single-state capture. Mutually exclusive with "
             "--expand-selector."
         ),
     )
@@ -1052,12 +1052,12 @@ def _parse_args() -> argparse.Namespace:
         default=None,
         metavar="CSS",
         help=(
-            "SYS-6 accordion-reveal: after render+scroll, click every "
+            "accordion-reveal: after render+scroll, click every "
             "visible element matching this CSS selector in bounded "
             "rounds before baking, so anchors mounted on expand are "
             "captured in the frozen HTML. Recorded as "
             "metadata.expand_selector. Mutually exclusive with --paginate. "
-            "SYS-12: when Company.hooks.expand_selector is set, this "
+            "when Company.hooks.expand_selector is set, this "
             "flag overrides the catalog value for iteration; leave "
             "unset to use the catalog selector unchanged."
         ),
@@ -1084,7 +1084,7 @@ def main() -> None:
     slug = slugify(company.name)
     out_dir = SNAPSHOTS_DIR / slug
 
-    # SYS-13 × SYS-5: ``--paginate`` on a declaring company is supported.
+    # states × pages: ``--paginate`` on a declaring company is supported.
     # The walker runs within each pre-filter state, as the runtime's
     # ``_extract_prefiltered`` does; state 1's pages land in the
     # top-level ``pages/`` and each later state's in
@@ -1095,7 +1095,7 @@ def main() -> None:
         sys.exit(1)
 
     print(f"Capturing snapshot for {company.name} -> {out_dir.relative_to(Path.cwd())}")
-    # SYS-12: resolve the effective ``expand_selector`` (flag override
+    # resolve the effective ``expand_selector`` (flag override
     # beats catalog) and pull the other two hooks straight from the
     # catalog. All three are forwarded into both ``_capture`` (where
     # they drive execution) and ``_write_snapshot`` (where they are

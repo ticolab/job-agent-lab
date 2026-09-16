@@ -63,7 +63,7 @@ class TestIdInPathDepthFloor:
 
     def test_default_depth_keeps_shallow_and_deep(self, page: Page) -> None:
         # Baseline: at the default of ``min_depth=1`` both depth-1 and
-        # depth-2 anchors survive — byte-identical to the pre-SYS-3
+        # depth-2 anchors survive — byte-identical to the legacy
         # matcher. This test pins that identity so any future default
         # change is caught here rather than in the corpus sweep.
         _load(
@@ -132,7 +132,7 @@ class TestFallbackAndQueryBranch:
 
 
 class TestBackwardCompatDefault:
-    """Callers that don't thread ``min_depth`` keep the pre-SYS-3 behaviour."""
+    """Callers that don't thread ``min_depth`` keep the legacy behaviour."""
 
     def test_two_element_args_list_defaults_to_depth_one(self, page: Page) -> None:
         # Any external caller still passing ``[basePath, careerOrigin]``
@@ -151,7 +151,7 @@ class TestBackwardCompatDefault:
         }
 
     def test_three_element_args_list_defaults_suppression_off(self, page: Page) -> None:
-        # SYS-14 adds a fourth slot. Every caller that still passes three
+        # adds a fourth slot. Every caller that still passes three
         # elements (the probe, ``verify_urlset_diff.py``, older skill-copy
         # revisions) must see suppression disabled — the JS defaults
         # ``suppressSelector`` to null and the gate is skipped entirely.
@@ -171,14 +171,14 @@ class TestBackwardCompatDefault:
 
 
 class TestSuppressAncestorSelector:
-    """SYS-14: ``anchor.closest(selector)`` drops container-scoped anchors.
+    """: ``anchor.closest(selector)`` drops container-scoped anchors.
 
     The C16 shape (Ulteig): a "Featured opportunities" section whose
     recommendation anchors share the origin, prefix, depth, and
     id-in-query URL shape of the real filtered results, so no URL-layer
     discriminator exists. UKG marks the wrapper with a platform-owned
-    ``data-automation`` attribute; the markup below mirrors the P4
-    capture at ``spike/evidence/ulteig_featured_section.html``.
+    ``data-automation`` attribute; the markup below mirrors the shape
+    of the featured-opportunities wrapper observed on the live board.
     """
 
     _SUPPRESS = '[data-automation="featured-opportunities"]'
@@ -353,7 +353,7 @@ class TestSuppressSelectorValidation:
     is auto-closed at EOF, so Chromium parses it as the valid
     attribute-presence selector ``[unclosed]`` and nothing throws. Use a
     genuinely unparseable selector (``div:::bad``, ``a[``, ``>>>``, the
-    empty string) instead. This tripped up the original SYS-14 test
+    empty string) instead. This tripped up the original test
     authoring; the note exists so the guard is not mistakenly declared
     broken next time.
     """

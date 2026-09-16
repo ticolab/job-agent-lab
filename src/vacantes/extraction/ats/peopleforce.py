@@ -26,7 +26,7 @@ union the results. It is correct on the day it is written and silently
 incomplete afterwards, because the declared set is frozen while the
 tenant's location list is not. A posting opened in a city that is not
 declared is missed, and — the part that makes it dangerous — the
-SYS-9 verdict layer cannot see it: the union still equals the frozen
+verdict layer cannot see it: the union still equals the frozen
 ``expected_jobs``, so the run reports ``match`` while under-counting.
 Only the inverse (a declared id that stops resolving) shows up, as
 ``under``.

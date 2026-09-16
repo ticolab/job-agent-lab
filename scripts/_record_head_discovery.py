@@ -4,7 +4,7 @@ Emits the exact ``{found, signal, text}`` dict per state file so a
 discovery-sweep test can pin known-good behaviour as expected values —
 used once to record the HEAD descriptors baked into
 ``TestPaginatedFixtureSweep`` in
-``tests/snapshots/test_pagination_discovery.py`` ahead of SYS-11's
+``tests/snapshots/test_pagination_discovery.py`` ahead of
 signal changes. Kept for the next discovery-asset change that needs the
 same recording step; run manually, not part of any test suite or CI
 gate.

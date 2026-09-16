@@ -113,7 +113,7 @@ class TestSignalPositive:
 
 
 class TestBoardShapes:
-    """DOM shapes lifted from the two boards that motivated SYS-5."""
+    """DOM shapes lifted from the two boards that motivated."""
 
     def test_bcg_shape_next_wins_over_previous(self, page: Page) -> None:
         # BCG renders both pagers with aria-label; only the "next" one
@@ -323,7 +323,7 @@ class TestMarkerHygiene:
 
 
 # ---------------------------------------------------------------------------
-# SYS-11 additions: signals 5 (class-next) and 6 (load-more) plus the shared
+# additions: signals 5 (class-next) and 6 (load-more) plus the shared
 # next-allowlist tightening of signals 2 and 3.
 # ---------------------------------------------------------------------------
 
@@ -400,7 +400,7 @@ class TestSignalLoadMore:
     Motivating shape from the R2 ledger's Svitla entry: a persistent
     ``Load More`` button paired with two marketing carousels whose
     ``aria-label="Next office"`` / ``"Next review"`` used to false-positive
-    on the pre-SYS-11 signal 2. The allowlist tightening now rejects those
+    on the legacy signal 2. The allowlist tightening now rejects those
     labels, so the Load-More button wins as intended.
     """
 
@@ -556,7 +556,7 @@ class TestNextAllowlist:
 
 
 class TestPriorityOrderExtended:
-    """Priority tests for the SYS-11 signals on top of the pre-existing chain."""
+    """Priority tests for the signals on top of the pre-existing chain."""
 
     def test_numeric_successor_beats_class_next(self, page: Page) -> None:
         # Both a class-next affordance and a signal-4 shape are present
@@ -607,7 +607,7 @@ class TestPriorityOrderExtended:
 
 
 class TestExclusionsSys11:
-    """SYS-11 signals must respect the same visibility / disabled gates."""
+    """signals must respect the same visibility / disabled gates."""
 
     def test_hidden_class_next_anchor_is_skipped(self, page: Page) -> None:
         _load(
@@ -634,10 +634,10 @@ class TestExclusionsSys11:
 
 
 # ---------------------------------------------------------------------------
-# SYS-11 byte-identity sweep: HEAD dry-run descriptors over every state
+# byte-identity sweep: HEAD dry-run descriptors over every state
 # file of every paginated fixture. These expected values were recorded
 # from HEAD (commit a6155aa4bfc519e168471a65edf34621e919baba, immediately
-# before the SYS-11 asset change) and pin the invariant that no
+# before the asset change) and pin the invariant that no
 # pre-existing discovery win shifts under the tightening / new signals.
 # ---------------------------------------------------------------------------
 
@@ -687,7 +687,7 @@ _SWEEP_EXPECTED: list[tuple[str, str, dict[str, Any]]] = [
         {"found": False, "signal": None, "text": None},
     ),
     # APM Terminals — aria-label "next" on every non-last state. Under
-    # the SYS-11 tightening this remains a signal-2 win because ``next``
+    # the tightening this remains a signal-2 win because ``next``
     # tokenizes to the single token ``[next]`` which trivially satisfies
     # the allowlist. State 6 is the last page and the control disappears.
     (
@@ -745,7 +745,7 @@ def _inject_base_href_local(html: str, base_url: str) -> str:
 class TestPaginatedFixtureSweep:
     """Byte-identity of discovery descriptors across the paginated corpus.
 
-    Any pre-SYS-11 winner shifting under the new signals or the tightened
+    Any legacy winner shifting under the new signals or the tightened
     allowlist would be a signal regression: this sweep is the executable
     form of the ticket's dry-run byte-identity acceptance criterion, and
     persists as a standing regression guard for every future discovery

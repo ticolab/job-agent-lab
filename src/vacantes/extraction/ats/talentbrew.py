@@ -20,7 +20,7 @@ Why an API adapter — the C12 closure for Citi
 Citi shares BCG's C12 shape (see
 ``blockers/INTEGRATION_BLOCKERS.md``): 3,529 unfiltered postings
 sit behind a country facet whose page-level UI does not encode the
-facet into the URL, so the SYS-5 walker neither reaches everything
+facet into the URL, so the pagination walker neither reaches everything
 (``MAX_PAGES=20`` against ~236 pages) nor can be frozen into a
 snapshot that replays in the filtered state. The prerequisite probe
 corrected the platform reading — ``/widgets`` 404s and Citi's assets
@@ -78,7 +78,7 @@ filter. Talentbrew records carry no structured location field that
 could be re-verified client-side, and per-card location text
 (``<span class="job-location">``) is a fragile second contract that
 would drift independently of the primary facet. Rot in the facet id
-is owned by SYS-9's ``verdict`` layer on the next live run.
+is owned by the ``verdict`` layer on the next live run.
 
 Pagination
 ----------
@@ -89,7 +89,7 @@ because the raw parsed count is perturbed by pager/chrome anchors
 that LinkRule drops (so a partial last page can still have
 ``records_per_page`` raw anchors), and ``hasJobs`` alone would
 terminate one page too late in some tenants. A defensive
-``_MAX_PAGES=20`` cap mirrors the SYS-5 walker: a tenant genuinely
+``_MAX_PAGES=20`` cap mirrors the pagination walker: a tenant genuinely
 requiring more pages fires a loud warning and emits the union
 collected so far, letting the verdict layer surface the shortfall on
 the next live run.
@@ -109,7 +109,7 @@ surface. The first Talentbrew tenant whose filtered region genuinely
 spans multiple pages is the trigger to live-verify the loop, and
 any request-parameter drift (e.g. an ``IsPagination=True`` toggle
 required for pages ≥ 2) will surface as a partial page-2 count that
-SYS-9's verdict layer flags on the next run.
+verdict layer flags on the next run.
 
 Failure semantics
 -----------------
@@ -159,7 +159,7 @@ logger = logging.getLogger(__name__)
 # lands well inside it.
 _REQUEST_TIMEOUT = httpx.Timeout(30.0)
 
-# Defensive cap on the pagination loop. Mirrors the SYS-5 walker's
+# Defensive cap on the pagination loop. Mirrors the pagination walker
 # ``MAX_PAGES``. A tenant that genuinely needs more pages is a signal
 # to live-verify the ``IsPagination`` toggle in
 # :func:`build_query_params` and lift the cap, not to raise it
@@ -230,7 +230,7 @@ def apply_link_rule(
 ) -> list[str]:
     """Python mirror of ``collect_links.js`` — URL-layer only.
 
-    This is the one genuinely novel artifact in SYS-17: a deliberate,
+    This is the one genuinely novel artifact : a deliberate,
     parity-tested duplication of the JS matcher's URL semantics. The
     parity test in ``tests/snapshots/test_linkrule_parity.py``
     executes the *real* JS asset against a synthetic anchor document
