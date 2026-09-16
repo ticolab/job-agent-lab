@@ -1057,4 +1057,12 @@ COMPANIES: list[Company] = [
         strategy="greenhouse",
         expected_jobs=7,
     ),
+    Company(
+        name="Oowlish",
+        aliases=(),
+        job_board_url="https://jobs.lever.co/oowlish?location=Costa%20Rica",
+        sample_job_url="https://jobs.lever.co/oowlish/4f805246-8df1-468d-9ba9-fa1dd205e0dc",
+        expected_jobs=1,
+        pre_filter_urls=("https://jobs.lever.co/oowlish?location=Costa%20Rica",),
+    ),
 ]
