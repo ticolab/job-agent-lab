@@ -1,0 +1,11 @@
+{
+  "schema_version": 2,
+  "company_name": "Unisys",
+  "job_board_url": "https://unisys.wd5.myworkdayjobs.com/External?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+  "sample_job_url": "https://unisys.wd5.myworkdayjobs.com/en-US/External/details/QA-Tester_REQ575669",
+  "expected_unfiltered_count": 9,
+  "captured_at": "2026-09-16T04:22:42.096038+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/en-US/External/job"
+}

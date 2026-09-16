@@ -1027,4 +1027,12 @@ COMPANIES: list[Company] = [
         strategy="greenhouse",
         expected_jobs=47,
     ),
+    Company(
+        name="Unisys",
+        aliases=(),
+        job_board_url="https://unisys.wd5.myworkdayjobs.com/External?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+        sample_job_url="https://unisys.wd5.myworkdayjobs.com/en-US/External/details/QA-Tester_REQ575669",
+        link_rule=LinkRule(path_prefix="/en-US/External/job"),
+        expected_jobs=9,
+    ),
 ]
