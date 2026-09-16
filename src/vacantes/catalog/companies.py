@@ -1049,4 +1049,12 @@ COMPANIES: list[Company] = [
             results_path="/en/search-jobs/results",
         ),
     ),
+    Company(
+        name="VML",
+        aliases=("wundermanthompson",),
+        job_board_url="https://job-boards.greenhouse.io/wundermanthompson",
+        sample_job_url="https://www.vml.com/careers/job/8692067002-cr-associate-qa-analyst",
+        strategy="greenhouse",
+        expected_jobs=7,
+    ),
 ]
