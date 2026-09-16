@@ -962,4 +962,12 @@ COMPANIES: list[Company] = [
             "https://www.jobs.global.fujitsu.com/search?searchResultView=LIST&facetFilters=%7B%22jobLocationCountry%22%3A%5B%22Costa%20Rica%22%5D%7D",
         ),
     ),
+    Company(
+        name="Perform",
+        aliases=(),
+        job_board_url="https://job-boards.greenhouse.io/perform-careers",
+        sample_job_url="https://job-boards.greenhouse.io/perform-careers/jobs/4250843009",
+        strategy="greenhouse",
+        expected_jobs=1,
+    ),
 ]
