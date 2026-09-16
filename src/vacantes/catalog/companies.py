@@ -1011,4 +1011,12 @@ COMPANIES: list[Company] = [
         expected_jobs=8,
         pre_filter_urls=("https://tyk.io/tyk-current-vacancies/",),
     ),
+    Company(
+        name="Sparq",
+        aliases=(),
+        job_board_url="https://ats.rippling.com/en-GB/sparq/jobs?country=CR",
+        sample_job_url="https://ats.rippling.com/en-GB/sparq/jobs/808bb533-70c8-40a7-86c5-5fdd6d42c31f",
+        expected_jobs=4,
+        pre_filter_urls=("https://ats.rippling.com/en-GB/sparq/jobs?country=CR",),
+    ),
 ]

@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "Sparq",
+  "job_board_url": "https://ats.rippling.com/en-GB/sparq/jobs?country=CR",
+  "sample_job_url": "https://ats.rippling.com/en-GB/sparq/jobs/808bb533-70c8-40a7-86c5-5fdd6d42c31f",
+  "expected_unfiltered_count": 4,
+  "captured_at": "2026-09-16T03:28:44.849016+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pre_filter_urls": [
+    "https://ats.rippling.com/en-GB/sparq/jobs?country=CR"
+  ],
+  "top_url": "https://ats.rippling.com/en-GB/sparq/jobs?country=CR"
+}
