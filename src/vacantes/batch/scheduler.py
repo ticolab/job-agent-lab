@@ -41,11 +41,14 @@ def new_batch_id() -> str:
     """Mint an identifier for one batch.
 
     Sortable-timestamp-first so ``order by batch_id`` is chronological
-    without parsing, with four random hex characters appended because two
+    without parsing, with eight random hex characters appended because two
     batches started in the same second would otherwise share an id and
-    silently merge in a ``group by``.
+    silently merge in a ``group by``. Eight rather than four because four
+    gives only 65,536 suffixes per second, and drawing 50 of them — what
+    the uniqueness test does — collides about one run in 54; eight puts
+    the same draw at roughly one in 3.5 million.
     """
-    return f"{utc_now():%Y%m%d_%H%M%S}_{uuid4().hex[:4]}"
+    return f"{utc_now():%Y%m%d_%H%M%S}_{uuid4().hex[:8]}"
 
 
 @dataclass(frozen=True)
