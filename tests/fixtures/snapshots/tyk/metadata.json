@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "Tyk",
+  "job_board_url": "https://tyk.io/tyk-current-vacancies/",
+  "sample_job_url": "https://tyk.io/jobs/site-reliability-engineer/",
+  "expected_unfiltered_count": 8,
+  "captured_at": "2026-09-16T03:19:03.862956+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pre_filter_urls": [
+    "https://tyk.io/tyk-current-vacancies/"
+  ],
+  "top_url": "https://tyk.io/tyk-current-vacancies/"
+}

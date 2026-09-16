@@ -558,6 +558,7 @@ class TestExpectedJobsField:
             "ReKluti": 49,
             "Atomic Invest": 1,
             "Appnovation": 3,
+            "Tyk": 8,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1049,6 +1050,7 @@ class TestPreFilterUrlsField:
             "Fujitsu",
             "Baja Nearshore",
             "ReKluti",
+            "Tyk",
         }
         actual_states = {c.name for c in COMPANIES if c.pre_filter_urls}
         assert actual_states == expected_states, (

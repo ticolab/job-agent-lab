@@ -1003,4 +1003,12 @@ COMPANIES: list[Company] = [
         strategy="greenhouse",
         expected_jobs=3,
     ),
+    Company(
+        name="Tyk",
+        aliases=(),
+        job_board_url="https://tyk.io/tyk-current-vacancies/",
+        sample_job_url="https://tyk.io/jobs/site-reliability-engineer/",
+        expected_jobs=8,
+        pre_filter_urls=("https://tyk.io/tyk-current-vacancies/",),
+    ),
 ]
