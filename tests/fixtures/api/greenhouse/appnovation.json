@@ -1,0 +1,1789 @@
+{
+  "jobs": [
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8635087002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6448694002,
+      "location": {
+        "name": "Tampa"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8635087002,
+      "updated_at": "2026-08-06T01:01:18-04:00",
+      "requisition_id": "1631",
+      "title": " Adoption Analytics & Insights Manager",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-07-16T16:04:51-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8635085002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6448694002,
+      "location": {
+        "name": "New York"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8635085002,
+      "updated_at": "2026-08-06T01:01:18-04:00",
+      "requisition_id": "1631",
+      "title": " Adoption Analytics & Insights Manager",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-07-16T16:04:48-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8635086002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6448694002,
+      "location": {
+        "name": "Toronto"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8635086002,
+      "updated_at": "2026-08-06T01:01:18-04:00",
+      "requisition_id": "1631",
+      "title": " Adoption Analytics & Insights Manager",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-07-16T16:04:49-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8785807002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6514753002,
+      "location": {
+        "name": "S\u00e3o Paulo"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8785807002,
+      "updated_at": "2026-09-08T09:48:44-04:00",
+      "requisition_id": "1669",
+      "title": "AI Solution Engineer",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-08T09:48:43-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8785809002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6514753002,
+      "location": {
+        "name": "San Jos\u00e9, Costa Rica"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8785809002,
+      "updated_at": "2026-09-08T09:48:46-04:00",
+      "requisition_id": "1669",
+      "title": "AI Solution Engineer",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-08T09:48:46-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8749882002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6499569002,
+      "location": {
+        "name": "Hong Kong"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8749882002,
+      "updated_at": "2026-09-04T01:57:32-04:00",
+      "requisition_id": "1651",
+      "title": "Associate, Business Analyst (One year contract)",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-26T05:14:14-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8802234002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6522131002,
+      "location": {
+        "name": "Kuala Lumpur"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8802234002,
+      "updated_at": "2026-09-11T15:17:25-04:00",
+      "requisition_id": "1671",
+      "title": "Associate Director Product & Strategy",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-11T15:17:25-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8749424002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6499283002,
+      "location": {
+        "name": "Kuala Lumpur"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": null,
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8749424002,
+      "updated_at": "2026-08-26T03:41:21-04:00",
+      "requisition_id": "1650",
+      "title": "Associate-Full Stack Developer",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-26T03:40:34-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8766532002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6507174002,
+      "location": {
+        "name": "Vancouver"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8766532002,
+      "updated_at": "2026-08-31T16:03:13-04:00",
+      "requisition_id": "1657",
+      "title": "Associate QA",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-31T16:03:13-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8502408002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": null,
+      "location": {
+        "name": "Austin, Bellevue, Boston, Chicago, Houston, New York"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": null,
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8502408002,
+      "updated_at": "2026-04-10T13:38:36-04:00",
+      "requisition_id": null,
+      "title": "Atlassian Consultant (Jira Align) - Contract",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-04-10T13:31:54-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8753683002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6501211002,
+      "location": {
+        "name": "Vancouver"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8753683002,
+      "updated_at": "2026-08-26T21:37:25-04:00",
+      "requisition_id": "1653",
+      "title": "Backend Developer (.NET)",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-26T21:36:52-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8648352002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6453837002,
+      "location": {
+        "name": "Hong Kong"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8648352002,
+      "updated_at": "2026-07-24T02:59:26-04:00",
+      "requisition_id": "1634",
+      "title": "Business Analyst (One year contract)",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-07-24T02:59:26-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8605241002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6437088002,
+      "location": {
+        "name": "Hong Kong"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8605241002,
+      "updated_at": "2026-06-24T22:47:55-04:00",
+      "requisition_id": "1620",
+      "title": "Business Development Director, APAC",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-06-24T03:27:03-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8623044002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6443695002,
+      "location": {
+        "name": "Hong Kong"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8623044002,
+      "updated_at": "2026-08-06T01:01:18-04:00",
+      "requisition_id": "1627",
+      "title": "Delivery Director ",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-07-07T15:02:02-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8769849002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6508726002,
+      "location": {
+        "name": "S\u00e3o Paulo"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8769849002,
+      "updated_at": "2026-09-01T13:31:50-04:00",
+      "requisition_id": "1660",
+      "title": "Full-Stack AI Engineer",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-01T13:31:50-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8760795002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6504435002,
+      "location": {
+        "name": "Toronto"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8760795002,
+      "updated_at": "2026-08-28T13:10:24-04:00",
+      "requisition_id": "1656",
+      "title": "Full-Stack AI Engineer",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-28T13:10:24-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8530699002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6406842002,
+      "location": {
+        "name": "Vancouver"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8530699002,
+      "updated_at": "2026-08-06T01:01:17-04:00",
+      "requisition_id": "1602",
+      "title": "Information Technology, Lead",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-04-29T18:15:19-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8766506002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6452500002,
+      "location": {
+        "name": "Toronto"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8766506002,
+      "updated_at": "2026-09-09T15:07:16-04:00",
+      "requisition_id": "1632",
+      "title": "Manager, Project Manager",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-31T15:46:25-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8773393002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6510421002,
+      "location": {
+        "name": "London"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8773393002,
+      "updated_at": "2026-09-02T08:51:50-04:00",
+      "requisition_id": "1662",
+      "title": "Manager, Project Manager",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-02T08:51:50-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8783637002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6513907002,
+      "location": {
+        "name": "Hong Kong"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8783637002,
+      "updated_at": "2026-09-04T06:26:57-04:00",
+      "requisition_id": "1665",
+      "title": "Mobile Developer - Android (Cantonese Speaking)",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-04T06:26:57-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8799913002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6521080002,
+      "location": {
+        "name": "Malaysia"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8799913002,
+      "updated_at": "2026-09-11T06:35:42-04:00",
+      "requisition_id": "1670",
+      "title": "Multimedia Designer ",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-11T06:35:42-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8783975002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6514013002,
+      "location": {
+        "name": "New York, Austin, Miami, Dallas"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8783975002,
+      "updated_at": "2026-09-04T10:51:40-04:00",
+      "requisition_id": "1666",
+      "title": " Principal Technical Architect ",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-04T10:51:40-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8783972002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6514013002,
+      "location": {
+        "name": "Toronto"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8783972002,
+      "updated_at": "2026-09-04T10:51:37-04:00",
+      "requisition_id": "1666",
+      "title": " Principal Technical Architect ",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-04T10:51:37-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8783976002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6514013002,
+      "location": {
+        "name": "Montreal"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8783976002,
+      "updated_at": "2026-09-04T10:54:16-04:00",
+      "requisition_id": "1666",
+      "title": "Principal Technical Architect",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-04T10:54:16-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8759445002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6503900002,
+      "location": {
+        "name": "Hong Kong"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8759445002,
+      "updated_at": "2026-08-28T07:10:55-04:00",
+      "requisition_id": "1655",
+      "title": "Project Coordinator - Hong Kong",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-28T07:10:55-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8546567002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6413633002,
+      "location": {
+        "name": "Vancouver"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8546567002,
+      "updated_at": "2026-08-06T01:01:17-04:00",
+      "requisition_id": "1611",
+      "title": "Revenue Accounting Manager",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-05-12T17:29:52-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8743377002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6496436002,
+      "location": {
+        "name": "London"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8743377002,
+      "updated_at": "2026-09-08T16:01:25-04:00",
+      "requisition_id": "1645",
+      "title": "Scrum Master",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-24T17:25:16-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8743372002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6496436002,
+      "location": {
+        "name": "Toronto"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8743372002,
+      "updated_at": "2026-09-08T16:00:46-04:00",
+      "requisition_id": "1645",
+      "title": "Scrum Master",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-24T17:23:30-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8743374002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6496436002,
+      "location": {
+        "name": "S\u00e3o Paulo"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8743374002,
+      "updated_at": "2026-09-08T16:00:56-04:00",
+      "requisition_id": "1645",
+      "title": "Scrum Master",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-24T17:25:12-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8743375002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6496436002,
+      "location": {
+        "name": "New York, Austin, Miami, Dallas, City of Phoenix"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8743375002,
+      "updated_at": "2026-09-08T16:01:08-04:00",
+      "requisition_id": "1645",
+      "title": "Scrum Master",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-24T17:25:14-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8635031002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6448662002,
+      "location": {
+        "name": "New York"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8635031002,
+      "updated_at": "2026-08-06T01:01:18-04:00",
+      "requisition_id": "1629",
+      "title": "Senior AI-First Designer",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-07-15T12:11:08-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8635033002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6448662002,
+      "location": {
+        "name": "Tampa"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8635033002,
+      "updated_at": "2026-08-06T01:01:18-04:00",
+      "requisition_id": "1629",
+      "title": "Senior AI-First Designer",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-07-15T12:11:09-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8635032002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6448662002,
+      "location": {
+        "name": "Toronto"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8635032002,
+      "updated_at": "2026-08-06T01:01:18-04:00",
+      "requisition_id": "1629",
+      "title": "Senior AI-First Designer",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-07-15T12:12:17-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8747541002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6498426002,
+      "location": {
+        "name": "Toronto"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8747541002,
+      "updated_at": "2026-09-04T09:26:52-04:00",
+      "requisition_id": "1648",
+      "title": "Senior Data Engineer, AI & Agents",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-04T09:26:52-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8747543002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6498426002,
+      "location": {
+        "name": "S\u00e3o Paulo"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8747543002,
+      "updated_at": "2026-09-04T09:26:55-04:00",
+      "requisition_id": "1648",
+      "title": "Senior Data Engineer, AI & Agents",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-04T09:26:55-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8747544002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6498426002,
+      "location": {
+        "name": "New York, Austin, Miami, Dallas"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8747544002,
+      "updated_at": "2026-09-04T09:26:57-04:00",
+      "requisition_id": "1648",
+      "title": "Senior Data Engineer, AI & Agents",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-04T09:26:57-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8746094002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6497748002,
+      "location": {
+        "name": "S\u00e3o Paulo"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8746094002,
+      "updated_at": "2026-08-25T10:35:02-04:00",
+      "requisition_id": "1647",
+      "title": "Senior Developer, Fullstack - Python",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-25T10:35:02-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8746095002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6497748002,
+      "location": {
+        "name": "New York, Austin, Miami, Dallas, City of Phoenix"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8746095002,
+      "updated_at": "2026-08-25T10:35:46-04:00",
+      "requisition_id": "1647",
+      "title": "Senior Developer, Fullstack - Python",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-25T10:35:46-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8746092002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6497748002,
+      "location": {
+        "name": "Toronto"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8746092002,
+      "updated_at": "2026-08-25T10:33:06-04:00",
+      "requisition_id": "1647",
+      "title": "Senior Developer, Fullstack - Python",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-25T10:33:06-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8648087002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": null,
+      "location": {
+        "name": "London"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": null,
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8648087002,
+      "updated_at": "2026-07-24T12:36:23-04:00",
+      "requisition_id": null,
+      "title": "Senior Project Manager",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-07-23T18:46:21-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8601402002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6413633002,
+      "location": {
+        "name": "Vancouver"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8601402002,
+      "updated_at": "2026-08-06T01:01:17-04:00",
+      "requisition_id": "1611",
+      "title": "Senior Revenue Accountant",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-06-19T15:00:09-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8747574002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6498438002,
+      "location": {
+        "name": "New York, Austin, Miami, Dallas"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8747574002,
+      "updated_at": "2026-09-01T16:23:38-04:00",
+      "requisition_id": "1649",
+      "title": "Senior Solutions Architect",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-01T16:23:38-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8753684002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6501216002,
+      "location": {
+        "name": "Vancouver"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8753684002,
+      "updated_at": "2026-08-26T21:40:42-04:00",
+      "requisition_id": "1654",
+      "title": "Senior Technical Lead (.NET)",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-26T21:40:42-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8747573002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6498438002,
+      "location": {
+        "name": "S\u00e3o Paulo"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8747573002,
+      "updated_at": "2026-09-01T16:20:38-04:00",
+      "requisition_id": "1649",
+      "title": "Solutions Architect",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-01T16:20:38-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8747571002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6498438002,
+      "location": {
+        "name": "Toronto"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8747571002,
+      "updated_at": "2026-09-01T16:20:35-04:00",
+      "requisition_id": "1649",
+      "title": "Solutions Architect",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-01T16:20:35-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8766556002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6507187002,
+      "location": {
+        "name": "Vancouver"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8766556002,
+      "updated_at": "2026-08-31T16:11:22-04:00",
+      "requisition_id": "1658",
+      "title": "Sr. Associate, Front End Developer ",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-31T16:11:22-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8708667002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6369356002,
+      "location": {
+        "name": "Toronto"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8708667002,
+      "updated_at": "2026-08-13T16:47:31-04:00",
+      "requisition_id": "1563",
+      "title": "Sr. Full-Stack Developer, AI Design-to-Dev",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-08-13T16:47:31-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8435250002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6369356002,
+      "location": {
+        "name": "S\u00e3o Paulo"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8435250002,
+      "updated_at": "2026-08-13T16:47:42-04:00",
+      "requisition_id": "1563",
+      "title": "Sr. Full-Stack Developer, AI Design-to-Dev",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-02-24T09:01:43-05:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8435267002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6369356002,
+      "location": {
+        "name": "San Jos\u00e9, Costa Rica"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-time",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8435267002,
+      "updated_at": "2026-08-13T16:47:54-04:00",
+      "requisition_id": "1563",
+      "title": "Sr. Full-Stack Developer, AI Design-to-Dev",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-02-24T09:02:55-05:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8783986002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6514016002,
+      "location": {
+        "name": "New York, Austin, Miami, Dallas"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8783986002,
+      "updated_at": "2026-09-04T10:58:10-04:00",
+      "requisition_id": "1667",
+      "title": "Staff Technical Architect",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-04T10:58:10-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8783984002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6514016002,
+      "location": {
+        "name": "Toronto"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8783984002,
+      "updated_at": "2026-09-04T10:58:13-04:00",
+      "requisition_id": "1667",
+      "title": "Staff Technical Architect ",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-09-04T10:58:13-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8646985002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6453326002,
+      "location": {
+        "name": "S\u00e3o Paulo"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8646985002,
+      "updated_at": "2026-08-06T01:01:18-04:00",
+      "requisition_id": "1633",
+      "title": "Tech Lead Veeva Vault Developer ",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-07-28T08:18:26-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8646987002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6453326002,
+      "location": {
+        "name": "San Jos\u00e9, Costa Rica"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8646987002,
+      "updated_at": "2026-08-06T01:01:18-04:00",
+      "requisition_id": "1633",
+      "title": "Tech Lead Veeva Vault Developer ",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-07-28T08:18:27-04:00",
+      "language": "en",
+      "application_deadline": null
+    },
+    {
+      "absolute_url": "https://job-boards.greenhouse.io/appnovation/jobs/8646988002",
+      "data_compliance": [
+        {
+          "type": "gdpr",
+          "requires_consent": false,
+          "requires_processing_consent": false,
+          "requires_retention_consent": false,
+          "retention_period": null,
+          "demographic_data_consent_applies": false
+        }
+      ],
+      "internal_job_id": 6453326002,
+      "location": {
+        "name": "Toronto"
+      },
+      "metadata": [
+        {
+          "id": 5169514002,
+          "name": "Employment Type",
+          "value": "Full-Time / Contract",
+          "value_type": "single_select"
+        }
+      ],
+      "id": 8646988002,
+      "updated_at": "2026-08-06T01:01:18-04:00",
+      "requisition_id": "1633",
+      "title": "Tech Lead Veeva Vault Developer ",
+      "company_name": "Appnovation Technologies",
+      "first_published": "2026-07-28T08:18:30-04:00",
+      "language": "en",
+      "application_deadline": null
+    }
+  ],
+  "meta": {
+    "total": 54
+  }
+}

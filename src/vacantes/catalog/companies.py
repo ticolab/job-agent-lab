@@ -995,4 +995,12 @@ COMPANIES: list[Company] = [
         sample_job_url="https://jobs.ashbyhq.com/atomic-invest/2dbcd665-1e90-49b0-b164-4776e85fae25",
         expected_jobs=1,
     ),
+    Company(
+        name="Appnovation",
+        aliases=(),
+        job_board_url="https://job-boards.greenhouse.io/appnovation",
+        sample_job_url="https://job-boards.greenhouse.io/appnovation/jobs/8708667002",
+        strategy="greenhouse",
+        expected_jobs=3,
+    ),
 ]
