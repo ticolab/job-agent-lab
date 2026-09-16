@@ -1062,7 +1062,10 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://jobs.lever.co/oowlish?location=Costa%20Rica",
         sample_job_url="https://jobs.lever.co/oowlish/4f805246-8df1-468d-9ba9-fa1dd205e0dc",
-        expected_jobs=1,
-        pre_filter_urls=("https://jobs.lever.co/oowlish?location=Costa%20Rica",),
+        expected_jobs=3,
+        pre_filter_urls=(
+            "https://jobs.lever.co/oowlish?location=Costa%20Rica",
+            "https://jobs.lever.co/oowlish?location=San%20Jos%C3%A9%2C%20San%20Jose%2C%20Costa%20Rica",
+        ),
     ),
 ]

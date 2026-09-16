@@ -3,12 +3,19 @@
   "company_name": "Oowlish",
   "job_board_url": "https://jobs.lever.co/oowlish?location=Costa%20Rica",
   "sample_job_url": "https://jobs.lever.co/oowlish/4f805246-8df1-468d-9ba9-fa1dd205e0dc",
-  "expected_unfiltered_count": 1,
-  "captured_at": "2026-09-16T14:07:30.155338+00:00",
+  "expected_unfiltered_count": 3,
+  "captured_at": "2026-09-16T14:23:04.310805+00:00",
   "captured_with_filters": false,
-  "notes": "Sixth Lever tenant. Board carries the tenant's 'Costa Rica' location filter in job_board_url, so expected_unfiltered_count=1 equals expected_jobs \u2014 the URL baseline IS the filtered view (unfiltered board is 13). Derived prefix /oowlish needs no override. This is the doola/REAP shape rather than the Smarsh one: Oowlish postings are multi-location and the board exposes two competing in-region options, 'Costa Rica' (1 posting) and 'San Jose, San Jose, Costa Rica' (2 postings), so Case B's preference rule has something to re-pick and hooks.filter_already_applied would not hold. Observed directly: without pre_filter_urls the agent cleared the filter on 1 of 3 runs and returned the full 13-posting board; with pre_filter_urls, 4 of 4 match. Note that 3 postings list Costa Rica in Lever's allLocations, but the exact-match ?location= filter surfaces only the 1 whose string is literally 'Costa Rica'.",
+  "notes": "Sixth Lever tenant, and a C18 union. Oowlish postings are multi-location, and Lever's ?location= filter matches the exact location string, so the tenant's two Costa Rica strings are two separate filter values: 'Costa Rica' covers 1 posting and 'San Jose, San Jose, Costa Rica' covers 2. Filtering by either alone is a partial view, so pre_filter_urls unions both and expected_unfiltered_count=3 equals expected_jobs (the unfiltered board is 13). Derived prefix /oowlish needs no override. This is the doola/REAP shape rather than the Smarsh one: with two competing in-region options, Case B's preference rule has something to re-pick, so hooks.filter_already_applied would not hold. Observed directly on the single-URL config: without pre_filter_urls the agent cleared the filter on 1 of 3 runs and returned the full 13-posting board; with it, 4 of 4 match at 1, and 4 of 4 at 3 after the union was added.",
   "pre_filter_urls": [
-    "https://jobs.lever.co/oowlish?location=Costa%20Rica"
+    "https://jobs.lever.co/oowlish?location=Costa%20Rica",
+    "https://jobs.lever.co/oowlish?location=San%20Jos%C3%A9%2C%20San%20Jose%2C%20Costa%20Rica"
   ],
-  "top_url": "https://jobs.lever.co/oowlish?location=Costa%20Rica"
+  "top_url": "https://jobs.lever.co/oowlish?location=Costa%20Rica",
+  "states": [
+    {
+      "file": "states/state-2.html",
+      "url": "https://jobs.lever.co/oowlish?location=San%20Jos%C3%A9%2C%20San%20Jose%2C%20Costa%20Rica"
+    }
+  ]
 }
