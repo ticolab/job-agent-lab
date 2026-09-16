@@ -562,6 +562,7 @@ class TestExpectedJobsField:
             "Sparq": 4,
             "Power Digital Marketing": 47,
             "Unisys": 9,
+            "Midland Credit Management": 1,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1403,11 +1404,20 @@ class TestTalentbrewStrategyPresenceValidator:
         # the pager anchors in the ``results`` fragment, which push the
         # raw page-1 count to 18 against a filtered 15 and so pin the
         # continuation predicate to the LinkRule-filtered count.
+        # Midland Credit Management is the fifth tenant and the
+        # minimal-cardinality one: a single Costa Rica posting, so it
+        # ships one payload (``midland.json``) and the
+        # ``TestMidlandRecordedPayload`` cases. Its distinct coverage is
+        # the lower boundary of the continuation predicate — one anchor
+        # is the smallest non-empty page any shipped tenant produces —
+        # and it makes the 3624060 facet a five-tenant observation,
+        # i.e. a Radancy-wide taxonomy id rather than a collision.
         expected_talentbrew = {
             "Citi",
             "Veeam Software",
             "Moody's Corporation",
             "Heraeus",
+            "Midland Credit Management",
         }
         actual_talentbrew = {c.name for c in COMPANIES if c.strategy == "talentbrew"}
         assert actual_talentbrew == expected_talentbrew, (

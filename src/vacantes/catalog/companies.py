@@ -1035,4 +1035,18 @@ COMPANIES: list[Company] = [
         link_rule=LinkRule(path_prefix="/en-US/External/job"),
         expected_jobs=9,
     ),
+    Company(
+        name="Midland Credit Management",
+        aliases=("midland", "encorecapital"),
+        job_board_url="https://careers.encorecapital.com/en/search-jobs",
+        sample_job_url="https://careers.encorecapital.com/en/job/san-jose/risk-and-compliance-analyst/29781/100036864432",
+        link_rule=LinkRule(path_prefix="/en/job"),
+        strategy="talentbrew",
+        expected_jobs=1,
+        talentbrew=TalentbrewConfig(
+            facet_id="3624060",
+            facet_display="Costa Rica",
+            results_path="/en/search-jobs/results",
+        ),
+    ),
 ]

@@ -1328,3 +1328,88 @@ class TestHeraeusRecordedPayload:
             )
             result = _run(TalentbrewStrategy().extract(_make_heraeus_company(), _ctx()))
         assert not [url for url in result["jobs"] if "search-jobs" in url]
+
+
+_MIDLAND_ORIGIN = "https://careers.encorecapital.com"
+_MIDLAND_ENDPOINT = f"{_MIDLAND_ORIGIN}/en/search-jobs/results"
+
+
+def _load_midland_fixture() -> dict[str, Any]:
+    """Read the recorded Midland ``/en/search-jobs/results`` payload."""
+    payload = json.loads((_FIXTURE_DIR / "midland.json").read_text())
+    assert isinstance(payload, dict), "midland.json is not a JSON object"
+    return payload
+
+
+def _make_midland_company(**overrides: Any) -> Company:
+    """Build the shipped ``Midland Credit Management`` entry's shape."""
+    defaults: dict[str, Any] = {
+        "name": "Midland Credit Management",
+        "job_board_url": f"{_MIDLAND_ORIGIN}/en/search-jobs",
+        "sample_job_url": (
+            f"{_MIDLAND_ORIGIN}/en/job/san-jose/"
+            "risk-and-compliance-analyst/29781/100036864432"
+        ),
+        "strategy": "talentbrew",
+        "talentbrew": TalentbrewConfig(
+            facet_id="3624060",
+            facet_display="Costa Rica",
+            results_path="/en/search-jobs/results",
+        ),
+        "link_rule": LinkRule(path_prefix="/en/job"),
+        "expected_jobs": 1,
+    }
+    defaults.update(overrides)
+    return Company(**defaults)
+
+
+class TestMidlandRecordedPayload:
+    """Fifth Talentbrew tenant — the minimal-cardinality case.
+
+    Midland shares Moody's and Heraeus' locale-prefixed shape
+    (``/en/search-jobs/results`` with ``/en/job`` anchors), so it breaks
+    no new ground there. What it pins is the *lower* boundary of the
+    continuation predicate: its Costa Rica facet returns a single
+    posting, the smallest non-empty result any shipped tenant produces.
+    Citi (10) and Veeam (11) already cover "short page terminates", but
+    both sit comfortably mid-range; a fixture with exactly one anchor is
+    what would catch a parser that needs two or more anchors to find any
+    (a stray ``[1:]``, a pairwise walk, a separator-split that yields
+    nothing for a single element).
+
+    It also makes ``facet_id="3624060"`` a five-tenant observation
+    rather than a three-tenant one, which is the evidence that the
+    Costa Rica facet is a Radancy-wide taxonomy id and not a
+    per-tenant value that happened to collide.
+    """
+
+    def test_recorded_payload_yields_one_url(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.get(_MIDLAND_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_midland_fixture())
+            )
+            result = _run(TalentbrewStrategy().extract(_make_midland_company(), _ctx()))
+        assert result["metadata"]["error"] is None
+        assert len(result["jobs"]) == 1
+
+    def test_single_request_when_first_page_is_under_full(self) -> None:
+        # 1 filtered anchor < records_per_page=15, so the adapter must
+        # stop at page 1. A regression that always probes page 2 would
+        # still return 1 URL here — only the call count catches it.
+        with respx.mock(assert_all_called=False) as mock:
+            route = mock.get(_MIDLAND_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_midland_fixture())
+            )
+            _run(TalentbrewStrategy().extract(_make_midland_company(), _ctx()))
+        assert route.call_count == 1
+
+    def test_the_url_is_absolutized_under_the_en_locale_prefix(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.get(_MIDLAND_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_midland_fixture())
+            )
+            result = _run(TalentbrewStrategy().extract(_make_midland_company(), _ctx()))
+        assert result["jobs"] == [
+            f"{_MIDLAND_ORIGIN}/en/job/san-jose/"
+            "risk-and-compliance-analyst/29781/100036864432"
+        ]
