@@ -560,6 +560,7 @@ class TestExpectedJobsField:
             "Appnovation": 3,
             "Tyk": 8,
             "Sparq": 4,
+            "Power Digital Marketing": 47,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None

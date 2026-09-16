@@ -1019,4 +1019,12 @@ COMPANIES: list[Company] = [
         expected_jobs=4,
         pre_filter_urls=("https://ats.rippling.com/en-GB/sparq/jobs?country=CR",),
     ),
+    Company(
+        name="Power Digital Marketing",
+        aliases=("powerdigital",),
+        job_board_url="https://job-boards.greenhouse.io/powerdigitalmarketing",
+        sample_job_url="https://job-boards.greenhouse.io/powerdigitalmarketing/jobs/5185164007",
+        strategy="greenhouse",
+        expected_jobs=47,
+    ),
 ]
