@@ -552,6 +552,7 @@ class TestExpectedJobsField:
             "Align Technology": 10,
             "Excel Nearshore": 7,
             "Accenture": 56,
+            "Fujitsu": 2,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1040,6 +1041,7 @@ class TestPreFilterUrlsField:
             "CommandLink",
             "Align Technology",
             "Accenture",
+            "Fujitsu",
         }
         actual_states = {c.name for c in COMPANIES if c.pre_filter_urls}
         assert actual_states == expected_states, (

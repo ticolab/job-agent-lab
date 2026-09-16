@@ -1,0 +1,15 @@
+{
+  "schema_version": 2,
+  "company_name": "Fujitsu",
+  "job_board_url": "https://www.jobs.global.fujitsu.com/search?searchResultView=LIST&facetFilters=%7B%22jobLocationCountry%22%3A%5B%22Costa%20Rica%22%5D%7D",
+  "sample_job_url": "https://www.jobs.global.fujitsu.com/job/French-Service-Desk-Agent/12171-en_US",
+  "expected_unfiltered_count": 2,
+  "captured_at": "2026-09-16T02:07:15.723843+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "path_prefix": "/job",
+  "pre_filter_urls": [
+    "https://www.jobs.global.fujitsu.com/search?searchResultView=LIST&facetFilters=%7B%22jobLocationCountry%22%3A%5B%22Costa%20Rica%22%5D%7D"
+  ],
+  "top_url": "https://www.jobs.global.fujitsu.com/search?searchResultView=LIST&facetFilters=%7B%22jobLocationCountry%22%3A%5B%22Costa%20Rica%22%5D%7D"
+}

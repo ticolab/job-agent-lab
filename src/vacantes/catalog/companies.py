@@ -951,4 +951,15 @@ COMPANIES: list[Company] = [
         ),
         pre_filter_urls=("https://www.accenture.com/cr-en/careers/jobsearch",),
     ),
+    Company(
+        name="Fujitsu",
+        aliases=(),
+        job_board_url="https://www.jobs.global.fujitsu.com/search?searchResultView=LIST&facetFilters=%7B%22jobLocationCountry%22%3A%5B%22Costa%20Rica%22%5D%7D",
+        sample_job_url="https://www.jobs.global.fujitsu.com/job/French-Service-Desk-Agent/12171-en_US",
+        link_rule=LinkRule(path_prefix="/job"),
+        expected_jobs=2,
+        pre_filter_urls=(
+            "https://www.jobs.global.fujitsu.com/search?searchResultView=LIST&facetFilters=%7B%22jobLocationCountry%22%3A%5B%22Costa%20Rica%22%5D%7D",
+        ),
+    ),
 ]
