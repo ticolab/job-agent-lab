@@ -479,8 +479,9 @@ class RuntimeHooks(BaseModel):
             hydrates slower than the global default, where the matcher
             would otherwise run against an empty document and return a
             confident zero. Motivating board: Edwards Lifesciences —
-            an Algolia/React-InstantSearch listing on Next.js that
-            renders nothing at 8s or 12s and the full first page at 30s.
+            an Algolia/React-InstantSearch listing on Next.js whose
+            first job anchor appeared at 46s, 50s and 49s across three
+            trials, with zero anchors present at 8s, 12s, 20s and 30s.
         render_scroll_count: Per-board override for
             ``settings.RENDER_SCROLL_COUNT``, the viewport-height
             scrolls performed after the wait. ``None`` inherits the

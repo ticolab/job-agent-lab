@@ -20,7 +20,7 @@ import logging
 import os
 from collections.abc import Mapping
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, NamedTuple
 
 if TYPE_CHECKING:  # pragma: no cover - typing-only import
     from playwright.async_api import Browser, Playwright
@@ -95,8 +95,9 @@ DATABASE_PATH: Path = database_path_from_env()
 # an explicit ``--wait`` / ``--scroll`` capture flag, else the board's
 # ``RuntimeHooks.render_wait_sec`` / ``render_scroll_count``, else these
 # defaults. The per-board level was added for Edwards Lifesciences,
-# whose Algolia/React-InstantSearch listing renders nothing at 8s and
-# its full first page at 30s — the matcher was returning a confident
+# whose Algolia/React-InstantSearch listing renders no job anchors at
+# 8s, 12s, 20s or 30s; across three trials the first anchor appeared
+# at 46s, 50s and 49s. The matcher was therefore returning a confident
 # zero against an unhydrated document. The schema confines those
 # overrides to ``pre_filter_urls`` boards, which is exactly the runtime
 # path that reads these constants, so raising a board's settle moves
@@ -107,12 +108,15 @@ RENDER_SCROLL_COUNT: int = 3
 
 # Navigation ceiling for the capture-side tools, which call Playwright's
 # ``page.goto`` directly. Playwright defaults to 30s and waits for the
-# ``load`` event; a board slow enough to need a raised
-# ``RuntimeHooks.render_wait_sec`` is usually also slow enough that
-# ``load`` has not fired by then, so the capture dies on navigation
-# before the settle it was configured with ever runs. Edwards
-# Lifesciences is the case: it needs a 60s settle and times out on the
-# 30s default. Resolved as ``max(this, settle + margin)`` at the call
+# ``load`` event. A board slow enough to need a raised
+# ``RuntimeHooks.render_wait_sec`` can also be slow to fire ``load``,
+# and then the capture dies on navigation before the settle it was
+# configured with ever runs. Edwards Lifesciences is the case, but
+# intermittently: measured over four cold/warm samples its ``load``
+# arrived at 51.7s, 2.9s, 2.2s and 2.8s. Only the cold load exceeds
+# Playwright's default, which is precisely why a fixed 30s ceiling is
+# the wrong shape — it converts an occasional slow start into a hard
+# failure. Resolved as ``max(this, settle + margin)`` at the call
 # sites rather than a flat constant, so a board that raises its settle
 # raises its navigation ceiling with it and the two cannot drift.
 # The runtime is unaffected: browser-use's ``navigate_to`` does not
@@ -296,10 +300,27 @@ BROWSER_LAUNCH_ARGS: tuple[str, ...] = (
 CAPTURE_BROWSER_CHANNEL: str = "chrome"
 
 
+class CaptureBrowser(NamedTuple):
+    """A launched capture browser paired with the UA it should present.
+
+    The two travel together on purpose. :func:`plausible_headless_ua`
+    derives its value from Playwright's *bundled* Chromium, which is a
+    different binary from the one :data:`CAPTURE_BROWSER_CHANNEL`
+    launches — pairing a bundled-derived UA with a real-Chrome engine
+    advertises one major version while running another, which is
+    exactly the kind of inconsistency bot management looks for. Making
+    the launch hand back its own UA removes the opportunity to mismatch
+    them rather than relying on every call site to remember.
+    """
+
+    browser: Browser
+    user_agent: str
+
+
 async def launch_capture_browser(
     playwright: Playwright, *, headless: bool = True
-) -> Browser:
-    """Launch the browser the capture-side tools share.
+) -> CaptureBrowser:
+    """Launch the browser the capture-side tools share, with its UA.
 
     Prefers :data:`CAPTURE_BROWSER_CHANNEL` and falls back to
     Playwright's bundled Chromium when that channel is not installed,
@@ -309,25 +330,51 @@ async def launch_capture_browser(
     not fatal: a machine without Chrome can still capture every other
     board in the corpus.
 
+    The returned UA is read from the launched instance and passed
+    through :func:`derive_plausible_ua`, so it tracks whichever binary
+    actually started — including across the fallback, where the answer
+    differs. That keeps the C14 ``HeadlessChrome`` strip in force while
+    closing the version-mismatch the module-level
+    :func:`plausible_headless_ua` cache would otherwise introduce here.
+
     Args:
         playwright: An entered ``async_playwright()`` context.
         headless: Forwarded to ``chromium.launch``.
 
     Returns:
-        A launched ``Browser``. The caller owns closing it.
+        A :class:`CaptureBrowser`. The caller owns closing ``browser``.
     """
+    # Local import for the same reason ``plausible_headless_ua`` uses
+    # one: ``vacantes.settings`` is a leaf module imported by the schema,
+    # the catalog, the CLI and the reporting layer, and must not drag
+    # Playwright in at import time. Only the launch sites — which have
+    # already paid that cost — reach this function.
+    from playwright.async_api import Error as PlaywrightError
+
     args = list(BROWSER_LAUNCH_ARGS)
     try:
-        return await playwright.chromium.launch(
+        browser = await playwright.chromium.launch(
             channel=CAPTURE_BROWSER_CHANNEL, headless=headless, args=args
         )
-    except Exception as exc:  # noqa: BLE001 — any launch failure falls back
+    except PlaywrightError as exc:
+        # Narrow on purpose: a missing channel raises
+        # ``BrowserType.launch: Unsupported chromium channel "..."``.
+        # Catching bare ``Exception`` here would relabel an unrelated
+        # launch failure (bad args, sandbox refusal) as "Chrome not
+        # installed" and then retry it identically, losing the real
+        # error behind a misleading warning.
         logger.warning(
-            "Chromium channel %r unavailable (%s: %s); falling back to the "
+            "Chromium channel %r unavailable (%s); falling back to the "
             "bundled build. Boards that reject it — currently McKinsey & "
             "Company — will fail to load.",
             CAPTURE_BROWSER_CHANNEL,
-            type(exc).__name__,
             exc,
         )
-        return await playwright.chromium.launch(headless=headless, args=args)
+        browser = await playwright.chromium.launch(headless=headless, args=args)
+
+    page = await browser.new_page()
+    try:
+        default_ua: str = await page.evaluate("() => navigator.userAgent")
+    finally:
+        await page.close()
+    return CaptureBrowser(browser=browser, user_agent=derive_plausible_ua(default_ua))

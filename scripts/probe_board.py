@@ -90,7 +90,6 @@ from vacantes.extraction.dom.rules import derive_path_prefix
 from vacantes.settings import (
     launch_capture_browser,
     navigation_timeout_ms,
-    plausible_headless_ua,
 )
 
 # ---------------------------------------------------------------------------
@@ -1111,18 +1110,21 @@ async def _probe(
             pass
 
     async with async_playwright() as p:
-        browser = await launch_capture_browser(p)
+        browser, user_agent = await launch_capture_browser(p)
         try:
             # The capture-side launch config lives in
             # ``settings.launch_capture_browser`` so this script and
             # ``probe_board`` cannot drift apart: same channel, same
-            # flags, same UA. The plausible UA
-            # (``HeadlessChrome/<v>`` → ``Chrome/<v>``) closes the C14
-            # WAF-403 class documented in
+            # flags, same UA. The helper returns the UA read from the
+            # instance it launched — not the module-level
+            # ``plausible_headless_ua`` cache, which is derived from the
+            # *bundled* Chromium and would advertise that build's major
+            # version while a real-Chrome engine runs underneath. The
+            # ``HeadlessChrome/<v>`` → ``Chrome/<v>`` strip still applies,
+            # closing the C14 WAF-403 class documented in
             # ``blockers/INTEGRATION_BLOCKERS.md``; the channel and the
             # AutomationControlled flag close the two capture-only
             # rejections described in ``settings``.
-            user_agent = await plausible_headless_ua()
             page = await browser.new_page(user_agent=user_agent)
             page.on("response", _on_response)
             await page.goto(job_board_url, timeout=navigation_timeout_ms(wait_s))

@@ -695,10 +695,15 @@ class TestNavigationTimeout:
     """The ``goto`` ceiling scales with the settle instead of capping it.
 
     Playwright's default is 30s and it waits for ``load``. A board slow
-    enough to need a raised settle is usually slow enough that ``load``
-    has not fired by then — Edwards Lifesciences dies on navigation at
-    30s while needing a 60s settle — so a flat ceiling would make the
-    settle unreachable. These pin that the ceiling never drops below
+    enough to need a raised settle can also be slow to fire ``load``,
+    and a flat ceiling then makes the settle unreachable — the capture
+    dies on navigation before the wait it was configured with ever
+    runs. Edwards Lifesciences is the case, intermittently: measured
+    over four samples its ``load`` arrived at 51.7s, 2.9s, 2.2s and
+    2.8s, so only a cold load exceeds the default. That intermittency
+    is the argument for scaling rather than for a bigger constant — one
+    run in four would otherwise fail for a reason unrelated to the
+    board's contents. These pin that the ceiling never drops below
     Playwright's own default and always clears the configured settle.
     """
 

@@ -168,7 +168,6 @@ from vacantes.settings import (
     RENDER_WAIT_SEC,
     launch_capture_browser,
     navigation_timeout_ms,
-    plausible_headless_ua,
 )
 
 SNAPSHOT_SCHEMA_VERSION = 2
@@ -615,18 +614,21 @@ async def _capture(
     )
 
     async with async_playwright() as p:
-        browser = await launch_capture_browser(p)
+        browser, user_agent = await launch_capture_browser(p)
         try:
             # The capture-side launch config lives in
             # ``settings.launch_capture_browser`` so this script and
             # ``probe_board`` cannot drift apart: same channel, same
-            # flags, same UA. The plausible UA
-            # (``HeadlessChrome/<v>`` → ``Chrome/<v>``) closes the C14
-            # WAF-403 class documented in
+            # flags, same UA. The helper returns the UA read from the
+            # instance it launched — not the module-level
+            # ``plausible_headless_ua`` cache, which is derived from the
+            # *bundled* Chromium and would advertise that build's major
+            # version while a real-Chrome engine runs underneath. The
+            # ``HeadlessChrome/<v>`` → ``Chrome/<v>`` strip still applies,
+            # closing the C14 WAF-403 class documented in
             # ``blockers/INTEGRATION_BLOCKERS.md``; the channel and the
             # AutomationControlled flag close the two capture-only
             # rejections described in ``settings``.
-            user_agent = await plausible_headless_ua()
             page = await browser.new_page(user_agent=user_agent)
             # when ``pre_filter_urls`` is non-empty the runtime
             # never visits ``job_board_url``, so state 1 must render
@@ -846,6 +848,8 @@ def _write_snapshot(
     pre_extract_css: str | None = None,
     expand_selector: str | None = None,
     next_control_selector: str | None = None,
+    render_wait_sec: int | None = None,
+    render_scroll_count: int | None = None,
 ) -> None:
     """Persist page.html, captured frames/pages/states, and metadata.json."""
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -1012,6 +1016,19 @@ def _write_snapshot(
         metadata["pre_extract_css"] = pre_extract_css
     if next_control_selector is not None:
         metadata["next_control_selector"] = next_control_selector
+    # The settle follows the same additive-optional convention, but the
+    # condition is "differs from the global" rather than "was passed":
+    # a settle is *always* applied, so recording the default value on
+    # every fixture would add two keys to all 100+ of them on their next
+    # re-capture without telling a reader anything. What cannot be
+    # re-derived from the board alone is a *raised* settle — re-running
+    # such a fixture at the global default would freeze a different,
+    # often empty DOM — so that is what gets recorded, whether it came
+    # from ``Company.hooks`` or from a ``--wait`` / ``--scroll`` flag.
+    if render_wait_sec is not None and render_wait_sec != RENDER_WAIT_SEC:
+        metadata["render_wait_sec"] = render_wait_sec
+    if render_scroll_count is not None and render_scroll_count != RENDER_SCROLL_COUNT:
+        metadata["render_scroll_count"] = render_scroll_count
     # additive-optional keys. All three are present together (or
     # not at all): a declaring capture emits ``pre_filter_urls`` verbatim
     # so the runtime code path is auditable from the fixture, ``top_url``
@@ -1207,6 +1224,11 @@ def main() -> None:
         pre_extract_css=pre_extract_css,
         expand_selector=effective_expand_selector,
         next_control_selector=next_control_selector,
+        # Record the *resolved* settle, not the raw hook values: a
+        # capture driven by --wait/--scroll must be traceable to the
+        # numbers it actually ran with, not to the catalog it overrode.
+        render_wait_sec=wait_s,
+        render_scroll_count=scroll_n,
     )
 
     size_kb = (out_dir / "page.html").stat().st_size / 1024
