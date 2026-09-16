@@ -573,6 +573,7 @@ class TestExpectedJobsField:
             "Commit": 2,
             "Cargill": 60,
             "McKinsey & Company": 24,
+            "TD SYNNEX": 28,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1207,11 +1208,23 @@ class TestPhenomStrategyPresenceValidator:
         # path (``/us/en/job``); artifact is
         # ``tests/fixtures/api/phenom/zimmer_biomet.json`` plus the
         # ``TestZimmerBiometRecordedPayload`` cases, and no DOM snapshot.
+        # TD SYNNEX is the fifth tenant and the largest Phenom result
+        # (28 vs BCG's 13). Its distinct coverage is the synthesized-URL
+        # slug rule rather than record count: it is the first tenant
+        # carrying a title with a forward slash ("PingOne Developer /
+        # IAM Developer"), which unlike every other punctuation mark
+        # would inject an extra PATH SEGMENT rather than merely misspell
+        # the slug, and no count assertion would catch it. All 28
+        # synthesized URLs were live-verified HTTP 200 on 2026-09-16,
+        # well past the module's three-URL obligation. Artifact is
+        # ``tests/fixtures/api/phenom/tdsynnex.json`` plus the
+        # ``TestTdSynnexRecordedPayload`` cases, and no DOM snapshot.
         expected_phenom = {
             "Boston Consulting Group",
             "Roche",
             "Philips",
             "Zimmer Biomet",
+            "TD SYNNEX",
         }
         actual_phenom = {c.name for c in COMPANIES if c.strategy == "phenom"}
         assert actual_phenom == expected_phenom, (

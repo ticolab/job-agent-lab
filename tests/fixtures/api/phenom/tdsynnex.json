@@ -1,0 +1,3394 @@
+{
+  "refineSearch": {
+    "status": 200,
+    "hits": 28,
+    "totalHits": 28,
+    "data": {
+      "jobs": [
+        {
+          "ml_skills": [
+            "sales management",
+            "customer relationship management",
+            "performance management",
+            "team leadership",
+            "negotiation skills",
+            "business planning",
+            "sales forecasting",
+            "coaching",
+            "bilingual communication",
+            "time management",
+            "problem solving",
+            "customer service",
+            "market analysis",
+            "sales strategy",
+            "credit management",
+            "competitive intelligence"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "Join us as a Sales Supervisor, managing assigned sales territories and leading a team to achieve sales targets. Oversee daily sales activities, develop business plans, and foster strong customer relationships. Ideal for candidates with supervisory experience and strong leadership skills.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R46201",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Sales-Supervisor_R46201/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Join us as a Sales Supervisor, managing assigned sales territories and leading a team to achieve sales targets. Oversee daily sales activities, develop business plans, and foster strong customer relationships. Ideal for candidates with supervisory experience and strong leadership skills.",
+            "descriptionTeaser_first200": "Manages assigned sales territories and day-to-day activities of sales team to meet and exceed all established goals. Sets and tracks team members' goals. Assists management in creating business pla...",
+            "descriptionTeaser_keyword": "Manages assigned sales territories and day-to-day activities of sales team to meet and exceed all established goals. Sets and tracks team members' goals. Assists management in creating business plans...",
+            "descriptionTeaser_ats": "Manages assigned sales territories and day-to-day activities of sales team to meet and exceed all established goals.Sets and tracks team members' goals.Assists management in creating business plans to"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R46201",
+          "locale": "en_US",
+          "title": "Sales Supervisor",
+          "jobSeqNo": "TSQTSBUSR46201EXTERNALENUS",
+          "postedDate": "2026-04-08T00:00:00.000+0000",
+          "dateCreated": "2025-12-18T18:02:18.514+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "customer relationship management",
+            "sales strategy",
+            "lead generation",
+            "sales presentations",
+            "sales quotas",
+            "customer support",
+            "market analysis",
+            "collaboration",
+            "communication skills",
+            "problem solving",
+            "negotiation skills",
+            "product knowledge",
+            "sales cycle management",
+            "crm software"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for an Inside Account Manager II to manage and grow relationships with assigned customers, drive sales of technology products, and provide exceptional support. The ideal candidate will have experience in inside sales and a strong focus on customer engagement.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R45839",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Inside-Account-Manager-ll_R45839/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for an Inside Account Manager II to manage and grow relationships with assigned customers, drive sales of technology products, and provide exceptional support. The ideal candidate will have experience in inside sales and a strong focus on customer engagement.",
+            "descriptionTeaser_first200": "Inside Account Manager II. Job Summary. The Inside Account Manager II at TD Synnex/ Shyft Global Services is responsible for managing and growing relationships with a portfolio of assigned customer...",
+            "descriptionTeaser_keyword": "Inside Account Manager II. Job Summary. The Inside Account Manager II at TD Synnex/ Shyft Global Services is responsible for managing and growing relationships with a portfolio of assigned customers,...",
+            "descriptionTeaser_ats": "Inside Account Manager IIJob SummaryThe Inside Account Manager II at TD Synnex/ Shyft Global Services is responsible for managing and growing relationships with a portfolio of assigned customers, driv"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R45839",
+          "locale": "en_US",
+          "title": "Inside Account Manager ll",
+          "jobSeqNo": "TSQTSBUSR45839EXTERNALENUS",
+          "postedDate": "2026-06-03T00:00:00.000+0000",
+          "dateCreated": "2025-12-08T22:03:23.363+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "account management",
+            "negotiation skills",
+            "sales strategy development",
+            "strategic thinking",
+            "customer relationship management",
+            "problem solving",
+            "kpi performance management",
+            "team leadership",
+            "data analysis",
+            "business development",
+            "sales reporting",
+            "customer service",
+            "time management",
+            "conflict resolution",
+            "presentation skills"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are recruiting a Sr. Inside Sales Representative to manage key accounts, drive revenue growth, and develop strategic client solutions. The role involves proactive account management, business planning, and supporting departmental teams. Ideal for experienced sales professionals with strong interpersonal and analytical skills.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R39905",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Sr-Inside-Sales-Representative_R39905/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are recruiting a Sr. Inside Sales Representative to manage key accounts, drive revenue growth, and develop strategic client solutions. The role involves proactive account management, business planning, and supporting departmental teams. Ideal for experienced sales professionals with strong interpersonal and analytical skills.",
+            "descriptionTeaser_first200": "At TD SYNNEX - Shyft Global Services we are looking for a Sr. Inside Sales Representative. Position owns the daily contact with specific, identified accounts. Incumbents work proactively to drive r...",
+            "descriptionTeaser_keyword": "At TD SYNNEX - Shyft Global Services we are looking for a Sr. Inside Sales Representative. Position owns the daily contact with specific, identified accounts. Incumbents work proactively to drive reve...",
+            "descriptionTeaser_ats": "At TD SYNNEX - Shyft Global Services we are looking for a Sr. Inside Sales Representative . Position owns the daily contact with specific, identified accounts. Incumbents work proactively to drive reven"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R39905",
+          "locale": "en_US",
+          "title": "Sr. Inside Sales Representative",
+          "jobSeqNo": "TSQTSBUSR39905EXTERNALENUS",
+          "postedDate": "2025-06-05T00:00:00.000+0000",
+          "dateCreated": "2025-05-13T22:01:56.368+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "account management",
+            "customer service",
+            "sales order processing",
+            "data entry",
+            "database management",
+            "email management",
+            "communication skills",
+            "negotiation skills",
+            "business analysis",
+            "time management",
+            "interpersonal skills",
+            "adaptability"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "Take on the role of Inside Account Representative, where you will manage daily account contacts and drive revenue for Shyft Global Services-TD Synnex. Engage with customers, process sales orders, and maintain detailed account profiles. Ideal for candidates with strong organisational skills and experience in account management.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R40166",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Inside-Account-Representative_R40166/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Take on the role of Inside Account Representative, where you will manage daily account contacts and drive revenue for Shyft Global Services-TD Synnex. Engage with customers, process sales orders, and maintain detailed account profiles. Ideal for candidates with strong organisational skills and experience in account management.",
+            "descriptionTeaser_first200": "Overview. The Inside Account Representative plays a crucial role within the sales organization at Shyft Global Services-TD Synnex. This position focuses on delivering results and providing exceptio...",
+            "descriptionTeaser_keyword": "Overview. The Inside Account Representative plays a crucial role within the sales organization at Shyft Global Services-TD Synnex. This position focuses on delivering results and providing exceptional...",
+            "descriptionTeaser_ats": "Overview . The Inside Account Representative plays a crucial role within the sales organization at Shyft Global Services-TD Synnex. This position focuses on delivering results and providing exceptional"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R40166",
+          "locale": "en_US",
+          "title": "Inside Account Representative",
+          "jobSeqNo": "TSQTSBUSR40166EXTERNALENUS",
+          "postedDate": "2026-07-31T00:00:00.000+0000",
+          "dateCreated": "2025-05-22T23:00:12.305+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "api integration",
+            "workflow automation",
+            "cybersecurity controls",
+            "cloud platforms",
+            "infrastructure as code",
+            "python scripting",
+            "powershell scripting",
+            "javascript scripting",
+            "azure",
+            "aws",
+            "google cloud",
+            "terraform",
+            "risk management",
+            "bicep",
+            "arm templates",
+            "cloudformation",
+            "asset management",
+            "governance platforms",
+            "compliance as code",
+            "continuous control monitoring",
+            "analytical skills",
+            "troubleshooting",
+            "problem solving",
+            "ai-powered automation tools",
+            "copilot",
+            "large language models",
+            "workflow orchestration platforms",
+            "grc platforms",
+            "servicenow grc",
+            "archer"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for a Cybersecurity Automation & Continuous Compliance Analyst to support TD SYNNEX's compliance programme through automation, AI, and data-driven monitoring. You will develop automated solutions to enhance cybersecurity control visibility and reduce manual activities. Ideal for candidates with technical expertise in cloud platforms, automation, and cybersecurity.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "IT"
+          ],
+          "reqId": "R53498",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica",
+            "Chennai, Tamil N\u0101du, India"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Cybersecurity-Automation---Continuous-Compliance-Analyst_R53498/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for a Cybersecurity Automation & Continuous Compliance Analyst to support TD SYNNEX's compliance programme through automation, AI, and data-driven monitoring. You will develop automated solutions to enhance cybersecurity control visibility and reduce manual activities. Ideal for candidates with technical expertise in cloud platforms, automation, and cybersecurity.",
+            "descriptionTeaser_ats": "Job PurposeThe Cybersecurity Automation & Continuous Compliance Analyst supports TD SYNNEX's continuous compliance program through automation, AI, integrations, and data-driven control monitoring.This",
+            "descriptionTeaser_keyword": "Job Purpose. The Cybersecurity Automation & Continuous Compliance Analyst supports TD SYNNEX's continuous compliance program through automation, AI, integrations, and data-driven control monitoring. T...",
+            "descriptionTeaser_first200": "Job Purpose. The Cybersecurity Automation & Continuous Compliance Analyst supports TD SYNNEX's continuous compliance program through automation, AI, integrations, and data-driven control monitoring..."
+          },
+          "externalApply": false,
+          "country": "Costa Rica",
+          "cityState": "San Jose, San Jose",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R53498",
+          "locale": "en_US",
+          "title": "Cybersecurity Automation & Continuous Compliance Analyst",
+          "jobSeqNo": "TSQTSBUSR53498EXTERNALENUS",
+          "postedDate": "2026-07-24T00:00:00.000+0000",
+          "dateCreated": "2026-07-22T16:00:31.848+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "IT",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            },
+            {
+              "country": "India",
+              "cityState": "Chennai, Tamil N\u0101du",
+              "address": "Chennai, Chennai- 110024, Tamil N\u0101du, India",
+              "city": "Chennai",
+              "postalCode": "110024",
+              "latlong": {
+                "lon": 80.27847,
+                "lat": 13.08784
+              },
+              "latitude": "13.08784",
+              "cityStateZipCode": "Chennai, Tamil N\u0101du, 110024",
+              "stateCountry": "Tamil N\u0101du, India",
+              "locationId": "CNX-IN-CN-5632",
+              "location": "Chennai, Tamil N\u0101du, India",
+              "state": "Tamil N\u0101du",
+              "cityCountry": "Chennai, India",
+              "cityStateCountry": "Chennai, Tamil N\u0101du, India",
+              "mapQueryLocation": "Chennai, Chennai- 110024, Tamil N\u0101du, India",
+              "longitude": "80.27847"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "IT"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "b2b sales",
+            "account management",
+            "salesforce",
+            "pipeline management",
+            "forecasting",
+            "data analysis",
+            "negotiation skills",
+            "presentation skills",
+            "interpersonal skills",
+            "strategic account planning",
+            "cross-functional collaboration",
+            "business applications"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are currently hiring a Inside Account Manager to manage daily engagement with assigned accounts, driving revenue and margin growth through strategic, consultative sales. The role focuses on account management and pipeline development, ideal for candidates with proven B2B sales experience and strong CRM proficiency.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R40170",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Inside-Account-Manager_R40170/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are currently hiring a Inside Account Manager to manage daily engagement with assigned accounts, driving revenue and margin growth through strategic, consultative sales. The role focuses on account management and pipeline development, ideal for candidates with proven B2B sales experience and strong CRM proficiency.",
+            "descriptionTeaser_ats": "Overview . This role is responsible for managing daily engagement with assigned accounts, driving revenue and margin growth through strategic, consultative sales. The ideal candidate will have a strong",
+            "descriptionTeaser_keyword": "Overview. This role is responsible for managing daily engagement with assigned accounts, driving revenue and margin growth through strategic, consultative sales. The ideal candidate will have a strong...",
+            "descriptionTeaser_first200": "Overview. This role is responsible for managing daily engagement with assigned accounts, driving revenue and margin growth through strategic, consultative sales. The ideal candidate will have a str..."
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R40170",
+          "locale": "en_US",
+          "title": "Inside Account Manager",
+          "jobSeqNo": "TSQTSBUSR40170EXTERNALENUS",
+          "postedDate": "2025-10-08T00:00:00.000+0000",
+          "dateCreated": "2025-05-22T23:00:12.310+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "leadership",
+            "mentorship",
+            "coaching",
+            "team supervision",
+            "account management",
+            "customer strategies",
+            "data entry",
+            "mathematical calculations",
+            "presentation skills",
+            "negotiation",
+            "interpersonal skills",
+            "time management",
+            "bilingual communication",
+            "computer applications",
+            "stress management",
+            "confidentiality"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "Join our team as an Inside Account Manager II, where you will lead sales initiatives and mentor your team while building strong relationships with major accounts. If you have a passion for customer success and leadership, we want to hear from you!",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R55119",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Inside-Account-Manager-II_R55119/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Join our team as an Inside Account Manager II, where you will lead sales initiatives and mentor your team while building strong relationships with major accounts. If you have a passion for customer success and leadership, we want to hear from you!",
+            "descriptionTeaser_first200": "Overview. A Inside Account Manager II is tasked with being 2nd in command, sales lead, first level escalation in their region, supporting the team\u2019s tactical activities on a day to day basis, while...",
+            "descriptionTeaser_keyword": "Overview. A Inside Account Manager II is tasked with being 2nd in command, sales lead, first level escalation in their region, supporting the team\u2019s tactical activities on a day to day basis, while bu...",
+            "descriptionTeaser_ats": "Overview:A Inside Account Manager II is tasked with being 2nd in command, sales lead, first level escalation in their region, supporting the team\u2019s tactical activities on a day to day basis, while bui"
+          },
+          "externalApply": false,
+          "country": "Costa Rica",
+          "cityState": "San Jose, San Jose",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R55119",
+          "locale": "en_US",
+          "title": "Inside Account Manager II",
+          "jobSeqNo": "TSQTSBUSR55119EXTERNALENUS",
+          "postedDate": "2026-08-12T00:00:00.000+0000",
+          "dateCreated": "2026-08-11T19:00:19.274+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "oem system troubleshooting",
+            "technical support",
+            "english fluency",
+            "bilingual english and spanish",
+            "log analysis",
+            "incident management",
+            "service level agreement management",
+            "ticket management",
+            "network troubleshooting",
+            "computer system applications",
+            "field engineering support",
+            "customer service",
+            "remote technical guidance",
+            "oem system training",
+            "product certification",
+            "formal presentation skills",
+            "negotiation",
+            "time management",
+            "stakeholder collaboration"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are seeking a Trilingual Technical Support Technician to provide 24x7 OEM equipment repair and enterprise infrastructure support. You will troubleshoot complex system issues, consult with onsite teams, and ensure service restoration. Ideal candidates have 3\u20135 years\u2019 experience and fluency in English and Spanish.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R51575",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Trilingual-Technical-Support-Technician--Canadian-French-_R51575/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are seeking a Trilingual Technical Support Technician to provide 24x7 OEM equipment repair and enterprise infrastructure support. You will troubleshoot complex system issues, consult with onsite teams, and ensure service restoration. Ideal candidates have 3\u20135 years\u2019 experience and fluency in English and Spanish.",
+            "descriptionTeaser_first200": "About the Role. The technical support engineer is responsible for OEM equipment repair, this includes 24x7 technical support of client enterprise infrastructure. This position includes consulting w...",
+            "descriptionTeaser_keyword": "About the Role. The technical support engineer is responsible for OEM equipment repair, this includes 24x7 technical support of client enterprise infrastructure. This position includes consulting with...",
+            "descriptionTeaser_ats": "About the RoleThe technical support engineer is responsible for OEM equipment repair, this includes 24x7 technical support of client enterprise infrastructure. This position includes consulting with o"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R51575",
+          "locale": "en_US",
+          "title": "Trilingual Technical Support Technician (Canadian French)",
+          "jobSeqNo": "TSQTSBUSR51575EXTERNALENUS",
+          "postedDate": "2026-07-17T00:00:00.000+0000",
+          "dateCreated": "2026-05-19T19:00:12.459+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "security operations",
+            "ai security detection",
+            "cloud security",
+            "incident triage",
+            "data analytics",
+            "kql",
+            "sql",
+            "dashboard development",
+            "security telemetry",
+            "owasp top 10 for llm applications",
+            "owasp top 10 for agentic applications",
+            "mitre atlas",
+            "cis benchmarks",
+            "nist 800-53",
+            "case management",
+            "security operations fundamentals",
+            "security monitoring",
+            "security validation",
+            "security alerting",
+            "security investigation",
+            "security compliance",
+            "security reporting",
+            "security automation",
+            "powershell",
+            "python",
+            "cspm",
+            "cloud identity",
+            "security audit",
+            "security evidence collection",
+            "security policy updates"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are recruiting a skilled AI and Cloud Security Analyst to provide L2 coverage of AI security detection, triage, and support for cloud environments. The role involves monitoring security events, analysing telemetry, and producing operational and compliance reports. Ideal for candidates with hands-on security operations experience and strong data analytics skills.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "Tamil N\u0101du",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "IT"
+          ],
+          "reqId": "R54076",
+          "typeSpanish": "Tiempo completo",
+          "city": "Chennai, Tamil Nadu",
+          "latitude": "13.06667",
+          "multi_location": [
+            "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+            "Barcelona, Barcelona, Spain",
+            "San Jose, San Jose, Costa Rica",
+            "Remote, Spain"
+          ],
+          "address": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/Chennai-India/AI-and-Cloud-Security-Analyst_R54076/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are recruiting a skilled AI and Cloud Security Analyst to provide L2 coverage of AI security detection, triage, and support for cloud environments. The role involves monitoring security events, analysing telemetry, and producing operational and compliance reports. Ideal for candidates with hands-on security operations experience and strong data analytics skills.",
+            "descriptionTeaser_first200": "TD SYNNEX (NYSE: SNX) is the world's largest IT distributor, adopting AI at speed across Azure AI Foundry, AWS Bedrock, Copilot Studio, Databricks, and self-hosted agent environments. Our security ...",
+            "descriptionTeaser_keyword": "TD SYNNEX (NYSE: SNX) is the world's largest IT distributor, adopting AI at speed across Azure AI Foundry, AWS Bedrock, Copilot Studio, Databricks, and self-hosted agent environments. Our security mod...",
+            "descriptionTeaser_ats": "TD SYNNEX (NYSE .  SNX) is the world's largest IT distributor, adopting AI at speed across Azure AI Foundry, AWS Bedrock, Copilot Studio, Databricks, and self-hosted agent environments. Our security mod"
+          },
+          "externalApply": false,
+          "cityState": "Chennai, Tamil Nadu, Tamil N\u0101du",
+          "country": "India",
+          "visibilityType": "External",
+          "longitude": "80.23333",
+          "jobId": "R54076",
+          "locale": "en_US",
+          "title": "AI and Cloud Security Analyst",
+          "jobSeqNo": "TSQTSBUSR54076EXTERNALENUS",
+          "postedDate": "2026-07-22T00:00:00.000+0000",
+          "dateCreated": "2026-07-21T16:00:34.994+0000",
+          "cityStateCountry": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+          "category": "IT",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Chennai, Tamil Nadu, Tamil N\u0101du",
+              "address": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "city": "Chennai, Tamil Nadu",
+              "postalCode": "600032",
+              "latlong": {
+                "lon": 80.23333,
+                "lat": 13.06667
+              },
+              "latitude": "13.06667",
+              "cityStateZipCode": "Chennai, Tamil Nadu, Tamil N\u0101du, 600032",
+              "stateCountry": "Tamil N\u0101du, India",
+              "locationId": "IN19Y",
+              "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "state": "Tamil N\u0101du",
+              "cityCountry": "Chennai, Tamil Nadu, India",
+              "cityStateCountry": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "mapQueryLocation": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "longitude": "80.23333"
+            },
+            {
+              "country": "Spain",
+              "cityState": "Barcelona, Barcelona",
+              "address": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "city": "Barcelona",
+              "postalCode": "08038",
+              "latlong": {
+                "lon": -35.92639,
+                "lat": -5.95056
+              },
+              "latitude": "-5.95056",
+              "cityStateZipCode": "Barcelona, Barcelona, 08038",
+              "stateCountry": "Barcelona, Spain",
+              "locationId": "ES06",
+              "location": "Barcelona, Barcelona, Spain",
+              "state": "Barcelona",
+              "cityCountry": "Barcelona, Spain",
+              "cityStateCountry": "Barcelona, Barcelona, Spain",
+              "mapQueryLocation": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "longitude": "-35.92639"
+            },
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            },
+            {
+              "country": "Spain",
+              "cityState": "Remote",
+              "address": "N/A, 08038 Remote, Spain",
+              "city": "Remote",
+              "postalCode": "08038",
+              "latlong": {
+                "lon": 2.15899,
+                "lat": 41.38879
+              },
+              "latitude": "41.38879",
+              "cityStateZipCode": "Remote, 08038",
+              "stateCountry": "Spain",
+              "locationId": "ES08",
+              "location": "Remote, Spain",
+              "state": "",
+              "cityCountry": "Remote, Spain",
+              "cityStateCountry": "Remote, Spain",
+              "mapQueryLocation": "N/A, 08038 Remote, Spain",
+              "longitude": "2.15899"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "IT"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "sharepoint online",
+            "sharepoint framework (spfx)",
+            "javascript (es6+)",
+            "typescript",
+            "html5",
+            "css3",
+            "react",
+            "rest apis",
+            "microsoft graph api",
+            "json formatting",
+            "xml & caml",
+            "c# for csom in vs development",
+            "powershell (pnp)",
+            "microsoft power platform",
+            "power automate",
+            "power apps",
+            "devops & source control",
+            "git",
+            "azure devops",
+            "npm",
+            "node.js",
+            "gulp",
+            "sharegate",
+            "pnp powershell",
+            "visual studio code",
+            "visual studio professional",
+            "ai related (nice to have)",
+            "github copilot usage with vs code",
+            "m365 copilot usage with sp sites",
+            "copilot studio usage for agent development"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are recruiting a SharePoint Developer to design and develop SharePoint Online solutions, focusing on site architecture, lists, libraries, and content management. The role requires hands-on experience with SharePoint Framework, JavaScript, and modern web technologies. Ideal for candidates with 3\u20135 years\u2019 relevant experience and a background in Computer Science or MIS.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "Mah\u0101r\u0101shtra",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "IT"
+          ],
+          "reqId": "R53340",
+          "typeSpanish": "Tiempo completo",
+          "city": "Pune Remote",
+          "latitude": "18.51957",
+          "multi_location": [
+            "Pune Remote, Mah\u0101r\u0101shtra, India",
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Pune Remote, Pune Remote- NA, Mah\u0101r\u0101shtra, India",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/Remote-Pune-India/Developer_R53340/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are recruiting a SharePoint Developer to design and develop SharePoint Online solutions, focusing on site architecture, lists, libraries, and content management. The role requires hands-on experience with SharePoint Framework, JavaScript, and modern web technologies. Ideal for candidates with 3\u20135 years\u2019 relevant experience and a background in Computer Science or MIS.",
+            "descriptionTeaser_first200": "Job Purpose. Core SharePoint Skills. SharePoint Online . SharePoint Framework (SPFx). SharePoint site architecture. Lists, libraries, and content types. Permissions and security management. Documen...",
+            "descriptionTeaser_keyword": "Job Purpose. Core SharePoint Skills. SharePoint Online. SharePoint Framework (SPFx). SharePoint site architecture. Lists, libraries, and content types. Permissions and security management. Document ma...",
+            "descriptionTeaser_ats": "Job Purpose .  Core SharePoint SkillsSharePoint Online SharePoint Framework (SPFx)SharePoint site architectureLists, libraries, and content typesPermissions and security managementDocument managementM"
+          },
+          "externalApply": false,
+          "cityState": "Pune Remote, Mah\u0101r\u0101shtra",
+          "country": "India",
+          "visibilityType": "External",
+          "longitude": "73.85535",
+          "jobId": "R53340",
+          "locale": "en_US",
+          "title": "SharePoint Developer",
+          "jobSeqNo": "TSQTSBUSR53340EXTERNALENUS",
+          "postedDate": "2026-07-24T00:00:00.000+0000",
+          "dateCreated": "2026-07-06T19:00:18.886+0000",
+          "cityStateCountry": "Pune Remote, Mah\u0101r\u0101shtra, India",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Pune Remote, Mah\u0101r\u0101shtra, India",
+          "category": "IT",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Pune Remote, Mah\u0101r\u0101shtra",
+              "address": "Pune Remote, Pune Remote- NA, Mah\u0101r\u0101shtra, India",
+              "city": "Pune Remote",
+              "postalCode": "NA",
+              "latlong": {
+                "lon": 73.85535,
+                "lat": 18.51957
+              },
+              "latitude": "18.51957",
+              "cityStateZipCode": "Pune Remote, Mah\u0101r\u0101shtra, NA",
+              "stateCountry": "Mah\u0101r\u0101shtra, India",
+              "locationId": "IN16U",
+              "location": "Pune Remote, Mah\u0101r\u0101shtra, India",
+              "state": "Mah\u0101r\u0101shtra",
+              "cityCountry": "Pune Remote, India",
+              "cityStateCountry": "Pune Remote, Mah\u0101r\u0101shtra, India",
+              "mapQueryLocation": "Pune Remote, Pune Remote- NA, Mah\u0101r\u0101shtra, India",
+              "longitude": "73.85535"
+            },
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "IT"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "workday hcm",
+            "agile",
+            "design thinking",
+            "data analysis",
+            "excel",
+            "project management",
+            "problem solving",
+            "customer service",
+            "stakeholder communication",
+            "conflict resolution",
+            "interpersonal skills",
+            "training"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for an HRIS System Analyst to maintain Workday HCM systems and enhance the colleague experience through technical expertise and collaboration with stakeholders. Join us to drive digital initiatives and improve HR processes.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "Delhi",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Human Resources"
+          ],
+          "reqId": "R54990",
+          "typeSpanish": "Tiempo completo",
+          "city": "Delhi",
+          "latitude": "28.65195",
+          "multi_location": [
+            "Delhi, Delhi, India",
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Delhi, Delhi- 110102, Delhi, India",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/Delhi-India/HRIS-System-Analyst_R54990-1/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for an HRIS System Analyst to maintain Workday HCM systems and enhance the colleague experience through technical expertise and collaboration with stakeholders. Join us to drive digital initiatives and improve HR processes.",
+            "descriptionTeaser_first200": "Job Purpose. This role is responsible for maintaining Workday HCM systems and other modules and providing specialized technical expertise to contribute towards creating an exceptional colleague exp...",
+            "descriptionTeaser_keyword": "Job Purpose. This role is responsible for maintaining Workday HCM systems and other modules and providing specialized technical expertise to contribute towards creating an exceptional colleague experi...",
+            "descriptionTeaser_ats": "Job Purpose .  This role is responsible for maintaining Workday HCM systems and other modules and providing specialized technical expertise to contribute towards creating an exceptional colleague expe"
+          },
+          "externalApply": false,
+          "cityState": "Delhi, Delhi",
+          "country": "India",
+          "visibilityType": "External",
+          "longitude": "77.23149",
+          "jobId": "R54990",
+          "locale": "en_US",
+          "title": "HRIS System Analyst",
+          "jobSeqNo": "TSQTSBUSR54990EXTERNALENUS",
+          "postedDate": "2026-08-12T00:00:00.000+0000",
+          "dateCreated": "2026-08-10T19:00:24.800+0000",
+          "cityStateCountry": "Delhi, Delhi, India",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Delhi, Delhi, India",
+          "category": "Human Resources",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Delhi, Delhi",
+              "address": "Delhi, Delhi- 110102, Delhi, India",
+              "city": "Delhi",
+              "postalCode": "110102",
+              "latlong": {
+                "lon": 77.23149,
+                "lat": 28.65195
+              },
+              "latitude": "28.65195",
+              "cityStateZipCode": "Delhi, Delhi, 110102",
+              "stateCountry": "Delhi, India",
+              "locationId": "TDS-IN-DL-6309",
+              "location": "Delhi, Delhi, India",
+              "state": "Delhi",
+              "cityCountry": "Delhi, India",
+              "cityStateCountry": "Delhi, Delhi, India",
+              "mapQueryLocation": "Delhi, Delhi- 110102, Delhi, India",
+              "longitude": "77.23149"
+            },
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Human Resources"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "outbound calling",
+            "pipeline development",
+            "lead qualification",
+            "crm systems",
+            "customer engagement",
+            "relationship management",
+            "negotiation skills",
+            "cross-selling",
+            "upselling",
+            "analytical skills",
+            "time management",
+            "leadership skills",
+            "problem solving",
+            "assertiveness"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for a motivated Inside Account Manager to support business growth by developing customer relationships and generating qualified sales opportunities. If you have strong outbound calling experience and a passion for sales, we want to hear from you!",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R55123",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Inside-Account-Manager-l_R55123/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for a motivated Inside Account Manager to support business growth by developing customer relationships and generating qualified sales opportunities. If you have strong outbound calling experience and a passion for sales, we want to hear from you!",
+            "descriptionTeaser_ats": "As an Inside Account Manager I, you will support business growth by developing customer relationships, identifying new business opportunities, and generating qualified sales opportunities within assig",
+            "descriptionTeaser_keyword": "As an Inside Account Manager I, you will support business growth by developing customer relationships, identifying new business opportunities, and generating qualified sales opportunities within assig...",
+            "descriptionTeaser_first200": "As an Inside Account Manager I, you will support business growth by developing customer relationships, identifying new business opportunities, and generating qualified sales opportunities within as..."
+          },
+          "externalApply": false,
+          "country": "Costa Rica",
+          "cityState": "San Jose, San Jose",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R55123",
+          "locale": "en_US",
+          "title": "Inside Account Manager l",
+          "jobSeqNo": "TSQTSBUSR55123EXTERNALENUS",
+          "postedDate": "2026-08-13T00:00:00.000+0000",
+          "dateCreated": "2026-08-11T19:00:19.264+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "network security",
+            "cisco certified network professional (ccnp) security",
+            "network engineering",
+            "network operations",
+            "sd-wan",
+            "firewall management",
+            "vpn",
+            "router configuration",
+            "load balancer management",
+            "customer success",
+            "f5 certified technical specialist",
+            "ivr",
+            "automated call distribution",
+            "network performance optimization",
+            "network latency reduction",
+            "vendor management",
+            "project tracking",
+            "documentation management",
+            "technical support",
+            "customer onboarding",
+            "solution activation",
+            "collaboration",
+            "leadership"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are currently hiring a Post-Sales Network Engineer to provide comprehensive support for complex network security environments, guiding customers through platform onboarding and security solution activation. The role requires technical expertise and strong customer-facing skills, ideal for candidates with significant experience in network security and customer support.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "IT"
+          ],
+          "reqId": "R52662",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Post-Sales-Network-Engineer_R52662/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are currently hiring a Post-Sales Network Engineer to provide comprehensive support for complex network security environments, guiding customers through platform onboarding and security solution activation. The role requires technical expertise and strong customer-facing skills, ideal for candidates with significant experience in network security and customer support.",
+            "descriptionTeaser_first200": "Job Purpose. Provides full support for complex network security environments, including contact center and security technologies. Acts as a technically proficient, customer-facing resource within t...",
+            "descriptionTeaser_keyword": "Job Purpose. Provides full support for complex network security environments, including contact center and security technologies. Acts as a technically proficient, customer-facing resource within the...",
+            "descriptionTeaser_ats": "Job Purpose .  Provides full support for complex network security environments, including contact center and security technologies. Acts as a technically proficient, customer-facing resource within th"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R52662",
+          "locale": "en_US",
+          "title": "Post-Sales Network Engineer",
+          "jobSeqNo": "TSQTSBUSR52662EXTERNALENUS",
+          "postedDate": "2026-08-11T00:00:00.000+0000",
+          "dateCreated": "2026-06-12T23:00:24.467+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "IT",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "IT"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "infrastructure as code",
+            "terraform",
+            "ansible",
+            "powershell",
+            "python",
+            "vmware vsphere",
+            "windows server administration",
+            "active directory",
+            "kubernetes",
+            "vmware esxi",
+            "nutanix hci",
+            "prism central",
+            "citrix daas",
+            "citrix netscaler gateway",
+            "citrix load balancers",
+            "rhel administration",
+            "ubuntu administration",
+            "security hardening",
+            "container image governance",
+            "rocky administration",
+            "kernel tuning",
+            "vulnerability scanning",
+            "registry management",
+            "grafana",
+            "nagios",
+            "incident command",
+            "mentorship",
+            "knowledge transfer",
+            "operational training"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are recruiting a Senior Infrastructure Systems Engineer to design, build, and own modern enterprise infrastructure platforms. Lead platform architecture, automation, and engineering standards. Ideal for experienced engineers with strong expertise in infrastructure, automation, and leadership in engineering standards.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "IT"
+          ],
+          "reqId": "R49839",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica",
+            "San Isidro, Lima, Peru",
+            "Bogota, Distrito Capital de Bogot\u00e1, Colombia"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Senior-Systems-Engineer_R49839/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are recruiting a Senior Infrastructure Systems Engineer to design, build, and own modern enterprise infrastructure platforms. Lead platform architecture, automation, and engineering standards. Ideal for experienced engineers with strong expertise in infrastructure, automation, and leadership in engineering standards.",
+            "descriptionTeaser_first200": "Senior Infrastructure Engineer . About the Role. We are seeking a highly skilled Senior Infrastructure Engineer to design, build, and own modern enterprise infrastructure platforms. This is a hands...",
+            "descriptionTeaser_keyword": "Senior Infrastructure Engineer. About the Role. We are seeking a highly skilled Senior Infrastructure Engineer to design, build, and own modern enterprise infrastructure platforms. This is a hands-on...",
+            "descriptionTeaser_ats": "Senior Infrastructure Engineer About the RoleWe are seeking a highly skilled Senior Infrastructure Engineer to design, build, and own modern enterprise infrastructure platforms.This is a hands-on engi"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R49839",
+          "locale": "en_US",
+          "title": "Senior Infrastructure Systems Engineer",
+          "jobSeqNo": "TSQTSBUSR49839EXTERNALENUS",
+          "postedDate": "2026-08-03T00:00:00.000+0000",
+          "dateCreated": "2026-05-06T03:00:14.100+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "IT",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            },
+            {
+              "country": "Peru",
+              "cityState": "San Isidro, Lima",
+              "address": "Calle Las Orquideas 585, Piso 8, San Isidro, Lima 15046, Peru",
+              "city": "San Isidro",
+              "postalCode": "15046",
+              "latlong": {
+                "lon": -77.04258,
+                "lat": -12.09655
+              },
+              "latitude": "-12.09655",
+              "cityStateZipCode": "San Isidro, Lima, 15046",
+              "stateCountry": "Lima, Peru",
+              "locationId": "WSC-PE-LI-0151",
+              "location": "San Isidro, Lima, Peru",
+              "state": "Lima",
+              "cityCountry": "San Isidro, Peru",
+              "cityStateCountry": "San Isidro, Lima, Peru",
+              "mapQueryLocation": "Calle Las Orquideas 585, Piso 8, San Isidro, Lima 15046, Peru",
+              "longitude": "-77.04258"
+            },
+            {
+              "country": "Colombia",
+              "cityState": "Bogota, Distrito Capital de Bogot\u00e1",
+              "address": "Edificio Ecotek Cl, 99 #10-57, Bogota Distrito Capital de Bogot\u00e1, 110111, Colombia",
+              "city": "Bogota",
+              "postalCode": "110111",
+              "latlong": {
+                "lon": -74.08175,
+                "lat": 4.60971
+              },
+              "latitude": "4.60971",
+              "cityStateZipCode": "Bogota, Distrito Capital de Bogot\u00e1, 110111",
+              "stateCountry": "Distrito Capital de Bogot\u00e1, Colombia",
+              "locationId": "LOC_CO_0001",
+              "location": "Bogota, Distrito Capital de Bogot\u00e1, Colombia",
+              "state": "Distrito Capital de Bogot\u00e1",
+              "cityCountry": "Bogota, Colombia",
+              "cityStateCountry": "Bogota, Distrito Capital de Bogot\u00e1, Colombia",
+              "mapQueryLocation": "Edificio Ecotek Cl, 99 #10-57, Bogota Distrito Capital de Bogot\u00e1, 110111, Colombia",
+              "longitude": "-74.08175"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "IT"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "lead generation",
+            "pipeline management",
+            "sales management",
+            "sales forecasting",
+            "business planning",
+            "data analysis",
+            "strategic planning",
+            "employee development",
+            "performance management",
+            "cross-functional collaboration",
+            "vendor management",
+            "customer relationship management",
+            "sales promotion",
+            "process improvement",
+            "conflict resolution",
+            "coaching",
+            "strategic project management",
+            "reporting and analytics",
+            "microsoft excel",
+            "microsoft word",
+            "microsoft access",
+            "negotiation"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are recruiting a Presales & Lead Generation Team Manager to oversee lead generation, pipeline creation, and sales development teams. Drive demand generation and revenue growth through strategic planning and cross-functional collaboration. Ideal for experienced sales managers with strong leadership and analytical skills.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R55064",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Presales---Lead-Generation-Manager_R55064-1/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are recruiting a Presales & Lead Generation Team Manager to oversee lead generation, pipeline creation, and sales development teams. Drive demand generation and revenue growth through strategic planning and cross-functional collaboration. Ideal for experienced sales managers with strong leadership and analytical skills.",
+            "descriptionTeaser_first200": "Manages attainment of lead generation, pipeline creation, and sales development teams. Develops long-term strategies that drive demand generation, sales-qualified opportunities, and revenue growth....",
+            "descriptionTeaser_keyword": "Manages attainment of lead generation, pipeline creation, and sales development teams. Develops long-term strategies that drive demand generation, sales-qualified opportunities, and revenue growth. Ov...",
+            "descriptionTeaser_ats": "Manages attainment of lead generation, pipeline creation, and sales development teams. Develops long-term strategies that drive demand generation, sales-qualified opportunities, and revenue growth. Ov"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R55064",
+          "locale": "en_US",
+          "title": "Presales & Lead Generation Team Manager",
+          "jobSeqNo": "TSQTSBUSR55064EXTERNALENUS",
+          "postedDate": "2026-09-02T00:00:00.000+0000",
+          "dateCreated": "2026-08-11T19:00:19.300+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "sharepoint online",
+            "sharepoint framework (spfx)",
+            "javascript (es6+)",
+            "typescript",
+            "html5",
+            "css3",
+            "react",
+            "rest apis",
+            "microsoft graph api",
+            "json formatting",
+            "xml",
+            "c# (csom)",
+            "power automate",
+            "power apps",
+            "power platform",
+            "permissions management",
+            "security management",
+            "site architecture",
+            "content types",
+            "lists and libraries",
+            "powershell (pnp)",
+            "document management",
+            "managed metadata and taxonomy",
+            "workflow automation",
+            "business process optimization",
+            "integration with enterprise applications",
+            "collaboration with business users",
+            "stakeholder management",
+            "vendor management"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are seeking a SharePoint Application Developer to design, develop, and support SharePoint solutions that enhance collaboration and business process optimisation. You will collaborate with stakeholders to deliver scalable applications and solutions. Ideal candidates have 3\u20135 years\u2019 experience and expertise in SharePoint Online and related technologies.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "IT"
+          ],
+          "reqId": "R55630",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/SharePoint-Application-Developer_R55630-1/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are seeking a SharePoint Application Developer to design, develop, and support SharePoint solutions that enhance collaboration and business process optimisation. You will collaborate with stakeholders to deliver scalable applications and solutions. Ideal candidates have 3\u20135 years\u2019 experience and expertise in SharePoint Online and related technologies.",
+            "descriptionTeaser_ats": "Job Description . The SharePoint Application Developer is responsible for designing, developing, implementing, and supporting SharePoint solutions that enable effective collaboration, content management",
+            "descriptionTeaser_keyword": "Job Description. The SharePoint Application Developer is responsible for designing, developing, implementing, and supporting SharePoint solutions that enable effective collaboration, content managemen...",
+            "descriptionTeaser_first200": "Job Description. The SharePoint Application Developer is responsible for designing, developing, implementing, and supporting SharePoint solutions that enable effective collaboration, content manage..."
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R55630",
+          "locale": "en_US",
+          "title": "SharePoint Application Developer",
+          "jobSeqNo": "TSQTSBUSR55630EXTERNALENUS",
+          "postedDate": "2026-09-04T00:00:00.000+0000",
+          "dateCreated": "2026-09-01T23:00:18.182+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "IT",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "IT"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "sql development",
+            "data analysis",
+            "data validation",
+            "data reconciliation",
+            "etl processes",
+            "system integration",
+            "data pipeline development",
+            "commission management",
+            "compensation systems",
+            "qa validation",
+            "uat validation",
+            "production validation",
+            "root cause analysis",
+            "compensation data feeds",
+            "payout reporting",
+            "sales compensation workflows",
+            "commission exception handling",
+            "sap",
+            "financial data processing",
+            "compensation administration",
+            "payroll systems",
+            "incentive management platforms",
+            "commission management tools",
+            "sales compensation platforms",
+            "incentive calculation engines",
+            "automation tools",
+            "scripting languages",
+            "cross-functional collaboration",
+            "stakeholder management"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "Take on the role of Business IT Compensation Systems Analyst, supporting and enhancing compensation and commission operations through data integration and automation. Collaborate with cross-functional teams to deliver reliable integrations and high-quality reporting. Ideal for candidates with strong SQL skills and experience in data analysis or system integrations.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "IT"
+          ],
+          "reqId": "R54736",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Business-IT-Comp-Systems-Analyst_R54736/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Take on the role of Business IT Compensation Systems Analyst, supporting and enhancing compensation and commission operations through data integration and automation. Collaborate with cross-functional teams to deliver reliable integrations and high-quality reporting. Ideal for candidates with strong SQL skills and experience in data analysis or system integrations.",
+            "descriptionTeaser_first200": "Job Description. The Business IT Compensation Systems Analyst for our IT Organization will support and enhance systems, data integrations, and automated processes that enable accurate compensation ...",
+            "descriptionTeaser_keyword": "Job Description. The Business IT Compensation Systems Analyst for our IT Organization will support and enhance systems, data integrations, and automated processes that enable accurate compensation and...",
+            "descriptionTeaser_ats": "Job Description . The Business IT Compensation Systems Analyst for our IT Organization will support and enhance systems, data integrations, and automated processes that enable accurate compensation and"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R54736",
+          "locale": "en_US",
+          "title": "Business IT Compensation Systems Analyst",
+          "jobSeqNo": "TSQTSBUSR54736EXTERNALENUS",
+          "postedDate": "2026-09-08T00:00:00.000+0000",
+          "dateCreated": "2026-08-11T03:00:13.145+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "IT",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "IT"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "ai security engineering",
+            "cloud security",
+            "azure",
+            "aws",
+            "gcp",
+            "kubernetes",
+            "devsecops",
+            "infrastructure as code",
+            "terraform",
+            "ci/cd pipeline integration",
+            "siem integration",
+            "soar integration",
+            "prompt injection defense",
+            "jailbreak defense",
+            "rag security",
+            "mcp security",
+            "ai-spm",
+            "aidr",
+            "ai red-teaming",
+            "security platform integration",
+            "open-source ai security tooling",
+            "cspm",
+            "cwpp",
+            "cnapp",
+            "cloud identity management",
+            "security policy enforcement",
+            "root cause analysis",
+            "security automation",
+            "python"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are currently hiring a senior AI and Cloud Security Engineer to lead the development and integration of AI runtime control planes and inline enforcement pipelines. You will engineer and operate security platforms across multi-cloud environments, ensuring robust AI and cloud security. Ideal candidates bring significant hands-on experience in AI security and multi-cloud engineering.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "Tamil N\u0101du",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "IT"
+          ],
+          "reqId": "R54067",
+          "typeSpanish": "Tiempo completo",
+          "city": "Chennai, Tamil Nadu",
+          "latitude": "13.06667",
+          "multi_location": [
+            "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+            "Someshwarpura,  Bengaluru, Karn\u0101taka, India",
+            "Remote, India",
+            "San Jose, San Jose, Costa Rica",
+            "Ahmedabad, Gujar\u0101t, India",
+            "Hyderabad, Telang\u0101na, India",
+            "Mumbai, India",
+            "Dharmatala, West Bengal, India",
+            "Gurugram, Hary\u0101na, India",
+            "Remote, Spain",
+            "Pune, India",
+            "New Delhi, India",
+            "Barcelona, Barcelona, Spain",
+            "Ernakulam, Kerala, India"
+          ],
+          "address": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/Chennai-India/AI-and-Cloud-Security-Engineer_R54067/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are currently hiring a senior AI and Cloud Security Engineer to lead the development and integration of AI runtime control planes and inline enforcement pipelines. You will engineer and operate security platforms across multi-cloud environments, ensuring robust AI and cloud security. Ideal candidates bring significant hands-on experience in AI security and multi-cloud engineering.",
+            "descriptionTeaser_first200": "Overview. TD SYNNEX (NYSE: SNX) is the world's largest IT distributor, and we are accelerating AI adoption across Azure AI Foundry, AWS Bedrock, Copilot Studio, Databricks, and self-hosted agent en...",
+            "descriptionTeaser_keyword": "Overview. TD SYNNEX (NYSE: SNX) is the world's largest IT distributor, and we are accelerating AI adoption across Azure AI Foundry, AWS Bedrock, Copilot Studio, Databricks, and self-hosted agent envir...",
+            "descriptionTeaser_ats": "OverviewTD SYNNEX (NYSE .  SNX) is the world's largest IT distributor, and we are accelerating AI adoption across Azure AI Foundry, AWS Bedrock, Copilot Studio, Databricks, and self-hosted agent environ"
+          },
+          "externalApply": false,
+          "cityState": "Chennai, Tamil Nadu, Tamil N\u0101du",
+          "country": "India",
+          "visibilityType": "External",
+          "longitude": "80.23333",
+          "jobId": "R54067",
+          "locale": "en_US",
+          "title": "AI and Cloud Security Engineer",
+          "jobSeqNo": "TSQTSBUSR54067EXTERNALENUS",
+          "postedDate": "2026-07-22T00:00:00.000+0000",
+          "dateCreated": "2026-07-21T16:00:34.993+0000",
+          "cityStateCountry": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+          "category": "IT",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "India",
+              "cityState": "Chennai, Tamil Nadu, Tamil N\u0101du",
+              "address": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "city": "Chennai, Tamil Nadu",
+              "postalCode": "600032",
+              "latlong": {
+                "lon": 80.23333,
+                "lat": 13.06667
+              },
+              "latitude": "13.06667",
+              "cityStateZipCode": "Chennai, Tamil Nadu, Tamil N\u0101du, 600032",
+              "stateCountry": "Tamil N\u0101du, India",
+              "locationId": "IN19Y",
+              "location": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "state": "Tamil N\u0101du",
+              "cityCountry": "Chennai, Tamil Nadu, India",
+              "cityStateCountry": "Chennai, Tamil Nadu, Tamil N\u0101du, India",
+              "mapQueryLocation": "Indiqube Pinnacle, 1st & 3rd floor, C46A, Thiru Vi Ka Industrial Estate, Alandur, Guindy Taluk Village, Guindy Taluk,, Chennai, Tamil Nadu- 600032, Tamil N\u0101du, India",
+              "longitude": "80.23333"
+            },
+            {
+              "country": "India",
+              "cityState": "Someshwarpura,  Bengaluru, Karn\u0101taka",
+              "address": "Tech Data Indiqube Brigade Square,, Cambridge Road, Halasuru,, Someshwarpura,  Bengaluru- 560008, Karn\u0101taka, India",
+              "city": "Someshwarpura,  Bengaluru",
+              "postalCode": "560008",
+              "latlong": {
+                "lon": 77.58287,
+                "lat": 12.99599
+              },
+              "latitude": "12.99599",
+              "cityStateZipCode": "Someshwarpura,  Bengaluru, Karn\u0101taka, 560008",
+              "stateCountry": "Karn\u0101taka, India",
+              "locationId": "IN6G",
+              "location": "Someshwarpura,  Bengaluru, Karn\u0101taka, India",
+              "state": "Karn\u0101taka",
+              "cityCountry": "Someshwarpura,  Bengaluru, India",
+              "cityStateCountry": "Someshwarpura,  Bengaluru, Karn\u0101taka, India",
+              "mapQueryLocation": "Tech Data Indiqube Brigade Square,, Cambridge Road, Halasuru,, Someshwarpura,  Bengaluru- 560008, Karn\u0101taka, India",
+              "longitude": "77.58287"
+            },
+            {
+              "country": "India",
+              "cityState": "Remote",
+              "address": "N/A, Remote- 0, India",
+              "city": "Remote",
+              "postalCode": "0",
+              "latlong": {
+                "lon": 79.00000000000001,
+                "lat": 22.000000000000004
+              },
+              "latitude": "22.0",
+              "cityStateZipCode": "Remote, 0",
+              "stateCountry": "India",
+              "locationId": "IN99",
+              "location": "Remote, India",
+              "state": "",
+              "cityCountry": "Remote, India",
+              "cityStateCountry": "Remote, India",
+              "mapQueryLocation": "N/A, Remote- 0, India",
+              "longitude": "79.0"
+            },
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            },
+            {
+              "country": "India",
+              "cityState": "Ahmedabad, Gujar\u0101t",
+              "address": "Paragraph Khajanchi Business Ctr LLP - Mondeal Heights, B Wing, 6th Floor, 601, Sarkhej - Gandhinagar Hwy, near Novotel Hotel, Ahmedabad- 380015, Gujar\u0101t, India",
+              "city": "Ahmedabad",
+              "postalCode": "380015",
+              "latlong": {
+                "lon": 72.58727,
+                "lat": 23.02579
+              },
+              "latitude": "23.02579",
+              "cityStateZipCode": "Ahmedabad, Gujar\u0101t, 380015",
+              "stateCountry": "Gujar\u0101t, India",
+              "locationId": "IN19W",
+              "location": "Ahmedabad, Gujar\u0101t, India",
+              "state": "Gujar\u0101t",
+              "cityCountry": "Ahmedabad, India",
+              "cityStateCountry": "Ahmedabad, Gujar\u0101t, India",
+              "mapQueryLocation": "Paragraph Khajanchi Business Ctr LLP - Mondeal Heights, B Wing, 6th Floor, 601, Sarkhej - Gandhinagar Hwy, near Novotel Hotel, Ahmedabad- 380015, Gujar\u0101t, India",
+              "longitude": "72.58727"
+            },
+            {
+              "country": "India",
+              "cityState": "Hyderabad, Telang\u0101na",
+              "address": "Road No 01, Banjara Hills, Opp. Jalgam Vengal Rao Par, Hyderabad- 500034, Telang\u0101na, India",
+              "city": "Hyderabad",
+              "postalCode": "500034",
+              "latlong": {
+                "lon": 78.45636,
+                "lat": 17.38405
+              },
+              "latitude": "17.38405",
+              "cityStateZipCode": "Hyderabad, Telang\u0101na, 500034",
+              "stateCountry": "Telang\u0101na, India",
+              "locationId": "LOCATION-3-874",
+              "location": "Hyderabad, Telang\u0101na, India",
+              "state": "Telang\u0101na",
+              "cityCountry": "Hyderabad, India",
+              "cityStateCountry": "Hyderabad, Telang\u0101na, India",
+              "mapQueryLocation": "Road No 01, Banjara Hills, Opp. Jalgam Vengal Rao Par, Hyderabad- 500034, Telang\u0101na, India",
+              "longitude": "78.45636"
+            },
+            {
+              "country": "India",
+              "cityState": "Mumbai",
+              "address": "A-301. 3rd Floor. Supreme Business Park, Hiranandani Garden, Powai, Mumbai- 400 076, India",
+              "city": "Mumbai",
+              "postalCode": "400 076",
+              "latlong": {
+                "lon": 72.88261,
+                "lat": 19.07283
+              },
+              "latitude": "19.07283",
+              "cityStateZipCode": "Mumbai, 400 076",
+              "stateCountry": "India",
+              "locationId": "IN11D",
+              "location": "Mumbai, India",
+              "state": "",
+              "cityCountry": "Mumbai, India",
+              "cityStateCountry": "Mumbai, India",
+              "mapQueryLocation": "A-301. 3rd Floor. Supreme Business Park, Hiranandani Garden, Powai, Mumbai- 400 076, India",
+              "longitude": "72.88261"
+            },
+            {
+              "country": "India",
+              "cityState": "Dharmatala, West Bengal",
+              "address": "3rd floor, ST-16, Awfis Space Solutions, Siddha Esplanade 6,, Jawaharlal Nehru Rd, adjacent to Metro Central Previously Metro Cinema,, Near Central, Esplanade,, Dharmatala- 700013, West Bengal, India",
+              "city": "Dharmatala",
+              "postalCode": "700013",
+              "latlong": {
+                "lon": 88.23861,
+                "lat": 22.84944
+              },
+              "latitude": "22.84944",
+              "cityStateZipCode": "Dharmatala, West Bengal, 700013",
+              "stateCountry": "West Bengal, India",
+              "locationId": "IN17K",
+              "location": "Dharmatala, West Bengal, India",
+              "state": "West Bengal",
+              "cityCountry": "Dharmatala, India",
+              "cityStateCountry": "Dharmatala, West Bengal, India",
+              "mapQueryLocation": "3rd floor, ST-16, Awfis Space Solutions, Siddha Esplanade 6,, Jawaharlal Nehru Rd, adjacent to Metro Central Previously Metro Cinema,, Near Central, Esplanade,, Dharmatala- 700013, West Bengal, India",
+              "longitude": "88.23861"
+            },
+            {
+              "country": "India",
+              "cityState": "Gurugram, Hary\u0101na",
+              "address": "Tower-A and Ground, 2nd, 3rd, 5th Floor, SP Infocity Udyog Vihar Dundahera, Gurugram- 122016, Hary\u0101na, India",
+              "city": "Gurugram",
+              "postalCode": "122016",
+              "latlong": {
+                "lon": 77.02635,
+                "lat": 28.4601
+              },
+              "latitude": "28.4601",
+              "cityStateZipCode": "Gurugram, Hary\u0101na, 122016",
+              "stateCountry": "Hary\u0101na, India",
+              "locationId": "CNX-IN-HA-6743",
+              "location": "Gurugram, Hary\u0101na, India",
+              "state": "Hary\u0101na",
+              "cityCountry": "Gurugram, India",
+              "cityStateCountry": "Gurugram, Hary\u0101na, India",
+              "mapQueryLocation": "Tower-A and Ground, 2nd, 3rd, 5th Floor, SP Infocity Udyog Vihar Dundahera, Gurugram- 122016, Hary\u0101na, India",
+              "longitude": "77.02635"
+            },
+            {
+              "country": "Spain",
+              "cityState": "Remote",
+              "address": "N/A, 08038 Remote, Spain",
+              "city": "Remote",
+              "postalCode": "08038",
+              "latlong": {
+                "lon": 2.15899,
+                "lat": 41.38879
+              },
+              "latitude": "41.38879",
+              "cityStateZipCode": "Remote, 08038",
+              "stateCountry": "Spain",
+              "locationId": "ES08",
+              "location": "Remote, Spain",
+              "state": "",
+              "cityCountry": "Remote, Spain",
+              "cityStateCountry": "Remote, Spain",
+              "mapQueryLocation": "N/A, 08038 Remote, Spain",
+              "longitude": "2.15899"
+            },
+            {
+              "country": "India",
+              "cityState": "Pune",
+              "address": "3rd floor, Survey No. 25 A/1, 25 C, CTS. No. 31, Plot No. 38, Wakdewadi, Pune- 411003, India",
+              "city": "Pune",
+              "postalCode": "411003",
+              "latlong": {
+                "lon": 73.85535,
+                "lat": 18.51957
+              },
+              "latitude": "18.51957",
+              "cityStateZipCode": "Pune, 411003",
+              "stateCountry": "India",
+              "locationId": "LOCATION-3-803",
+              "location": "Pune, India",
+              "state": "",
+              "cityCountry": "Pune, India",
+              "cityStateCountry": "Pune, India",
+              "mapQueryLocation": "3rd floor, Survey No. 25 A/1, 25 C, CTS. No. 31, Plot No. 38, Wakdewadi, Pune- 411003, India",
+              "longitude": "73.85535"
+            },
+            {
+              "country": "India",
+              "cityState": "New Delhi",
+              "address": "Unit No. 101, 1st Floor, Elegance Tower, Plot No. 8, Commercial Centre, Jasola District Centre, New Delhi- 110025, India",
+              "city": "New Delhi",
+              "postalCode": "110025",
+              "latlong": {
+                "lon": 77.22445,
+                "lat": 28.63576
+              },
+              "latitude": "28.63576",
+              "cityStateZipCode": "New Delhi, 110025",
+              "stateCountry": "India",
+              "locationId": "IN16T",
+              "location": "New Delhi, India",
+              "state": "",
+              "cityCountry": "New Delhi, India",
+              "cityStateCountry": "New Delhi, India",
+              "mapQueryLocation": "Unit No. 101, 1st Floor, Elegance Tower, Plot No. 8, Commercial Centre, Jasola District Centre, New Delhi- 110025, India",
+              "longitude": "77.22445"
+            },
+            {
+              "country": "Spain",
+              "cityState": "Barcelona, Barcelona",
+              "address": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "city": "Barcelona",
+              "postalCode": "08038",
+              "latlong": {
+                "lon": -35.92639,
+                "lat": -5.95056
+              },
+              "latitude": "-5.95056",
+              "cityStateZipCode": "Barcelona, Barcelona, 08038",
+              "stateCountry": "Barcelona, Spain",
+              "locationId": "ES06",
+              "location": "Barcelona, Barcelona, Spain",
+              "state": "Barcelona",
+              "cityCountry": "Barcelona, Spain",
+              "cityStateCountry": "Barcelona, Barcelona, Spain",
+              "mapQueryLocation": "C/ Acero 30-32, 08038 Barcelona, Barcelona, Spain",
+              "longitude": "-35.92639"
+            },
+            {
+              "country": "India",
+              "cityState": "Ernakulam, Kerala",
+              "address": "62/5011, Iyyattil Junction, Hospital Road, Ernakulam- 682011, Kerala, India",
+              "city": "Ernakulam",
+              "postalCode": "682011",
+              "latlong": {
+                "lon": 76.29036,
+                "lat": 9.96714
+              },
+              "latitude": "9.96714",
+              "cityStateZipCode": "Ernakulam, Kerala, 682011",
+              "stateCountry": "Kerala, India",
+              "locationId": "LOCATION-3-1024",
+              "location": "Ernakulam, Kerala, India",
+              "state": "Kerala",
+              "cityCountry": "Ernakulam, India",
+              "cityStateCountry": "Ernakulam, Kerala, India",
+              "mapQueryLocation": "62/5011, Iyyattil Junction, Hospital Road, Ernakulam- 682011, Kerala, India",
+              "longitude": "76.29036"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "IT"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "account management",
+            "strategic business planning",
+            "sales forecasting",
+            "vendor management",
+            "cross-functional collaboration",
+            "negotiation",
+            "kpi performance management",
+            "business relationship development",
+            "product knowledge",
+            "complex problem solving",
+            "report preparation",
+            "data analysis",
+            "salesforce",
+            "microsoft excel",
+            "team leadership",
+            "coaching",
+            "presentation skills",
+            "stakeholder management",
+            "change management",
+            "process improvement"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for an Inside Account Manager to drive revenue and profitability by managing key accounts and developing strategic client solutions. You will proactively address complex customer issues and support business growth. Ideal candidates bring seasoned account management experience and strong interpersonal skills.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R55795",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Inside-Account-Manager_R55795/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for an Inside Account Manager to drive revenue and profitability by managing key accounts and developing strategic client solutions. You will proactively address complex customer issues and support business growth. Ideal candidates bring seasoned account management experience and strong interpersonal skills.",
+            "descriptionTeaser_first200": "Position owns the daily contact with specific, identified accounts. Incumbents work proactively to drive revenues/margins to ensure organizational profitability through developing and executing str...",
+            "descriptionTeaser_keyword": "Position owns the daily contact with specific, identified accounts. Incumbents work proactively to drive revenues/margins to ensure organizational profitability through developing and executing strate...",
+            "descriptionTeaser_ats": "Position owns the daily contact with specific, identified accounts. Incumbents work proactively to drive revenues/margins to ensure organizational profitability through developing and executing strate"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R55795",
+          "locale": "en_US",
+          "title": "Inside Account Manager",
+          "jobSeqNo": "TSQTSBUSR55795EXTERNALENUS",
+          "postedDate": "2026-09-09T00:00:00.000+0000",
+          "dateCreated": "2026-09-08T19:00:23.788+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "Join our team as a Sr Business Intelligence Analyst, where you will lead the design and development of business intelligence solutions to drive business success. You will analyse business needs, recommend solutions, and collaborate across departments. Ideal candidates bring strong analytical skills and significant experience in business intelligence.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "IT"
+          ],
+          "reqId": "R56129",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Sr-Business-Intelligence-Analyst_R56129/apply",
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R56129",
+          "locale": "en_US",
+          "title": "Sr Business Intelligence Analyst",
+          "jobSeqNo": "TSQTSBUSR56129EXTERNALENUS",
+          "postedDate": "2026-09-10T00:00:00.000+0000",
+          "dateCreated": "2026-09-10T15:00:17.756+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "IT",
+          "ml_skills": [
+            "business intelligence",
+            "data analysis",
+            "dashboard development",
+            "report generation",
+            "stakeholder management",
+            "project leadership",
+            "process improvement",
+            "data visualization",
+            "data entry",
+            "mathematical calculations",
+            "presentation skills",
+            "training delivery",
+            "collaboration",
+            "problem solving",
+            "critical thinking",
+            "decision making",
+            "negotiation",
+            "time management",
+            "change management",
+            "system application management",
+            "advanced computer systems"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "Join our team as a Sr Business Intelligence Analyst, where you will lead the design and development of business intelligence solutions to drive business success. You will analyse business needs, recommend solutions, and collaborate across departments. Ideal candidates bring strong analytical skills and significant experience in business intelligence.",
+            "descriptionTeaser_first200": "Job Purpose. Provides support to several functional areas or departments. Design and develop Business Intelligence solutions that helps drive business success by applying deep understanding of both...",
+            "descriptionTeaser_keyword": "Job Purpose. Provides support to several functional areas or departments. Design and develop Business Intelligence solutions that helps drive business success by applying deep understanding of both bu...",
+            "descriptionTeaser_ats": "Job Purpose . Provides support to several functional areas or departments. Design and develop Business Intelligence solutions that helps drive business success by applying deep understanding of both bus"
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "IT"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "oem equipment repair",
+            "technical support",
+            "network infrastructure troubleshooting",
+            "point of sale equipment",
+            "system log analysis",
+            "remote troubleshooting",
+            "hardware replacement",
+            "service restoration",
+            "ticket management",
+            "oem troubleshooting",
+            "service sla management",
+            "technical data tracking",
+            "service escalation",
+            "field engineering support",
+            "self-checkout systems",
+            "server troubleshooting",
+            "software configuration",
+            "software image deployment",
+            "driver installation",
+            "hardware swap support",
+            "device reimaging",
+            "vendor collaboration",
+            "customer service",
+            "english proficiency",
+            "formal presentation",
+            "negotiation"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for a Technical Support Technician to provide OEM equipment repair and 24x7 technical support for enterprise servers, POS equipment, and network infrastructure. You will troubleshoot complex issues, optimise system performance, and support both onsite and remote teams. Ideal candidates have strong technical expertise and experience in hardware and software troubleshooting.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R55610",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Technical-Support-Technician---CR_R55610/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for a Technical Support Technician to provide OEM equipment repair and 24x7 technical support for enterprise servers, POS equipment, and network infrastructure. You will troubleshoot complex issues, optimise system performance, and support both onsite and remote teams. Ideal candidates have strong technical expertise and experience in hardware and software troubleshooting.",
+            "descriptionTeaser_first200": "Job Summary. At TD SYNNEX-SHYFT: The Technical Support Technician is responsible for OEM equipment repair; this includes 24x7 technical support of client enterprise server, retail point-of-sale (PO...",
+            "descriptionTeaser_keyword": "Job Summary. At TD SYNNEX-SHYFT: The Technical Support Technician is responsible for OEM equipment repair; this includes 24x7 technical support of client enterprise server, retail point-of-sale (POS)...",
+            "descriptionTeaser_ats": "Job Summary:At TD SYNNEX-SHYFT: The Technical Support Technician is responsible for OEM equipment repair; this includes 24x7 technical support of client enterprise server, retail point-of-sale (POS) e"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R55610",
+          "locale": "en_US",
+          "title": "Technical Support Technician - CR",
+          "jobSeqNo": "TSQTSBUSR55610EXTERNALENUS",
+          "postedDate": "2026-09-11T00:00:00.000+0000",
+          "dateCreated": "2026-09-01T11:00:22.519+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are expanding our team: As an Inside Account Manager \u2013 CR, you will build and maintain strong relationships with partners, drive business growth for Sony\u2019s products and services, and manage a pipeline of accounts. Ideal candidates have proven account management experience and strong interpersonal skills.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R54934",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Inside-Account-Manager---CR_R54934/apply",
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R54934",
+          "locale": "en_US",
+          "title": "Inside Account Manager - CR",
+          "jobSeqNo": "TSQTSBUSR54934EXTERNALENUS",
+          "postedDate": "2026-08-06T00:00:00.000+0000",
+          "dateCreated": "2026-08-06T16:00:58.362+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "ml_skills": [
+            "salesforce",
+            "account management",
+            "business development",
+            "problem solving",
+            "stakeholder management",
+            "negotiation",
+            "project management",
+            "interpersonal skills",
+            "leadership",
+            "time management",
+            "b2b sales",
+            "customer relationship management"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "We are expanding our team: As an Inside Account Manager \u2013 CR, you will build and maintain strong relationships with partners, drive business growth for Sony\u2019s products and services, and manage a pipeline of accounts. Ideal candidates have proven account management experience and strong interpersonal skills.",
+            "descriptionTeaser_keyword": "The Inside Account Manager \u2013 CR will be responsible for building long-term, high-performing relationships with partners, leveraging interpersonal skills, prospecting abilities, and data analysis to pr...",
+            "descriptionTeaser_ats": "The Inside Account Manager \u2013 CR will be responsible for building long-term, high-performing relationships with partners, leveraging interpersonal skills, prospecting abilities, and data analysis to pr",
+            "descriptionTeaser_first200": "The Inside Account Manager \u2013 CR will be responsible for building long-term, high-performing relationships with partners, leveraging interpersonal skills, prospecting abilities, and data analysis to..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "Take on the role of PingOne Developer to design, develop, and support scalable customer identity and access management solutions. Build custom authentication workflows and collaborate with cross-functional teams. Ideal for experienced engineers with deep expertise in PingOne and PingOne DaVinci.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "IT"
+          ],
+          "reqId": "R53516",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/PingOne-Developer---IAM-Developer_R53516/apply",
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R53516",
+          "locale": "en_US",
+          "title": "PingOne Developer / IAM Developer",
+          "jobSeqNo": "TSQTSBUSR53516EXTERNALENUS",
+          "postedDate": "2026-07-06T00:00:00.000+0000",
+          "dateCreated": "2026-07-06T23:00:11.452+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "IT",
+          "ml_skills": [
+            "pingone",
+            "pingone davinci",
+            "identity and access management",
+            "ping directory",
+            "ping single sign-on",
+            "ping multi-factor authentication",
+            "api integrations",
+            "custom connector development",
+            "saml",
+            "oauth 2.0",
+            "openid connect",
+            "authentication and authorization concepts",
+            "risk-based authentication",
+            "adaptive authentication",
+            "secure application integration",
+            "technical documentation",
+            "architecture diagrams",
+            "security reviews",
+            "compliance initiatives"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "Take on the role of PingOne Developer to design, develop, and support scalable customer identity and access management solutions. Build custom authentication workflows and collaborate with cross-functional teams. Ideal for experienced engineers with deep expertise in PingOne and PingOne DaVinci.",
+            "descriptionTeaser_keyword": "Job Overview. TD SYNNEX is seeking a highly skilled PingOne Developer to design, develop, and support scalable customer identity and access management (CIAM) solutions across our global digital platfo...",
+            "descriptionTeaser_ats": "Job OverviewTD SYNNEX is seeking a highly skilled PingOne Developer to design, develop, and support scalable customer identity and access management (CIAM) solutions across our global digital platform",
+            "descriptionTeaser_first200": "Job Overview. TD SYNNEX is seeking a highly skilled PingOne Developer to design, develop, and support scalable customer identity and access management (CIAM) solutions across our global digital pla..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "IT"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "oem troubleshooting",
+            "system log analysis",
+            "network topology research",
+            "log processing tools",
+            "incident management",
+            "ticket management",
+            "service restoration",
+            "hardware repair",
+            "system performance optimization",
+            "customer communication",
+            "bilingual english spanish",
+            "remote technical support",
+            "technical presentations",
+            "stakeholder management",
+            "oem system training",
+            "product certifications",
+            "computer system applications"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are currently hiring a Technical Support Technician to provide 24x7 OEM equipment repair and enterprise infrastructure support. You will resolve complex technical issues, optimise system performance, and collaborate with field engineers. Ideal candidates have 3\u20135 years\u2019 relevant experience and strong troubleshooting skills.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R51573",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Technical-Support-Technician_R51573/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are currently hiring a Technical Support Technician to provide 24x7 OEM equipment repair and enterprise infrastructure support. You will resolve complex technical issues, optimise system performance, and collaborate with field engineers. Ideal candidates have 3\u20135 years\u2019 relevant experience and strong troubleshooting skills.",
+            "descriptionTeaser_ats": "About the RoleThe technical support engineer is responsible for OEM equipment repair, this includes 24x7 technical support of client enterprise infrastructure. This position includes consulting with o",
+            "descriptionTeaser_keyword": "About the Role. The technical support engineer is responsible for OEM equipment repair, this includes 24x7 technical support of client enterprise infrastructure. This position includes consulting with...",
+            "descriptionTeaser_first200": "About the Role. The technical support engineer is responsible for OEM equipment repair, this includes 24x7 technical support of client enterprise infrastructure. This position includes consulting w..."
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R51573",
+          "locale": "en_US",
+          "title": "Technical Support Technician",
+          "jobSeqNo": "TSQTSBUSR51573EXTERNALENUS",
+          "postedDate": "2026-05-19T00:00:00.000+0000",
+          "dateCreated": "2026-05-19T19:00:12.505+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "network design",
+            "network configuration",
+            "network security",
+            "switches",
+            "routers",
+            "firewalls",
+            "vpn gateways",
+            "ip telephony",
+            "ivr",
+            "automated ccall distribution",
+            "sd-wan",
+            "wan acceleration",
+            "mentoring",
+            "stakeholder management",
+            "vendor management",
+            "technical documentation"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for a Senior Network Engineer to design, configure, and support complex network solutions for TD SYNNEX. You will provide technical guidance, mentor junior engineers, and ensure high-quality, reliable network services. Ideal candidates have significant experience in network engineering and strong leadership skills.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "IT"
+          ],
+          "reqId": "R53343",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Senior-Network-Engineer_R53343/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for a Senior Network Engineer to design, configure, and support complex network solutions for TD SYNNEX. You will provide technical guidance, mentor junior engineers, and ensure high-quality, reliable network services. Ideal candidates have significant experience in network engineering and strong leadership skills.",
+            "descriptionTeaser_first200": "Job Purpose. Provides moderate design, full configuration, and full support for complex data, voice, storage, and/or video networks, which will include contact center and network security technolog...",
+            "descriptionTeaser_keyword": "Job Purpose. Provides moderate design, full configuration, and full support for complex data, voice, storage, and/or video networks, which will include contact center and network security technology....",
+            "descriptionTeaser_ats": "Job Purpose .  Provides moderate design, full configuration, and full support for complex data, voice, storage, and/or video networks, which will include contact center and network security technolog"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R53343",
+          "locale": "en_US",
+          "title": "Senior Network Engineer",
+          "jobSeqNo": "TSQTSBUSR53343EXTERNALENUS",
+          "postedDate": "2026-07-01T00:00:00.000+0000",
+          "dateCreated": "2026-07-01T19:00:16.590+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "IT",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "IT"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "itil problem management",
+            "major incident management",
+            "root cause analysis",
+            "it service management",
+            "incident management",
+            "change management",
+            "enterprise infrastructure",
+            "networks",
+            "firewalls",
+            "databases",
+            "cloud services",
+            "easyvista",
+            "sharepoint",
+            "power bi",
+            "service reporting and analytics",
+            "kpi and trend analysis",
+            "stakeholder communication",
+            "executive presentation"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for a skilled ITIL Problem Manager to lead Problem Management activities across the Americas region, focusing on service stability and operational excellence. You will identify recurring issues, conduct root cause analysis, and manage major incidents. Ideal candidates bring strong ITIL expertise and experience in enterprise infrastructure environments.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Project Management"
+          ],
+          "reqId": "R53259",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica",
+            "Bogota, Distrito Capital de Bogot\u00e1, Colombia",
+            "Mexico City, Mexico"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/ITIL-Problem-Manager--LATAM-----Technology-Infrastructure_R53259/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for a skilled ITIL Problem Manager to lead Problem Management activities across the Americas region, focusing on service stability and operational excellence. You will identify recurring issues, conduct root cause analysis, and manage major incidents. Ideal candidates bring strong ITIL expertise and experience in enterprise infrastructure environments.",
+            "descriptionTeaser_first200": "Job Summary. TD SYNNEX is seeking an experienced ITIL Problem Manager to lead Problem Management activities across the Americas region, driving service stability, operational excellence, and contin...",
+            "descriptionTeaser_keyword": "Job Summary. TD SYNNEX is seeking an experienced ITIL Problem Manager to lead Problem Management activities across the Americas region, driving service stability, operational excellence, and continuou...",
+            "descriptionTeaser_ats": "Job SummaryTD SYNNEX is seeking an experienced ITIL Problem Manager to lead Problem Management activities across the Americas region, driving service stability, operational excellence, and continuous "
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R53259",
+          "locale": "en_US",
+          "title": "ITIL Problem Manager (LATAM)  \u2013 Technology Infrastructure",
+          "jobSeqNo": "TSQTSBUSR53259EXTERNALENUS",
+          "postedDate": "2026-07-06T00:00:00.000+0000",
+          "dateCreated": "2026-06-30T12:00:29.031+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Project Management",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            },
+            {
+              "country": "Colombia",
+              "cityState": "Bogota, Distrito Capital de Bogot\u00e1",
+              "address": "Carrera 19 # 90-10, Piso 5 Edificio 19.90, Bogota Distrito Capital de Bogot\u00e1, 110221, Colombia",
+              "city": "Bogota",
+              "postalCode": "110221",
+              "latlong": {
+                "lon": -74.08175,
+                "lat": 4.60971
+              },
+              "latitude": "4.60971",
+              "cityStateZipCode": "Bogota, Distrito Capital de Bogot\u00e1, 110221",
+              "stateCountry": "Distrito Capital de Bogot\u00e1, Colombia",
+              "locationId": "WSC-CO-BO-0144",
+              "location": "Bogota, Distrito Capital de Bogot\u00e1, Colombia",
+              "state": "Distrito Capital de Bogot\u00e1",
+              "cityCountry": "Bogota, Colombia",
+              "cityStateCountry": "Bogota, Distrito Capital de Bogot\u00e1, Colombia",
+              "mapQueryLocation": "Carrera 19 # 90-10, Piso 5 Edificio 19.90, Bogota Distrito Capital de Bogot\u00e1, 110221, Colombia",
+              "longitude": "-74.08175"
+            },
+            {
+              "country": "Mexico",
+              "cityState": "Mexico City",
+              "address": "Avinda Insurgentes Sur Number 859, Mexico City, 01050 Mexico City, Mexico",
+              "city": "Mexico City",
+              "postalCode": "01050",
+              "latlong": {
+                "lon": -99.13315,
+                "lat": 19.43195
+              },
+              "latitude": "19.43195",
+              "cityStateZipCode": "Mexico City, 01050",
+              "stateCountry": "Mexico",
+              "locationId": "MX26S",
+              "location": "Mexico City, Mexico",
+              "state": "",
+              "cityCountry": "Mexico City, Mexico",
+              "cityStateCountry": "Mexico City, Mexico",
+              "mapQueryLocation": "Avinda Insurgentes Sur Number 859, Mexico City, 01050 Mexico City, Mexico",
+              "longitude": "-99.13315"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Project Management"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "ping development",
+            "customer identity management",
+            "api integration",
+            "workflow automation",
+            "production support",
+            "security compliance",
+            "solution engineering",
+            "configuration management",
+            "authentication journey design",
+            "formal presentations",
+            "stakeholder management",
+            "decision making"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "Become part of our team as a Senior Ping Customer IAM Developer, focusing on designing and supporting scalable customer identity solutions for TD Synnex\u2019s global digital platforms. You will develop custom workflows and integrations, requiring hands-on experience in production-grade DaVinci flows. Ideal for candidates with strong IAM expertise and relevant certifications.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "IT"
+          ],
+          "reqId": "R53499",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica",
+            "San Borja, Lima, Peru",
+            "Bogota, Distrito Capital de Bogot\u00e1, Colombia"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Senior-Ping-Customer-IAM-Developer_R53499/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Become part of our team as a Senior Ping Customer IAM Developer, focusing on designing and supporting scalable customer identity solutions for TD Synnex\u2019s global digital platforms. You will develop custom workflows and integrations, requiring hands-on experience in production-grade DaVinci flows. Ideal for candidates with strong IAM expertise and relevant certifications.",
+            "descriptionTeaser_first200": "Job Purpose. This role is focused on designing, developing, and supporting scalable customer identity solutions and authentication experiences for TD Synnex global digital platforms (e.g. how our p...",
+            "descriptionTeaser_keyword": "Job Purpose. This role is focused on designing, developing, and supporting scalable customer identity solutions and authentication experiences for TD Synnex global digital platforms (e.g. how our part...",
+            "descriptionTeaser_ats": "Job Purpose:This role is focused on designing, developing, and supporting scalable customer identity solutions and authentication experiences for TD Synnex global digital platforms (e.g. how our partn"
+          },
+          "externalApply": false,
+          "cityState": "San Jose, San Jose",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R53499",
+          "locale": "en_US",
+          "title": "Senior Ping Customer IAM Developer",
+          "jobSeqNo": "TSQTSBUSR53499EXTERNALENUS",
+          "postedDate": "2026-07-08T00:00:00.000+0000",
+          "dateCreated": "2026-07-08T16:00:29.749+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "IT",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            },
+            {
+              "country": "Peru",
+              "cityState": "San Borja, Lima",
+              "address": "Ave. de la Floresta 497, 2ndo Piso, San Borja, Lima 15038, Peru",
+              "city": "San Borja",
+              "postalCode": "15038",
+              "latlong": {
+                "lon": -77.01107,
+                "lat": -12.09841
+              },
+              "latitude": "-12.09841",
+              "cityStateZipCode": "San Borja, Lima, 15038",
+              "stateCountry": "Lima, Peru",
+              "locationId": "PEA1",
+              "location": "San Borja, Lima, Peru",
+              "state": "Lima",
+              "cityCountry": "San Borja, Peru",
+              "cityStateCountry": "San Borja, Lima, Peru",
+              "mapQueryLocation": "Ave. de la Floresta 497, 2ndo Piso, San Borja, Lima 15038, Peru",
+              "longitude": "-77.01107"
+            },
+            {
+              "country": "Colombia",
+              "cityState": "Bogota, Distrito Capital de Bogot\u00e1",
+              "address": "Edificio Ecotek Cl, 99 #10-57, Bogota Distrito Capital de Bogot\u00e1, 110111, Colombia",
+              "city": "Bogota",
+              "postalCode": "110111",
+              "latlong": {
+                "lon": -74.08175,
+                "lat": 4.60971
+              },
+              "latitude": "4.60971",
+              "cityStateZipCode": "Bogota, Distrito Capital de Bogot\u00e1, 110111",
+              "stateCountry": "Distrito Capital de Bogot\u00e1, Colombia",
+              "locationId": "LOC_CO_0001",
+              "location": "Bogota, Distrito Capital de Bogot\u00e1, Colombia",
+              "state": "Distrito Capital de Bogot\u00e1",
+              "cityCountry": "Bogota, Colombia",
+              "cityStateCountry": "Bogota, Distrito Capital de Bogot\u00e1, Colombia",
+              "mapQueryLocation": "Edificio Ecotek Cl, 99 #10-57, Bogota Distrito Capital de Bogot\u00e1, 110111, Colombia",
+              "longitude": "-74.08175"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "IT"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "solution pricing",
+            "customer service",
+            "quoting systems",
+            "opportunity forecasting",
+            "product configuration",
+            "sales strategy",
+            "distribution industry knowledge",
+            "mathematical calculations",
+            "training delivery",
+            "stakeholder management"
+          ],
+          "employeeTypeSpanish": "Regular",
+          "type": "Full time",
+          "descriptionTeaser": "Join our team as a Senior Solutions Sales Associate and drive customer success through expert pricing, quoting, and solution design. Leverage your technical and sales expertise to manage complex solutions, support customers, and collaborate across teams. Grow your career in a dynamic environment focused on delivering value and innovation in the distribution industry.",
+          "employeeTypeEurope": "R\u00e9gulier",
+          "state": "San Jose",
+          "siteType": "external",
+          "typeEurope": "Temps plein",
+          "multi_category": [
+            "Sales and Business Development"
+          ],
+          "reqId": "R56154",
+          "typeSpanish": "Tiempo completo",
+          "city": "San Jose",
+          "latitude": "9.93333",
+          "multi_location": [
+            "San Jose, San Jose, Costa Rica"
+          ],
+          "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+          "applyUrl": "https://synnex.wd5.myworkdayjobs.com/tdsynnexcareers/job/San-Jose-Costa-Rica/Sr-Solutions-Sales-Associate_R56154/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Join our team as a Senior Solutions Sales Associate and drive customer success through expert pricing, quoting, and solution design. Leverage your technical and sales expertise to manage complex solutions, support customers, and collaborate across teams. Grow your career in a dynamic environment focused on delivering value and innovation in the distribution industry.",
+            "descriptionTeaser_first200": "Provides first call response for solutions pricing and quoting of simple solutions requests for customers within assigned territory or is accountable for territory focused relationship based custom...",
+            "descriptionTeaser_keyword": "Provides first call response for solutions pricing and quoting of simple solutions requests for customers within assigned territory or is accountable for territory focused relationship based customer...",
+            "descriptionTeaser_ats": "Provides first call response for solutions pricing and quoting of simple solutions requests for customers within assigned territory or is accountable for territory focused relationship based customer "
+          },
+          "externalApply": false,
+          "country": "Costa Rica",
+          "cityState": "San Jose, San Jose",
+          "visibilityType": "External",
+          "longitude": "-84.08333",
+          "jobId": "R56154",
+          "locale": "en_US",
+          "title": "Sr. Solutions Sales Associate",
+          "jobSeqNo": "TSQTSBUSR56154EXTERNALENUS",
+          "postedDate": "2026-09-11T00:00:00.000+0000",
+          "dateCreated": "2026-09-10T23:00:26.994+0000",
+          "cityStateCountry": "San Jose, San Jose, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "San Jose, San Jose, Costa Rica",
+          "category": "Sales and Business Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "country": "Costa Rica",
+              "cityState": "San Jose, San Jose",
+              "address": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "city": "San Jose",
+              "postalCode": "",
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "latitude": "9.93333",
+              "cityStateZipCode": "San Jose, San Jose",
+              "stateCountry": "San Jose, Costa Rica",
+              "locationId": "TDS-CR-SJ-6014",
+              "location": "San Jose, San Jose, Costa Rica",
+              "state": "San Jose",
+              "cityCountry": "San Jose, Costa Rica",
+              "cityStateCountry": "San Jose, San Jose, Costa Rica",
+              "mapQueryLocation": "Escazu Business Center, Centro Corporativo EBC, San Jose, Costa Rica",
+              "longitude": "-84.08333"
+            }
+          ],
+          "isMultiCategory": false,
+          "multi_category_array": [
+            {
+              "category": "Sales and Business Development"
+            }
+          ],
+          "badge": ""
+        }
+      ],
+      "aggregations": [
+        {
+          "field": "country",
+          "value": {
+            "India": 124,
+            "Spain": 116,
+            "United States of America": 54,
+            "Malaysia": 37,
+            "Portugal": 30,
+            "Costa Rica": 28,
+            "Italy": 28,
+            "Japan": 24,
+            "Czechia": 23,
+            "United Kingdom": 22,
+            "Poland": 20,
+            "France": 19,
+            "Canada": 18,
+            "Indonesia": 18,
+            "Singapore": 18,
+            "Colombia": 17,
+            "Netherlands": 16,
+            "Vietnam": 16,
+            "Germany": 15,
+            "Belgium": 12,
+            "Finland": 12,
+            "Mexico": 12,
+            "Sweden": 12,
+            "Peru": 11,
+            "Hong Kong": 10,
+            "China": 9,
+            "Brazil": 8,
+            "Serbia": 8,
+            "Argentina": 7,
+            "Austria": 7,
+            "Hungary": 7,
+            "Romania": 7,
+            "Chile": 6,
+            "Denmark": 6,
+            "Norway": 5,
+            "Switzerland": 5,
+            "Panama": 4,
+            "Australia": 3,
+            "Bulgaria": 3,
+            "Croatia": 3,
+            "Slovenia": 3,
+            "T\u00fcrkiye": 3,
+            "Ecuador": 1,
+            "Macao": 1,
+            "Slovakia": 1
+          }
+        },
+        {
+          "field": "city",
+          "value": {
+            "San Jose": 28,
+            "Bogota": 3,
+            "Barcelona": 2,
+            "Chennai, Tamil Nadu": 2,
+            "Remote": 2,
+            "Ahmedabad": 1,
+            "Chennai": 1,
+            "Delhi": 1,
+            "Dharmatala": 1,
+            "Ernakulam": 1,
+            "Gurugram": 1,
+            "Hyderabad": 1,
+            "Mexico City": 1,
+            "Mumbai": 1,
+            "New Delhi": 1,
+            "Pune": 1,
+            "Pune Remote": 1,
+            "San Borja": 1,
+            "San Isidro": 1,
+            "Someshwarpura,  Bengaluru": 1
+          }
+        },
+        {
+          "field": "company",
+          "value": {
+            "Tech Data Costa Rica": 24,
+            "Tech Data Advanced Private Limited": 4
+          }
+        },
+        {
+          "field": "jobType",
+          "value": {}
+        },
+        {
+          "field": "type",
+          "value": {
+            "Full time": 28
+          }
+        },
+        {
+          "field": "category",
+          "value": {
+            "Sales and Business Development": 14,
+            "IT": 12,
+            "Human Resources": 1,
+            "Project Management": 1
+          }
+        }
+      ],
+      "SEARCH_CONFIG": {
+        "contextualSearch": false,
+        "isSuggestionsEnabled": true
+      },
+      "suggestions": {},
+      "ui_skills_selection": null,
+      "ui_selections": {
+        "country": [
+          "Costa Rica"
+        ]
+      },
+      "locationData": {}
+    },
+    "eid": {
+      "trialIndex": -1,
+      "eid": "6aaac4b92362799a7e0620ab",
+      "searchType": "location",
+      "isMultiLingualVectorApplied": false,
+      "query": "Costa Rica",
+      "variant": 0,
+      "banditId": "",
+      "keywordLanguage": "en"
+    }
+  }
+}

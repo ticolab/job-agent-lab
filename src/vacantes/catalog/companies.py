@@ -1111,4 +1111,14 @@ COMPANIES: list[Company] = [
             "https://www.mckinsey.com/careers/search-jobs?cities=San+Jose",
         ),
     ),
+    Company(
+        name="TD SYNNEX",
+        aliases=("tdsynnex",),
+        job_board_url="https://careers.tdsynnex.com/us/en/search-results",
+        sample_job_url="https://careers.tdsynnex.com/us/en/job/R55610/Technical-Support-Technician-CR",
+        link_rule=LinkRule(path_prefix="/us/en/job"),
+        strategy="phenom",
+        expected_jobs=28,
+        phenom=PhenomConfig(page_id="page11-ds", locale="en_us"),
+    ),
 ]

@@ -912,3 +912,110 @@ class TestZimmerBiometRecordedPayload:
         assert cfg is not None
         assert cfg.locale == "en_us"
         assert cfg.page_id == "page12-ds"
+
+
+_TDSYNNEX_ORIGIN = "https://careers.tdsynnex.com"
+_TDSYNNEX_ENDPOINT = f"{_TDSYNNEX_ORIGIN}/widgets"
+
+
+def _make_tdsynnex_company(**overrides: Any) -> Company:
+    """Build the shipped ``TD SYNNEX`` catalog entry's shape."""
+    defaults: dict[str, Any] = {
+        "name": "TD SYNNEX",
+        "job_board_url": f"{_TDSYNNEX_ORIGIN}/us/en/search-results",
+        "sample_job_url": (
+            f"{_TDSYNNEX_ORIGIN}/us/en/job/R55610/Technical-Support-Technician-CR"
+        ),
+        "link_rule": LinkRule(path_prefix="/us/en/job"),
+        "strategy": "phenom",
+        "expected_jobs": 28,
+        "phenom": PhenomConfig(page_id="page11-ds", locale="en_us"),
+    }
+    defaults.update(overrides)
+    return Company(**defaults)
+
+
+class TestTdSynnexRecordedPayload:
+    """Fifth Phenom tenant — the punctuation ceiling of the slug rule.
+
+    TD SYNNEX is the corpus's largest Phenom result at 28 (BCG 13,
+    Roche 12, Zimmer Biomet 11, Philips 1), but its real contribution is
+    to the *synthesized URL* obligation rather than to record count.
+
+    The adapter builds every posting URL from a job id plus a slugified
+    title, so a wrong slug rule still yields a well-formed URL that
+    404s — which is why the module docstring requires at least three
+    synthesized URLs to be checked live before an integration lands. All
+    28 were checked on 2026-09-16 and every one returned HTTP 200.
+
+    What makes this tenant worth a fixture is *which* titles it carries.
+    Phenom's earlier tenants verified ``&`` and `` - ``; TD SYNNEX adds
+    a title containing a forward slash, ``PingOne Developer / IAM
+    Developer``. That one is materially riskier than the others: every
+    other punctuation mark degrades to a hyphen or vanishes, but a
+    surviving ``/`` would inject an extra *path segment* and change the
+    URL's shape rather than merely its spelling — a 404 that no count
+    assertion anywhere would notice. The three pins below cover the
+    slash, the ampersand (dropped, not expanded to ``and``), and the
+    spaced hyphen, each against its live-verified string.
+    """
+
+    def test_recorded_payload_yields_twenty_eight_urls(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_TDSYNNEX_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("tdsynnex"))
+            )
+            result = _run(PhenomStrategy().extract(_make_tdsynnex_company(), _ctx()))
+        assert result["metadata"]["error"] is None
+        assert len(result["jobs"]) == 28
+
+    def test_emitted_count_equals_server_total_hits(self) -> None:
+        payload = _load_fixture("tdsynnex")
+        total = payload["refineSearch"]["totalHits"]
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_TDSYNNEX_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=payload)
+            )
+            result = _run(PhenomStrategy().extract(_make_tdsynnex_company(), _ctx()))
+        assert len(result["jobs"]) == total == 28
+
+    def test_a_slash_in_the_title_does_not_become_a_path_segment(self) -> None:
+        # "PingOne Developer / IAM Developer". A surviving slash would
+        # add a path segment, not just misspell the slug, so assert the
+        # exact live-verified string AND the segment count.
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_TDSYNNEX_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("tdsynnex"))
+            )
+            result = _run(PhenomStrategy().extract(_make_tdsynnex_company(), _ctx()))
+        expected = (
+            f"{_TDSYNNEX_ORIGIN}/us/en/job/R53516/PingOne-Developer-IAM-Developer"
+        )
+        assert expected in result["jobs"]
+        tail = expected.split("/us/en/job/", 1)[1]
+        assert tail.count("/") == 1, tail
+
+    def test_ampersand_and_spaced_hyphen_slugs_match_live_postings(self) -> None:
+        # Both verified against the live board on 2026-09-16. The
+        # ampersand is dropped rather than expanded to "and".
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_TDSYNNEX_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("tdsynnex"))
+            )
+            result = _run(PhenomStrategy().extract(_make_tdsynnex_company(), _ctx()))
+        assert (
+            f"{_TDSYNNEX_ORIGIN}/us/en/job/R53498/"
+            "Cybersecurity-Automation-Continuous-Compliance-Analyst"
+        ) in result["jobs"]
+        assert (
+            f"{_TDSYNNEX_ORIGIN}/us/en/job/R55610/Technical-Support-Technician-CR"
+        ) in result["jobs"]
+
+    def test_every_url_is_under_the_us_locale_job_prefix(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_TDSYNNEX_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("tdsynnex"))
+            )
+            result = _run(PhenomStrategy().extract(_make_tdsynnex_company(), _ctx()))
+        for url in result["jobs"]:
+            assert url.startswith(f"{_TDSYNNEX_ORIGIN}/us/en/job/"), url
