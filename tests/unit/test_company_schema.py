@@ -1805,20 +1805,15 @@ class TestSnapshotCoverage:
     matcher change can break that board without any test failing.
     """
 
-    # McKinsey's edge refuses the raw-Playwright Chromium that
-    # ``scripts/capture_snapshot.py`` and ``scripts/probe_board.py``
-    # launch (``net::ERR_HTTP2_PROTOCOL_ERROR`` on ``goto``), while
-    # accepting the browser-use ``BrowserSession`` that the runtime and
-    # ``extractor_ground_truth.py`` use. The split is exactly along the
-    # launch mechanism, not the User-Agent — the plausible UA that closed
-    # C14 is already applied at every site, and forcing HTTP/1.1 with
-    # ``--disable-http2`` swaps the protocol error for a timeout rather
-    # than fixing it. So extraction is healthy (24 of 24 on three
-    # consecutive runs through ``pre_filter_urls``) while no page can be
-    # frozen. Retire this entry by making the two scripts launch through
-    # ``BrowserSession`` as the ground-truth diagnostic already does; the
-    # capture is then an ordinary one.
-    _SNAPSHOTLESS_DOM_COMPANIES: ClassVar[set[str]] = {"McKinsey & Company"}
+    # Empty, and worth keeping that way. McKinsey & Company was the one
+    # entry: its edge returned ``net::ERR_HTTP2_PROTOCOL_ERROR`` to
+    # Playwright's bundled Chromium, so no page could be frozen while
+    # extraction itself was healthy. Retired once the capture-side
+    # launch moved to ``settings.launch_capture_browser`` — a real-Chrome
+    # channel plus ``--disable-blink-features=AutomationControlled`` —
+    # and its snapshot captured normally at 24. The fix was a launch
+    # config, not a port; see ``settings`` for what each half addresses.
+    _SNAPSHOTLESS_DOM_COMPANIES: ClassVar[set[str]] = set()
 
     def test_dom_companies_without_a_snapshot_are_whitelisted(self) -> None:
         snapshots_dir = (

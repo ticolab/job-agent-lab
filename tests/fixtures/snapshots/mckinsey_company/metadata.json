@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "company_name": "McKinsey & Company",
+  "job_board_url": "https://www.mckinsey.com/careers/search-jobs?cities=San+Jose",
+  "sample_job_url": "https://www.mckinsey.com/careers/search-jobs/jobs/associate-15178",
+  "expected_unfiltered_count": 24,
+  "captured_at": "2026-09-16T17:33:45.423439+00:00",
+  "captured_with_filters": false,
+  "notes": "Same-origin board on mckinsey.com. job_board_url drops the queue's _gl Google Analytics linker param and keeps only the real filter, ?cities=San+Jose; the city list offers exactly one 'San Jose' option so there is no San Jose California ambiguity, and one posting names 'San Jose, Costa Rica' outright. The board renders 20 of 24 initially behind a Load More control whose URL form is cumulative - ?cities=San+Jose&page=2 returns all 24, not just the second page - so paginate=True plus --paginate at capture is what reaches the full set. pre_filter_urls is required rather than defensive: the live agent path returned 0 jobs on 3 of 3 runs at 7, 13 and 8 steps while the deterministic path returns 24 every time. This board is also why settings.CAPTURE_BROWSER_CHANNEL exists: it returns net::ERR_HTTP2_PROTOCOL_ERROR to Playwright's bundled Chromium before any page code runs, so capture and probe were impossible until the capture-side launch switched to a real-Chrome channel. Derived prefix /careers/search-jobs/jobs is correct with no override.",
+  "pages": [
+    {
+      "file": "pages/page-2.html",
+      "url": "https://www.mckinsey.com/careers/search-jobs?cities=San+Jose&page=2"
+    }
+  ],
+  "pre_filter_urls": [
+    "https://www.mckinsey.com/careers/search-jobs?cities=San+Jose"
+  ],
+  "top_url": "https://www.mckinsey.com/careers/search-jobs?cities=San+Jose"
+}

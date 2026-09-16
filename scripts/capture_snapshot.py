@@ -166,6 +166,7 @@ from vacantes.extraction.dom.rules import derive_path_prefix
 from vacantes.settings import (
     RENDER_SCROLL_COUNT,
     RENDER_WAIT_SEC,
+    launch_capture_browser,
     plausible_headless_ua,
 )
 
@@ -573,16 +574,17 @@ async def _capture(
     )
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(
-            headless=True,
-            args=["--password-store=basic", "--use-mock-keychain"],
-        )
+        browser = await launch_capture_browser(p)
         try:
-            # all launch sites must agree — a board is validated
-            # and run under one browser environment. The plausible UA
+            # The capture-side launch config lives in
+            # ``settings.launch_capture_browser`` so this script and
+            # ``probe_board`` cannot drift apart: same channel, same
+            # flags, same UA. The plausible UA
             # (``HeadlessChrome/<v>`` → ``Chrome/<v>``) closes the C14
             # WAF-403 class documented in
-            # ``blockers/INTEGRATION_BLOCKERS.md``.
+            # ``blockers/INTEGRATION_BLOCKERS.md``; the channel and the
+            # AutomationControlled flag close the two capture-only
+            # rejections described in ``settings``.
             user_agent = await plausible_headless_ua()
             page = await browser.new_page(user_agent=user_agent)
             # when ``pre_filter_urls`` is non-empty the runtime

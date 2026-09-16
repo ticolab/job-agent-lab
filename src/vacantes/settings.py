@@ -16,9 +16,16 @@ this module remains a plain constant.
 
 from __future__ import annotations
 
+import logging
 import os
 from collections.abc import Mapping
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:  # pragma: no cover - typing-only import
+    from playwright.async_api import Browser, Playwright
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_MODEL: str = "gpt-4.1-mini"
 DEFAULT_MAX_STEPS: int = 20
@@ -205,3 +212,88 @@ async def plausible_headless_ua() -> str:
 
     _PLAUSIBLE_UA = derive_plausible_ua(default_ua)
     return _PLAUSIBLE_UA
+
+
+# ---------------------------------------------------------------------------
+# browser-environment layer — capture-side launch configuration
+# ---------------------------------------------------------------------------
+#
+# The UA helpers above close C14, where a WAF greps the UA header for
+# ``HeadlessChrome``. Two corpus boards reject the capture-side tools
+# for reasons the UA cannot reach, and they fail differently:
+#
+# - **Edwards Lifesciences** times out on ``goto``. It is detecting the
+#   automation surface: adding
+#   ``--disable-blink-features=AutomationControlled`` (which clears
+#   ``navigator.webdriver``) is sufficient on its own.
+# - **McKinsey & Company** returns ``net::ERR_HTTP2_PROTOCOL_ERROR``
+#   before any page code runs. The flag does *not* help; only a
+#   different binary does. Playwright's bundled Chromium is refused
+#   while Google Chrome (``channel="chrome"``) and browser-use's own
+#   Chromium 134 both connect, so the rejection keys on something about
+#   the bundled build rather than on automation signals. The precise
+#   discriminator was not isolated — this records what was measured,
+#   not a TLS-fingerprint theory.
+#
+# Hence two settings rather than one: the flag fixes Edwards, the
+# channel fixes McKinsey, and only both together reach all three of
+# Edwards, McKinsey, and the unaffected control boards.
+#
+# These apply to the **capture-side** launch sites (``capture_snapshot``
+# and ``probe_board``), which drive Playwright directly. The runtime and
+# the ground-truth diagnostic go through browser-use's
+# ``BrowserSession``, which owns its own flag set and already reaches
+# both hosts — so "all launch sites agree" holds for the UA and the
+# keychain suppression, but the capture-side tools additionally opt
+# into a real-Chrome channel. Keeping that asymmetry explicit here is
+# the point of this block.
+BROWSER_LAUNCH_ARGS: tuple[str, ...] = (
+    "--password-store=basic",
+    "--use-mock-keychain",
+    "--disable-blink-features=AutomationControlled",
+)
+
+# Playwright browser channel the capture-side tools prefer. ``"chrome"``
+# resolves to a locally installed Google Chrome. It is a *preference*,
+# not a requirement: :func:`launch_capture_browser` falls back to the
+# bundled Chromium when Chrome is absent, because every board except
+# McKinsey captures fine either way and a missing Chrome must not break
+# the other 106.
+CAPTURE_BROWSER_CHANNEL: str = "chrome"
+
+
+async def launch_capture_browser(
+    playwright: Playwright, *, headless: bool = True
+) -> Browser:
+    """Launch the browser the capture-side tools share.
+
+    Prefers :data:`CAPTURE_BROWSER_CHANNEL` and falls back to
+    Playwright's bundled Chromium when that channel is not installed,
+    logging a warning that names the consequence. The fallback is a
+    real degradation — McKinsey's board is unreachable under the
+    bundled build — so it is warned about rather than silent, but it is
+    not fatal: a machine without Chrome can still capture every other
+    board in the corpus.
+
+    Args:
+        playwright: An entered ``async_playwright()`` context.
+        headless: Forwarded to ``chromium.launch``.
+
+    Returns:
+        A launched ``Browser``. The caller owns closing it.
+    """
+    args = list(BROWSER_LAUNCH_ARGS)
+    try:
+        return await playwright.chromium.launch(
+            channel=CAPTURE_BROWSER_CHANNEL, headless=headless, args=args
+        )
+    except Exception as exc:  # noqa: BLE001 — any launch failure falls back
+        logger.warning(
+            "Chromium channel %r unavailable (%s: %s); falling back to the "
+            "bundled build. Boards that reject it — currently McKinsey & "
+            "Company — will fail to load.",
+            CAPTURE_BROWSER_CHANNEL,
+            type(exc).__name__,
+            exc,
+        )
+        return await playwright.chromium.launch(headless=headless, args=args)
