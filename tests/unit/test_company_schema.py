@@ -567,6 +567,7 @@ class TestExpectedJobsField:
             "Oowlish": 3,
             "Athenaworks": 11,
             "Commit": 2,
+            "Cargill": 60,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1418,12 +1419,22 @@ class TestTalentbrewStrategyPresenceValidator:
         # is the smallest non-empty page any shipped tenant produces —
         # and it makes the 3624060 facet a five-tenant observation,
         # i.e. a Radancy-wide taxonomy id rather than a collision.
+        # Cargill is the sixth tenant and the exact-multiple pagination
+        # case: 60 CR postings at records_per_page=15 means pages 1-4 are
+        # each full, so the continuation predicate keeps firing past the
+        # real end and only a fifth, empty request stops the walk. It
+        # ships five payloads (``cargill.json`` plus
+        # ``cargill_page2..5.json``) and the ``TestCargillRecordedPayload``
+        # cases, so the terminating empty page is replayed rather than
+        # assumed. Every other tenant ends on a short page and cannot
+        # exercise it.
         expected_talentbrew = {
             "Citi",
             "Veeam Software",
             "Moody's Corporation",
             "Heraeus",
             "Midland Credit Management",
+            "Cargill",
         }
         actual_talentbrew = {c.name for c in COMPANIES if c.strategy == "talentbrew"}
         assert actual_talentbrew == expected_talentbrew, (

@@ -1413,3 +1413,96 @@ class TestMidlandRecordedPayload:
             f"{_MIDLAND_ORIGIN}/en/job/san-jose/"
             "risk-and-compliance-analyst/29781/100036864432"
         ]
+
+
+_CARGILL_ORIGIN = "https://careers.cargill.com"
+_CARGILL_ENDPOINT = f"{_CARGILL_ORIGIN}/en/search-jobs/results"
+
+
+def _load_cargill_fixture(page: int = 1) -> dict[str, Any]:
+    """Read a recorded Cargill ``/en/search-jobs/results`` page payload."""
+    name = "cargill.json" if page == 1 else f"cargill_page{page}.json"
+    payload = json.loads((_FIXTURE_DIR / name).read_text())
+    assert isinstance(payload, dict), f"{name} is not a JSON object"
+    return payload
+
+
+def _cargill_pages() -> list[httpx.Response]:
+    """The five recorded pages, in the order the adapter requests them."""
+    return [httpx.Response(200, json=_load_cargill_fixture(p)) for p in range(1, 6)]
+
+
+def _make_cargill_company(**overrides: Any) -> Company:
+    """Build the shipped ``Cargill`` catalog entry's shape."""
+    defaults: dict[str, Any] = {
+        "name": "Cargill",
+        "job_board_url": f"{_CARGILL_ORIGIN}/en/search-jobs",
+        "sample_job_url": (
+            f"{_CARGILL_ORIGIN}/en/job/alajuela/"
+            "generalist-process-operator-i/23251/100409215360"
+        ),
+        "strategy": "talentbrew",
+        "talentbrew": TalentbrewConfig(
+            facet_id="3624060",
+            facet_display="Costa Rica",
+            results_path="/en/search-jobs/results",
+        ),
+        "link_rule": LinkRule(path_prefix="/en/job"),
+        "expected_jobs": 60,
+    }
+    defaults.update(overrides)
+    return Company(**defaults)
+
+
+class TestCargillRecordedPayload:
+    """Sixth Talentbrew tenant — the exact-multiple pagination case.
+
+    Cargill's Costa Rica facet returns 60 postings against
+    ``records_per_page=15``, which is the first count in the corpus that
+    divides evenly by the page size. Every other tenant's last page is
+    short and therefore self-terminating: Moody's and Heraeus both end on
+    12 of 15, Citi (10), Veeam (11) and Midland (1) never fill page 1 at
+    all. Here pages 1 through 4 each return a full 15, so the "page was
+    full, ask for another" rule keeps firing through the real end of the
+    listing, and only a fifth request — which comes back with
+    ``hasJobs=False`` and no anchors — stops the walk.
+
+    That makes this the tenant that pins the terminating empty page. A
+    regression that treated an empty payload as an error, or that stopped
+    one page early on a full page, would be invisible on every other
+    fixture in this file and would cost Cargill either the whole run or
+    its last 15 postings. Five payloads are recorded rather than four so
+    the terminating request is replayed rather than assumed.
+    """
+
+    def test_recorded_payload_yields_sixty_urls(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.get(_CARGILL_ENDPOINT).mock(side_effect=_cargill_pages())
+            result = _run(TalentbrewStrategy().extract(_make_cargill_company(), _ctx()))
+        assert result["metadata"]["error"] is None
+        assert len(result["jobs"]) == 60
+
+    def test_five_requests_when_the_last_full_page_is_the_last_page(self) -> None:
+        # 4 full pages of 15 cannot signal the end on their own, so the
+        # adapter MUST issue a fifth request and stop on its empty body.
+        # Exactly five is the contract no short-last-page tenant can show.
+        with respx.mock(assert_all_called=False) as mock:
+            route = mock.get(_CARGILL_ENDPOINT).mock(side_effect=_cargill_pages())
+            _run(TalentbrewStrategy().extract(_make_cargill_company(), _ctx()))
+        assert route.call_count == 5
+
+    def test_the_terminating_empty_page_is_not_an_error(self) -> None:
+        # ``hasJobs=False`` with no anchors is the normal end of the walk,
+        # not a failure: the run stays clean and keeps all 60 URLs.
+        with respx.mock(assert_all_called=False) as mock:
+            mock.get(_CARGILL_ENDPOINT).mock(side_effect=_cargill_pages())
+            result = _run(TalentbrewStrategy().extract(_make_cargill_company(), _ctx()))
+        assert result["metadata"]["error"] is None
+        assert len(result["jobs"]) == 60
+
+    def test_every_url_is_absolutized_under_the_en_locale_prefix(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.get(_CARGILL_ENDPOINT).mock(side_effect=_cargill_pages())
+            result = _run(TalentbrewStrategy().extract(_make_cargill_company(), _ctx()))
+        for url in result["jobs"]:
+            assert url.startswith(f"{_CARGILL_ORIGIN}/en/job/"), url

@@ -1086,4 +1086,18 @@ COMPANIES: list[Company] = [
         link_rule=LinkRule(path_prefix="/jobs/comm-it/76.008"),
         expected_jobs=2,
     ),
+    Company(
+        name="Cargill",
+        aliases=(),
+        job_board_url="https://careers.cargill.com/en/search-jobs",
+        sample_job_url="https://careers.cargill.com/en/job/alajuela/generalist-process-operator-i/23251/100409215360",
+        link_rule=LinkRule(path_prefix="/en/job"),
+        strategy="talentbrew",
+        expected_jobs=60,
+        talentbrew=TalentbrewConfig(
+            facet_id="3624060",
+            facet_display="Costa Rica",
+            results_path="/en/search-jobs/results",
+        ),
+    ),
 ]
