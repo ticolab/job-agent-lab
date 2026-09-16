@@ -970,4 +970,12 @@ COMPANIES: list[Company] = [
         strategy="greenhouse",
         expected_jobs=1,
     ),
+    Company(
+        name="Baja Nearshore",
+        aliases=("baja",),
+        job_board_url="https://recruitcrm.io/jobs/View%20Openings",
+        sample_job_url="https://recruitcrm.io/apply/17726607186750106969zOp?source=Jobspage&new=yes",
+        expected_jobs=17,
+        pre_filter_urls=("https://recruitcrm.io/jobs/View%20Openings",),
+    ),
 ]

@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "Baja Nearshore",
+  "job_board_url": "https://recruitcrm.io/jobs/View%20Openings",
+  "sample_job_url": "https://recruitcrm.io/apply/17726607186750106969zOp?source=Jobspage&new=yes",
+  "expected_unfiltered_count": 17,
+  "captured_at": "2026-09-16T02:33:08.464274+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pre_filter_urls": [
+    "https://recruitcrm.io/jobs/View%20Openings"
+  ],
+  "top_url": "https://recruitcrm.io/jobs/View%20Openings"
+}
