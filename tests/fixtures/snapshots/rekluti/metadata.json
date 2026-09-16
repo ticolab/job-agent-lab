@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "company_name": "ReKluti",
+  "job_board_url": "https://easyapplyrekluti.recruitee.com/?jobs-9da8b313%5Bsearch%5D=costa%20rica",
+  "sample_job_url": "https://easyapplyrekluti.recruitee.com/o/administrador-de-base-de-datos-oracle",
+  "expected_unfiltered_count": 49,
+  "captured_at": "2026-09-16T02:54:55.705623+00:00",
+  "captured_with_filters": false,
+  "notes": "",
+  "pre_filter_urls": [
+    "https://easyapplyrekluti.recruitee.com/?jobs-9da8b313%5Bsearch%5D=costa%20rica"
+  ],
+  "top_url": "https://easyapplyrekluti.recruitee.com/?jobs-9da8b313%5Bsearch%5D=costa%20rica"
+}

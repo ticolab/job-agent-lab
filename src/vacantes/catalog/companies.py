@@ -978,4 +978,14 @@ COMPANIES: list[Company] = [
         expected_jobs=17,
         pre_filter_urls=("https://recruitcrm.io/jobs/View%20Openings",),
     ),
+    Company(
+        name="ReKluti",
+        aliases=(),
+        job_board_url="https://easyapplyrekluti.recruitee.com/?jobs-9da8b313%5Bsearch%5D=costa%20rica",
+        sample_job_url="https://easyapplyrekluti.recruitee.com/o/administrador-de-base-de-datos-oracle",
+        expected_jobs=49,
+        pre_filter_urls=(
+            "https://easyapplyrekluti.recruitee.com/?jobs-9da8b313%5Bsearch%5D=costa%20rica",
+        ),
+    ),
 ]
