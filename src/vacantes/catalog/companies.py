@@ -1155,4 +1155,14 @@ COMPANIES: list[Company] = [
         expected_jobs=27,
         phenom=PhenomConfig(page_id="page15", locale="en_us"),
     ),
+    Company(
+        name="Cisco",
+        aliases=(),
+        job_board_url="https://careers.cisco.com/global/en/search-results",
+        sample_job_url="https://careers.cisco.com/global/en/job/2023794/Renewals-Specialist-Splunk-COE-Hybrid",
+        link_rule=LinkRule(path_prefix="/global/en/job"),
+        strategy="phenom",
+        expected_jobs=1,
+        phenom=PhenomConfig(page_id="page4", locale="en_global"),
+    ),
 ]

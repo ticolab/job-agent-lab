@@ -1,0 +1,211 @@
+{
+  "refineSearch": {
+    "status": 200,
+    "hits": 1,
+    "totalHits": 1,
+    "data": {
+      "jobs": [
+        {
+          "ml_skills": [
+            "splunk license renewal",
+            "salesforce crm",
+            "enterprise software sales",
+            "renewals management software",
+            "order processing",
+            "quoting systems",
+            "cpq",
+            "gainsight",
+            "customer service",
+            "subscription management",
+            "salesforce.com",
+            "demand generation",
+            "revenue recognition",
+            "proof of sell thru",
+            "order management",
+            "process improvement",
+            "relationship building",
+            "cross-functional collaboration",
+            "change management",
+            "data analysis",
+            "customer lifecycle management",
+            "saas business model",
+            "fluency in english",
+            "fluency in portuguese"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "Become part of our team as a Renewals Specialist, where you will manage high-volume transactional workloads and support the success of our software renewals business. Collaborate with Sales and Success Management teams to drive retention and growth. Ideal for candidates with experience in enterprise software sales and strong attention to detail.",
+          "state": "Heredia",
+          "siteType": "external",
+          "RemoteType": "Hybrid",
+          "multi_category": [
+            "Customer Experience",
+            "Sales"
+          ],
+          "reqId": "2023794",
+          "city": "Heredia",
+          "latitude": "9.99872",
+          "multi_location": [
+            "Heredia, Heredia, Costa Rica"
+          ],
+          "address": "., 40104 Heredia, Costa Rica",
+          "applyUrl": "https://cisco.wd5.myworkdayjobs.com/Cisco_Careers/job/Heredia-Costa-Rica/Renewals-Specialist---Splunk-COE--Hybrid-_2023794-1/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Become part of our team as a Renewals Specialist, where you will manage high-volume transactional workloads and support the success of our software renewals business. Collaborate with Sales and Success Management teams to drive retention and growth. Ideal for candidates with experience in enterprise software sales and strong attention to detail.",
+            "descriptionTeaser_ats": "Meet the Team:Splunk, a Cisco company, is building a safer and more resilient digital world with an end-to-end full stack platform made for a hybrid, multi-cloud world. Leading enterprises use our uni",
+            "descriptionTeaser_keyword": "Meet the Team. Splunk, a Cisco company, is building a safer and more resilient digital world with an end-to-end full stack platform made for a hybrid, multi-cloud world. Leading enterprises use our un...",
+            "descriptionTeaser_first200": "Meet the Team. Splunk, a Cisco company, is building a safer and more resilient digital world with an end-to-end full stack platform made for a hybrid, multi-cloud world. Leading enterprises use our..."
+          },
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11587",
+          "jobId": "2023794",
+          "locale": "en_GLOBAL",
+          "title": "Renewals Specialist - Splunk COE (Hybrid)",
+          "jobSeqNo": "CISCISGLOBAL2023794EXTERNALENGLOBAL",
+          "postedDate": "2026-09-11T00:00:00.000+0000",
+          "dateCreated": "2026-09-08T19:11:16.484+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "department": "Supervisory Organization 0025277 (Daniel Marsh (Inherited))",
+          "jobVisibility": [
+            "external",
+            "internal"
+          ],
+          "location": "Heredia, Heredia, Costa Rica",
+          "category": "Sales",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11587,
+                "lat": 9.99872
+              },
+              "location": "Heredia, Heredia, Costa Rica"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Customer Experience"
+            },
+            {
+              "category": "Sales"
+            }
+          ],
+          "badge": ""
+        }
+      ],
+      "aggregations": [
+        {
+          "field": "country",
+          "value": {
+            "United States of America": 464,
+            "India": 299,
+            "Japan": 81,
+            "Poland": 60,
+            "Ireland": 44,
+            "Taiwan": 43,
+            "Israel": 38,
+            "United Kingdom": 37,
+            "Australia": 34,
+            "Malaysia": 33,
+            "Singapore": 31,
+            "Norway": 28,
+            "Canada": 20,
+            "Sweden": 20,
+            "Germany": 19,
+            "Thailand": 19,
+            "Hungary": 17,
+            "Vietnam": 17,
+            "Netherlands": 16,
+            "Mexico": 15,
+            "Armenia": 14,
+            "Spain": 14,
+            "Switzerland": 13,
+            "France": 12,
+            "Italy": 12,
+            "Portugal": 12,
+            "Slovakia": 11,
+            "Belgium": 9,
+            "Denmark": 9,
+            "Greece": 9,
+            "Saudi Arabia": 9,
+            "Indonesia": 7,
+            "Romania": 7,
+            "Hong Kong": 6,
+            "Czechia": 5,
+            "Korea, Republic of": 5,
+            "Brazil": 4,
+            "China": 4,
+            "Serbia": 4,
+            "United Arab Emirates": 4,
+            "Austria": 3,
+            "Argentina": 2,
+            "Bulgaria": 2,
+            "Egypt": 2,
+            "Philippines": 2,
+            "Chile": 1,
+            "Colombia": 1,
+            "Costa Rica": 1,
+            "Croatia": 1,
+            "Luxembourg": 1,
+            "Peru": 1,
+            "Qatar": 1
+          }
+        },
+        {
+          "field": "city",
+          "value": {
+            "Heredia": 1
+          }
+        },
+        {
+          "field": "company",
+          "value": {
+            "743 Splunk Services Costa Rica Sociedad De Responsabilidad Limitada": 1
+          }
+        },
+        {
+          "field": "jobType",
+          "value": {}
+        },
+        {
+          "field": "type",
+          "value": {
+            "Full time": 1
+          }
+        },
+        {
+          "field": "category",
+          "value": {
+            "Customer Experience": 1,
+            "Sales": 1
+          }
+        }
+      ],
+      "SEARCH_CONFIG": {
+        "contextualSearch": false,
+        "isSuggestionsEnabled": true
+      },
+      "suggestions": {},
+      "ui_skills_selection": null,
+      "ui_selections": {
+        "country": [
+          "Costa Rica"
+        ]
+      },
+      "locationData": {}
+    },
+    "eid": {
+      "trialIndex": -1,
+      "eid": "6aab523bf14dfda4832c924d",
+      "searchType": "location",
+      "isMultiLingualVectorApplied": false,
+      "query": "Costa Rica",
+      "variant": 0,
+      "banditId": "",
+      "keywordLanguage": "en"
+    }
+  }
+}

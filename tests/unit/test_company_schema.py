@@ -578,6 +578,7 @@ class TestExpectedJobsField:
             "Edwards Lifesciences": 18,
             "Deloitte": 13,
             "Hewlett Packard Enterprise": 27,
+            "Cisco": 1,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1242,6 +1243,13 @@ class TestPhenomStrategyPresenceValidator:
         # added — it is Zscaler's California HQ, worth 58 phantom
         # postings). Artifact is ``tests/fixtures/api/phenom/hpe.json``
         # plus the ``TestHpeRecordedPayload`` cases, and no DOM snapshot.
+        # Cisco is the seventh tenant and largely corpus completeness:
+        # Philips already pins the single-record floor. Its one novelty
+        # is a suffix-less page id ("page4") on the en_global locale,
+        # which with HPE's suffix-less en_us id establishes that page_id
+        # is opaque to the adapter. Artifact is
+        # ``tests/fixtures/api/phenom/cisco.json`` plus the
+        # ``TestCiscoRecordedPayload`` cases, and no DOM snapshot.
         expected_phenom = {
             "Boston Consulting Group",
             "Roche",
@@ -1249,6 +1257,7 @@ class TestPhenomStrategyPresenceValidator:
             "Zimmer Biomet",
             "TD SYNNEX",
             "Hewlett Packard Enterprise",
+            "Cisco",
         }
         actual_phenom = {c.name for c in COMPANIES if c.strategy == "phenom"}
         assert actual_phenom == expected_phenom, (

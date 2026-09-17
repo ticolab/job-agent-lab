@@ -1200,3 +1200,90 @@ class TestHpeRecordedPayload:
             result = _run(PhenomStrategy().extract(_make_hpe_company(), _ctx()))
         for url in result["jobs"]:
             assert url.startswith(f"{_HPE_ORIGIN}/us/en/job/"), url
+
+
+_CISCO_ORIGIN = "https://careers.cisco.com"
+_CISCO_ENDPOINT = f"{_CISCO_ORIGIN}/widgets"
+
+
+def _make_cisco_company(**overrides: Any) -> Company:
+    """Build the shipped ``Cisco`` catalog entry's shape."""
+    defaults: dict[str, Any] = {
+        "name": "Cisco",
+        "job_board_url": f"{_CISCO_ORIGIN}/global/en/search-results",
+        "sample_job_url": (
+            f"{_CISCO_ORIGIN}/global/en/job/2023794/"
+            "Renewals-Specialist-Splunk-COE-Hybrid"
+        ),
+        "link_rule": LinkRule(path_prefix="/global/en/job"),
+        "strategy": "phenom",
+        "expected_jobs": 1,
+        "phenom": PhenomConfig(page_id="page4", locale="en_global"),
+    }
+    defaults.update(overrides)
+    return Company(**defaults)
+
+
+class TestCiscoRecordedPayload:
+    """Seventh Phenom tenant — mostly corpus completeness, with one novelty.
+
+    Cisco breaks little new ground and this docstring says so rather than
+    inventing significance: Philips already pins the single-record floor,
+    and parenthesised titles are already covered by the HPE, Roche,
+    TD SYNNEX and Zimmer Biomet fixtures. The fixture exists because
+    every Phenom tenant ships one — the strategy whitelist in
+    ``test_company_schema`` enforces it — and because it pins this
+    tenant's config, which is the part that rots.
+
+    The one genuine novelty is a config-space point: ``page4`` is a
+    suffix-less page id on the ``en_global`` locale. HPE introduced
+    suffix-less ids but on ``en_us``; every ``en_global`` tenant before
+    Cisco used the ``-ds`` form. Together they establish that the
+    adapter treats ``page_id`` as opaque, which is the intended
+    contract — there is no rule to derive it, it is read off a live
+    ``/widgets`` body at integration time.
+
+    Worth recording separately: Cisco is the first tenant where the
+    queue's human-supplied ``sample_job_url`` is byte-identical to the
+    URL :func:`synthesize_job_url` produces from the payload, on a title
+    carrying both a spaced hyphen and parentheses
+    (``"Renewals Specialist - Splunk COE (Hybrid)"``). That is an
+    outside check on the slug rule rather than the adapter agreeing with
+    itself.
+    """
+
+    def test_recorded_payload_yields_one_url(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_CISCO_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("cisco"))
+            )
+            result = _run(PhenomStrategy().extract(_make_cisco_company(), _ctx()))
+        assert result["metadata"]["error"] is None
+        assert len(result["jobs"]) == 1
+
+    def test_emitted_count_equals_server_total_hits(self) -> None:
+        payload = _load_fixture("cisco")
+        total = payload["refineSearch"]["totalHits"]
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_CISCO_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=payload)
+            )
+            result = _run(PhenomStrategy().extract(_make_cisco_company(), _ctx()))
+        assert len(result["jobs"]) == total == 1
+
+    def test_synthesized_url_equals_the_queue_supplied_sample(self) -> None:
+        # The outside check: a human wrote this URL by copying it off the
+        # live board, and the slug rule reproduces it byte for byte from
+        # "Renewals Specialist - Splunk COE (Hybrid)" — spaced hyphen
+        # collapsed, parentheses dropped. Verified HTTP 200 on
+        # 2026-09-17. If the slug rule drifts this fails rather than
+        # emitting a well-formed 404.
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_CISCO_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("cisco"))
+            )
+            result = _run(PhenomStrategy().extract(_make_cisco_company(), _ctx()))
+        assert result["jobs"] == [
+            f"{_CISCO_ORIGIN}/global/en/job/2023794/"
+            "Renewals-Specialist-Splunk-COE-Hybrid"
+        ]
