@@ -1,0 +1,15 @@
+{
+  "schema_version": 2,
+  "company_name": "Deloitte",
+  "job_board_url": "https://carrera.deloitteslatam.com/search/?createNewAlert=false&q=&locationsearch=costa+rica",
+  "sample_job_url": "https://carrera.deloitteslatam.com/job/Costa-Rica-Consultor%28a%29-SnrDevOps-Cloud-Centro-Am%C3%A9rica-San-Jos%C3%A9/1377581033/",
+  "expected_unfiltered_count": 13,
+  "captured_at": "2026-09-17T01:18:34.154329+00:00",
+  "captured_with_filters": false,
+  "notes": "SAP SuccessFactors RMK board (carrera.deloitteslatam.com), the same /search/?locationsearch= plus /job/<Slug>/<id>/ family as GFT Technologies. path_prefix must be given explicitly: derivation from any sample yields that one posting's title slug (/job/Costa-Rica-Consultor%28a%29-...), which matches only itself - the correct prefix is /job with postings at depth 2, and all 13 sit there with nothing at depth 1, so no min_depth is needed. The locationsearch=costa+rica filter is URL-addressable and reduces the board from 25 to 13; all 13 slugs begin with Costa-Rica, several being multi-country Central America postings anchored in San Jose. pre_filter_urls is required rather than defensive: without it the agent returned 1 on run 1 of 3 - it had navigated into a posting detail page and matched only that page's own job link, which is a quieter failure than an over-count because 1 looks like a plausible small board. With pre_filter_urls, 4 of 4 runs return 13. Default 8s settle is sufficient here; the raw anchor set is 39 with 26 dropped by the visibility gate and fragment dedup (three anchors per posting).",
+  "path_prefix": "/job",
+  "pre_filter_urls": [
+    "https://carrera.deloitteslatam.com/search/?createNewAlert=false&q=&locationsearch=costa+rica"
+  ],
+  "top_url": "https://carrera.deloitteslatam.com/search/?createNewAlert=false&q=&locationsearch=costa+rica"
+}

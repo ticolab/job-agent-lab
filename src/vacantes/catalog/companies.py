@@ -1134,4 +1134,15 @@ COMPANIES: list[Company] = [
             "https://www.edwards.com/careers/jobsearch?country=Costa%20Rica",
         ),
     ),
+    Company(
+        name="Deloitte",
+        aliases=("deloitteslatam",),
+        job_board_url="https://carrera.deloitteslatam.com/search/?createNewAlert=false&q=&locationsearch=costa+rica",
+        sample_job_url="https://carrera.deloitteslatam.com/job/Costa-Rica-Consultor%28a%29-SnrDevOps-Cloud-Centro-Am%C3%A9rica-San-Jos%C3%A9/1377581033/",
+        link_rule=LinkRule(path_prefix="/job"),
+        expected_jobs=13,
+        pre_filter_urls=(
+            "https://carrera.deloitteslatam.com/search/?createNewAlert=false&q=&locationsearch=costa+rica",
+        ),
+    ),
 ]
