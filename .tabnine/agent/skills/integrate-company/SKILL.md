@@ -150,6 +150,12 @@ agent run.** Isolate which (see Debugging).
 - **Only `<a>` tags are collected.** Sites that render listings as `<button>` /
   `<div onclick=...>` won't be matched — that's a structural limitation, not a
   config error (flag it; don't hack).
+- **The tool refuses on a posting page.** If the agent has clicked into a
+  single job and calls `extract_job_links` there, the tool returns an error
+  telling it to return to the listing instead of the page's one self-link
+  (`rules.is_posting_url`; see Deloitte, where that produced a plausible 1).
+  A live run showing that refusal in its log is the agent wandering, not a
+  config problem — `pre_filter_urls` removes the agent and the risk together.
 - Already handled (do not re-add): Chromium launches with
   `--password-store=basic --use-mock-keychain` (no macOS keychain prompt), and
   the built-in LLM judge is disabled (`use_judge=False`). Ignore any

@@ -30,6 +30,7 @@ parameter injection. Deferred annotations turn that check into a
 """
 
 import json
+import logging
 from urllib.parse import urlparse
 
 from browser_use.agent.views import ActionResult
@@ -39,7 +40,9 @@ from browser_use.controller import Controller
 from vacantes.domain.company import RuntimeHooks
 from vacantes.domain.region import COSTA_RICA_LATAM, TargetRegion
 from vacantes.extraction.dom.collector import collect_job_links
-from vacantes.extraction.dom.rules import derive_path_prefix
+from vacantes.extraction.dom.rules import derive_path_prefix, is_posting_url
+
+logger = logging.getLogger(__name__)
 
 
 def build_no_match_description(region: TargetRegion) -> str:
@@ -152,6 +155,40 @@ def build_controller(
     async def extract_job_links(
         browser_session: BrowserSession,
     ) -> ActionResult:
+        # Posting-page guard. The matcher reports whatever is on the page
+        # it is handed; if the agent has wandered into a posting's detail
+        # page, the honest answer is the one job link on it — a count of
+        # 1 that nothing downstream can tell from a small board, and that
+        # a batch run would persist by deleting the board's previous URL
+        # set. Refuse with an error the agent can act on instead.
+        # ``is_posting_url`` mirrors the matcher's own id-in-path rule and
+        # exempts both the query shape (a filtered listing root) and the
+        # board's own listing path; see its docstring for why each.
+        page = await browser_session.get_current_page()
+        if page is not None:
+            current_url = await page.get_url()
+            if is_posting_url(
+                current_url,
+                origin=origin_str,
+                base_path=base_path,
+                min_depth=min_depth,
+                listing_url=job_board_url,
+            ):
+                logger.warning(
+                    "extract_job_links refused on a posting page (%s); "
+                    "the agent must return to the listing %s",
+                    current_url,
+                    job_board_url,
+                )
+                return ActionResult(
+                    error=(
+                        f"Refused: the current page ({current_url}) is a single "
+                        f"job posting, not the job listings page. Navigate back "
+                        f"to the listings page ({job_board_url}), re-apply any "
+                        f"location filter if needed, and call extract_job_links "
+                        f"there."
+                    ),
+                )
         urls = await collect_job_links(
             browser_session,
             base_path,
