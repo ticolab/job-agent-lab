@@ -143,10 +143,49 @@ def _oxford_or_join(items: tuple[str, ...]) -> str:
     return ", ".join(items[:-1]) + ", or " + items[-1]
 
 
+# Costa Rican provinces admitted to ``ci_patterns`` below. A board may
+# name a Costa Rican location without ever writing the country — HPE's
+# Phenom payload carries ``"Heredia, Heredia, 400803"`` — and where no
+# server-side facet exists (Greenhouse, BambooHR) the string predicate
+# is the *only* region signal, so an unnamed country is a silent
+# under-count.
+#
+# Which names are safe is a measured question, not a geographic one.
+# Each of these produced **zero** matches against every recorded API
+# payload in ``tests/fixtures/api/`` other than genuine Costa Rica
+# postings.
+#
+# ``San José`` is deliberately **absent**, and must stay absent. It is
+# Zscaler's California headquarters: admitting it adds 58 phantom
+# postings to that one tenant's recorded fixture, plus Speechify's 3 and
+# Varicent's 1. No text rule separates ``San Jose, CA`` from a bare
+# ``San Jose`` that means Costa Rica, and a "unless a US marker is
+# present" guard fails on the bare form that boards actually write.
+# ``tests/unit/test_region.py`` pins the Zscaler strings as
+# must-not-match so a future edit adding it fails there rather than in
+# the corpus. Phenom tenants do not need it — their server facet is
+# authoritative (see ``extraction/ats/phenom``).
+#
+# Also deliberately absent: ``Liberia`` (a Costa Rican canton and a
+# country), ``Santa Ana`` (California, El Salvador), ``Limón`` (low
+# volume, ambiguous).
+_COSTA_RICA_PROVINCES: tuple[str, ...] = (
+    r"alajuela",
+    r"heredia",
+    r"cartago",
+    r"guanacaste",
+    r"puntarenas",
+)
+
 COSTA_RICA_LATAM = TargetRegion(
     name="Costa Rica / LATAM",
     intro_label="Costa Rica or Latin America",
     filter_tokens=("Costa Rica", "CR", "LATAM", "Latin America"),
-    ci_patterns=(r"costa\s+rica", r"latam", r"latin\s+america"),
+    ci_patterns=(
+        r"costa\s+rica",
+        r"latam",
+        r"latin\s+america",
+        *_COSTA_RICA_PROVINCES,
+    ),
     cs_patterns=(r"CR", r"CRI"),
 )

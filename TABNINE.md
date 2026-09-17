@@ -179,6 +179,8 @@ The agent's `extract_job_links` tool carries a posting-page guard (`extraction/d
 
 The capture-side scripts launch through `settings.launch_capture_browser`: a real-Chrome channel plus `--disable-blink-features=AutomationControlled`, with the UA read from the launched instance so it cannot advertise a different build than the engine running. Two boards need it — Edwards detects the automation surface, McKinsey refuses the bundled Chromium with `ERR_HTTP2_PROTOCOL_ERROR`. Chrome absent means a warned fallback, not a failure. `settings.navigation_timeout_ms(wait_s)` scales the `page.goto` ceiling with the configured settle, because a board slow enough to need a raised settle can also miss Playwright's 30s `load` default on a cold load.
 
+The region predicate (`domain/region.COSTA_RICA_LATAM.matches`) is text matching, not geography: a location counts only if its string names `costa rica`, `latam`, `latin america`, `CR`/`CRI`, or one of the unambiguous provinces `Heredia` / `Alajuela` / `Cartago` / `Guanacaste` / `Puntarenas`. The provinces were admitted because boards write `Heredia, Heredia, 400803` with no country, and for Greenhouse and BambooHR — which expose no server-side facet — this predicate is the only region signal. `San José` is excluded on measurement: it is Zscaler's California HQ and admitting it adds 58 phantom postings to that fixture. Phenom needs neither, because its server facet is authoritative.
+
 ## Testing model
 
 Two independent regression corpora exist, and they must not be conflated.
