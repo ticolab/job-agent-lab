@@ -1145,4 +1145,14 @@ COMPANIES: list[Company] = [
             "https://carrera.deloitteslatam.com/search/?createNewAlert=false&q=&locationsearch=costa+rica",
         ),
     ),
+    Company(
+        name="Hewlett Packard Enterprise",
+        aliases=("hpe",),
+        job_board_url="https://careers.hpe.com/us/en/search-results",
+        sample_job_url="https://careers.hpe.com/us/en/job/1207481/Technical-Courseware-Developer",
+        link_rule=LinkRule(path_prefix="/us/en/job"),
+        strategy="phenom",
+        expected_jobs=27,
+        phenom=PhenomConfig(page_id="page15", locale="en_us"),
+    ),
 ]

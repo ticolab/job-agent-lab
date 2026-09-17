@@ -577,6 +577,7 @@ class TestExpectedJobsField:
             "TD SYNNEX": 28,
             "Edwards Lifesciences": 18,
             "Deloitte": 13,
+            "Hewlett Packard Enterprise": 27,
         }
         actual_counted = {
             c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
@@ -1233,12 +1234,21 @@ class TestPhenomStrategyPresenceValidator:
         # well past the module's three-URL obligation. Artifact is
         # ``tests/fixtures/api/phenom/tdsynnex.json`` plus the
         # ``TestTdSynnexRecordedPayload`` cases, and no DOM snapshot.
+        # Hewlett Packard Enterprise is the sixth tenant and the one
+        # that retired the adapter's client-side region gate: five of
+        # its 27 Costa Rica postings arrive with country="India" and
+        # their Costa Rica half written "San Jose, San Jose, 00000",
+        # so no string rule can place them (and "San Jose" cannot be
+        # added — it is Zscaler's California HQ, worth 58 phantom
+        # postings). Artifact is ``tests/fixtures/api/phenom/hpe.json``
+        # plus the ``TestHpeRecordedPayload`` cases, and no DOM snapshot.
         expected_phenom = {
             "Boston Consulting Group",
             "Roche",
             "Philips",
             "Zimmer Biomet",
             "TD SYNNEX",
+            "Hewlett Packard Enterprise",
         }
         actual_phenom = {c.name for c in COMPANIES if c.strategy == "phenom"}
         assert actual_phenom == expected_phenom, (

@@ -1,0 +1,2415 @@
+{
+  "refineSearch": {
+    "status": 200,
+    "hits": 27,
+    "totalHits": 27,
+    "data": {
+      "jobs": [
+        {
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for a Technical Courseware Developer to design, develop, and deliver user-facing content for advanced software and networking products. You will create hands-on learning materials and collaborate with stakeholders. Ideal candidates have significant technical content production experience and strong communication skills.",
+          "state": "Karn\u0101taka",
+          "siteType": "external",
+          "multi_category": [
+            "Human Resources & Talent Development"
+          ],
+          "reqId": "1207481",
+          "city": "Bengaluru",
+          "latitude": "12.97194",
+          "multi_location": [
+            "Bengaluru, Karn\u0101taka, 560048",
+            "San Jose, San Jose, 00000"
+          ],
+          "address": "Hewlett Packard (India) Software Operati, STSD Campus Sy.No.192, Whitefield Road, Bengaluru- 560048, Karn\u0101taka, India",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Bengaluru-Karntaka-India/Technical-Courseware-Developer_1207481-2/apply",
+          "externalApply": false,
+          "cityState": "Bengaluru, Karn\u0101taka",
+          "country": "India",
+          "visibilityType": "External",
+          "longitude": "77.59369",
+          "jobId": "1207481",
+          "locale": "en_US",
+          "title": "Technical Courseware Developer",
+          "jobSeqNo": "HPE1US1207481EXTERNALENUS",
+          "postedDate": "2026-07-07T00:00:00.000+0000",
+          "dateCreated": "2026-07-07T10:06:07.772+0000",
+          "cityStateCountry": "Bengaluru, Karn\u0101taka, India",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Bengaluru, Karn\u0101taka, 560048",
+          "category": "Human Resources & Talent Development",
+          "ml_skills": [
+            "technical writing",
+            "networking fundamentals",
+            "cloud computing",
+            "network automation",
+            "xml authoring",
+            "content management systems",
+            "courseware development",
+            "technical research",
+            "python",
+            "ansible",
+            "rest apis",
+            "automation frameworks",
+            "aws",
+            "azure",
+            "gcp",
+            "vms",
+            "containers",
+            "dita",
+            "markdown",
+            "ms powerpoint",
+            "video script writing",
+            "curriculum design",
+            "xml cms",
+            "jira",
+            "agile",
+            "mentoring",
+            "stakeholder management",
+            "cross-functional collaboration",
+            "problem solving"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for a Technical Courseware Developer to design, develop, and deliver user-facing content for advanced software and networking products. You will create hands-on learning materials and collaborate with stakeholders. Ideal candidates have significant technical content production experience and strong communication skills.",
+            "descriptionTeaser_keyword": "Technical Courseware Developer. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE partner/customer office. Who We Are. Hewlett Packard Enterprise is...",
+            "descriptionTeaser_ats": "Technical Courseware Developer\u00a0\u00a0This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE partner/customer office.Who We Are . Hewlett Packard Enter",
+            "descriptionTeaser_first200": "Technical Courseware Developer . This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE partner/customer office. Who We Are. Hewlett Packard Enterpris..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": 77.59369,
+                "lat": 12.97194
+              },
+              "location": "Bengaluru, Karn\u0101taka, 560048"
+            },
+            {
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "location": "San Jose, San Jose, 00000"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Human Resources & Talent Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "We are expanding our team: As a Network Support Engineer, you will play a key role in resolving complex network issues and supporting large-scale enterprise customers. You will lead technical issues, collaborate with technical teams, and ensure prompt resolution. Ideal candidates have significant experience in network support and strong troubleshooting skills.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Engineering & QA"
+          ],
+          "reqId": "1206788",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Network-Support-Engineer_1206788-2/apply",
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1206788",
+          "locale": "en_US",
+          "title": "Network Support Engineer",
+          "jobSeqNo": "HPE1US1206788EXTERNALENUS",
+          "postedDate": "2026-08-18T00:00:00.000+0000",
+          "dateCreated": "2026-08-19T02:58:34.495+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Engineering & QA",
+          "ml_skills": [
+            "juniper networks",
+            "tcp/ip",
+            "network troubleshooting",
+            "bgp",
+            "ospf",
+            "mpls",
+            "layer 2 switching technologies",
+            "layer 3 switching technologies",
+            "network support",
+            "enterprise network support",
+            "cisco certifications",
+            "juniper certifications",
+            "network protocol analysis",
+            "traffic generator support",
+            "linux",
+            "freebsd",
+            "macos",
+            "python",
+            "slax",
+            "perl",
+            "snmp",
+            "quality of service (qos)",
+            "nat",
+            "technical documentation",
+            "stakeholder management",
+            "collaboration",
+            "analytical skills",
+            "customer service"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "We are expanding our team: As a Network Support Engineer, you will play a key role in resolving complex network issues and supporting large-scale enterprise customers. You will lead technical issues, collaborate with technical teams, and ensure prompt resolution. Ideal candidates have significant experience in network support and strong troubleshooting skills.",
+            "descriptionTeaser_keyword": "Network Support Engineer. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is the glo...",
+            "descriptionTeaser_ats": "Network Support Engineer&nbsp;&nbsp;This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are:Hewlett Packard Enterprise is",
+            "descriptionTeaser_first200": "Network Support Engineer. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is the ..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Engineering & QA"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "We are currently hiring a Technical Courseware Developer to design, develop, and deliver user-facing content for advanced software and networking products. You will create learning materials and collaborate with stakeholders to ensure accuracy. Ideal candidates have significant technical content production experience and a strong understanding of cloud computing and network technologies.",
+          "state": "Karn\u0101taka",
+          "siteType": "external",
+          "multi_category": [
+            "Human Resources & Talent Development"
+          ],
+          "reqId": "1207479",
+          "city": "Bengaluru",
+          "latitude": "12.97194",
+          "multi_location": [
+            "Bengaluru, Karn\u0101taka, 560048",
+            "San Jose, San Jose, 00000"
+          ],
+          "address": "Hewlett Packard (India) Software Operati, STSD Campus Sy.No.192, Whitefield Road, Bengaluru- 560048, Karn\u0101taka, India",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Bengaluru-Karntaka-India/Technical-Courseware-Developer_1207479/apply",
+          "externalApply": false,
+          "cityState": "Bengaluru, Karn\u0101taka",
+          "country": "India",
+          "visibilityType": "External",
+          "longitude": "77.59369",
+          "jobId": "1207479",
+          "locale": "en_US",
+          "title": "Technical Courseware Developer",
+          "jobSeqNo": "HPE1US1207479EXTERNALENUS",
+          "postedDate": "2026-07-07T00:00:00.000+0000",
+          "dateCreated": "2026-07-07T06:45:03.193+0000",
+          "cityStateCountry": "Bengaluru, Karn\u0101taka, India",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Bengaluru, Karn\u0101taka, 560048",
+          "category": "Human Resources & Talent Development",
+          "ml_skills": [
+            "technical content development",
+            "cloud computing",
+            "networking",
+            "automation",
+            "data centers",
+            "security",
+            "routing",
+            "switching",
+            "network automation",
+            "virtual machines",
+            "containers",
+            "cloud services",
+            "xml authoring",
+            "content management systems",
+            "courseware development tools",
+            "ai content tools",
+            "dita",
+            "markdown",
+            "ms powerpoint",
+            "agile",
+            "jira",
+            "hpe aruba networking",
+            "hpe juniper networking",
+            "instructional design",
+            "stakeholder collaboration",
+            "requirements gathering",
+            "product specification analysis",
+            "mentoring"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "We are currently hiring a Technical Courseware Developer to design, develop, and deliver user-facing content for advanced software and networking products. You will create learning materials and collaborate with stakeholders to ensure accuracy. Ideal candidates have significant technical content production experience and a strong understanding of cloud computing and network technologies.",
+            "descriptionTeaser_keyword": "Technical Courseware Developer. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise is the global edge-...",
+            "descriptionTeaser_ats": "Technical Courseware Developer\u00a0\u00a0This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office.Who We Are . Hewlett Packard Enterprise is the glob",
+            "descriptionTeaser_first200": "Technical Courseware Developer . This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise is the global e..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": 77.59369,
+                "lat": 12.97194
+              },
+              "location": "Bengaluru, Karn\u0101taka, 560048"
+            },
+            {
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "location": "San Jose, San Jose, 00000"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Human Resources & Talent Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "itil certification",
+            "project management",
+            "process management",
+            "it infrastructure management",
+            "customer support",
+            "budgeting",
+            "long-term planning",
+            "plan of record",
+            "business performance review",
+            "financial reporting",
+            "stakeholder management",
+            "executive presentation skills",
+            "operations practices",
+            "ms office",
+            "hpe products knowledge",
+            "analytical skills",
+            "problem solving",
+            "financial acumen",
+            "cross-functional collaboration",
+            "performance metrics",
+            "dashboarding",
+            "operational data analysis"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "Join our team as a Business Operations Partner - North America SSD, delivering high-quality service to Country/Cluster leadership by coordinating operational activities and ensuring effective alignment between stakeholders and internal services. Ideal for candidates with strong analytical skills and experience in IT operations or project management.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Professional Services & Consulting"
+          ],
+          "reqId": "1212179",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803",
+            "Sofia, Sofia, 1766"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Business-Operations-Partner_1212179-3/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Join our team as a Business Operations Partner - North America SSD, delivering high-quality service to Country/Cluster leadership by coordinating operational activities and ensuring effective alignment between stakeholders and internal services. Ideal for candidates with strong analytical skills and experience in IT operations or project management.",
+            "descriptionTeaser_first200": "Business Operations Partner - North America SSD. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Pac...",
+            "descriptionTeaser_keyword": "Business Operations Partner - North America SSD. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packar...",
+            "descriptionTeaser_ats": "Business Operations Partner - North America SSD&nbsp;&nbsp;This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are:Hewlet"
+          },
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1212179",
+          "locale": "en_US",
+          "title": "Business Operations Partner - North America SSD",
+          "jobSeqNo": "HPE1US1212179EXTERNALENUS",
+          "postedDate": "2026-08-27T00:00:00.000+0000",
+          "dateCreated": "2026-08-21T02:43:14.073+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Professional Services & Consulting",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            },
+            {
+              "latlong": {
+                "lon": 23.32415,
+                "lat": 42.69751
+              },
+              "location": "Sofia, Sofia, 1766"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Professional Services & Consulting"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "We are currently hiring a Hardware NPI Program Manager to lead engineering development and implementation of products. Oversee cross-functional teams, manage schedules and budgets, and ensure timely product delivery. Ideal for candidates with strong project management experience and expertise in engineering or business.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Engineering & QA"
+          ],
+          "reqId": "1212390",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803",
+            "Ft. Collins, Colorado, 80528-9544"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Hardware-NPI-Program-Management_1212390-2/apply",
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1212390",
+          "locale": "en_US",
+          "title": "Hardware NPI Program Management",
+          "jobSeqNo": "HPE1US1212390EXTERNALENUS",
+          "postedDate": "2026-08-27T00:00:00.000+0000",
+          "dateCreated": "2026-08-28T02:17:26.867+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Engineering & QA",
+          "ml_skills": [
+            "project management",
+            "program management",
+            "resource allocation",
+            "budget management",
+            "schedule management",
+            "stakeholder management",
+            "process improvement",
+            "matrix team coordination",
+            "problem solving",
+            "analytical skills",
+            "project planning tools",
+            "pmp certification",
+            "pmi certification",
+            "mentoring",
+            "negotiation",
+            "english language proficiency",
+            "cross-functional collaboration"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "We are currently hiring a Hardware NPI Program Manager to lead engineering development and implementation of products. Oversee cross-functional teams, manage schedules and budgets, and ensure timely product delivery. Ideal for candidates with strong project management experience and expertise in engineering or business.",
+            "descriptionTeaser_keyword": "Hardware NPI Program Management. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is...",
+            "descriptionTeaser_ats": "Hardware NPI Program Management This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are . Hewlett Packard Enterprise is th",
+            "descriptionTeaser_first200": "Hardware NPI Program Management . This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            },
+            {
+              "latlong": {
+                "lon": -105.08442,
+                "lat": 40.58526
+              },
+              "location": "Ft. Collins, Colorado, 80528-9544"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Engineering & QA"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "process improvement",
+            "accounting",
+            "business administration",
+            "finance",
+            "industrial engineering",
+            "sales processing",
+            "data analysis"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "Become part of our team as a Contract Administrator (Internship) and support sales processing activities, data consolidation, and process improvements. Ideal for students pursuing a relevant degree with strong analytical and communication skills.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Administration & Workplace"
+          ],
+          "reqId": "1213007",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Contract-Administrator--Internship-_1213007/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Become part of our team as a Contract Administrator (Internship) and support sales processing activities, data consolidation, and process improvements. Ideal for students pursuing a relevant degree with strong analytical and communication skills.",
+            "descriptionTeaser_ats": "Contract Administrator (Internship)&nbsp;&nbsp;This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office.Who We Are:Hewlett Packard Enterprise is the",
+            "descriptionTeaser_keyword": "Contract Administrator (Internship). This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise is the global...",
+            "descriptionTeaser_first200": "Contract Administrator (Internship). This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise is the glob..."
+          },
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1213007",
+          "locale": "en_US",
+          "title": "Contract Administrator (Internship)",
+          "jobSeqNo": "HPE1US1213007EXTERNALENUS",
+          "postedDate": "2026-08-27T00:00:00.000+0000",
+          "dateCreated": "2026-08-27T18:14:12.570+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Administration & Workplace",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Administration & Workplace"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "Join our team as a Systems Software Engineer and play a key role in developing next-generation storage devices. Lead technical initiatives, collaborate with engineers, and optimise software performance. Ideal for candidates with strong programming skills and a background in computer or electronics engineering.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Engineering & QA"
+          ],
+          "reqId": "1212379",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Systems-Software-Engineer_1212379/apply",
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1212379",
+          "locale": "en_US",
+          "title": "Systems Software Engineer",
+          "jobSeqNo": "HPE1US1212379EXTERNALENUS",
+          "postedDate": "2026-08-25T00:00:00.000+0000",
+          "dateCreated": "2026-08-25T22:07:29.335+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Engineering & QA",
+          "ml_skills": [
+            "c programming",
+            "linux system programming",
+            "software development",
+            "embedded systems programming",
+            "device driver development",
+            "system architecture",
+            "data structures",
+            "algorithms",
+            "software debugging",
+            "performance optimization",
+            "python programming",
+            "rust programming",
+            "test planning",
+            "system-level programming",
+            "hardware integration",
+            "cross-functional collaboration",
+            "technical leadership",
+            "mentorship",
+            "analytical skills",
+            "problem solving",
+            "stakeholder communication"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "Join our team as a Systems Software Engineer and play a key role in developing next-generation storage devices. Lead technical initiatives, collaborate with engineers, and optimise software performance. Ideal for candidates with strong programming skills and a background in computer or electronics engineering.",
+            "descriptionTeaser_keyword": "Systems Software Engineer. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise is the global edge-to-cl...",
+            "descriptionTeaser_ats": "Systems Software Engineer\u00a0\u00a0This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office.Who We Are . Hewlett Packard Enterprise is the global ed",
+            "descriptionTeaser_first200": "Systems Software Engineer. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise is the global edge-to..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Engineering & QA"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for a Wireless Support Engineer to provide technical support for wireless networking and security. You will configure and troubleshoot wireless protocols, resolve customer escalations, and collaborate with developers. Ideal candidates have 3\u20135 years\u2019 experience in wireless technical support and strong knowledge of Wi-Fi standards.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Engineering & QA"
+          ],
+          "reqId": "1208627",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Wireless-Support-Engineer_1208627-2/apply",
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1208627",
+          "locale": "en_US",
+          "title": "Wireless Support Engineer",
+          "jobSeqNo": "HPE1US1208627EXTERNALENUS",
+          "postedDate": "2026-08-19T00:00:00.000+0000",
+          "dateCreated": "2026-08-19T22:10:42.712+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Engineering & QA",
+          "ml_skills": [
+            "wireless networking",
+            "wi-fi 802.11",
+            "wireless security",
+            "wireless protocol configuration",
+            "wpa2/wpa3",
+            "802.1x authentication",
+            "layer 2 networking",
+            "layer 3 networking",
+            "troubleshooting",
+            "root cause analysis",
+            "network testing",
+            "tcp/ip",
+            "dns",
+            "dhcp",
+            "arp",
+            "customer support escalation management",
+            "team collaboration",
+            "juniper router & switch certification",
+            "ticketing systems",
+            "log analysis"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for a Wireless Support Engineer to provide technical support for wireless networking and security. You will configure and troubleshoot wireless protocols, resolve customer escalations, and collaborate with developers. Ideal candidates have 3\u20135 years\u2019 experience in wireless technical support and strong knowledge of Wi-Fi standards.",
+            "descriptionTeaser_keyword": "Wireless Support Engineer. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is the gl...",
+            "descriptionTeaser_ats": "Wireless Support Engineer&nbsp;&nbsp;This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are:Hewlett Packard Enterprise i",
+            "descriptionTeaser_first200": "Wireless Support Engineer. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is the..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Engineering & QA"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "Become part of our team as an NPI Service Program Manager, leading product support planning and end-to-end service delivery. Drive business improvements and collaborate across regions to deliver innovative solutions. Ideal for experienced professionals with a strong background in service business management and IT services.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Professional Services & Consulting"
+          ],
+          "reqId": "1210923",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/NPI-Service-Program-Manager_1210923-1/apply",
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1210923",
+          "locale": "en_US",
+          "title": "NPI Service Program Manager",
+          "jobSeqNo": "HPE1US1210923EXTERNALENUS",
+          "postedDate": "2026-08-25T00:00:00.000+0000",
+          "dateCreated": "2026-08-26T06:39:52.947+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Professional Services & Consulting",
+          "ml_skills": [
+            "service business management",
+            "project management",
+            "change management",
+            "business analysis",
+            "financial analysis",
+            "solution architecture",
+            "process improvement",
+            "cross-functional leadership",
+            "stakeholder management",
+            "presentation skills",
+            "consensus building",
+            "customer business analysis",
+            "service delivery management",
+            "product support planning",
+            "service marketing",
+            "cost analysis",
+            "root cause analysis",
+            "mentoring"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "Become part of our team as an NPI Service Program Manager, leading product support planning and end-to-end service delivery. Drive business improvements and collaborate across regions to deliver innovative solutions. Ideal for experienced professionals with a strong background in service business management and IT services.",
+            "descriptionTeaser_first200": "NPI Service Program Manager. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise is the global edge-...",
+            "descriptionTeaser_keyword": "NPI Service Program Manager. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise is the global edge-to-...",
+            "descriptionTeaser_ats": "NPI Service Program Manager&nbsp;&nbsp;This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office.Who We Are:Hewlett Packard Enterprise is the global "
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Professional Services & Consulting"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "Join us as a Network Support Engineer, where you will resolve complex network issues and support large-scale networks for top HPE Juniper customers. You will handle high-priority issues, collaborate with technical teams, and ensure prompt network restoration. Ideal candidates have strong problem-solving skills and experience in network support.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Engineering & QA"
+          ],
+          "reqId": "1211197",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Network-Support-Engineer_1211197/apply",
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1211197",
+          "locale": "en_US",
+          "title": "Network Support Engineer",
+          "jobSeqNo": "HPE1US1211197EXTERNALENUS",
+          "postedDate": "2026-08-25T00:00:00.000+0000",
+          "dateCreated": "2026-08-25T18:08:55.660+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Engineering & QA",
+          "ml_skills": [
+            "ip networking",
+            "routing technologies",
+            "tcp/ip",
+            "osis layers",
+            "subnetting",
+            "bgp",
+            "ospf",
+            "is-is",
+            "mpls",
+            "l3vpn",
+            "l2vpn",
+            "problem solving",
+            "customer service",
+            "technical documentation",
+            "presentation skills",
+            "evpn",
+            "sr-mpls",
+            "srv6",
+            "ixia/spirent",
+            "tcp replay tools",
+            "network protocols analysis tools",
+            "linux",
+            "scripting languages",
+            "shell",
+            "python",
+            "slax",
+            "perl"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "Join us as a Network Support Engineer, where you will resolve complex network issues and support large-scale networks for top HPE Juniper customers. You will handle high-priority issues, collaborate with technical teams, and ensure prompt network restoration. Ideal candidates have strong problem-solving skills and experience in network support.",
+            "descriptionTeaser_keyword": "Network Support Engineer. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is the glo...",
+            "descriptionTeaser_ats": "Network Support Engineer\u00a0\u00a0This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are . Hewlett Packard Enterprise is",
+            "descriptionTeaser_first200": "Network Support Engineer. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is the ..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Engineering & QA"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "project management",
+            "pmp certification",
+            "financial forecasting",
+            "budget management",
+            "client relationship management",
+            "vendor management",
+            "portfolio management",
+            "business development",
+            "process improvement",
+            "team management",
+            "mentoring",
+            "performance management",
+            "cross-functional collaboration",
+            "stakeholder management",
+            "opportunity assessment",
+            "legal compliance",
+            "commercial analysis",
+            "sales forecasting"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "Become part of our team as a Installation Project Manager, leading customer engagement and managing complex, high-risk projects. Oversee project delivery, financials, and client relationships, while mentoring project teams. Ideal for experienced project managers with strong subject matter expertise and a background in operational policy and process management.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Professional Services & Consulting"
+          ],
+          "reqId": "1210766",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Installation-Project-Manager_1210766/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Become part of our team as a Installation Project Manager, leading customer engagement and managing complex, high-risk projects. Oversee project delivery, financials, and client relationships, while mentoring project teams. Ideal for experienced project managers with strong subject matter expertise and a background in operational policy and process management.",
+            "descriptionTeaser_ats": "Installation Project Manager&nbsp;&nbsp;This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are:Hewlett Packard Enterpris",
+            "descriptionTeaser_keyword": "Installation Project Manager. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is the...",
+            "descriptionTeaser_first200": "Installation Project Manager. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is ..."
+          },
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1210766",
+          "locale": "en_US",
+          "title": "Installation Project Manager",
+          "jobSeqNo": "HPE1US1210766EXTERNALENUS",
+          "postedDate": "2026-08-20T00:00:00.000+0000",
+          "dateCreated": "2026-08-21T02:43:14.074+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Professional Services & Consulting",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Professional Services & Consulting"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "hpe aruba clearpass",
+            "aaa",
+            "radius",
+            "airwave",
+            "tacacs+",
+            "ldap",
+            "nac",
+            "pki",
+            "802.1x",
+            "network monitoring",
+            "packet capture analysis",
+            "log analysis",
+            "root cause analysis",
+            "central on-prem deployment",
+            "linux administration",
+            "tcp/ip",
+            "routing",
+            "switching",
+            "vlans",
+            "wireless networking",
+            "active directory integration",
+            "saml",
+            "oauth",
+            "software upgrades",
+            "mentoring",
+            "technical documentation",
+            "process improvement",
+            "customer escalation management",
+            "analytical skills",
+            "communication skills"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for a Premium Services Switching Engineer to support customers with HPE Aruba enterprise switching solutions. You will manage complex customer issues, provide advanced troubleshooting, and ensure high-quality service. Ideal candidates have significant experience in network operations and strong communication skills.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Engineering & QA"
+          ],
+          "reqId": "1210070",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Premium-Support-Engineer-Specialist_1210070-2/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for a Premium Services Switching Engineer to support customers with HPE Aruba enterprise switching solutions. You will manage complex customer issues, provide advanced troubleshooting, and ensure high-quality service. Ideal candidates have significant experience in network operations and strong communication skills.",
+            "descriptionTeaser_first200": "Premium Services Switching Engineer. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterpr...",
+            "descriptionTeaser_keyword": "Premium Services Switching Engineer. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise...",
+            "descriptionTeaser_ats": "Premium Services Switching Engineer\u00a0\u00a0This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are . Hewlett Packard En"
+          },
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1210070",
+          "locale": "en_US",
+          "title": "Premium Services Switching Engineer",
+          "jobSeqNo": "HPE1US1210070EXTERNALENUS",
+          "postedDate": "2026-09-02T00:00:00.000+0000",
+          "dateCreated": "2026-07-27T22:16:20.670+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Engineering & QA",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Engineering & QA"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "risk management",
+            "strategic planning",
+            "people management",
+            "mentoring",
+            "cost optimization",
+            "team leadership",
+            "business acumen",
+            "recruitment",
+            "embedded software",
+            "process improvement",
+            "software quality assurance",
+            "cross-functional collaboration",
+            "developer productivity solutions",
+            "project management",
+            "operational excellence",
+            "succession planning",
+            "performance management",
+            "stakeholder management",
+            "embedded software development",
+            "systems software engineering",
+            "automation tools",
+            "incident management",
+            "ai-assisted software engineering",
+            "software development kit",
+            "technical architecture"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "Join us as a Manager Systems/Embedded Software Engineer, leading a team to deliver innovative software and systems solutions. Oversee project execution, drive technical strategy, and manage staff development. Ideal for experienced leaders in embedded software engineering with strong project management and people management skills.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Engineering & QA"
+          ],
+          "reqId": "1206436",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Senior-ASIC-Design-Engineer_1206436-2/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Join us as a Manager Systems/Embedded Software Engineer, leading a team to deliver innovative software and systems solutions. Oversee project execution, drive technical strategy, and manage staff development. Ideal for experienced leaders in embedded software engineering with strong project management and people management skills.",
+            "descriptionTeaser_first200": "Manager Systems/Embedded Software Engineer. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard ...",
+            "descriptionTeaser_keyword": "Manager Systems/Embedded Software Engineer. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Ent...",
+            "descriptionTeaser_ats": "Manager Systems/Embedded Software Engineer&nbsp;&nbsp;This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are:Hewlett Pac"
+          },
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1206436",
+          "locale": "en_US",
+          "title": "Manager Systems/Embedded Software Engineer",
+          "jobSeqNo": "HPE1US1206436EXTERNALENUS",
+          "postedDate": "2026-09-01T00:00:00.000+0000",
+          "dateCreated": "2026-05-06T00:11:40.024+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Engineering & QA",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Engineering & QA"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "hpe aruba networking certified professional \u2013 campus access",
+            "aos-10",
+            "aos-cx",
+            "hpe aruba networking clearpass",
+            "hpe aruba networking central",
+            "sd-wan",
+            "wireless networking",
+            "switching",
+            "network security",
+            "cloud-based network management",
+            "technical training delivery",
+            "virtual classroom delivery",
+            "certification workshop delivery",
+            "exam proctoring",
+            "courseware development",
+            "technical enablement",
+            "customer consultation",
+            "presentation skills",
+            "facilitation skills",
+            "virtual collaboration tools",
+            "course scoping",
+            "beta course delivery",
+            "customer adoption"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for a Technical Instructor to deliver high-impact networking training, supporting customers, partners, and employees on HPE Networking technologies. The role involves classroom and virtual training, customer consultation, and collaboration with course development. Ideal for experienced networking professionals with strong technical expertise and a passion for education.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Human Resources & Talent Development"
+          ],
+          "reqId": "1207709",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/L-D-Delivery-Specialist-III_1207709/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for a Technical Instructor to deliver high-impact networking training, supporting customers, partners, and employees on HPE Networking technologies. The role involves classroom and virtual training, customer consultation, and collaboration with course development. Ideal for experienced networking professionals with strong technical expertise and a passion for education.",
+            "descriptionTeaser_first200": "Technical Instructor \u2013 HPE Networking Aruba. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard...",
+            "descriptionTeaser_keyword": "Technical Instructor \u2013 HPE Networking Aruba. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard En...",
+            "descriptionTeaser_ats": "Technical Instructor \u2013 HPE Networking Aruba\u00a0\u00a0This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are . Hewlett Pa"
+          },
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1207709",
+          "locale": "en_US",
+          "title": "Technical Instructor \u2013 HPE Networking Aruba",
+          "jobSeqNo": "HPE1US1207709EXTERNALENUS",
+          "postedDate": "2026-09-09T00:00:00.000+0000",
+          "dateCreated": "2026-06-11T02:06:53.558+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Human Resources & Talent Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Human Resources & Talent Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "supply chain management",
+            "business systems analysis",
+            "project management",
+            "inventory management",
+            "process mapping",
+            "root cause analysis",
+            "operational reporting",
+            "master data management",
+            "system integration",
+            "data governance",
+            "excel",
+            "stakeholder management",
+            "process improvement",
+            "business process standardization",
+            "kpi dashboards",
+            "business intelligence",
+            "oracle",
+            "power bi",
+            "tableau",
+            "jira",
+            "s4",
+            "baxter",
+            "order management",
+            "logistics",
+            "service operations",
+            "change management",
+            "executive communication",
+            "mentoring"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for an expert to lead supply chain and operations projects, focusing on spares and networking solutions. You will drive process improvements, manage cross-functional teams, and ensure system enhancements align with business needs. Ideal candidates bring extensive supply chain experience and strong analytical skills.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Manufacturing, Supply Chain & Operations"
+          ],
+          "reqId": "1209596",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/SC-Spares-Networking-BSA-PM_1209596-1/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for an expert to lead supply chain and operations projects, focusing on spares and networking solutions. You will drive process improvements, manage cross-functional teams, and ensure system enhancements align with business needs. Ideal candidates bring extensive supply chain experience and strong analytical skills.",
+            "descriptionTeaser_ats": "SC Spares Networking BSA/PM\u00a0\u00a0This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are . Hewlett Packard Enterprise",
+            "descriptionTeaser_keyword": "SC Spares Networking BSA/PM. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is the...",
+            "descriptionTeaser_first200": "SC Spares Networking BSA/PM. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is t..."
+          },
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1209596",
+          "locale": "en_US",
+          "title": "SC Spares Networking BSA/PM",
+          "jobSeqNo": "HPE1US1209596EXTERNALENUS",
+          "postedDate": "2026-09-09T00:00:00.000+0000",
+          "dateCreated": "2026-09-10T02:10:42.500+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Manufacturing, Supply Chain & Operations",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Manufacturing, Supply Chain & Operations"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "Become part of our team as a Business Process Manager - Six Sigma Black Belt, driving business value through DMAIC-based projects and leading cross-functional initiatives to improve customer experience and quality. Ideal for experienced Six Sigma professionals with strong project management and analytical skills.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Professional Services & Consulting"
+          ],
+          "reqId": "1210913",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Business-Process-Manager---Six-Sigma-Black-Belt_1210913-2/apply",
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1210913",
+          "locale": "en_US",
+          "title": "Business Process Manager - Six Sigma Black Belt",
+          "jobSeqNo": "HPE1US1210913EXTERNALENUS",
+          "postedDate": "2026-09-02T00:00:00.000+0000",
+          "dateCreated": "2026-09-02T18:11:04.058+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Professional Services & Consulting",
+          "ml_skills": [
+            "six sigma black belt",
+            "dmaic",
+            "project management",
+            "statistical analysis",
+            "process improvement",
+            "cross-functional collaboration",
+            "quality management",
+            "minitab",
+            "sas",
+            "stata",
+            "r",
+            "machine learning",
+            "python",
+            "kaizen",
+            "lean",
+            "change management",
+            "business analysis",
+            "flowcharting",
+            "coaching and mentoring",
+            "stakeholder management",
+            "outsourced supply chain",
+            "contract manufacturing",
+            "pmp"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "Become part of our team as a Business Process Manager - Six Sigma Black Belt, driving business value through DMAIC-based projects and leading cross-functional initiatives to improve customer experience and quality. Ideal for experienced Six Sigma professionals with strong project management and analytical skills.",
+            "descriptionTeaser_keyword": "Business Process Manager - Six Sigma Black Belt. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packar...",
+            "descriptionTeaser_ats": "Business Process Manager - Six Sigma Black Belt&nbsp;&nbsp;This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are:Hewlet",
+            "descriptionTeaser_first200": "Business Process Manager - Six Sigma Black Belt. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Pac..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Professional Services & Consulting"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "Take on the role of HPE Networking Premium Support Switching Engineer, providing advanced troubleshooting and case management for HPE Aruba enterprise switching solutions. You will resolve complex customer issues, coordinate with stakeholders, and ensure technical readiness. Ideal for experienced network professionals with strong communication and technical skills.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Engineering & QA"
+          ],
+          "reqId": "1210061",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/HPE-Networking-Premium-Support-Switching-Engineer_1210061-2/apply",
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1210061",
+          "locale": "en_US",
+          "title": "HPE Networking Premium Support Switching Engineer",
+          "jobSeqNo": "HPE1US1210061EXTERNALENUS",
+          "postedDate": "2026-08-11T00:00:00.000+0000",
+          "dateCreated": "2026-08-12T02:54:43.301+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Engineering & QA",
+          "ml_skills": [
+            "hpe aruba enterprise switching solutions",
+            "network troubleshooting",
+            "tcp/ip",
+            "osi model",
+            "ip addressing and subnetting",
+            "vlans",
+            "switching and routing fundamentals",
+            "ospf",
+            "bgp",
+            "layer 2 networking",
+            "layer 3 networking",
+            "linux",
+            "windows",
+            "dns",
+            "nat",
+            "vpn",
+            "ipsec",
+            "network access control",
+            "cli",
+            "ssh",
+            "telnet",
+            "console access",
+            "servicenow",
+            "aruba cx acsa/acap",
+            "juniper switching jncie",
+            "ccna / network+",
+            "itil foundation",
+            "automation & devops",
+            "infrastructure as code",
+            "ci/cd"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "Take on the role of HPE Networking Premium Support Switching Engineer, providing advanced troubleshooting and case management for HPE Aruba enterprise switching solutions. You will resolve complex customer issues, coordinate with stakeholders, and ensure technical readiness. Ideal for experienced network professionals with strong communication and technical skills.",
+            "descriptionTeaser_first200": "HPE Networking Premium Support Switching Engineer. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterpri...",
+            "descriptionTeaser_keyword": "HPE Networking Premium Support Switching Engineer. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise...",
+            "descriptionTeaser_ats": "HPE Networking Premium Support Switching Engineer\u00a0\u00a0This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office.Who We Are . Hewlett Packard Ent"
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Engineering & QA"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "Exciting opportunity for an experienced Supply Chain Project Manager to lead end-to-end supply chain planning system initiatives, focusing on Oracle and SAP. Drive process alignment and system enhancements across demand, supply, and inventory planning. Ideal for candidates with strong project management expertise and deep supply chain operations knowledge.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Manufacturing, Supply Chain & Operations"
+          ],
+          "reqId": "1209590",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Supply-Chain-Supply-Demand-Planning-BSA-Project-Manager_1209590-2/apply",
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1209590",
+          "locale": "en_US",
+          "title": "Supply Chain Supply/Demand Planning BSA/Project Manager",
+          "jobSeqNo": "HPE1US1209590EXTERNALENUS",
+          "postedDate": "2026-09-04T00:00:00.000+0000",
+          "dateCreated": "2026-09-04T22:08:42.558+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Manufacturing, Supply Chain & Operations",
+          "ml_skills": [
+            "oracle supply chain cloud",
+            "project management",
+            "sap s4/ecc",
+            "demand planning",
+            "supply planning",
+            "material planning",
+            "inventory management",
+            "order management",
+            "aatp",
+            "backlog management",
+            "edi management",
+            "supply chain transformation",
+            "business process mapping",
+            "data analytics",
+            "supply chain reporting",
+            "stakeholder management",
+            "cross-functional collaboration",
+            "jira",
+            "servicenow",
+            "ms project",
+            "process improvement",
+            "mentoring",
+            "policy development",
+            "pmp certification"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "Exciting opportunity for an experienced Supply Chain Project Manager to lead end-to-end supply chain planning system initiatives, focusing on Oracle and SAP. Drive process alignment and system enhancements across demand, supply, and inventory planning. Ideal for candidates with strong project management expertise and deep supply chain operations knowledge.",
+            "descriptionTeaser_keyword": "Supply Chain Supply/Demand Planning BSA/Project Manager. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlet...",
+            "descriptionTeaser_ats": "Supply Chain Supply/Demand Planning BSA/Project Manager&nbsp;&nbsp;This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Ar",
+            "descriptionTeaser_first200": "Supply Chain Supply/Demand Planning BSA/Project Manager. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hew..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Manufacturing, Supply Chain & Operations"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "hpe aruba networking sse",
+            "network security technologies",
+            "zero trust",
+            "vpn",
+            "proxies",
+            "firewalls",
+            "identity and access management",
+            "saml 2.0",
+            "scim",
+            "ldap",
+            "tcp/ip",
+            "dns",
+            "tls",
+            "http/s",
+            "cloud architectures",
+            "aws",
+            "azure",
+            "google cloud platform",
+            "okta",
+            "microsoft entra id",
+            "authentication/authorization protocols",
+            "troubleshooting",
+            "root cause analysis",
+            "zscaler",
+            "netskope",
+            "prisma access",
+            "sd-wan",
+            "edge networking",
+            "secure web gateway",
+            "cloud access security broker"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "Join us as a Network Security Technical Support Engineer, supporting the HPE Aruba Networking Security Service Edge platform. You will be the primary technical contact for enterprise customers, troubleshooting complex network security issues and collaborating with engineering teams. Ideal candidates have experience in network security and technical support within enterprise environments.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Engineering & QA"
+          ],
+          "reqId": "1205251",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Network-Security-Technical-Support-Engineer_1205251-2/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Join us as a Network Security Technical Support Engineer, supporting the HPE Aruba Networking Security Service Edge platform. You will be the primary technical contact for enterprise customers, troubleshooting complex network security issues and collaborating with engineering teams. Ideal candidates have experience in network security and technical support within enterprise environments.",
+            "descriptionTeaser_first200": "Network Security Technical Support Engineer. This role has been designated as \u2018Remote/Teleworker\u2019, which means you will primarily work from home. Who We Are. Hewlett Packard Enterprise is the globa...",
+            "descriptionTeaser_keyword": "Network Security Technical Support Engineer. This role has been designated as \u2018Remote/Teleworker\u2019, which means you will primarily work from home. Who We Are. Hewlett Packard Enterprise is the global e...",
+            "descriptionTeaser_ats": "Network Security Technical Support Engineer\u00a0\u00a0This role has been designated as \u2018Remote/Teleworker\u2019, which means you will primarily work from home.Who We Are . Hewlett Packard Enterprise is the"
+          },
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1205251",
+          "locale": "en_US",
+          "title": "Network Security Technical Support Engineer",
+          "jobSeqNo": "HPE1US1205251EXTERNALENUS",
+          "postedDate": "2026-09-08T00:00:00.000+0000",
+          "dateCreated": "2026-06-12T18:06:57.808+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Engineering & QA",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Engineering & QA"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "Join our team as a Global Demand Planner, where you will define and manage business plans aligned with strategic objectives. Lead cross-functional teams, develop data-driven models, and provide recommendations to optimise business performance. Ideal for candidates with significant supply chain experience and advanced analytical skills.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Finance, Accounting & Business Planning"
+          ],
+          "reqId": "1209737",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Global-Demand-Planner_1209737-1/apply",
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1209737",
+          "locale": "en_US",
+          "title": "Global Demand Planner",
+          "jobSeqNo": "HPE1US1209737EXTERNALENUS",
+          "postedDate": "2026-09-09T00:00:00.000+0000",
+          "dateCreated": "2026-09-09T22:10:37.990+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Finance, Accounting & Business Planning",
+          "ml_skills": [
+            "supply chain management",
+            "business planning",
+            "excel",
+            "financial modeling",
+            "statistical analysis",
+            "data analysis",
+            "market research",
+            "project management",
+            "cross-functional team leadership",
+            "business metrics development",
+            "resource allocation",
+            "process improvement",
+            "apics certification",
+            "research methodology",
+            "stakeholder management",
+            "analytical thinking",
+            "technical analysis",
+            "data manipulation",
+            "access",
+            "business acumen",
+            "trend analysis",
+            "presentation skills"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "Join our team as a Global Demand Planner, where you will define and manage business plans aligned with strategic objectives. Lead cross-functional teams, develop data-driven models, and provide recommendations to optimise business performance. Ideal for candidates with significant supply chain experience and advanced analytical skills.",
+            "descriptionTeaser_keyword": "Global Demand Planner. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is the global...",
+            "descriptionTeaser_ats": "Global Demand Planner&nbsp;&nbsp;This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are:Hewlett Packard Enterprise is th",
+            "descriptionTeaser_first200": "Global Demand Planner. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise is the glo..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Finance, Accounting & Business Planning"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "Exciting opportunity for a Systems/Software Engineer to design, develop, and debug software enhancements and new products. Lead project teams, collaborate with internal and external partners, and apply advanced expertise in embedded and distributed storage systems. Ideal for candidates with significant experience in software engineering and strong analytical skills.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Engineering & QA"
+          ],
+          "reqId": "1212360",
+          "city": "Heredia",
+          "latitude": "10.00236",
+          "multi_location": [
+            "Heredia, Heredia, 400803",
+            "Bristol, Avon, BS34 8SW"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Systems-Software-Engineer_1212360-2/apply",
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11651",
+          "jobId": "1212360",
+          "locale": "en_US",
+          "title": "Systems/Software Engineer",
+          "jobSeqNo": "HPE1US1212360EXTERNALENUS",
+          "postedDate": "2026-09-09T00:00:00.000+0000",
+          "dateCreated": "2026-09-09T22:10:37.988+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Engineering & QA",
+          "ml_skills": [
+            "embedded system design",
+            "distributed storage systems",
+            "sas protocols",
+            "nvme protocols",
+            "software systems testing",
+            "test plan development",
+            "debugging",
+            "programming",
+            "system integration",
+            "operating systems",
+            "compilers",
+            "networking",
+            "database management",
+            "software architecture",
+            "project leadership",
+            "mentoring",
+            "stakeholder communication",
+            "technical documentation",
+            "problem solving",
+            "analytical skills"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "Exciting opportunity for a Systems/Software Engineer to design, develop, and debug software enhancements and new products. Lead project teams, collaborate with internal and external partners, and apply advanced expertise in embedded and distributed storage systems. Ideal for candidates with significant experience in software engineering and strong analytical skills.",
+            "descriptionTeaser_first200": "Systems/Software Engineer. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise is the global edge-to...",
+            "descriptionTeaser_keyword": "Systems/Software Engineer. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise is the global edge-to-cl...",
+            "descriptionTeaser_ats": "Systems/Software Engineer\u00a0\u00a0This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office.Who We Are . Hewlett Packard Enterprise is the global ed"
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11651,
+                "lat": 10.00236
+              },
+              "location": "Heredia, Heredia, 400803"
+            },
+            {
+              "latlong": {
+                "lon": -2.59665,
+                "lat": 51.45523
+              },
+              "location": "Bristol, Avon, BS34 8SW"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Engineering & QA"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for a Technical Courseware Developer to design, develop, and deliver high-quality technical courseware and learning content for HPE networking cloud services. You will create training materials and collaborate with cross-functional teams. Ideal candidates have significant experience in technical documentation and strong technical writing skills.",
+          "state": "Karn\u0101taka",
+          "siteType": "external",
+          "multi_category": [
+            "Human Resources & Talent Development"
+          ],
+          "reqId": "1206368",
+          "city": "Bengaluru",
+          "latitude": "12.97194",
+          "multi_location": [
+            "Bengaluru, Karn\u0101taka, 560048",
+            "San Jose, San Jose, 00000"
+          ],
+          "address": "Hewlett Packard (India) Software Operati, STSD Campus Sy.No.192, Whitefield Road, Bengaluru- 560048, Karn\u0101taka, India",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Bengaluru-Karntaka-India/Technical-Courseware-Developer_1206368-2/apply",
+          "externalApply": false,
+          "cityState": "Bengaluru, Karn\u0101taka",
+          "country": "India",
+          "visibilityType": "External",
+          "longitude": "77.59369",
+          "jobId": "1206368",
+          "locale": "en_US",
+          "title": "Technical Courseware Developer",
+          "jobSeqNo": "HPE1US1206368EXTERNALENUS",
+          "postedDate": "2026-07-16T00:00:00.000+0000",
+          "dateCreated": "2026-07-16T10:07:29.348+0000",
+          "cityStateCountry": "Bengaluru, Karn\u0101taka, India",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Bengaluru, Karn\u0101taka, 560048",
+          "category": "Human Resources & Talent Development",
+          "ml_skills": [
+            "technical writing",
+            "courseware development",
+            "cloud computing",
+            "networking",
+            "network security",
+            "network automation",
+            "virtual machines",
+            "containers",
+            "cloud services",
+            "xml",
+            "markdown",
+            "content management systems",
+            "courseware authoring tools",
+            "ai-powered content creation",
+            "stakeholder collaboration",
+            "analytical skills",
+            "microsoft powerpoint",
+            "agile methodologies",
+            "jira",
+            "hpe aruba networking",
+            "hpe juniper networking"
+          ],
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for a Technical Courseware Developer to design, develop, and deliver high-quality technical courseware and learning content for HPE networking cloud services. You will create training materials and collaborate with cross-functional teams. Ideal candidates have significant experience in technical documentation and strong technical writing skills.",
+            "descriptionTeaser_keyword": "Technical Courseware Developer. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE partner/customer office. Who We Are. Hewlett Packard Enterprise is...",
+            "descriptionTeaser_ats": "Technical Courseware Developer\u00a0\u00a0This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE partner/customer office.Who We Are . Hewlett Packard Enter",
+            "descriptionTeaser_first200": "Technical Courseware Developer. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE partner/customer office. Who We Are. Hewlett Packard Enterprise..."
+          },
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": 77.59369,
+                "lat": 12.97194
+              },
+              "location": "Bengaluru, Karn\u0101taka, 560048"
+            },
+            {
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "location": "San Jose, San Jose, 00000"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Human Resources & Talent Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "embedded software development",
+            "software debugging",
+            "operating systems",
+            "compiler development",
+            "network software",
+            "software testing",
+            "problem solving",
+            "systems software design",
+            "database development",
+            "software development lifecycle",
+            "analytical skills",
+            "written communication",
+            "verbal communication",
+            "team collaboration",
+            "english proficiency",
+            "local language proficiency"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "Become part of our team as a Junior Embedded Software Engineer, contributing to the design, development, and debugging of software for system enhancements and new products. You will work on coding and testing, collaborating with internal and external partners. Ideal for candidates with a degree in Computer Science or related field and up to two years\u2019 experience.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Engineering & QA"
+          ],
+          "reqId": "1213715",
+          "city": "Heredia",
+          "latitude": "9.99872",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Junior-Embedded-Software-Engineer_1213715/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Become part of our team as a Junior Embedded Software Engineer, contributing to the design, development, and debugging of software for system enhancements and new products. You will work on coding and testing, collaborating with internal and external partners. Ideal for candidates with a degree in Computer Science or related field and up to two years\u2019 experience.",
+            "descriptionTeaser_ats": "Junior Embedded Software Engineer&nbsp;&nbsp;This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are:Hewlett Packard Ente",
+            "descriptionTeaser_keyword": "Junior Embedded Software Engineer. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterprise i...",
+            "descriptionTeaser_first200": "Junior Embedded Software Engineer. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterpris..."
+          },
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11587",
+          "jobId": "1213715",
+          "locale": "en_US",
+          "title": "Junior Embedded Software Engineer",
+          "jobSeqNo": "HPE1US1213715EXTERNALENUS",
+          "postedDate": "2026-09-11T00:00:00.000+0000",
+          "dateCreated": "2026-09-11T22:10:47.439+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Engineering & QA",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11587,
+                "lat": 9.99872
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Engineering & QA"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "technical content development",
+            "cloud computing",
+            "networking",
+            "network automation",
+            "routing",
+            "switching",
+            "network security",
+            "virtual machines",
+            "containers",
+            "xml authoring",
+            "content management systems",
+            "courseware development tools",
+            "ai tools for content creation",
+            "stakeholder management",
+            "dita",
+            "markdown",
+            "ms powerpoint",
+            "agile program management",
+            "jira",
+            "mentoring",
+            "hpe aruba networking",
+            "hpe juniper networking"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "We are looking for a Technical Courseware Developer to design, develop, and deliver user-facing content for advanced software and networking products. You will create learning materials and collaborate with stakeholders to ensure accuracy. Ideal candidates have significant technical content experience and strong communication skills.",
+          "state": "Karn\u0101taka",
+          "siteType": "external",
+          "multi_category": [
+            "Human Resources & Talent Development"
+          ],
+          "reqId": "1206423",
+          "city": "Bengaluru",
+          "latitude": "12.97194",
+          "multi_location": [
+            "Bengaluru, Karn\u0101taka, 560048",
+            "San Jose, San Jose, 00000"
+          ],
+          "address": "Hewlett Packard (India) Software Operati, STSD Campus Sy.No.192, Whitefield Road, Bengaluru- 560048, Karn\u0101taka, India",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Bengaluru-Karntaka-India/Technical-Courseware-Developer_1206423-2/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are looking for a Technical Courseware Developer to design, develop, and deliver user-facing content for advanced software and networking products. You will create learning materials and collaborate with stakeholders to ensure accuracy. Ideal candidates have significant technical content experience and strong communication skills.",
+            "descriptionTeaser_ats": "Technical Courseware Developer\u00a0\u00a0This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE partner/customer office.Who We Are . Hewlett Packard Enter",
+            "descriptionTeaser_keyword": "Technical Courseware Developer. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE partner/customer office. Who We Are. Hewlett Packard Enterprise is...",
+            "descriptionTeaser_first200": "Technical Courseware Developer . This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE partner/customer office. Who We Are. Hewlett Packard Enterpris..."
+          },
+          "externalApply": false,
+          "cityState": "Bengaluru, Karn\u0101taka",
+          "country": "India",
+          "visibilityType": "External",
+          "longitude": "77.59369",
+          "jobId": "1206423",
+          "locale": "en_US",
+          "title": "Technical Courseware Developer",
+          "jobSeqNo": "HPE1US1206423EXTERNALENUS",
+          "postedDate": "2026-07-07T00:00:00.000+0000",
+          "dateCreated": "2026-07-07T10:06:07.780+0000",
+          "cityStateCountry": "Bengaluru, Karn\u0101taka, India",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Bengaluru, Karn\u0101taka, 560048",
+          "category": "Human Resources & Talent Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": 77.59369,
+                "lat": 12.97194
+              },
+              "location": "Bengaluru, Karn\u0101taka, 560048"
+            },
+            {
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "location": "San Jose, San Jose, 00000"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Human Resources & Talent Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "technical content development",
+            "networking",
+            "cloud computing",
+            "network automation",
+            "routing",
+            "switching",
+            "network security",
+            "virtual machines",
+            "xml authoring",
+            "content management systems",
+            "courseware development tools",
+            "ai tools for content creation",
+            "stakeholder management",
+            "dita",
+            "markdown",
+            "agile program management",
+            "ms powerpoint",
+            "jira",
+            "hpe aruba networking",
+            "hpe juniper networking",
+            "mentoring"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "Seeking a Technical Courseware Developer to design, develop, and maintain user-facing content for advanced software and networking products. Key responsibilities include creating learning materials and collaborating with stakeholders. Ideal for candidates with significant technical content production experience and strong communication skills.",
+          "state": "Karn\u0101taka",
+          "siteType": "external",
+          "multi_category": [
+            "Human Resources & Talent Development"
+          ],
+          "reqId": "1207483",
+          "city": "Bengaluru",
+          "latitude": "12.97194",
+          "multi_location": [
+            "Bengaluru, Karn\u0101taka, 560048",
+            "San Jose, San Jose, 00000"
+          ],
+          "address": "Hewlett Packard (India) Software Operati, STSD Campus Sy.No.192, Whitefield Road, Bengaluru- 560048, Karn\u0101taka, India",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Bengaluru-Karntaka-India/Technical-Courseware-Developer_1207483-2/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "Seeking a Technical Courseware Developer to design, develop, and maintain user-facing content for advanced software and networking products. Key responsibilities include creating learning materials and collaborating with stakeholders. Ideal for candidates with significant technical content production experience and strong communication skills.",
+            "descriptionTeaser_first200": "Technical Courseware Developer . This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise is the global e...",
+            "descriptionTeaser_keyword": "Technical Courseware Developer. This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office. Who We Are. Hewlett Packard Enterprise is the global edge-...",
+            "descriptionTeaser_ats": "Technical Courseware Developer\u00a0\u00a0This role has been designed as \u2018\u2019Onsite\u2019 with an expectation that you will primarily work from an HPE office.Who We Are . Hewlett Packard Enterprise is the glob"
+          },
+          "externalApply": false,
+          "cityState": "Bengaluru, Karn\u0101taka",
+          "country": "India",
+          "visibilityType": "External",
+          "longitude": "77.59369",
+          "jobId": "1207483",
+          "locale": "en_US",
+          "title": "Technical Courseware Developer",
+          "jobSeqNo": "HPE1US1207483EXTERNALENUS",
+          "postedDate": "2026-07-07T00:00:00.000+0000",
+          "dateCreated": "2026-07-06T06:20:27.470+0000",
+          "cityStateCountry": "Bengaluru, Karn\u0101taka, India",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Bengaluru, Karn\u0101taka, 560048",
+          "category": "Human Resources & Talent Development",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": 77.59369,
+                "lat": 12.97194
+              },
+              "location": "Bengaluru, Karn\u0101taka, 560048"
+            },
+            {
+              "latlong": {
+                "lon": -84.08333,
+                "lat": 9.93333
+              },
+              "location": "San Jose, San Jose, 00000"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Human Resources & Talent Development"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "c programming",
+            "linux system programming",
+            "software development",
+            "python programming",
+            "rust programming",
+            "embedded systems programming",
+            "device driver development",
+            "system architecture",
+            "data structures",
+            "algorithms",
+            "software debugging",
+            "performance optimization",
+            "test planning",
+            "system-level programming",
+            "hardware-software integration",
+            "mentorship",
+            "team leadership",
+            "cross-functional collaboration",
+            "analytical skills",
+            "problem solving",
+            "stakeholder communication"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "We are recruiting a Systems/Software Engineer for Storage to lead technical initiatives in developing next-generation storage devices. You will collaborate with a skilled team to design, develop, and optimise software solutions, focusing on performance and integration. Ideal candidates have strong programming skills and experience in software engineering.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Engineering & QA"
+          ],
+          "reqId": "1212377",
+          "city": "Heredia",
+          "latitude": "9.99872",
+          "multi_location": [
+            "Heredia, Heredia, 400803"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Systems-Software-Engineer-for-Storage_1212377-2/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are recruiting a Systems/Software Engineer for Storage to lead technical initiatives in developing next-generation storage devices. You will collaborate with a skilled team to design, develop, and optimise software solutions, focusing on performance and integration. Ideal candidates have strong programming skills and experience in software engineering.",
+            "descriptionTeaser_ats": "Systems/Software Engineer for Storage\u00a0\u00a0This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are . Hewlett Packard",
+            "descriptionTeaser_keyword": "Systems/Software Engineer for Storage. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterpri...",
+            "descriptionTeaser_first200": "Systems/Software Engineer for Storage. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enter..."
+          },
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11587",
+          "jobId": "1212377",
+          "locale": "en_US",
+          "title": "Systems/Software Engineer for Storage",
+          "jobSeqNo": "HPE1US1212377EXTERNALENUS",
+          "postedDate": "2026-09-14T00:00:00.000+0000",
+          "dateCreated": "2026-09-14T18:09:23.869+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Engineering & QA",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11587,
+                "lat": 9.99872
+              },
+              "location": "Heredia, Heredia, 400803"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Engineering & QA"
+            }
+          ],
+          "badge": ""
+        },
+        {
+          "ml_skills": [
+            "project management",
+            "pmp certification",
+            "stakeholder management",
+            "budget management",
+            "vendor management",
+            "cross-functional team leadership",
+            "portfolio management",
+            "change management",
+            "financial forecasting",
+            "performance management",
+            "process improvement",
+            "service management",
+            "mergers and acquisitions",
+            "transformation management",
+            "resource management",
+            "strategic planning",
+            "mentoring",
+            "policy development",
+            "global project coordination"
+          ],
+          "type": "Full time",
+          "descriptionTeaser": "We are expanding our team: As a Global Customer Support Project Manager, you will lead complex, cross-functional projects to deliver strategic solutions. Oversee project planning, budgeting, and stakeholder management. Ideal for experienced project managers with a strong background in global operations and a proven ability to drive transformation.",
+          "state": "Heredia",
+          "siteType": "external",
+          "multi_category": [
+            "Professional Services & Consulting"
+          ],
+          "reqId": "1207044",
+          "city": "Heredia",
+          "latitude": "9.99872",
+          "multi_location": [
+            "Heredia, Heredia, 400803",
+            "Bucharest, N/A",
+            "Makati City, National Capital Region, N/A",
+            "Sofia, Sofia, 1766"
+          ],
+          "address": "American Free Zone, 800 m al Norte de Centro Comercial Real, 400803 Heredia, Costa Rica",
+          "applyUrl": "https://hpe.wd5.myworkdayjobs.com/Jobsathpe/job/Heredia-Heredia-Costa-Rica/Global-Customer-Support-Project-Manager_1207044-2/apply",
+          "ml_job_parser": {
+            "descriptionTeaser": "We are expanding our team: As a Global Customer Support Project Manager, you will lead complex, cross-functional projects to deliver strategic solutions. Oversee project planning, budgeting, and stakeholder management. Ideal for experienced project managers with a strong background in global operations and a proven ability to drive transformation.",
+            "descriptionTeaser_first200": "Global Customer Support Project Manager. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Ent...",
+            "descriptionTeaser_keyword": "Global Customer Support Project Manager. This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office. Who We Are. Hewlett Packard Enterp...",
+            "descriptionTeaser_ats": "Global Customer Support Project Manager&nbsp;&nbsp;This role has been designed as 'Hybrid' with a requirement that you will work on average 2 days per week from an HPE office.Who We Are:Hewlett Packar"
+          },
+          "externalApply": false,
+          "cityState": "Heredia, Heredia",
+          "country": "Costa Rica",
+          "visibilityType": "External",
+          "longitude": "-84.11587",
+          "jobId": "1207044",
+          "locale": "en_US",
+          "title": "Global Customer Support Project Manager",
+          "jobSeqNo": "HPE1US1207044EXTERNALENUS",
+          "postedDate": "2026-09-16T00:00:00.000+0000",
+          "dateCreated": "2026-06-16T02:34:24.628+0000",
+          "cityStateCountry": "Heredia, Heredia, Costa Rica",
+          "jobVisibility": [
+            "external"
+          ],
+          "location": "Heredia, Heredia, 400803",
+          "category": "Professional Services & Consulting",
+          "isMultiLocation": true,
+          "multi_location_array": [
+            {
+              "latlong": {
+                "lon": -84.11587,
+                "lat": 9.99872
+              },
+              "location": "Heredia, Heredia, 400803"
+            },
+            {
+              "latlong": {
+                "lon": 26.10626,
+                "lat": 44.43225
+              },
+              "location": "Bucharest, N/A"
+            },
+            {
+              "latlong": {
+                "lon": 121.03269,
+                "lat": 14.55027
+              },
+              "location": "Makati City, National Capital Region, N/A"
+            },
+            {
+              "latlong": {
+                "lon": 23.32415,
+                "lat": 42.69751
+              },
+              "location": "Sofia, Sofia, 1766"
+            }
+          ],
+          "isMultiCategory": true,
+          "multi_category_array": [
+            {
+              "category": "Professional Services & Consulting"
+            }
+          ],
+          "badge": ""
+        }
+      ],
+      "aggregations": [
+        {
+          "field": "country",
+          "value": {
+            "United States of America": 456,
+            "India": 302,
+            "Puerto Rico": 67,
+            "Japan": 44,
+            "Singapore": 37,
+            "Mexico": 32,
+            "Costa Rica": 27,
+            "United Kingdom": 22,
+            "Ireland": 19,
+            "Bulgaria": 14,
+            "Malaysia": 14,
+            "Taiwan": 13,
+            "Canada": 12,
+            "Czechia": 12,
+            "France": 10,
+            "Korea, Republic of": 10,
+            "China": 9,
+            "Germany": 9,
+            "Australia": 7,
+            "Belgium": 7,
+            "Israel": 7,
+            "Italy": 7,
+            "Netherlands": 7,
+            "Poland": 7,
+            "United Arab Emirates": 7,
+            "Colombia": 6,
+            "Saudi Arabia": 6,
+            "Spain": 5,
+            "Vietnam": 5,
+            "Egypt": 4,
+            "Norway": 4,
+            "Slovakia": 4,
+            "Sweden": 4,
+            "Tunisia": 4,
+            "Denmark": 3,
+            "Greece": 3,
+            "Hong Kong": 3,
+            "Romania": 3,
+            "T\u00fcrkiye": 3,
+            "Finland": 2,
+            "Indonesia": 2,
+            "Philippines": 2,
+            "Thailand": 2,
+            "Austria": 1,
+            "Hungary": 1,
+            "New Zealand": 1
+          }
+        },
+        {
+          "field": "city",
+          "value": {
+            "Heredia": 22,
+            "Bengaluru": 5,
+            "San Jose": 5,
+            "Sofia": 2,
+            "Bristol": 1,
+            "Bucharest": 1,
+            "Ft. Collins": 1,
+            "Makati City": 1
+          }
+        },
+        {
+          "field": "company",
+          "value": {}
+        },
+        {
+          "field": "jobType",
+          "value": {}
+        },
+        {
+          "field": "type",
+          "value": {
+            "Full time": 27
+          }
+        },
+        {
+          "field": "category",
+          "value": {
+            "Engineering & QA": 12,
+            "Human Resources & Talent Development": 6,
+            "Professional Services & Consulting": 5,
+            "Manufacturing, Supply Chain & Operations": 2,
+            "Administration & Workplace": 1,
+            "Finance, Accounting & Business Planning": 1
+          }
+        }
+      ],
+      "SEARCH_CONFIG": {
+        "contextualSearch": false,
+        "isSuggestionsEnabled": true
+      },
+      "suggestions": {},
+      "ui_skills_selection": null,
+      "ui_selections": {
+        "country": [
+          "Costa Rica"
+        ]
+      },
+      "locationData": {}
+    },
+    "eid": {
+      "trialIndex": -1,
+      "eid": "6aab4c1c56f991bcb28d5338",
+      "searchType": "location",
+      "isMultiLingualVectorApplied": false,
+      "query": "Costa Rica",
+      "variant": 0,
+      "banditId": "",
+      "keywordLanguage": "en"
+    }
+  }
+}

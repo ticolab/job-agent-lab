@@ -44,7 +44,7 @@ from vacantes.domain.company import Company, LinkRule, PhenomConfig
 from vacantes.domain.region import COSTA_RICA_LATAM
 from vacantes.extraction.ats.phenom import (
     PhenomStrategy,
-    _record_matches_region,
+    _record_looks_in_region,
     build_request_body,
     slugify_title,
     synthesize_job_url,
@@ -421,31 +421,104 @@ class TestHonestEmpty:
         assert result["metadata"]["verdict"] == "under"
 
 
-class TestClientSideReverification:
-    """Belt-and-braces: the server facet is not trusted alone."""
+class TestServerFacetIsAuthoritative:
+    """The region facet decides membership; the string check only reports.
 
-    def test_injected_non_cr_record_is_dropped(self) -> None:
-        # A single-location record with no regional tie anywhere — the
-        # widened multi-location rule must not turn into "accept
-        # everything the server returned".
+    This class replaced a ``TestClientSideReverification`` that asserted
+    the opposite — that a record whose location text does not name the
+    region is dropped. Hewlett Packard Enterprise disproved that policy:
+    five genuine Costa Rica postings arrive under the Costa Rica facet
+    with ``country="India"`` and their Costa Rica half written
+    ``"San Jose, San Jose, 00000"``, with no country name anywhere for a
+    string rule to find. Teaching the predicate ``San Jose`` is not
+    available either — it is Zscaler's California headquarters, worth 58
+    phantom postings in that tenant's recorded fixture.
+
+    So the emit loop keeps every record the server returned and logs the
+    ones whose text does not visibly name the region. That aligns Phenom
+    with the Talentbrew adapter, which documents the same stance and
+    ships no client-side re-check at all. The trade is explicit: a
+    genuinely mis-faceted record would now be emitted rather than
+    silently dropped, and the log plus the verdict layer are what
+    surface it.
+    """
+
+    def test_a_record_the_text_cannot_place_is_kept_not_dropped(self) -> None:
+        # The HPE shape, reduced: the server returned it under the Costa
+        # Rica facet, but nothing in its text says so. Under the old
+        # policy this was dropped and the count silently short.
         payload = _load_fixture()
         payload["refineSearch"]["data"]["jobs"].append(
             {
                 "jobId": "99999",
-                "title": "Berlin Data Engineer",
-                "country": "Germany",
-                "city": "Berlin",
-                "multi_location_array": [{"country": "Germany", "city": "Berlin"}],
+                "title": "Technical Courseware Developer",
+                "country": "India",
+                "city": "Bengaluru",
+                "multi_location_array": [
+                    {"location": "Bengaluru, Karnataka, 560048"},
+                    {"location": "San Jose, San Jose, 00000"},
+                ],
             }
         )
         with respx.mock(assert_all_called=True) as mock:
             mock.post(_ENDPOINT).mock(return_value=httpx.Response(200, json=payload))
             result = _run(PhenomStrategy().extract(_make_company(), _ctx()))
 
-        # 15 records in, 14 out — the injected record fails the
-        # client-side check even though the server "returned" it.
-        assert len(result["jobs"]) == 14
-        assert not any("99999" in url for url in result["jobs"])
+        assert len(result["jobs"]) == 15, "the facet's record must survive"
+        assert any("99999" in url for url in result["jobs"])
+
+    def test_the_disagreement_is_logged_so_it_is_not_silent(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        # Keeping the record is only defensible if the disagreement is
+        # visible; an operator reading batch logs is the detector.
+        payload = _load_fixture()
+        payload["refineSearch"]["data"]["jobs"] = [
+            {
+                "jobId": "99999",
+                "title": "Technical Courseware Developer",
+                "country": "India",
+                "city": "Bengaluru",
+                "multi_location_array": [{"location": "San Jose, San Jose, 00000"}],
+            }
+        ]
+        with respx.mock(assert_all_called=True) as mock:
+            mock.post(_ENDPOINT).mock(return_value=httpx.Response(200, json=payload))
+            with caplog.at_level(logging.INFO, logger="vacantes.extraction.ats.phenom"):
+                result = _run(PhenomStrategy().extract(_make_company(), _ctx()))
+
+        assert len(result["jobs"]) == 1
+        assert any(
+            "does not visibly name region" in r.getMessage() for r in caplog.records
+        )
+        assert any("99999" in r.getMessage() for r in caplog.records)
+
+    def test_a_record_whose_text_does_name_the_region_logs_nothing(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        # The signal must stay quiet on the normal case, or it is noise
+        # and an operator will learn to ignore it.
+        payload = _load_fixture()
+        payload["refineSearch"]["data"]["jobs"] = [
+            {
+                "jobId": "12345",
+                "title": "Network Support Engineer",
+                "country": "Costa Rica",
+                "city": "Heredia",
+                "multi_location_array": [{"country": "Costa Rica", "city": "Heredia"}],
+            }
+        ]
+        with respx.mock(assert_all_called=True) as mock:
+            mock.post(_ENDPOINT).mock(return_value=httpx.Response(200, json=payload))
+            with caplog.at_level(logging.INFO, logger="vacantes.extraction.ats.phenom"):
+                result = _run(PhenomStrategy().extract(_make_company(), _ctx()))
+
+        assert len(result["jobs"]) == 1
+        assert not [
+            r
+            for r in caplog.records
+            if "does not visibly name region" in r.getMessage()
+        ]
 
     def test_recorded_multi_location_record_with_non_regional_primary_is_kept(
         self,
@@ -497,7 +570,14 @@ class TestClientSideReverification:
 
         assert result["jobs"] == [f"{_ORIGIN}{_PATH_PREFIX}/77777/Roaming-Consultant"]
 
-    def test_multi_location_array_without_a_regional_entry_is_dropped(self) -> None:
+    def test_multi_location_array_without_a_regional_entry_is_still_kept(self) -> None:
+        # Deliberately the inverse of the old assertion. The server was
+        # asked for Costa Rica and returned this; the adapter cannot
+        # distinguish "Phenom promoted the wrong location and the array
+        # is incomplete" from "the facet is wrong", and the HPE evidence
+        # says the former is what actually happens. Emitting with a log
+        # is the honest reading; the verdict layer catches the other case
+        # as an over-count.
         payload = _load_fixture()
         payload["refineSearch"]["data"]["jobs"] = [
             {
@@ -515,7 +595,7 @@ class TestClientSideReverification:
             mock.post(_ENDPOINT).mock(return_value=httpx.Response(200, json=payload))
             result = _run(PhenomStrategy().extract(_make_company(), _ctx()))
 
-        assert result["jobs"] == []
+        assert len(result["jobs"]) == 1
         assert result["metadata"]["error"] is None
 
 
@@ -617,7 +697,7 @@ class TestMultiLocationEntryShapes:
             "city": "London",
             "multi_location_array": [{"country": "Costa Rica", "city": "Heredia"}],
         }
-        assert _record_matches_region(job, COSTA_RICA_LATAM) is True
+        assert _record_looks_in_region(job, COSTA_RICA_LATAM) is True
 
     def test_joined_location_string_shape_matches(self) -> None:
         job = {
@@ -634,7 +714,7 @@ class TestMultiLocationEntryShapes:
                 },
             ],
         }
-        assert _record_matches_region(job, COSTA_RICA_LATAM) is True
+        assert _record_looks_in_region(job, COSTA_RICA_LATAM) is True
 
     def test_joined_location_string_out_of_region_does_not_match(self) -> None:
         job = {
@@ -647,7 +727,7 @@ class TestMultiLocationEntryShapes:
                 },
             ],
         }
-        assert _record_matches_region(job, COSTA_RICA_LATAM) is False
+        assert _record_looks_in_region(job, COSTA_RICA_LATAM) is False
 
     def test_discrete_pair_wins_when_both_present(self) -> None:
         # A malformed entry carrying both must not double-count or
@@ -659,7 +739,7 @@ class TestMultiLocationEntryShapes:
                 {"country": "Costa Rica", "city": "Heredia", "location": "irrelevant"}
             ],
         }
-        assert _record_matches_region(job, COSTA_RICA_LATAM) is True
+        assert _record_looks_in_region(job, COSTA_RICA_LATAM) is True
 
     def test_non_string_location_value_is_tolerated(self) -> None:
         job = {
@@ -667,7 +747,7 @@ class TestMultiLocationEntryShapes:
             "city": "Budapest",
             "multi_location_array": [{"location": {"unexpected": "object"}}],
         }
-        assert _record_matches_region(job, COSTA_RICA_LATAM) is False
+        assert _record_looks_in_region(job, COSTA_RICA_LATAM) is False
 
 
 class TestRocheRecordedPayload:
@@ -1019,3 +1099,104 @@ class TestTdSynnexRecordedPayload:
             result = _run(PhenomStrategy().extract(_make_tdsynnex_company(), _ctx()))
         for url in result["jobs"]:
             assert url.startswith(f"{_TDSYNNEX_ORIGIN}/us/en/job/"), url
+
+
+_HPE_ORIGIN = "https://careers.hpe.com"
+_HPE_ENDPOINT = f"{_HPE_ORIGIN}/widgets"
+
+
+def _make_hpe_company(**overrides: Any) -> Company:
+    """Build the shipped ``Hewlett Packard Enterprise`` entry's shape."""
+    defaults: dict[str, Any] = {
+        "name": "Hewlett Packard Enterprise",
+        "job_board_url": f"{_HPE_ORIGIN}/us/en/search-results",
+        "sample_job_url": (
+            f"{_HPE_ORIGIN}/us/en/job/1207481/Technical-Courseware-Developer"
+        ),
+        "link_rule": LinkRule(path_prefix="/us/en/job"),
+        "strategy": "phenom",
+        "expected_jobs": 27,
+        "phenom": PhenomConfig(page_id="page15", locale="en_us"),
+    }
+    defaults.update(overrides)
+    return Company(**defaults)
+
+
+class TestHpeRecordedPayload:
+    """Sixth Phenom tenant — the payload that retired the client-side gate.
+
+    HPE is the evidence that a location *string* cannot be relied on to
+    name its own country. Five of its 27 Costa Rica postings — all
+    ``Technical Courseware Developer``, jobIds 1206368, 1206423, 1207479,
+    1207481, 1207483 — come back under the Costa Rica facet with
+    ``country="India"``, ``city="Bengaluru"``, and their Costa Rica half
+    present only as ``"San Jose, San Jose, 00000"``: city, state,
+    postcode, no country. The entry's ``latlong`` (lon -84.08, lat 9.93)
+    is unambiguously San José, Costa Rica, and the queue's own
+    ``sample_job_url`` is one of the five.
+
+    Under the old rejecting re-check the adapter emitted 22 against a
+    server ``totalHits`` of 27 — a silent under-count. Teaching the
+    predicate ``San Jose`` was never an option: it is Zscaler's
+    California headquarters and would add 58 phantom postings to that
+    tenant's fixture. So the facet became authoritative and this fixture
+    pins that it stays so.
+    """
+
+    def test_recorded_payload_yields_twenty_seven_urls(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_HPE_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("hpe"))
+            )
+            result = _run(PhenomStrategy().extract(_make_hpe_company(), _ctx()))
+        assert result["metadata"]["error"] is None
+        assert len(result["jobs"]) == 27
+
+    def test_emitted_count_equals_server_total_hits(self) -> None:
+        payload = _load_fixture("hpe")
+        total = payload["refineSearch"]["totalHits"]
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_HPE_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=payload)
+            )
+            result = _run(PhenomStrategy().extract(_make_hpe_company(), _ctx()))
+        assert len(result["jobs"]) == total == 27
+
+    def test_the_five_unnamed_country_records_survive(self) -> None:
+        # The regression this fixture exists for. Each of these is a real
+        # Costa Rica posting whose text says only "San Jose, San Jose,
+        # 00000"; a rejecting string check drops all five.
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_HPE_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("hpe"))
+            )
+            result = _run(PhenomStrategy().extract(_make_hpe_company(), _ctx()))
+        for job_id in ("1206368", "1206423", "1207479", "1207481", "1207483"):
+            assert any(f"/us/en/job/{job_id}/" in url for url in result["jobs"]), (
+                f"jobId {job_id} was dropped"
+            )
+
+    def test_those_records_do_not_visibly_name_the_region(self) -> None:
+        # Guards the premise rather than the outcome: if a future payload
+        # started naming the country, this fixture would stop exercising
+        # the case it was recorded for and should be re-captured.
+        payload = _load_fixture("hpe")
+        jobs = payload["refineSearch"]["data"]["jobs"]
+        unnamed = [j for j in jobs if not _record_looks_in_region(j, COSTA_RICA_LATAM)]
+        assert len(unnamed) == 5
+        assert {str(j["jobId"]) for j in unnamed} == {
+            "1206368",
+            "1206423",
+            "1207479",
+            "1207481",
+            "1207483",
+        }
+
+    def test_every_url_is_under_the_us_locale_job_prefix(self) -> None:
+        with respx.mock(assert_all_called=False) as mock:
+            mock.post(_HPE_ENDPOINT).mock(
+                return_value=httpx.Response(200, json=_load_fixture("hpe"))
+            )
+            result = _run(PhenomStrategy().extract(_make_hpe_company(), _ctx()))
+        for url in result["jobs"]:
+            assert url.startswith(f"{_HPE_ORIGIN}/us/en/job/"), url

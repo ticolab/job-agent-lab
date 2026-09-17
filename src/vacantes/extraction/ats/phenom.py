@@ -213,11 +213,19 @@ def synthesize_job_url(origin: str, path_prefix: str, job_id: str, title: str) -
     return f"{origin}{path_prefix}/{job_id}/{slugify_title(title)}"
 
 
-def _record_matches_region(job: dict[str, Any], region: TargetRegion) -> bool:
-    """Re-verify one record's location against ``region``, client-side.
+def _record_looks_in_region(job: dict[str, Any], region: TargetRegion) -> bool:
+    """Whether a record's location text *visibly* names ``region``.
 
-    A record matches when **either** its primary ``country``/``city``
-    pair matches **or** any entry in ``multi_location_array`` does.
+    **This is a signal, not a gate.** It reports ``False`` for records
+    that are genuinely in-region but whose location strings do not spell
+    the region out — see the HPE case below — so the emit loop logs on a
+    negative rather than dropping the record. The server-side facet is
+    what decides membership; this function only decides whether to say
+    anything about it.
+
+    A record looks in-region when **either** its primary
+    ``country``/``city`` pair matches **or** any entry in
+    ``multi_location_array`` does.
 
     The multi-location arm is checked unconditionally, which is a
     deliberate widening of the rule this adapter was first designed
@@ -238,6 +246,25 @@ def _record_matches_region(job: dict[str, Any], region: TargetRegion) -> bool:
     the multi-region postings a global consultancy publishes most. The
     empty-primary-country case the proposal describes is a natural
     subset of the wider rule, so nothing the proposal intended is lost.
+
+    Hewlett Packard Enterprise then showed the widened rule is still not
+    sufficient, and that no string rule could be. Five genuine Costa
+    Rica postings (jobIds 1206368, 1206423, 1207479, 1207481, 1207483 —
+    all ``Technical Courseware Developer``) come back under the Costa
+    Rica facet with ``country="India"``, ``city="Bengaluru"``, and their
+    Costa Rica half present in the array only as
+    ``"San Jose, San Jose, 00000"`` — city, state, postcode, no country
+    name. ``COSTA_RICA_LATAM`` matches the literals ``costa rica`` /
+    ``latam`` / ``latin america``, none of which appear; the entry's
+    ``latlong`` (lon -84.08, lat 9.93) is unambiguously San José, Costa
+    Rica. Teaching the predicate the city name is not an option either:
+    ``San Jose`` is Zscaler's California headquarters, and admitting it
+    would add 58 phantom postings to that one tenant's recorded fixture.
+
+    That is why this is no longer a gate. A location string cannot be
+    relied on to name its own country, so rejecting on it silently
+    under-counts exactly the multi-region postings that are hardest to
+    notice.
     """
     country = job.get("country") or ""
     city = job.get("city") or ""
@@ -410,8 +437,32 @@ class PhenomStrategy:
             for job in raw_jobs:
                 if not isinstance(job, dict):
                     continue
-                if not _record_matches_region(job, ctx.region):
-                    continue
+                if not _record_looks_in_region(job, ctx.region):
+                    # Kept, not dropped. The server already filtered by
+                    # the region facet (``selected_fields.country``); this
+                    # check is a second, weaker contract over free-text
+                    # location strings, and where the two disagree the
+                    # facet is the one that has never been wrong. HPE
+                    # returns five genuine Costa Rica postings whose only
+                    # in-region marker is a latlong, and BCG returns one
+                    # whose primary fields read "United Kingdom". Dropping
+                    # them is a silent under-count biased against
+                    # multi-region postings; logging keeps the
+                    # disagreement visible without inventing a verdict
+                    # the string evidence cannot support. Matches the
+                    # Talentbrew adapter's stance ("the facet-applied GET
+                    # *is* the filter"), which ships no client re-check at
+                    # all.
+                    logger.info(
+                        "Phenom record for company=%s does not visibly name "
+                        "region %s (jobId=%r, country=%r, city=%r); keeping it "
+                        "on the server facet's authority.",
+                        company.name,
+                        ctx.region.name,
+                        job.get("jobId"),
+                        job.get("country"),
+                        job.get("city"),
+                    )
                 job_id = str(job.get("jobId") or "").strip()
                 title = str(job.get("title") or "")
                 if not job_id or not slugify_title(title):
