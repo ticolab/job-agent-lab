@@ -5,7 +5,7 @@ than ``:memory:``. That is not incidental: an in-memory database
 exercises neither WAL journal mode nor ``busy_timeout``, which are the
 two settings that matter once the batch scheduler runs workers
 concurrently, and it would let a regression in
-:func:`vacantes.persistence.engine._apply_pragmas` pass unnoticed.
+:func:`job_discovery.persistence.engine._apply_pragmas` pass unnoticed.
 :class:`TestEnginePragmas` asserts them directly for that reason.
 
 Async tests are driven through :func:`_run`, which executes each
@@ -33,16 +33,16 @@ from sqlalchemy import select, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from tests.unit.asyncio_harness import run_async as _run
-from tests.unit.asyncio_harness import run_in_thread, track_engine
-from vacantes.domain.company import Company
-from vacantes.persistence import catalog_repo, jobs_repo, models, runs_repo
-from vacantes.persistence.engine import (
+from job_discovery.domain.company import Company
+from job_discovery.persistence import catalog_repo, jobs_repo, models, runs_repo
+from job_discovery.persistence.engine import (
     create_engine,
     create_session_factory,
     database_url,
 )
-from vacantes.persistence.timestamps import as_naive_utc, utc_now
+from job_discovery.persistence.timestamps import as_naive_utc, utc_now
+from tests.unit.asyncio_harness import run_async as _run
+from tests.unit.asyncio_harness import run_in_thread, track_engine
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 

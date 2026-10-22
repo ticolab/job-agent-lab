@@ -24,8 +24,8 @@ from pathlib import Path
 
 import pytest
 
-from vacantes.domain.company import RuntimeHooks
-from vacantes.settings import (
+from job_discovery.domain.company import RuntimeHooks
+from job_discovery.settings import (
     NAVIGATION_TIMEOUT_MARGIN_SEC,
     NAVIGATION_TIMEOUT_SEC,
     RENDER_SCROLL_COUNT,
@@ -187,7 +187,7 @@ class TestPreFilterUrlsMetadata:
         set and the prefilter-specific field is the only variable across
         cases — anything else changing would confound the assertions.
         """
-        from vacantes.domain.company import Company
+        from job_discovery.domain.company import Company
 
         return Company(
             name="Example Corp",
@@ -349,7 +349,7 @@ class TestSuppressAncestorSelectorMetadata:
     """
 
     def _stub_company(self, suppress: str | None = None) -> Company:  # type: ignore[name-defined]  # noqa: F821
-        from vacantes.domain.company import Company, LinkRule
+        from job_discovery.domain.company import Company, LinkRule
 
         return Company(
             name="Example Corp",
@@ -424,7 +424,7 @@ class TestPerStateFrames:
     """
 
     def _stub_company(self, pre_filter_urls: tuple[str, ...] = ()) -> Company:  # type: ignore[name-defined]  # noqa: F821
-        from vacantes.domain.company import Company
+        from job_discovery.domain.company import Company
 
         return Company(
             name="Example Corp",
@@ -539,7 +539,7 @@ class TestPerStatePages:
     """
 
     def _stub_company(self, pre_filter_urls: tuple[str, ...] = ()) -> Company:  # type: ignore[name-defined]  # noqa: F821
-        from vacantes.domain.company import Company
+        from job_discovery.domain.company import Company
 
         return Company(
             name="Example Corp",

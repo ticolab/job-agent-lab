@@ -1,4 +1,4 @@
-# Makefile for vacantes
+# Makefile for job-discovery
 #
 # Cache and build-artifact cleanup targets. Every target is idempotent —
 # running it on an already-clean tree is a no-op that exits 0.

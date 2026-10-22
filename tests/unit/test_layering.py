@@ -19,7 +19,7 @@ onboarding evidence would stop meaning anything.
 Three properties are asserted:
 
 - Every cross-package import is in :data:`ALLOWED_IMPORTS`.
-- Every top-level unit under ``src/vacantes/`` has an entry in
+- Every top-level unit under ``src/job_discovery/`` has an entry in
   :data:`ALLOWED_IMPORTS`, so adding a package forces an explicit
   layering decision instead of defaulting to unconstrained.
 - No module uses a relative import, which would otherwise bypass the
@@ -37,10 +37,10 @@ from pathlib import Path
 
 import pytest
 
-PACKAGE_NAME = "vacantes"
+PACKAGE_NAME = "job_discovery"
 SRC_ROOT = Path(__file__).resolve().parents[2] / "src" / PACKAGE_NAME
 
-# Sentinel for ``src/vacantes/__init__.py``, which belongs to no
+# Sentinel for ``src/job_discovery/__init__.py``, which belongs to no
 # subpackage and must stay free of intra-project imports so that
 # importing the distribution costs nothing.
 ROOT_UNIT = "<root>"
@@ -97,7 +97,7 @@ FORBIDDEN_FOR_EXTRACTION = frozenset({"persistence", "batch"})
 
 
 def _source_files() -> list[Path]:
-    """Return every Python module shipped under ``src/vacantes/``."""
+    """Return every Python module shipped under ``src/job_discovery/``."""
     return sorted(SRC_ROOT.rglob("*.py"))
 
 
@@ -119,7 +119,7 @@ def _unit_of(path: Path) -> str:
 def _imported_modules(tree: ast.Module) -> set[str]:
     """Return the dotted names *tree* imports from this package.
 
-    Covers both ``import vacantes.x.y`` and ``from vacantes.x import y``.
+    Covers both ``import job_discovery.x.y`` and ``from job_discovery.x import y``.
     Relative imports are ignored here and rejected outright by
     :class:`TestNoRelativeImports`, so they cannot slip past.
     """
@@ -147,7 +147,7 @@ def _imported_units(tree: ast.Module) -> set[str]:
     for module in _imported_modules(tree):
         parts = module.split(".")
         if len(parts) < 2:
-            # A bare ``import vacantes`` targets the root unit.
+            # A bare ``import job_discovery`` targets the root unit.
             units.add(ROOT_UNIT)
         else:
             units.add(parts[1])
@@ -170,7 +170,7 @@ class TestAllowlistCoverage:
     def test_every_unit_has_an_allowlist_entry(self) -> None:
         """A new package must make an explicit layering decision.
 
-        Without this, adding ``src/vacantes/persistence/`` would ship
+        Without this, adding ``src/job_discovery/persistence/`` would ship
         with no constraints at all and the rule would quietly stop
         covering the newest code — the moment it matters most.
         """

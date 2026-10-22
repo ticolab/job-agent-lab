@@ -1,6 +1,6 @@
 """Unit tests for the strategy port.
 
-Covers three surfaces of :mod:`vacantes.extraction.base`:
+Covers three surfaces of :mod:`job_discovery.extraction.base`:
 
 - Registry completeness — every ``StrategyName`` literal member has a
   registered implementation, and vice versa. Adding a strategy means
@@ -22,20 +22,20 @@ from typing import get_args
 
 import pytest
 
-import vacantes.extraction  # noqa: F401  — triggers strategy registration
-from vacantes.domain.company import StrategyName
-from vacantes.extraction.ats.coveo import CoveoStrategy
-from vacantes.extraction.ats.greenhouse import GreenhouseStrategy
-from vacantes.extraction.ats.phenom import PhenomStrategy
-from vacantes.extraction.ats.talentbrew import TalentbrewStrategy
-from vacantes.extraction.base import (
+import job_discovery.extraction  # noqa: F401  — triggers strategy registration
+from job_discovery.domain.company import StrategyName
+from job_discovery.extraction.ats.coveo import CoveoStrategy
+from job_discovery.extraction.ats.greenhouse import GreenhouseStrategy
+from job_discovery.extraction.ats.phenom import PhenomStrategy
+from job_discovery.extraction.ats.talentbrew import TalentbrewStrategy
+from job_discovery.extraction.base import (
     STRATEGIES,
     RunContext,
     build_report,
     compute_verdict,
     get_strategy,
 )
-from vacantes.extraction.dom.strategy import DomStrategy
+from job_discovery.extraction.dom.strategy import DomStrategy
 
 # Keys the report shape is contractually required to expose. Locked at
 # module scope so a shape drift shows up as one obvious diff rather than
@@ -225,7 +225,7 @@ class TestRunContext:
         # region module ever grows a dependency on ``extraction``.
         from dataclasses import FrozenInstanceError
 
-        from vacantes.domain.region import COSTA_RICA_LATAM
+        from job_discovery.domain.region import COSTA_RICA_LATAM
 
         ctx = RunContext(
             model="gpt-4o-mini",

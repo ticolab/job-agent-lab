@@ -43,8 +43,8 @@ from typing import Any, cast
 import pytest
 from playwright.sync_api import Browser, BrowserContext, Page
 
-from vacantes.extraction.dom import collector as collector_mod
-from vacantes.extraction.dom.collector import (
+from job_discovery.extraction.dom import collector as collector_mod
+from job_discovery.extraction.dom.collector import (
     ActorPageDriver,
     _run_matcher,
     apply_pre_extract_css,

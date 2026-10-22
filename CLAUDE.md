@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`vacantes` answers one question a few times a week: **what job postings are open right now.** It extracts job-posting URLs from a corpus of real career sites, built around one decision — a `browser-use` agent (OpenAI model via LiteLLM) handles the non-deterministic UI work on a career page (filtering by region, revealing dynamic content) while the actual link extraction is **deterministic**: a JS matcher runs in the page and collects same-origin `<a>` tags whose path matches a prefix derived from each company's `sample_job_url`. Never replace the deterministic matcher with LLM-guessed link lists.
+`job-discovery` answers one question a few times a week: **what job postings are open right now.** It extracts job-posting URLs from a corpus of real career sites, built around one decision — a `browser-use` agent (OpenAI model via LiteLLM) handles the non-deterministic UI work on a career page (filtering by region, revealing dynamic content) while the actual link extraction is **deterministic**: a JS matcher runs in the page and collects same-origin `<a>` tags whose path matches a prefix derived from each company's `sample_job_url`. Never replace the deterministic matcher with LLM-guessed link lists.
 
 Only one of the seven registered strategies drives an agent at all. The other six are plain HTTP against the ATS or search platform backing the board, so "agent" names a mechanism inside `extraction/dom/`, not the system.
 
@@ -23,8 +23,8 @@ uv run job-agent-lab                 # run all companies in the catalog
 uv run job-agent-lab -c akurey       # one company (alias > acronym > substring match)
 uv run job-agent-lab -c gap --headed --model gpt-4o --max-steps 25
 
-uv run vacantes --help               # dispatcher: integrate | batch
-uv run vacantes integrate -c akurey  # identical to the job-agent-lab form above
+uv run job-discovery --help               # dispatcher: integrate | batch
+uv run job-discovery integrate -c akurey  # identical to the job-agent-lab form above
 
 uv run ruff format . && uv run ruff check . --fix
 uv run mypy src scripts tests
@@ -34,29 +34,29 @@ uv run --group test pytest tests/snapshots/      # needs Chromium (frozen-DOM re
 uv run --group test pytest tests/unit/test_coveo.py -k pagination   # single test
 ```
 
-Two console scripts are registered. `vacantes` is the dispatcher with `integrate` and `batch` subcommands; `job-agent-lab` is a frozen alias pointing straight at the integrate entry point rather than through the dispatcher, so its argument surface is the pre-rename CLI's by construction. Both populate their parser from `add_integrate_arguments`, so the two surfaces cannot drift. Keep `job-agent-lab` working — every doc, skill, and habit is built on it.
+Two console scripts are registered. `job-discovery` is the dispatcher with `integrate` and `batch` subcommands; `job-agent-lab` is a frozen alias pointing straight at the integrate entry point rather than through the dispatcher, so its argument surface is the pre-rename CLI's by construction. Both populate their parser from `add_integrate_arguments`, so the two surfaces cannot drift. Keep `job-agent-lab` working — every doc, skill, and habit is built on it.
 
 `OPENAI_API_KEY` in `.env` is required only for live `strategy="dom"` agent runs. Unit tests, snapshot tests, API strategies, and `pre_filter_urls` companies all run without it.
 
-Pre-commit gates: ruff, mypy, and the full test suite runs on any change under `src/vacantes/`, `migrations/`, or `tests/`. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee the commit passes.
+Pre-commit gates: ruff, mypy, and the full test suite runs on any change under `src/job_discovery/`, `migrations/`, or `tests/`. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee the commit passes.
 
-Alembic owns the schema. The database lives at `data/vacantes.db`, gitignored because the dataset answers "what is open right now" and is regenerable by re-running a batch.
+Alembic owns the schema. The database lives at `data/job-discovery.db`, gitignored because the dataset answers "what is open right now" and is regenerable by re-running a batch.
 
 ```bash
 uv run alembic upgrade head                        # create or migrate the database
 uv run alembic revision --autogenerate -m "..."    # new revision from models.py
-sqlite3 data/vacantes.db 'select * from job_urls'  # query it directly
+sqlite3 data/job-discovery.db 'select * from job_urls'  # query it directly
 ```
 
-`migrations/env.py` builds the connection URL from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth. That path defaults to `data/vacantes.db` and is overridden by the `VACANTES_DB` **shell** variable (not a `.env` key, because Alembic never loads `.env`). `vacantes batch --database PATH` points one run elsewhere, but Alembic has no such flag, so a non-default database is migrated with `VACANTES_DB=PATH uv run alembic upgrade head`; the schema preflight prints exactly that command when it applies.
+`migrations/env.py` builds the connection URL from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth. That path defaults to `data/job-discovery.db` and is overridden by the `JOB_DISCOVERY_DB` **shell** variable (not a `.env` key, because Alembic never loads `.env`). `job-discovery batch --database PATH` points one run elsewhere, but Alembic has no such flag, so a non-default database is migrated with `JOB_DISCOVERY_DB=PATH uv run alembic upgrade head`; the schema preflight prints exactly that command when it applies.
 
-`vacantes batch` is the only writer, and it needs those migrations already applied — it preflights the schema and names the missing tables rather than dying inside a repository. A selection is mandatory: there is no bare invocation meaning "the whole corpus", because most of the corpus costs a Chromium context and a paid model.
+`job-discovery batch` is the only writer, and it needs those migrations already applied — it preflights the schema and names the missing tables rather than dying inside a repository. A selection is mandatory: there is no bare invocation meaning "the whole corpus", because most of the corpus costs a Chromium context and a paid model.
 
 ```bash
-uv run vacantes batch --dry-run --all                  # plan only, writes nothing
-uv run vacantes batch -c speechify -c cloudbeds        # two boards
-uv run vacantes batch --all --exclude accenture        # everything but one
-uv run vacantes batch --companies queue.txt --force    # a file of handles, ignore freshness
+uv run job-discovery batch --dry-run --all                  # plan only, writes nothing
+uv run job-discovery batch -c speechify -c cloudbeds        # two boards
+uv run job-discovery batch --all --exclude accenture        # everything but one
+uv run job-discovery batch --companies queue.txt --force    # a file of handles, ignore freshness
 ```
 
 The full surface is `(--all | -c HANDLE ... | --companies FILE)` plus `--exclude`, `--browser-concurrency`, `--http-concurrency`, `--freshness-hours`, `--force`, `--timeout-seconds`, `--dry-run`, `--json-output`, `--database`, `-m/--model`, and `--max-steps`. Handles resolve exactly as `integrate -c` resolves them, and an unknown one aborts before any work starts.
@@ -75,7 +75,7 @@ Commit messages are a **single short sentence, 100 characters max** — subject 
 
 Three components sit over one shared kernel. `extraction/` owns the port and every strategy. `persistence/` owns the database. `batch/` owns concurrency and the per-company unit of work. The kernel — `domain/`, `catalog/`, `settings.py` — is the vocabulary all three speak.
 
-All three exist today, alongside `cli/` and `reporting/`, and both subcommands are wired: `vacantes integrate` drives one board at a time, `vacantes batch` drives the corpus and is the only thing in the system that writes to the database.
+All three exist today, alongside `cli/` and `reporting/`, and both subcommands are wired: `job-discovery integrate` drives one board at a time, `job-discovery batch` drives the corpus and is the only thing in the system that writes to the database.
 
 Dependencies point inward and never cycle:
 
@@ -90,7 +90,7 @@ Enforced today by tests/unit/test_layering.py:
   reporting   → catalog
   catalog     → domain
   settings    → (nothing)
-  domain      → (nothing inside vacantes)
+  domain      → (nothing inside job_discovery)
 ```
 
 Two rows are narrower than initially anticipated, and both for the same reason: a component that is *handed* what it needs does not import it. `persistence` does not reach `catalog` because `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`. `batch` reaches neither `catalog` nor `settings` — the scheduler is given both the companies to run and the session factory to use, and its ceilings are policy living in `batch/policy.py`. `reporting` stays out of `batch` because rendering belongs to the CLI that drives a batch, not to the batch itself.
@@ -101,7 +101,7 @@ One row came out *wider* instead, and for the same reason read backwards: `cli` 
 
 ### Strategy port
 
-Every run dispatches through `extraction.get_strategy(company.strategy).extract(company, ctx)`. The port is in `src/vacantes/extraction/base.py`: the `ExtractionStrategy` Protocol, frozen `RunContext`, the `STRATEGIES` registry, and `build_report(...)` — the single author of the output shape.
+Every run dispatches through `extraction.get_strategy(company.strategy).extract(company, ctx)`. The port is in `src/job_discovery/extraction/base.py`: the `ExtractionStrategy` Protocol, frozen `RunContext`, the `STRATEGIES` registry, and `build_report(...)` — the single author of the output shape.
 
 - `strategy="dom"` (default) — `extraction/dom/strategy.py`. browser-use agent under `GOAL_PROMPT` + the deterministic matcher.
   The agent's `extract_job_links` tool refuses to run on a page whose own URL the matcher would collect as a posting (`rules.is_posting_url`): on Deloitte the agent wandered into a posting's detail page one run in three and the matcher truthfully returned that page's single link — a count of 1 that nothing downstream can tell from a small board, and that a batch would persist by deleting the previous URL set. The predicate mirrors the matcher's id-in-path rule and exempts both the id-in-query shape (28 corpus listings are filtered roots of that form) and the board's own listing path (Team Talent's sits under its prefix); `tests/unit/test_posting_guard.py` pins both exclusions against every catalog listing URL and every recorded pagination state, so a future entry that would trip it fails at test time. `pre_filter_urls` boards never reach the tool and are unaffected.
@@ -109,9 +109,9 @@ Every run dispatches through `extraction.get_strategy(company.strategy).extract(
 
 Adding a strategy requires extending the `StrategyName` literal in `domain/company.py` **and** registering it in `extraction/__init__.py` — a unit test asserts the registry matches the literal, so either half missing fails.
 
-### Package layout (`src/vacantes/`)
+### Package layout (`src/job_discovery/`)
 
-- `cli/` — `main.py` is the `vacantes` dispatcher (a table of subcommands, not a branch per subcommand); `integrate.py` holds the argparse surface and the per-company orchestration loop; `batch.py` is the batch subcommand and the composition root, exposing `add_batch_arguments`, `select_companies`, `build_policy`, and `execute`. `settings.py` — defaults (model, max steps, render-settle constants shared by runtime and capture).
+- `cli/` — `main.py` is the `job-discovery` dispatcher (a table of subcommands, not a branch per subcommand); `integrate.py` holds the argparse surface and the per-company orchestration loop; `batch.py` is the batch subcommand and the composition root, exposing `add_batch_arguments`, `select_companies`, `build_policy`, and `execute`. `settings.py` — defaults (model, max steps, render-settle constants shared by runtime and capture).
 - `domain/` — pydantic schema: `Company` (with `strategy`, `paginate`, `hooks`, `pre_filter_urls`), `LinkRule` (`path_prefix`, `min_depth`, `suppress_ancestor_selector`), `RuntimeHooks`, `ExtractionResult`, `TargetRegion` (+ the `COSTA_RICA_LATAM` singleton). `COSTA_RICA_LATAM.matches` is pure text matching over a location string — it has no geography — so it recognises a place only when the text names it. It therefore also admits the unambiguous Costa Rican provinces (`Heredia`, `Alajuela`, `Cartago`, `Guanacaste`, `Puntarenas`), because boards write `Heredia, Heredia, 400803` with no country and the predicate is the *only* region signal for facet-less ATSs (Greenhouse, BambooHR). `San José` is deliberately excluded and must stay so: it is Zscaler's California headquarters, worth 58 phantom postings in that fixture, and no text rule separates it from the Costa Rican one. `tests/unit/test_region.py` pins both the admissions and the exclusion against every recorded payload. Cross-field validators fire at catalog-import time (e.g. hooks require `strategy="dom"`; `pre_filter_urls` must share origin with `job_board_url`).
 - `catalog/` — the `COMPANIES` list plus `find_company`/`slugify`. The source of truth for the corpus; persistence projects it and never owns it. Handle resolution iterates in list order, checking alias > acronym > substring — insertion order is authoritative when names collide.
 - `extraction/dom/` — `assets/collect_links.js` is the matcher's **single source of truth** (loaded via `importlib.resources` as `EXTRACT_JOB_LINKS_JS`; edit the JS, never an inlined copy). `collector.py` runs it against a live page and owns the pagination walker and hook execution behind the `PageDriver` protocol.
@@ -144,7 +144,7 @@ Two facts to have before debugging a batch, both settled by killing a live one r
 
 Concurrency at the default ceiling changes no board's count. After the first full run, every deterministic verdict mismatch and every empty agent board was re-run alone through `integrate` and reproduced the batch's number exactly, so a non-match after a batch is drift against a stale `expected_jobs`, not the scheduler degrading extraction. Read the verdict distribution per batch as the health signal, and treat an agent-driven board at `under` with zero URLs stored as the line to look at.
 
-`cli/batch.py` preflights the schema through `persistence/engine.missing_tables`, which lives in `persistence/` because nothing outside that package may build a query, and in `engine.py` specifically because it asks about the database as an artifact rather than about any table's rows. Without it the first `vacantes batch` on a fresh checkout would die with an `OperationalError` from inside a repository instead of naming the `alembic upgrade head` the operator actually owes. It compares against `models.Base.metadata`, so Alembic's own `alembic_version` is not counted.
+`cli/batch.py` preflights the schema through `persistence/engine.missing_tables`, which lives in `persistence/` because nothing outside that package may build a query, and in `engine.py` specifically because it asks about the database as an artifact rather than about any table's rows. Without it the first `job-discovery batch` on a fresh checkout would die with an `OperationalError` from inside a repository instead of naming the `alembic upgrade head` the operator actually owes. It compares against `models.Base.metadata`, so Alembic's own `alembic_version` is not counted.
 
 ### Per-company escape hatches (all inert by default)
 
@@ -176,7 +176,7 @@ The canonical workflow is the `integrate-company` skill, driven by the untracked
 ## Conventions
 
 - Python 3.12+, uv-managed. Ruff (line-length 88, double quotes, rules `E,F,I,W,UP,B,C4,SIM`); mypy strict (`disallow_untyped_defs`) — every function fully annotated.
-- Import as `from vacantes.X`; the package lives under `src/`.
+- Import as `from job_discovery.X`; the package lives under `src/`.
 - `extraction/dom/agent/prompt.py` and `tests/unit/test_prompt_render.py` are E501-exempt on purpose: prompt clauses and their golden copies are byte-exact single-line literals — never reflow them.
 - `TABNINE.md` is the Tabnine CLI's guidance file; its MCP-only tool-routing rule applies to Tabnine, not Claude Code. Keep the two files' project facts consistent when architecture changes.
 - The `integrate-company` skill is maintained in two copies, `.claude/skills/` and `.tabnine/agent/skills/`. They are identical except for two deliberate per-assistant adaptations: the Playwright MCP tool prefix and the guidance file each cites for the commit convention. Keep every other change in sync across both.

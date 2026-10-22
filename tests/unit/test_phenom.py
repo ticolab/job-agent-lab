@@ -40,16 +40,16 @@ import httpx
 import pytest
 import respx
 
-from vacantes.domain.company import Company, LinkRule, PhenomConfig
-from vacantes.domain.region import COSTA_RICA_LATAM
-from vacantes.extraction.ats.phenom import (
+from job_discovery.domain.company import Company, LinkRule, PhenomConfig
+from job_discovery.domain.region import COSTA_RICA_LATAM
+from job_discovery.extraction.ats.phenom import (
     PhenomStrategy,
     _record_looks_in_region,
     build_request_body,
     slugify_title,
     synthesize_job_url,
 )
-from vacantes.extraction.base import RunContext
+from job_discovery.extraction.base import RunContext
 
 # The tenant-hosted endpoint the adapter POSTs to. Composed from the
 # company's ``job_board_url`` origin plus ``PhenomConfig.endpoint_path``
@@ -484,7 +484,9 @@ class TestServerFacetIsAuthoritative:
         ]
         with respx.mock(assert_all_called=True) as mock:
             mock.post(_ENDPOINT).mock(return_value=httpx.Response(200, json=payload))
-            with caplog.at_level(logging.INFO, logger="vacantes.extraction.ats.phenom"):
+            with caplog.at_level(
+                logging.INFO, logger="job_discovery.extraction.ats.phenom"
+            ):
                 result = _run(PhenomStrategy().extract(_make_company(), _ctx()))
 
         assert len(result["jobs"]) == 1
@@ -510,7 +512,9 @@ class TestServerFacetIsAuthoritative:
         ]
         with respx.mock(assert_all_called=True) as mock:
             mock.post(_ENDPOINT).mock(return_value=httpx.Response(200, json=payload))
-            with caplog.at_level(logging.INFO, logger="vacantes.extraction.ats.phenom"):
+            with caplog.at_level(
+                logging.INFO, logger="job_discovery.extraction.ats.phenom"
+            ):
                 result = _run(PhenomStrategy().extract(_make_company(), _ctx()))
 
         assert len(result["jobs"]) == 1

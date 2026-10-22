@@ -1,6 +1,6 @@
 # Architecture
 
-`vacantes` answers one question a few times a week: what job postings are open
+`job-discovery` answers one question a few times a week: what job postings are open
 right now. It extracts job-posting URLs from company career sites. This
 document is the big-picture map: the layers, the seams between them, and the
 rules that keep the design from decaying as new sites arrive.
@@ -54,7 +54,7 @@ Enforced today by tests/unit/test_layering.py:
   reporting   → catalog
   catalog     → domain
   settings    → (nothing)
-  domain      → (nothing inside vacantes)
+  domain      → (nothing inside job_discovery)
 ```
 
 Two of those rows came out narrower than the design anticipated, and
@@ -95,7 +95,7 @@ under the scheduler than under the CLI, and the onboarding evidence would stop
 meaning anything.
 
 `tests/unit/test_layering.py` parses the imports of every module under
-`src/vacantes/` and asserts each package imports only from its allowed set,
+`src/job_discovery/` and asserts each package imports only from its allowed set,
 which makes the constraint structural rather than a matter of review
 discipline. The allowlist is written from the real import graph rather than
 from intent, and it may only ever shrink. Widening a row — say

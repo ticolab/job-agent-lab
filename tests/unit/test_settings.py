@@ -1,4 +1,4 @@
-"""Unit + integration tests for ``vacantes.settings``'s UA helpers.
+"""Unit + integration tests for ``job_discovery.settings``'s UA helpers.
 
 The pure derivation helper is the single "contract" every launch site
 depends on: given a Chromium UA string, strip the
@@ -28,8 +28,8 @@ from typing import Any
 
 import pytest
 
-from vacantes import settings
-from vacantes.settings import (
+from job_discovery import settings
+from job_discovery.settings import (
     BROWSER_LAUNCH_ARGS,
     CAPTURE_BROWSER_CHANNEL,
     DATABASE_ENV_VAR,
@@ -182,14 +182,16 @@ class TestDatabasePathFromEnv:
 
     def test_unset_falls_back_to_the_default(self) -> None:
         assert database_path_from_env({}) == DEFAULT_DATABASE_PATH
-        assert Path("data") / "vacantes.db" == DEFAULT_DATABASE_PATH
+        assert Path("data") / "job-discovery.db" == DEFAULT_DATABASE_PATH
 
     def test_a_set_variable_wins(self) -> None:
-        resolved = database_path_from_env({DATABASE_ENV_VAR: "/srv/vacantes/live.db"})
-        assert resolved == Path("/srv/vacantes/live.db")
+        resolved = database_path_from_env(
+            {DATABASE_ENV_VAR: "/srv/job-discovery/live.db"}
+        )
+        assert resolved == Path("/srv/job-discovery/live.db")
 
     def test_a_blank_variable_is_treated_as_unset(self) -> None:
-        """``VACANTES_DB=`` must not resolve to a database named ``""``."""
+        """``JOB_DISCOVERY_DB=`` must not resolve to a database named ``""``."""
         assert database_path_from_env({DATABASE_ENV_VAR: "  "}) == DEFAULT_DATABASE_PATH
 
 

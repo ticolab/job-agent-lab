@@ -1,7 +1,7 @@
 """Unit tests for the batch core (Phase 2).
 
 No browser and no network: every test registers a fake strategy over an
-entry in :data:`~vacantes.extraction.base.STRATEGIES` and runs the real
+entry in :data:`~job_discovery.extraction.base.STRATEGIES` and runs the real
 scheduler, worker, and repositories against a real SQLite file under
 ``tmp_path``. The fake is what makes the concurrency assertions possible
 — it records its own high-water mark per class, so the ceiling is
@@ -25,17 +25,17 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+from job_discovery.batch.policy import BatchPolicy, concurrency_class
+from job_discovery.batch.scheduler import BatchResult, new_batch_id, run_batch
+from job_discovery.batch.worker import CompanyOutcome, run_company
+from job_discovery.domain.company import Company, CoveoConfig
+from job_discovery.domain.region import COSTA_RICA_LATAM
+from job_discovery.extraction.base import STRATEGIES, RunContext, build_report
+from job_discovery.persistence import jobs_repo, models, runs_repo
+from job_discovery.persistence.engine import create_engine, create_session_factory
+from job_discovery.persistence.timestamps import utc_now
 from tests.unit.asyncio_harness import run_async as _run
 from tests.unit.asyncio_harness import track_engine
-from vacantes.batch.policy import BatchPolicy, concurrency_class
-from vacantes.batch.scheduler import BatchResult, new_batch_id, run_batch
-from vacantes.batch.worker import CompanyOutcome, run_company
-from vacantes.domain.company import Company, CoveoConfig
-from vacantes.domain.region import COSTA_RICA_LATAM
-from vacantes.extraction.base import STRATEGIES, RunContext, build_report
-from vacantes.persistence import jobs_repo, models, runs_repo
-from vacantes.persistence.engine import create_engine, create_session_factory
-from vacantes.persistence.timestamps import utc_now
 
 # ---------------------------------------------------------------------
 # Fixtures and fakes

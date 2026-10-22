@@ -28,7 +28,7 @@ And every record carries a **list-typed** ``raw.city``
 (``["Heredia"]``), the shape the re-verification predicate must handle.
 
 The wire contract is documented on
-:func:`vacantes.extraction.ats.coveo.build_search_body`.
+:func:`job_discovery.extraction.ats.coveo.build_search_body`.
 """
 
 from __future__ import annotations
@@ -44,23 +44,23 @@ import httpx
 import pytest
 import respx
 
-from vacantes.domain.company import (
+from job_discovery.domain.company import (
     Company,
     CoveoConfig,
     LinkRule,
     RuntimeHooks,
 )
-from vacantes.domain.region import COSTA_RICA_LATAM
-from vacantes.extraction.ats import browser_token as bt
-from vacantes.extraction.ats.browser_token import extract_token
-from vacantes.extraction.ats.coveo import (
+from job_discovery.domain.region import COSTA_RICA_LATAM
+from job_discovery.extraction.ats import browser_token as bt
+from job_discovery.extraction.ats.browser_token import extract_token
+from job_discovery.extraction.ats.coveo import (
     CoveoStrategy,
     _city_entries,
     _record_matches_region,
     build_search_body,
     search_endpoint_url,
 )
-from vacantes.extraction.base import RunContext
+from job_discovery.extraction.base import RunContext
 
 _ORG = "ustglobalproduction4ggrtx7v"
 _SEARCH_HUB = "prod-jobs-search-hub"

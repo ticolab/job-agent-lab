@@ -1,6 +1,6 @@
-# vacantes
+# Job Discovery
 
-`vacantes` answers one question: **what job postings are open right now.** It
+`job-discovery` answers one question: **what job postings are open right now.** It
 extracts job-posting URLs from a corpus of real career sites. Instead of brittle
 CSS/XPath selectors per site, it drives a
 [`browser-use`](https://github.com/browser-use/browser-use) agent (backed by an
@@ -47,12 +47,12 @@ strategy, and companies configured with `pre_filter_urls` all run without it.
 
 ## Usage
 
-Two console scripts are installed. `vacantes` is the dispatcher; `job-agent-lab`
+Two console scripts are installed. `job-discovery` is the dispatcher; `job-agent-lab`
 is a permanent alias for the integrate workflow, kept because every doc and skill
 is built around it. The two are equivalent.
 
 ```bash
-# Run every company in src/vacantes/catalog/companies.py
+# Run every company in src/job_discovery/catalog/companies.py
 uv run job-agent-lab
 
 # Single company (matched by alias, then acronym, then substring)
@@ -62,7 +62,7 @@ uv run job-agent-lab --company akurey
 uv run job-agent-lab --company gap --headed --model gpt-4o --max-steps 25
 
 # The same run through the dispatcher
-uv run vacantes integrate -c akurey
+uv run job-discovery integrate -c akurey
 ```
 
 Results are written as timestamped JSON to `./output/` and a summary is printed
@@ -72,7 +72,7 @@ the command usable as a gate.
 
 ### Running a batch
 
-The commands above onboard and debug one board at a time. `vacantes batch` is
+The commands above onboard and debug one board at a time. `job-discovery batch` is
 the operational counterpart: it runs the corpus concurrently and writes the
 current job-URL set to a SQLite database, which is the artifact that answers
 the question at the top of this file.
@@ -80,19 +80,19 @@ the question at the top of this file.
 Apply the migrations before the first run. Pointing at a path that does not
 exist creates an empty database quite happily, so the batch checks the schema
 first and names the tables it is missing rather than failing part-way through.
-The database defaults to `data/vacantes.db`; set the `VACANTES_DB` shell variable
+The database defaults to `data/job-discovery.db`; set the `JOB_DISCOVERY_DB` shell variable
 to move it, and both the batch and Alembic will follow. `--database PATH` moves a
 single run instead, in which case migrate that file with
-`VACANTES_DB=PATH uv run alembic upgrade head`.
+`JOB_DISCOVERY_DB=PATH uv run alembic upgrade head`.
 
 ```bash
 uv run alembic upgrade head                      # once, and after any schema change
-uv run vacantes batch --dry-run --all            # plan only, writes nothing
-uv run vacantes batch -c speechify -c cloudbeds  # two named boards
-uv run vacantes batch --all                      # the whole corpus
+uv run job-discovery batch --dry-run --all            # plan only, writes nothing
+uv run job-discovery batch -c speechify -c cloudbeds  # two named boards
+uv run job-discovery batch --all                      # the whole corpus
 ```
 
-A selection is always required. There is no bare `vacantes batch` meaning
+A selection is always required. There is no bare `job-discovery batch` meaning
 "everything", because a full run drives hundreds of boards and most of them
 cost a real browser and a paid model, so the whole corpus has to be asked for
 by name. Handles resolve exactly as they do for `integrate`, and an unknown one
@@ -112,8 +112,8 @@ One query answers the product question, and the run history beside it is where
 to look when a count seems wrong:
 
 ```bash
-sqlite3 data/vacantes.db 'select company_slug, url from job_urls order by company_slug'
-sqlite3 data/vacantes.db 'select company_slug, status, url_count, verdict from company_runs'
+sqlite3 data/job-discovery.db 'select company_slug, url from job_urls order by company_slug'
+sqlite3 data/job-discovery.db 'select company_slug, status, url_count, verdict from company_runs'
 ```
 
 ### Operating it
@@ -133,7 +133,7 @@ where to confirm which reading applies.
 The verdict distribution is the health query after a batch:
 
 ```bash
-sqlite3 data/vacantes.db 'select verdict, count(*) from company_runs where batch_id = (select max(batch_id) from company_runs) group by verdict'
+sqlite3 data/job-discovery.db 'select verdict, count(*) from company_runs where batch_id = (select max(batch_id) from company_runs) group by verdict'
 ```
 
 Read it knowing two things. Most of the corpus has no human count yet, so
@@ -156,7 +156,7 @@ Back up the dataset by copying the file. There is no export step, because the
 database is a single SQLite file and nothing else holds state:
 
 ```bash
-cp data/vacantes.db "data/vacantes-$(date +%Y%m%d).db"
+cp data/job-discovery.db "data/job-discovery-$(date +%Y%m%d).db"
 ```
 
 Losing it is recoverable in any case. The catalog is the source of truth for

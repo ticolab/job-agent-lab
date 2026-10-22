@@ -1,10 +1,10 @@
-"""Unit tests for the ``vacantes batch`` subcommand (Phase 3).
+"""Unit tests for the ``job-discovery batch`` subcommand (Phase 3).
 
 Three surfaces, in increasing order of how much they touch:
 
 - **Selection and flag parsing** are pure functions over a parsed
   namespace. Every namespace here is produced by the *real* parser via
-  :func:`vacantes.cli.main.build_parser`, so these tests also pin the
+  :func:`job_discovery.cli.main.build_parser`, so these tests also pin the
   subcommand's wiring into the dispatcher — a flag that stops being
   registered fails here rather than in a manual run.
 - **The schema preflight and the dry run** open a real SQLite file and
@@ -28,21 +28,21 @@ from typing import Any
 import pytest
 from sqlalchemy import func, select
 
-from tests.unit.asyncio_harness import run_async as _run
-from tests.unit.asyncio_harness import track_engine
-from vacantes.batch.policy import (
+from job_discovery.batch.policy import (
     DEFAULT_BROWSER_CONCURRENCY,
     DEFAULT_HTTP_CONCURRENCY,
     BatchPolicy,
 )
-from vacantes.cli import batch as cli_batch
-from vacantes.cli.main import build_parser
-from vacantes.domain.company import Company, StrategyName
-from vacantes.extraction.base import STRATEGIES, RunContext, build_report
-from vacantes.persistence import models
-from vacantes.persistence.engine import create_engine, create_session_factory
-from vacantes.persistence.timestamps import utc_now
-from vacantes.settings import DATABASE_ENV_VAR
+from job_discovery.cli import batch as cli_batch
+from job_discovery.cli.main import build_parser
+from job_discovery.domain.company import Company, StrategyName
+from job_discovery.extraction.base import STRATEGIES, RunContext, build_report
+from job_discovery.persistence import models
+from job_discovery.persistence.engine import create_engine, create_session_factory
+from job_discovery.persistence.timestamps import utc_now
+from job_discovery.settings import DATABASE_ENV_VAR
+from tests.unit.asyncio_harness import run_async as _run
+from tests.unit.asyncio_harness import track_engine
 
 # ---------------------------------------------------------------------
 # Helpers
@@ -50,7 +50,7 @@ from vacantes.settings import DATABASE_ENV_VAR
 
 
 def _args(*argv: str) -> argparse.Namespace:
-    """Parse ``vacantes batch <argv>`` through the real dispatcher.
+    """Parse ``job-discovery batch <argv>`` through the real dispatcher.
 
     Going through :func:`build_parser` rather than hand-building a
     namespace means these tests fail if the subcommand is unregistered
@@ -90,8 +90,8 @@ def catalog(monkeypatch: pytest.MonkeyPatch) -> list[Company]:
     selection agree.
     """
     companies = [ALPHA, BETA, GAMMA]
-    monkeypatch.setattr("vacantes.catalog.COMPANIES", companies)
-    monkeypatch.setattr("vacantes.cli.batch.COMPANIES", companies)
+    monkeypatch.setattr("job_discovery.catalog.COMPANIES", companies)
+    monkeypatch.setattr("job_discovery.cli.batch.COMPANIES", companies)
     return companies
 
 
@@ -238,7 +238,7 @@ class TestSelection:
         assert exc.value.code == 2
 
     def test_a_selection_is_required(self) -> None:
-        """No bare ``vacantes batch`` that quietly means 250 boards."""
+        """No bare ``job-discovery batch`` that quietly means 250 boards."""
         with pytest.raises(SystemExit) as exc:
             _args()
         assert exc.value.code == 2
@@ -317,7 +317,7 @@ class TestSchemaPreflight:
     ) -> None:
         """Connecting to a missing SQLite path happily creates an empty file.
 
-        Without this check the first ever ``vacantes batch`` would die
+        Without this check the first ever ``job-discovery batch`` would die
         with an ``OperationalError`` from inside a repository, which
         says nothing about the migration the operator actually owes.
         """
@@ -337,7 +337,7 @@ class TestSchemaPreflight:
         tmp_path: Path,
         capsys: pytest.CaptureFixture[str],
     ) -> None:
-        """Alembic has no ``--database``; it reads ``VACANTES_DB``.
+        """Alembic has no ``--database``; it reads ``JOB_DISCOVERY_DB``.
 
         A bare ``alembic upgrade head`` would migrate the default file
         and send the operator in a circle, so the hint must carry the
@@ -359,7 +359,7 @@ class TestSchemaPreflight:
     ) -> None:
         """Naming the default explicitly must not prefix a redundant variable."""
         path = tmp_path / "default.db"
-        monkeypatch.setattr("vacantes.cli.batch.DATABASE_PATH", path)
+        monkeypatch.setattr("job_discovery.cli.batch.DATABASE_PATH", path)
         with pytest.raises(SystemExit):
             _run(cli_batch._run(_args("-c", "alpha", "--database", str(path))))
         message = capsys.readouterr().err

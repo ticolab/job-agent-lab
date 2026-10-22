@@ -17,7 +17,7 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-from vacantes.extraction.dom import FIND_NEXT_CONTROL_JS
+from job_discovery.extraction.dom import FIND_NEXT_CONTROL_JS
 
 REPO = Path(__file__).parent.parent
 FIX = REPO / "tests" / "fixtures" / "snapshots"

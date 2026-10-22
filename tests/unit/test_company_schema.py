@@ -18,8 +18,8 @@ from typing import ClassVar
 import pytest
 from pydantic import ValidationError
 
-from vacantes.catalog import COMPANIES, slugify
-from vacantes.domain.company import (
+from job_discovery.catalog import COMPANIES, slugify
+from job_discovery.domain.company import (
     Company,
     CoveoConfig,
     LinkRule,

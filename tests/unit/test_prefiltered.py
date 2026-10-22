@@ -41,11 +41,11 @@ from typing import Any
 
 import pytest
 
-from vacantes.domain.company import Company, LinkRule, RuntimeHooks
-from vacantes.domain.region import COSTA_RICA_LATAM
-from vacantes.extraction.base import RunContext
-from vacantes.extraction.dom import strategy as strategy_mod
-from vacantes.extraction.dom.strategy import DomStrategy
+from job_discovery.domain.company import Company, LinkRule, RuntimeHooks
+from job_discovery.domain.region import COSTA_RICA_LATAM
+from job_discovery.extraction.base import RunContext
+from job_discovery.extraction.dom import strategy as strategy_mod
+from job_discovery.extraction.dom.strategy import DomStrategy
 
 
 def _run[T](coro: Coroutine[Any, Any, T]) -> T:
@@ -398,7 +398,7 @@ class TestAgentLessProof:
             raise AssertionError("LLM path entered")
 
         monkeypatch.setattr(
-            "vacantes.extraction.dom.agent.runner.build_agent", booby_trap
+            "job_discovery.extraction.dom.agent.runner.build_agent", booby_trap
         )
         patched["states"] = [["https://example.com/jobs/1"]]
         company = _make_company(
@@ -489,7 +489,7 @@ class TestReportShapeByteStability:
     """
 
     def test_states_visited_absent_when_kwarg_omitted(self) -> None:
-        from vacantes.extraction.base import build_report
+        from job_discovery.extraction.base import build_report
 
         report = build_report(
             strategy="dom",
@@ -508,7 +508,7 @@ class TestReportShapeByteStability:
         assert "states_visited" not in report["metadata"]
 
     def test_states_visited_present_when_kwarg_supplied(self) -> None:
-        from vacantes.extraction.base import build_report
+        from job_discovery.extraction.base import build_report
 
         report = build_report(
             strategy="dom",

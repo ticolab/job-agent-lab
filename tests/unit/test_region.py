@@ -1,4 +1,4 @@
-"""Unit tests for :class:`vacantes.domain.region.TargetRegion`.
+"""Unit tests for :class:`job_discovery.domain.region.TargetRegion`.
 
 Locks in the two surfaces of the canonical :data:`COSTA_RICA_LATAM`
 instance:
@@ -12,8 +12,8 @@ instance:
   boundary (``Latina, Italy`` must not match).
 
 - The three ``format_*`` render helpers — quoted / unquoted / preference
-  pair — used by :func:`vacantes.extraction.dom.agent.prompt.build_goal_prompt`
-  and :func:`vacantes.extraction.dom.agent.controller.build_no_match_description`.
+  pair — used by :func:`job_discovery.extraction.dom.agent.prompt.build_goal_prompt`
+  and :func:`job_discovery.extraction.dom.agent.controller.build_no_match_description`.
   Goldens on the composed strings live in ``test_prompt_render.py``;
   these tests pin the render primitives directly.
 """
@@ -27,7 +27,7 @@ from typing import ClassVar
 
 import pytest
 
-from vacantes.domain.region import (
+from job_discovery.domain.region import (
     _COSTA_RICA_PROVINCES,
     COSTA_RICA_LATAM,
     TargetRegion,

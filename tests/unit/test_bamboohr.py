@@ -41,15 +41,15 @@ import pytest
 import respx
 from pydantic import ValidationError
 
-from vacantes.domain.company import Company
-from vacantes.domain.region import COSTA_RICA_LATAM
-from vacantes.extraction.ats.bamboohr import (
+from job_discovery.domain.company import Company
+from job_discovery.domain.region import COSTA_RICA_LATAM
+from job_discovery.extraction.ats.bamboohr import (
     BambooHrStrategy,
     board_origin,
     location_text,
     select_region_urls,
 )
-from vacantes.extraction.base import RunContext
+from job_discovery.extraction.base import RunContext
 
 _ORIGIN = "https://cornelisnetworks.bamboohr.com"
 _ENDPOINT = f"{_ORIGIN}/careers/list"
@@ -456,7 +456,7 @@ class TestPayloadShapeGuards:
     def test_generic_exception_is_absorbed(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        from vacantes.extraction.ats import bamboohr as bh
+        from job_discovery.extraction.ats import bamboohr as bh
 
         def _boom(*args: Any, **kwargs: Any) -> Any:
             raise RuntimeError("synthetic downstream failure")

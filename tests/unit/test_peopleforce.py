@@ -31,15 +31,15 @@ import httpx
 import pytest
 import respx
 
-from vacantes.domain.company import Company
-from vacantes.domain.region import COSTA_RICA_LATAM
-from vacantes.extraction.ats.peopleforce import (
+from job_discovery.domain.company import Company
+from job_discovery.domain.region import COSTA_RICA_LATAM
+from job_discovery.extraction.ats.peopleforce import (
     PeopleForceStrategy,
     build_filtered_url,
     parse_location_options,
     select_region_locations,
 )
-from vacantes.extraction.base import RunContext
+from job_discovery.extraction.base import RunContext
 
 FIXTURES = Path(__file__).parent.parent / "fixtures" / "api" / "peopleforce"
 BOARD_URL = "https://planatechnologies.peopleforce.io/careers"

@@ -3,7 +3,7 @@
  extracts the region-specific tokens (intro noun phrase,
 quoted / unquoted option list, preference pair) from ``GOAL_PROMPT``
 and the ``report_no_matching_location_filter`` tool description into
-:class:`vacantes.domain.region.TargetRegion`. That refactor was
+:class:`job_discovery.domain.region.TargetRegion`. That refactor was
 behaviourally invisible to the agent — the model received the exact
 same bytes it did in the legacy literals — and the goldens below
 were the frozen legacy strings copied verbatim.
@@ -13,7 +13,7 @@ of that baseline: two new C3 sentences (native ``<select>`` vocab in
 1a, ISO country codes + Search/Apply/Submit click in Case B) and one
 new C4 block (collapsed-section reveal preamble in STEP 2 plus a
 matching IMPORTANT bullet). The ``GOLDEN_GOAL_PROMPT`` below is
-updated in lockstep with ``src/vacantes/navigation/prompt.py``
+updated in lockstep with ``src/job_discovery/navigation/prompt.py``
 so a byte-drift can never sneak in undocumented — any future clause
 change must land here in the same commit.
 
@@ -25,9 +25,9 @@ escape-round-trip errors when they are next edited.
 
 from __future__ import annotations
 
-from vacantes.domain.region import COSTA_RICA_LATAM
-from vacantes.extraction.dom.agent.controller import build_no_match_description
-from vacantes.extraction.dom.agent.prompt import GOAL_PROMPT, build_goal_prompt
+from job_discovery.domain.region import COSTA_RICA_LATAM
+from job_discovery.extraction.dom.agent.controller import build_no_match_description
+from job_discovery.extraction.dom.agent.prompt import GOAL_PROMPT, build_goal_prompt
 
 # ---------------------------------------------------------------------------
 # Golden: GOAL_PROMPT for COSTA_RICA_LATAM.
@@ -108,7 +108,7 @@ class TestExpectedJobsNeverLeaksToPrompt:
     This test locks the invariant on two independent axes:
 
     - **Source-level:** the substring ``expected_jobs`` appears
-      nowhere in :mod:`vacantes.extraction.dom.agent.prompt` — not in a
+      nowhere in :mod:`job_discovery.extraction.dom.agent.prompt` — not in a
       clause constant, not in a comment, not in a docstring. The
       check is via :func:`inspect.getsource` so any refactor that
       moves the clauses into a different module also has to move
@@ -122,14 +122,14 @@ class TestExpectedJobsNeverLeaksToPrompt:
 
     Neither check inspects the Case C tool description because the
     verdict layer has no rendering path into
-    :func:`~vacantes.extraction.dom.agent.controller.build_no_match_description`,
+    :func:`~job_discovery.extraction.dom.agent.controller.build_no_match_description`,
     and the golden test above already locks that surface byte-identical.
     """
 
     def test_expected_jobs_absent_from_prompt_module_source(self) -> None:
         import inspect
 
-        import vacantes.extraction.dom.agent.prompt as prompt_mod
+        import job_discovery.extraction.dom.agent.prompt as prompt_mod
 
         source = inspect.getsource(prompt_mod)
         assert "expected_jobs" not in source, (

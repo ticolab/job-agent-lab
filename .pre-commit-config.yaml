@@ -41,4 +41,4 @@ repos:
         # Every package under src/, not just the matcher's: cli/, batch/
         # and persistence/ are exercised only by this suite, and a
         # migration that drifts from models.py is caught only here too.
-        files: '^(src/vacantes/.*|migrations/.*|tests/.*)$'
+        files: '^(src/job_discovery/.*|migrations/.*|tests/.*)$'

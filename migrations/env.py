@@ -6,9 +6,9 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from vacantes.persistence.engine import database_url
-from vacantes.persistence.models import Base
-from vacantes.settings import DATABASE_PATH
+from job_discovery.persistence.engine import database_url
+from job_discovery.persistence.models import Base
+from job_discovery.settings import DATABASE_PATH
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -19,7 +19,7 @@ config = context.config
 # `disable_existing_loggers=False` is a correction to Alembic's stock
 # template, not a preference. The default is True, which disables every
 # logger that already exists — so invoking a migration in-process
-# silently switches off all `vacantes` logging for the rest of that
+# silently switches off all `job_discovery` logging for the rest of that
 # process. Two unrelated `caplog` tests caught it; an operator running a
 # migration before a batch would have seen the batch's warnings vanish.
 if config.config_file_name is not None:
@@ -29,12 +29,12 @@ if config.config_file_name is not None:
 # metadata or it is invisible to `alembic revision --autogenerate`.
 target_metadata = Base.metadata
 
-# The database location comes from `vacantes.settings` rather than from
+# The database location comes from `job_discovery.settings` rather than from
 # `sqlalchemy.url` in alembic.ini: two sources for one path is how a
 # migration ends up applied to a different file than the application
 # reads. alembic.ini therefore leaves the URL empty and this fills it.
-# `vacantes batch --database PATH` has no counterpart here; the
-# `VACANTES_DB` environment variable, read by `vacantes.settings`, is
+# `job-discovery batch --database PATH` has no counterpart here; the
+# `JOB_DISCOVERY_DB` environment variable, read by `job_discovery.settings`, is
 # how a migration is pointed at the same non-default file.
 #
 # Conditional rather than unconditional so an explicit value still wins,

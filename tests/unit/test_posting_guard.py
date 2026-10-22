@@ -7,7 +7,7 @@ there; the matcher truthfully found the one job link on that page and
 returned 1 — a number nothing downstream could tell from a small board,
 and one a batch run would have persisted by deleting the 13 real URLs.
 
-:func:`~vacantes.extraction.dom.rules.is_posting_url` closes that by
+:func:`~job_discovery.extraction.dom.rules.is_posting_url` closes that by
 asking whether the *current page's own URL* would be collected as a
 posting by the matcher's id-in-path rule. Three groups of tests pin it:
 
@@ -37,12 +37,12 @@ from urllib.parse import urlparse
 
 import pytest
 
+from job_discovery.catalog import COMPANIES
+from job_discovery.extraction.ats.talentbrew import apply_link_rule
+from job_discovery.extraction.dom.agent import controller as controller_module
+from job_discovery.extraction.dom.agent.controller import build_controller
+from job_discovery.extraction.dom.rules import derive_path_prefix, is_posting_url
 from tests.unit.asyncio_harness import run_async
-from vacantes.catalog import COMPANIES
-from vacantes.extraction.ats.talentbrew import apply_link_rule
-from vacantes.extraction.dom.agent import controller as controller_module
-from vacantes.extraction.dom.agent.controller import build_controller
-from vacantes.extraction.dom.rules import derive_path_prefix, is_posting_url
 
 _SNAPSHOTS = Path(__file__).resolve().parent.parent / "fixtures" / "snapshots"
 

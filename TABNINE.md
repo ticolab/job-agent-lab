@@ -4,7 +4,7 @@ Guidance file for the Tabnine CLI when working in this repository. Keep this fil
 
 ## Project Overview
 
-`vacantes` answers one question a few times a week: **what job postings are open right now.** It extracts job-posting URLs from a corpus of real career sites, and it exists to stress-test one design decision — **navigation is non-deterministic, extraction is deterministic** — against a large, diverse corpus before the approach is trusted in a production pipeline.
+`job-discovery` answers one question a few times a week: **what job postings are open right now.** It extracts job-posting URLs from a corpus of real career sites, and it exists to stress-test one design decision — **navigation is non-deterministic, extraction is deterministic** — against a large, diverse corpus before the approach is trusted in a production pipeline.
 
 For each configured company, a `browser-use` agent (OpenAI model routed via LiteLLM) drives the career page: loads the board, applies a location filter, reveals lazily-mounted content, and expands collapsed sections. The agent never decides what counts as a job link — that judgement belongs to a single JavaScript matcher (`collect_links.js`) which runs inside the page via `page.evaluate` and returns same-origin `<a>` tags matching a per-company path prefix. A regression harness replays the shipped matcher against frozen page snapshots so counting behaviour can be validated offline in seconds across the whole corpus.
 
@@ -25,7 +25,7 @@ uv run playwright install chromium
 cp .env.example .env                 # add OPENAI_API_KEY for live DOM runs
 ```
 
-Two console scripts are registered. `vacantes` is the dispatcher, with `integrate` and `batch` subcommands. `job-agent-lab` is a frozen alias pointing straight at the integrate entry point rather than through the dispatcher, so its argument surface is the pre-rename CLI's by construction. Both populate their parser from the same `add_integrate_arguments` function, so the two surfaces cannot drift. Keep the alias working — every doc, skill, and habit is built on it.
+Two console scripts are registered. `job-discovery` is the dispatcher, with `integrate` and `batch` subcommands. `job-agent-lab` is a frozen alias pointing straight at the integrate entry point rather than through the dispatcher, so its argument surface is the pre-rename CLI's by construction. Both populate their parser from the same `add_integrate_arguments` function, so the two surfaces cannot drift. Keep the alias working — every doc, skill, and habit is built on it.
 
 Run the extractor end-to-end. The `-c` flag matches by alias, then acronym, then substring against `catalog.COMPANIES`:
 
@@ -33,7 +33,7 @@ Run the extractor end-to-end. The `-c` flag matches by alias, then acronym, then
 uv run job-agent-lab                                        # every company
 uv run job-agent-lab -c akurey                              # one company
 uv run job-agent-lab -c gap --headed --model gpt-4o --max-steps 25
-uv run vacantes integrate -c akurey                         # identical, via the dispatcher
+uv run job-discovery integrate -c akurey                         # identical, via the dispatcher
 ```
 
 Results are written as timestamped JSON to `./output/` (gitignored) and a summary is printed to the console. The `--strict` flag exits non-zero if any run's `metadata.verdict` is not `"match"`.
@@ -50,25 +50,25 @@ uv run --group test pytest tests/unit/           # browser-free
 uv run --group test pytest tests/snapshots/      # needs Chromium
 ```
 
-Pre-commit gates ruff, mypy, and the full test suite on any change under `src/vacantes/`, `migrations/`, or `tests/`. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee that the commit passes.
+Pre-commit gates ruff, mypy, and the full test suite on any change under `src/job_discovery/`, `migrations/`, or `tests/`. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee that the commit passes.
 
-Alembic owns the schema. The database lives at `data/vacantes.db` by default, which is gitignored because the dataset answers "what is open right now" and is regenerable by re-running a batch:
+Alembic owns the schema. The database lives at `data/job-discovery.db` by default, which is gitignored because the dataset answers "what is open right now" and is regenerable by re-running a batch:
 
 ```bash
 uv run alembic upgrade head                        # create or migrate the database
 uv run alembic revision --autogenerate -m "..."    # new revision from models.py
-sqlite3 data/vacantes.db 'select * from job_urls'  # query it directly
+sqlite3 data/job-discovery.db 'select * from job_urls'  # query it directly
 ```
 
-The connection URL is built by `migrations/env.py` from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth. The path defaults to `data/vacantes.db` and is overridden by the `VACANTES_DB` shell variable (not a `.env` key: Alembic never loads `.env`). `vacantes batch --database PATH` points one run elsewhere, but Alembic has no such flag, so a non-default database is migrated with `VACANTES_DB=PATH uv run alembic upgrade head`; the schema preflight prints that exact command when it applies.
+The connection URL is built by `migrations/env.py` from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth. The path defaults to `data/job-discovery.db` and is overridden by the `JOB_DISCOVERY_DB` shell variable (not a `.env` key: Alembic never loads `.env`). `job-discovery batch --database PATH` points one run elsewhere, but Alembic has no such flag, so a non-default database is migrated with `JOB_DISCOVERY_DB=PATH uv run alembic upgrade head`; the schema preflight prints that exact command when it applies.
 
-`vacantes batch` is the only writer. A selection is mandatory — there is no bare invocation that means "the whole corpus" — because a full run drives hundreds of boards, many of them paying for a browser and an LLM:
+`job-discovery batch` is the only writer. A selection is mandatory — there is no bare invocation that means "the whole corpus" — because a full run drives hundreds of boards, many of them paying for a browser and an LLM:
 
 ```bash
-uv run vacantes batch --dry-run --all                  # plan only, writes nothing
-uv run vacantes batch -c speechify -c cloudbeds        # two boards
-uv run vacantes batch --all --exclude accenture        # everything but one
-uv run vacantes batch --companies queue.txt --force    # a file of handles, ignore freshness
+uv run job-discovery batch --dry-run --all                  # plan only, writes nothing
+uv run job-discovery batch -c speechify -c cloudbeds        # two boards
+uv run job-discovery batch --all --exclude accenture        # everything but one
+uv run job-discovery batch --companies queue.txt --force    # a file of handles, ignore freshness
 ```
 
 Handles resolve exactly as `integrate -c` resolves them, and unknown ones abort before any work starts. `--dry-run` is the first thing to reach for when a batch misbehaves: it prints which companies would run, which are skipped as fresh, and the concurrency ceilings, without writing even the catalog projection. A completed batch exits zero even when individual boards failed, matching `integrate`'s default; query `company_runs` for board health rather than reading the exit code.
@@ -79,7 +79,7 @@ Handles resolve exactly as `integrate -c` resolves them, and unknown ones abort 
 
 Three components sit over one shared kernel. `extraction/` owns the port and every strategy. `persistence/` owns the database. `batch/` owns concurrency and the per-company unit of work. The kernel — `domain/`, `catalog/`, `settings.py` — is the vocabulary all three speak.
 
-All three components exist today, alongside `cli/` and `reporting/`, and both subcommands are wired: `vacantes integrate` drives one board at a time and `vacantes batch` drives the corpus.
+All three components exist today, alongside `cli/` and `reporting/`, and both subcommands are wired: `job-discovery integrate` drives one board at a time and `job-discovery batch` drives the corpus.
 
 Every SQL statement in the system lives in one of `persistence/`'s three repository modules (`catalog_repo`, `jobs_repo`, `runs_repo`), so transaction boundaries and error translation have exactly one home. `engine.py` owns the connection URL and the four SQLite pragmas; `models.py` owns the three tables.
 
@@ -96,7 +96,7 @@ Enforced today by tests/unit/test_layering.py:
   reporting   → catalog
   catalog     → domain
   settings    → (nothing)
-  domain      → (nothing inside vacantes)
+  domain      → (nothing inside job_discovery)
 ```
 
 Two rows are narrower than initially anticipated, and both for the same reason: a component that is *handed* what it needs does not import it. `persistence` does not reach `catalog` because `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`. `batch` does not reach `catalog` or `settings` either — the scheduler is given both the companies to run and the session factory to use, and its ceilings are policy that lives in `batch/policy.py`. `reporting` stays out of `batch` because rendering belongs to the CLI that drives a batch, not to the batch itself.
@@ -109,7 +109,7 @@ The reason this matters is that two entry points share one core. The `integrate`
 
 ### The central split
 
-Every run dispatches through one port: `extraction.get_strategy(company.strategy).extract(company, ctx)`. The port is defined in `src/vacantes/extraction/base.py` and consists of the `ExtractionStrategy` Protocol, the frozen `RunContext` (model, headless flag, step cap, target region), the `STRATEGIES` registry, and `build_report(...)` — the single author of the output shape.
+Every run dispatches through one port: `extraction.get_strategy(company.strategy).extract(company, ctx)`. The port is defined in `src/job_discovery/extraction/base.py` and consists of the `ExtractionStrategy` Protocol, the frozen `RunContext` (model, headless flag, step cap, target region), the `STRATEGIES` registry, and `build_report(...)` — the single author of the output shape.
 
 Two families implement the port. `strategy="dom"` (the default) runs the browser-use agent under `GOAL_PROMPT` alongside the deterministic matcher. The six API adapters — `greenhouse`, `phenom`, `talentbrew`, `coveo`, `peopleforce`, `bamboohr` — live under `extraction/ats/` and bypass the browser entirely, querying the ATS or search platform that backs the board and filtering the returned records by region. Each API strategy earns its module when the DOM path cannot yield an honest regression artifact or cannot reach the postings at all. The one exception to "no browser" is `coveo` with `browser_token_key` set, which opens a browser session purely to read a search token out of page state.
 
@@ -117,7 +117,7 @@ Adding a new strategy requires extending the `StrategyName` literal in `domain/c
 
 ### Package layout
 
-The `src/vacantes/` tree is organized so each package owns exactly one concern. The CLI lives in `cli/`: `main.py` is the `vacantes` dispatcher (a table of subcommands rather than a branch per subcommand), `integrate.py` holds the argparse surface and the per-company orchestration loop, and `batch.py` is the batch subcommand. Runtime defaults live in `settings.py` (`DEFAULT_MODEL`, `DEFAULT_MAX_STEPS`, `OUTPUT_DIR`, plus the render-settle constants shared by runtime and capture).
+The `src/job_discovery/` tree is organized so each package owns exactly one concern. The CLI lives in `cli/`: `main.py` is the `job-discovery` dispatcher (a table of subcommands rather than a branch per subcommand), `integrate.py` holds the argparse surface and the per-company orchestration loop, and `batch.py` is the batch subcommand. Runtime defaults live in `settings.py` (`DEFAULT_MODEL`, `DEFAULT_MAX_STEPS`, `OUTPUT_DIR`, plus the render-settle constants shared by runtime and capture).
 
 The `domain/` package holds the pydantic schema: `Company` with its `strategy`, `paginate`, `hooks`, and `pre_filter_urls` knobs; `LinkRule` with `path_prefix`, `min_depth`, and `suppress_ancestor_selector`; `RuntimeHooks`; `ExtractionResult`; and `TargetRegion` together with the `COSTA_RICA_LATAM` singleton. Cross-field validators fire at catalog-import time — hooks require `strategy="dom"`, `pre_filter_urls` must share origin with `job_board_url`, and API strategies require or forbid their tenant config exactly as documented in each class docstring.
 
@@ -163,7 +163,7 @@ Two consequences of that design are worth knowing before debugging a batch, both
 
 Concurrency at the default ceiling changes no board's count. After the first full run, every deterministic verdict mismatch and every empty agent board was re-run alone through `integrate` and reproduced the batch's number exactly, so a non-match after a batch is drift against a stale `expected_jobs`, not the scheduler degrading extraction. Read the verdict distribution per batch as the health signal, and treat an agent-driven board at `under` with zero URLs stored as the line to look at.
 
-`cli/batch.py` preflights the schema before doing anything, because connecting to a SQLite path that does not exist creates an empty file quite happily. Without the check, the first ever `vacantes batch` on a fresh checkout would die with an `OperationalError` from inside a repository instead of naming the `alembic upgrade head` the operator actually owes. `persistence/engine.missing_tables` answers that question, and it lives there rather than in the CLI because nothing outside `persistence/` may build a query.
+`cli/batch.py` preflights the schema before doing anything, because connecting to a SQLite path that does not exist creates an empty file quite happily. Without the check, the first ever `job-discovery batch` on a fresh checkout would die with an `OperationalError` from inside a repository instead of naming the `alembic upgrade head` the operator actually owes. `persistence/engine.missing_tables` answers that question, and it lives there rather than in the CLI because nothing outside `persistence/` may build a query.
 
 ### The deterministic matcher
 
@@ -211,7 +211,7 @@ The `expected_jobs` value is a human-counted target and is **never** adjusted to
 
 ## Development Conventions
 
-Python 3.12+, uv-managed. Ruff enforces line-length 88, double quotes, and rules `E,F,I,W,UP,B,C4,SIM`. Mypy strict (`disallow_untyped_defs`) means every function is fully annotated. Import package modules as `from vacantes.X`; the package lives under `src/`.
+Python 3.12+, uv-managed. Ruff enforces line-length 88, double quotes, and rules `E,F,I,W,UP,B,C4,SIM`. Mypy strict (`disallow_untyped_defs`) means every function is fully annotated. Import package modules as `from job_discovery.X`; the package lives under `src/`.
 
 Two files are E501-exempt on purpose: `extraction/dom/agent/prompt.py` and `tests/unit/test_prompt_render.py`. Prompt clauses and their golden copies are byte-exact single-line literals — never reflow them.
 

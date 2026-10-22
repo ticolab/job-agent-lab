@@ -1,6 +1,6 @@
-Alembic migrations for the vacantes persistence layer.
+Alembic migrations for the job_discovery persistence layer.
 
-The connection URL is built by env.py from vacantes.settings.DATABASE_PATH;
+The connection URL is built by env.py from job_discovery.settings.DATABASE_PATH;
 sqlalchemy.url in alembic.ini is deliberately left empty so there is one
 source of truth for where the database lives. The schema's rationale and
 the day-to-day commands are documented in TABNINE.md under "The database".

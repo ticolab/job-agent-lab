@@ -1,11 +1,11 @@
 ---
 name: integrate-company
-description: Integrate a single company into vacantes' COMPANIES catalog and iterate until the deterministic extractor returns the human-counted expected_jobs target. Use when the user names a company they want integrated into the corpus — the full entry (name, aliases, job_board_url, sample_job_url, expected_jobs) is read from new-companies.json at the repo root, which the user populates from the committed new-companies.example.json template. Also use when debugging why an already-configured company returns the wrong job count, or troubleshooting zero / short / over-count extraction at integration time.
+description: Integrate a single company into job-discovery's COMPANIES catalog and iterate until the deterministic extractor returns the human-counted expected_jobs target. Use when the user names a company they want integrated into the corpus — the full entry (name, aliases, job_board_url, sample_job_url, expected_jobs) is read from new-companies.json at the repo root, which the user populates from the committed new-companies.example.json template. Also use when debugging why an already-configured company returns the wrong job count, or troubleshooting zero / short / over-count extraction at integration time.
 ---
 
-# Integrate One Company into the Vacantes Corpus
+# Integrate One Company into the Job Discovery Corpus
 
-Integrate **one** company into the `vacantes` corpus so that the extractor
+Integrate **one** company into the `job-discovery` corpus so that the extractor
 returns the **exact number of job listings** that a human counted on that
 company's career site. Iterate — add the company, run it, debug failures —
 until the extracted count matches the target. On success, remove the
@@ -16,7 +16,7 @@ report without committing.
 ## Objective
 
 Append **one** company (provided in the input) to `COMPANIES` in
-`src/vacantes/catalog/companies.py`, then make the extractor return the
+`src/job_discovery/catalog/companies.py`, then make the extractor return the
 **expected number of jobs**. "Done" means the deterministic extractor returns
 exactly that count on the real site, with no errors, the regression snapshot
 is captured and the corpus passes, the integrated entry is removed from the
@@ -78,7 +78,7 @@ update the entry).
 
 - `scripts/extractor_ground_truth.py` — Appendix B in script form. Runs the real
   extractor against the rendered DOM, no LLM. Invoke it from the repo root so
-  `vacantes` is importable:
+  `job_discovery` is importable:
   ```bash
   uv run python <skill-root>/scripts/extractor_ground_truth.py
       --job-board-url <url> --sample-job-url <url> [--wait 10] [--scroll 3]
@@ -90,14 +90,14 @@ update the entry).
 Before touching anything, read:
 
 - `CLAUDE.md` — project overview and conventions.
-- `src/vacantes/catalog/companies.py` — the `COMPANIES` list; the
-  `Company` / `LinkRule` pydantic models live in `src/vacantes/domain/company.py`.
-- `src/vacantes/extraction/dom/agent/prompt.py` — the shared `GOAL_PROMPT` the
+- `src/job_discovery/catalog/companies.py` — the `COMPANIES` list; the
+  `Company` / `LinkRule` pydantic models live in `src/job_discovery/domain/company.py`.
+- `src/job_discovery/extraction/dom/agent/prompt.py` — the shared `GOAL_PROMPT` the
   live agent runs under.
-- `src/vacantes/extraction/dom/rules.py` — `derive_path_prefix()`, and
-  `src/vacantes/extraction/dom/assets/collect_links.js` — the matcher JS
+- `src/job_discovery/extraction/dom/rules.py` — `derive_path_prefix()`, and
+  `src/job_discovery/extraction/dom/assets/collect_links.js` — the matcher JS
   body (registered as the `extract_job_links` tool in
-  `src/vacantes/extraction/dom/agent/controller.py`). **Understand these two
+  `src/job_discovery/extraction/dom/agent/controller.py`). **Understand these two
   before debugging.**
 
 ## How the system works (mechanics to understand)
@@ -137,7 +137,7 @@ agent run.** Isolate which (see Debugging).
 
 - The **path prefix is everything.** Verify it before anything else:
   ```bash
-  uv run python -c "from vacantes.extraction.dom.rules import derive_path_prefix; print(derive_path_prefix('<sample_job_url>'))"
+  uv run python -c "from job_discovery.extraction.dom.rules import derive_path_prefix; print(derive_path_prefix('<sample_job_url>'))"
   ```
   Choose `sample_job_url` so this prints the prefix shared by all real job
   links. For query-string sites, give the **path form** that yields the right
@@ -531,7 +531,7 @@ and the pattern classes that are now closed vs still open.
   reporting. (Put temp scripts outside the repo or in a path that won't be
   committed.)
 - Follow repo conventions: Python 3.12+, Ruff (line-length 88, double quotes),
-  Mypy; imports as `from vacantes.X`.
+  Mypy; imports as `from job_discovery.X`.
 
 ## Definition of Done
 

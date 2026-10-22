@@ -1,4 +1,4 @@
-"""Unit tests for ``vacantes.extraction.dom.rules.derive_path_prefix``.
+"""Unit tests for ``job_discovery.extraction.dom.rules.derive_path_prefix``.
 
 The three examples in the function's own docstring are the "contract" the
 runtime, the capture script, and the snapshot suite all rely on. This
@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import pytest
 
-from vacantes.extraction.dom.rules import derive_path_prefix
+from job_discovery.extraction.dom.rules import derive_path_prefix
 
 
 class TestDocstringExamples:

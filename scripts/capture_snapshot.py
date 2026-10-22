@@ -38,7 +38,7 @@ frames) omit the ``frames`` key entirely for byte-stable metadata.
 Pagination
 ------------------
 Passing ``--paginate`` drives the same
-:func:`~vacantes.extraction.dom.collector.walk_and_collect` loop
+:func:`~job_discovery.extraction.dom.collector.walk_and_collect` loop
 the runtime uses when ``Company.paginate=True``, over a Playwright
 ``PageDriver`` defined below. After baking state 1 as ``page.html``
 (with its usual ``frames/`` sidecar), each subsequent DOM state is
@@ -72,7 +72,7 @@ agent's job under GOAL_PROMPT §STEP 2, not the collector's — this
 flag is capture-side only.
 
 Under the bounded expansion loop has been extracted into
-:func:`~vacantes.extraction.dom.collector.expand_all` — one
+:func:`~job_discovery.extraction.dom.collector.expand_all` — one
 production loop shared between runtime (driven by ``ActorPageDriver``)
 and capture (driven by :class:`_PlaywrightPageDriver`). Its cap
 constant and settle sleep now live on the collector module and are
@@ -112,7 +112,7 @@ never visits on this path), then each subsequent
 ``pre_filter_urls[N-1]`` is fetched, settled, hooks 1–2 re-applied,
 and baked as ``states/state-N.html``. The reported extractor count
 is the union across every state's matcher run — the same union
-:func:`~vacantes.extraction.dom.strategy.DomStrategy._extract_prefiltered`
+:func:`~job_discovery.extraction.dom.strategy.DomStrategy._extract_prefiltered`
 computes at runtime — so the ``--expected`` sanity check aligns with
 the harness assertion. Three additive-optional metadata keys are
 emitted together on declaring captures (``pre_filter_urls`` verbatim,
@@ -154,16 +154,16 @@ from urllib.parse import urlparse
 from playwright.async_api import Frame, Page, async_playwright
 from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 
-from vacantes.catalog import find_company, slugify
-from vacantes.domain.company import Company, RuntimeHooks
-from vacantes.extraction.dom import EXTRACT_JOB_LINKS_JS
-from vacantes.extraction.dom.collector import (
+from job_discovery.catalog import find_company, slugify
+from job_discovery.domain.company import Company, RuntimeHooks
+from job_discovery.extraction.dom import EXTRACT_JOB_LINKS_JS
+from job_discovery.extraction.dom.collector import (
     apply_pre_extract_css,
     expand_all,
     walk_and_collect,
 )
-from vacantes.extraction.dom.rules import derive_path_prefix
-from vacantes.settings import (
+from job_discovery.extraction.dom.rules import derive_path_prefix
+from job_discovery.settings import (
     RENDER_SCROLL_COUNT,
     RENDER_WAIT_SEC,
     launch_capture_browser,
@@ -176,7 +176,7 @@ SNAPSHOTS_DIR = (
 )
 
 # The bounded expansion loop lives in
-# :func:`~vacantes.extraction.dom.collector.expand_all` as of
+# :func:`~job_discovery.extraction.dom.collector.expand_all` as of
 # — one production loop, two adapters (runtime uses
 # ``ActorPageDriver``; capture uses ``_PlaywrightPageDriver`` below).
 # The round cap and settle-sleep constants live on the collector
@@ -457,9 +457,9 @@ class _PlaywrightPageDriver:
     Kept local to the capture script rather than promoted to the
     ``collector`` module because Playwright is a scripts-side dependency
     and the runtime uses browser-use's page handle (served by
-    :class:`~vacantes.extraction.dom.collector.ActorPageDriver`).
+    :class:`~job_discovery.extraction.dom.collector.ActorPageDriver`).
     The two adapters share the same three-method protocol so
-    :func:`~vacantes.extraction.dom.collector.walk_and_collect` is
+    :func:`~job_discovery.extraction.dom.collector.walk_and_collect` is
     driven identically from both surfaces — one production loop, two
     minimal adapters.
     """

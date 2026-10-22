@@ -5745,7 +5745,7 @@ wheels = [
 ]
 
 [[package]]
-name = "vacantes"
+name = "job-discovery"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

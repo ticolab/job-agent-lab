@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`vacantes.reporting.output`.
+"""Unit tests for :mod:`job_discovery.reporting.output`.
 
 Focused on the additions:
 
@@ -24,7 +24,7 @@ from typing import Any
 
 import pytest
 
-from vacantes.reporting.output import _verdict_line, print_summary
+from job_discovery.reporting.output import _verdict_line, print_summary
 
 
 def _meta(
