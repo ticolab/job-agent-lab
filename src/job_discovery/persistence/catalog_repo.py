@@ -6,7 +6,7 @@ self-describing: without it, ``job_urls`` is a set of slugs with no
 names, board URLs, or human-counted targets, and every ad-hoc SQL query
 would need the Python catalog open beside it.
 
-The sync is refreshed at the start of every batch, which makes the
+The sync is refreshed at the start of every scan, which makes the
 projection eventually consistent with the catalog by construction — an
 edit to ``COMPANIES`` needs no migration and no manual reconciliation
 step.

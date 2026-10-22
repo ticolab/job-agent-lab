@@ -471,7 +471,7 @@ class TestServerFacetIsAuthoritative:
         self, caplog: pytest.LogCaptureFixture
     ) -> None:
         # Keeping the record is only defensible if the disagreement is
-        # visible; an operator reading batch logs is the detector.
+        # visible; an operator reading scan logs is the detector.
         payload = _load_fixture()
         payload["refineSearch"]["data"]["jobs"] = [
             {

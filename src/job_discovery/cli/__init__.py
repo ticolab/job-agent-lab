@@ -4,7 +4,7 @@ Two console scripts are registered in ``pyproject.toml`` and both land
 here:
 
 - ``job-discovery`` → :func:`job_discovery.cli.main.main`, the dispatcher that
-  routes to the ``integrate`` and ``batch`` subcommands.
+  routes to the ``integrate`` and ``scan`` subcommands.
 - ``job-agent-lab`` → :func:`job_discovery.cli.integrate.main`, a frozen
   alias that bypasses the dispatcher entirely. Pointing it at the
   integrate module's own ``main`` is what guarantees the pre-rename

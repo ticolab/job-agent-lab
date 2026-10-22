@@ -134,7 +134,7 @@ async def should_skip(
     only the arithmetic that turns a window into a cutoff, so there is
     one place where "fresh" is defined.
 
-    Crash recovery falls out of the same rule. A killed batch leaves
+    Crash recovery falls out of the same rule. A killed scan leaves
     ``in_progress`` rows; the scheduler reaps them to ``failed`` at
     startup; they are therefore not successes, and the companies they
     belong to run again. No checkpoint file is involved.

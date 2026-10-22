@@ -703,7 +703,7 @@ class TestSkipPolicy:
 
 
 class TestReaping:
-    """A killed batch is recovered by the next one, with no checkpoint."""
+    """A killed scan is recovered by the next one, with no checkpoint."""
 
     def test_an_abandoned_run_is_reaped_and_the_company_runs_again(
         self, tmp_path: Path, fake: _FakeStrategy
@@ -736,7 +736,7 @@ class TestReaping:
         # The abandoned row was failed with the documented message, and a
         # fresh successful row sits beside it.
         assert rows[0].status == "failed"
-        assert rows[0].error_message == "abandoned: batch terminated"
+        assert rows[0].error_message == "abandoned: scan terminated"
         assert rows[1].status == "success"
         assert result.succeeded == 1
 

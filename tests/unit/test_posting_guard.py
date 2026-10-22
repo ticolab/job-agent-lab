@@ -5,7 +5,7 @@ has no notion of *which* page that is. On Deloitte the agent wandered
 into a posting's detail page on one run in three and called the tool
 there; the matcher truthfully found the one job link on that page and
 returned 1 — a number nothing downstream could tell from a small board,
-and one a batch run would have persisted by deleting the 13 real URLs.
+and one a scan would have persisted by deleting the 13 real URLs.
 
 :func:`~job_discovery.extraction.dom.rules.is_posting_url` closes that by
 asking whether the *current page's own URL* would be collected as a
@@ -331,7 +331,7 @@ class TestExtractJobLinksToolGuard:
             result = run_async(
                 self._tool()(browser_session=_FakeSession(self._POSTING))
             )
-        # A batch operator reads logs, not ActionResults: the refusal must
+        # A scan operator reads logs, not ActionResults: the refusal must
         # surface there too, naming the page and the listing to return to.
         warnings = [r for r in caplog.records if r.levelno == logging.WARNING]
         assert any("refused on a posting page" in r.getMessage() for r in warnings)

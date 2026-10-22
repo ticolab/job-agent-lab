@@ -16,9 +16,9 @@ would become permanent and silent. Keying on successes means failures
 are always eligible for retry and successes are never repeated inside
 the window.
 
-**Crash recovery falls out of that rule.** A batch killed mid-run leaves
+**Crash recovery falls out of that rule.** A scan killed mid-run leaves
 ``in_progress`` rows with no ``finished_at``. :func:`reap_stale_runs`
-marks them failed at the next batch's startup; because they are not
+marks them failed at the next scan's startup; because they are not
 successes, the reaped companies fail the freshness check and re-run,
 while companies that genuinely completed before the crash are skipped.
 No checkpoint file is needed, and resumption is not a separate mechanism.
@@ -36,8 +36,8 @@ from job_discovery.persistence.timestamps import as_naive_utc, utc_now
 
 # Written into ``error_message`` by :func:`reap_stale_runs`. A distinct,
 # greppable string so an operator can tell a board that genuinely broke
-# from one whose batch was killed out from under it.
-ABANDONED_MESSAGE = "abandoned: batch terminated"
+# from one whose scan was killed out from under it.
+ABANDONED_MESSAGE = "abandoned: scan terminated"
 
 
 async def start_run(session: AsyncSession, *, company_slug: str, batch_id: str) -> int:
@@ -51,7 +51,7 @@ async def start_run(session: AsyncSession, *, company_slug: str, batch_id: str) 
     Args:
         session: A session with no transaction in progress.
         company_slug: Must already exist in ``companies``.
-        batch_id: Groups the runs of one batch so a single invocation's
+        batch_id: Groups the runs of one scan so a single invocation's
             results can be queried together.
 
     Returns:
@@ -158,7 +158,7 @@ async def has_fresh_success(
 async def reap_stale_runs(session: AsyncSession, *, older_than: datetime) -> int:
     """Fail every ``in_progress`` run started before *older_than*.
 
-    Called at batch startup to clean up after a previous batch that was
+    Called at scan startup to clean up after a previous scan that was
     killed. The cutoff is on ``started_at`` because an abandoned run has
     no ``finished_at`` to compare — that absence is precisely what
     identifies it.

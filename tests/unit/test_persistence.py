@@ -600,7 +600,7 @@ class TestReaper:
         """Only ``in_progress`` rows are candidates.
 
         A success reaped into a failure would discard the record that
-        makes the next batch skip the company, and the corpus would be
+        makes the next scan skip the company, and the corpus would be
         re-extracted from scratch after every crash.
         """
 
@@ -652,10 +652,10 @@ class TestCatalogProjection:
         assert row.expected_jobs == 3
 
     def test_resync_updates_in_place_without_duplicating(self, tmp_path: Path) -> None:
-        """The sync runs at the start of every batch, so it must upsert.
+        """The sync runs at the start of every scan, so it must upsert.
 
         An insert-only sync would violate the primary key on the second
-        batch; a delete-then-insert would cascade into ``job_urls`` and
+        scan; a delete-then-insert would cascade into ``job_urls`` and
         silently discard the dataset.
         """
 

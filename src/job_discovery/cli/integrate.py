@@ -4,7 +4,7 @@ Drives one company at a time (or the whole corpus, sequentially) and
 writes a JSON report per company for a human to review — the evidence
 the ``integrate-company`` workflow inspects before a catalog entry is
 committed. Concurrency and persistence are deliberately absent here;
-those belong to the ``batch`` surface.
+those belong to the ``scan`` surface.
 
 This module owns argparse + the per-company orchestration loop. The heavy
 lifting is delegated to sibling packages:

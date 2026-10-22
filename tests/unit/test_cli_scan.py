@@ -1,4 +1,4 @@
-"""Unit tests for the ``job-discovery batch`` subcommand (Phase 3).
+"""Unit tests for the ``job-discovery scan`` subcommand (Phase 3).
 
 Three surfaces, in increasing order of how much they touch:
 
@@ -33,7 +33,7 @@ from job_discovery.batch.policy import (
     DEFAULT_HTTP_CONCURRENCY,
     BatchPolicy,
 )
-from job_discovery.cli import batch as cli_batch
+from job_discovery.cli import scan as cli_scan
 from job_discovery.cli.main import build_parser
 from job_discovery.domain.company import Company, StrategyName
 from job_discovery.extraction.base import STRATEGIES, RunContext, build_report
@@ -50,13 +50,13 @@ from tests.unit.asyncio_harness import track_engine
 
 
 def _args(*argv: str) -> argparse.Namespace:
-    """Parse ``job-discovery batch <argv>`` through the real dispatcher.
+    """Parse ``job-discovery scan <argv>`` through the real dispatcher.
 
     Going through :func:`build_parser` rather than hand-building a
     namespace means these tests fail if the subcommand is unregistered
     or a flag is renamed, which is most of what could silently break.
     """
-    return build_parser().parse_args(["batch", *argv])
+    return build_parser().parse_args(["scan", *argv])
 
 
 def _company(
@@ -91,7 +91,7 @@ def catalog(monkeypatch: pytest.MonkeyPatch) -> list[Company]:
     """
     companies = [ALPHA, BETA, GAMMA]
     monkeypatch.setattr("job_discovery.catalog.COMPANIES", companies)
-    monkeypatch.setattr("job_discovery.cli.batch.COMPANIES", companies)
+    monkeypatch.setattr("job_discovery.cli.scan.COMPANIES", companies)
     return companies
 
 
@@ -159,23 +159,54 @@ async def _count(factory: Any, model: Any) -> int:
 # ---------------------------------------------------------------------
 
 
+class TestCommandRegistration:
+    """The dispatcher exposes only the public scan command."""
+
+    def test_scan_is_registered_and_batch_is_rejected(self) -> None:
+        parser = build_parser()
+        assert parser.parse_args(["scan", "--all"]).command == "scan"
+        with pytest.raises(SystemExit) as exc:
+            parser.parse_args(["batch", "--all"])
+        assert exc.value.code == 2
+
+    def test_top_level_help_lists_scan_not_batch(
+        self, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        with pytest.raises(SystemExit) as exc:
+            build_parser().parse_args(["--help"])
+        assert exc.value.code == 0
+        help_text = capsys.readouterr().out
+        assert "{integrate,scan}" in help_text
+        assert " batch" not in help_text
+
+    def test_scan_help_uses_scan_terminology(
+        self, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        with pytest.raises(SystemExit) as exc:
+            build_parser().parse_args(["scan", "--help"])
+        assert exc.value.code == 0
+        help_text = capsys.readouterr().out
+        assert "usage: job-discovery scan" in help_text
+        assert "batch" not in help_text.lower()
+
+
 class TestSelection:
     """Handle resolution matches ``integrate`` and fails before any work."""
 
     def test_all_selects_the_whole_catalog(self, catalog: list[Company]) -> None:
-        assert cli_batch.select_companies(_args("--all")) == catalog
+        assert cli_scan.select_companies(_args("--all")) == catalog
 
     def test_a_repeated_company_flag_selects_several(
         self, catalog: list[Company]
     ) -> None:
-        selected = cli_batch.select_companies(_args("-c", "alpha", "-c", "beta"))
+        selected = cli_scan.select_companies(_args("-c", "alpha", "-c", "beta"))
         assert selected == [ALPHA, BETA]
 
     def test_handles_resolve_by_substring_like_integrate(
         self, catalog: list[Company]
     ) -> None:
         """Same precedence as ``integrate -c``: alias, acronym, substring."""
-        assert cli_batch.select_companies(_args("-c", "gamma corp")) == [GAMMA]
+        assert cli_scan.select_companies(_args("-c", "gamma corp")) == [GAMMA]
 
     def test_a_handle_file_is_read_ignoring_blanks_and_comments(
         self, catalog: list[Company], tmp_path: Path
@@ -184,14 +215,14 @@ class TestSelection:
         listing.write_text(
             "# the two cheap ones\nalpha\n\n  beta  # trailing comment\n\n"
         )
-        selected = cli_batch.select_companies(_args("--companies", str(listing)))
+        selected = cli_scan.select_companies(_args("--companies", str(listing)))
         assert selected == [ALPHA, BETA]
 
     def test_an_unreadable_handle_file_aborts(
         self, catalog: list[Company], tmp_path: Path
     ) -> None:
         with pytest.raises(SystemExit) as exc:
-            cli_batch.select_companies(_args("--companies", str(tmp_path / "nope.txt")))
+            cli_scan.select_companies(_args("--companies", str(tmp_path / "nope.txt")))
         assert exc.value.code == 2
 
     def test_every_unknown_handle_is_reported_at_once(
@@ -203,7 +234,7 @@ class TestSelection:
         a twenty-run exercise.
         """
         with pytest.raises(SystemExit) as exc:
-            cli_batch.select_companies(
+            cli_scan.select_companies(
                 _args("-c", "nosuch", "-c", "alpha", "-c", "alsono")
             )
         assert exc.value.code == 2
@@ -212,12 +243,12 @@ class TestSelection:
         assert "alsono" in message
 
     def test_exclude_drops_a_company(self, catalog: list[Company]) -> None:
-        selected = cli_batch.select_companies(_args("--all", "--exclude", "beta"))
+        selected = cli_scan.select_companies(_args("--all", "--exclude", "beta"))
         assert selected == [ALPHA, GAMMA]
 
     def test_an_unknown_exclude_handle_aborts(self, catalog: list[Company]) -> None:
         with pytest.raises(SystemExit) as exc:
-            cli_batch.select_companies(_args("--all", "--exclude", "nosuch"))
+            cli_scan.select_companies(_args("--all", "--exclude", "nosuch"))
         assert exc.value.code == 2
 
     def test_duplicate_handles_collapse(self, catalog: list[Company]) -> None:
@@ -227,18 +258,18 @@ class TestSelection:
         the first one established, which reads as a bug rather than as
         de-duplication.
         """
-        selected = cli_batch.select_companies(
+        selected = cli_scan.select_companies(
             _args("-c", "alpha", "-c", "Alpha Corp", "-c", "alpha")
         )
         assert selected == [ALPHA]
 
     def test_excluding_everything_aborts(self, catalog: list[Company]) -> None:
         with pytest.raises(SystemExit) as exc:
-            cli_batch.select_companies(_args("-c", "alpha", "--exclude", "alpha"))
+            cli_scan.select_companies(_args("-c", "alpha", "--exclude", "alpha"))
         assert exc.value.code == 2
 
     def test_a_selection_is_required(self) -> None:
-        """No bare ``job-discovery batch`` that quietly means 250 boards."""
+        """No bare ``job-discovery scan`` that quietly means 250 boards."""
         with pytest.raises(SystemExit) as exc:
             _args()
         assert exc.value.code == 2
@@ -259,10 +290,10 @@ class TestPolicyFlags:
 
     def test_defaults_match_the_policy_defaults(self) -> None:
         """The help text's numbers and the dataclass's cannot drift."""
-        assert cli_batch.build_policy(_args("--all")) == BatchPolicy()
+        assert cli_scan.build_policy(_args("--all")) == BatchPolicy()
 
     def test_flags_map_through(self) -> None:
-        policy = cli_batch.build_policy(
+        policy = cli_scan.build_policy(
             _args(
                 "--all",
                 "--browser-concurrency",
@@ -296,7 +327,7 @@ class TestPolicyFlags:
 
     def test_a_zero_freshness_window_is_allowed(self) -> None:
         """Zero is ``--force`` expressed as a window, not a mistake."""
-        policy = cli_batch.build_policy(_args("--all", "--freshness-hours", "0"))
+        policy = cli_scan.build_policy(_args("--all", "--freshness-hours", "0"))
         assert policy.freshness.total_seconds() == 0
 
 
@@ -317,13 +348,13 @@ class TestSchemaPreflight:
     ) -> None:
         """Connecting to a missing SQLite path happily creates an empty file.
 
-        Without this check the first ever ``job-discovery batch`` would die
+        Without this check the first ever ``job-discovery scan`` would die
         with an ``OperationalError`` from inside a repository, which
         says nothing about the migration the operator actually owes.
         """
         args = _args("-c", "alpha", "--database", str(tmp_path / "empty.db"))
         with pytest.raises(SystemExit) as exc:
-            _run(cli_batch._run(args))
+            _run(cli_scan._run(args))
         assert exc.value.code == 2
         message = capsys.readouterr().err
         assert "alembic upgrade head" in message
@@ -345,7 +376,7 @@ class TestSchemaPreflight:
         """
         path = tmp_path / "elsewhere.db"
         with pytest.raises(SystemExit):
-            _run(cli_batch._run(_args("-c", "alpha", "--database", str(path))))
+            _run(cli_scan._run(_args("-c", "alpha", "--database", str(path))))
         message = capsys.readouterr().err
         assert f"{DATABASE_ENV_VAR}={path} uv run alembic upgrade head" in message
 
@@ -359,9 +390,9 @@ class TestSchemaPreflight:
     ) -> None:
         """Naming the default explicitly must not prefix a redundant variable."""
         path = tmp_path / "default.db"
-        monkeypatch.setattr("job_discovery.cli.batch.DATABASE_PATH", path)
+        monkeypatch.setattr("job_discovery.cli.scan.DATABASE_PATH", path)
         with pytest.raises(SystemExit):
-            _run(cli_batch._run(_args("-c", "alpha", "--database", str(path))))
+            _run(cli_scan._run(_args("-c", "alpha", "--database", str(path))))
         message = capsys.readouterr().err
         assert "Run 'uv run alembic upgrade head' first." in message
         assert DATABASE_ENV_VAR not in message
@@ -387,7 +418,7 @@ class TestDryRun:
 
         async def scenario() -> tuple[int, int, int]:
             factory = await _migrated(path)
-            await cli_batch._run(args)
+            await cli_scan._run(args)
             return (
                 await _count(factory, models.CompanyRun),
                 await _count(factory, models.Company),
@@ -397,6 +428,7 @@ class TestDryRun:
         runs, projected, urls = _run(scenario())
         out = capsys.readouterr().out
 
+        assert "Scan plan" in out
         assert "dry run" in out
         assert "Would run (3)" in out
         # Every selected company, with its cost class and strategy.
@@ -443,7 +475,7 @@ class TestDryRun:
                         finished_at=now,
                     )
                 )
-            await cli_batch._run(args)
+            await cli_scan._run(args)
 
         _run(scenario())
         out = capsys.readouterr().out
@@ -492,7 +524,7 @@ class TestRun:
 
         async def scenario() -> tuple[int, list[Any]]:
             factory = await _migrated(path)
-            await cli_batch._run(args)
+            await cli_scan._run(args)
             stored = await _count(factory, models.JobUrl)
             async with factory() as session:
                 rows = (
@@ -509,6 +541,8 @@ class TestRun:
         stored, rows = _run(scenario())
         out = capsys.readouterr().out
 
+        assert "Scan:" in out
+        assert "Batch:" not in out
         assert "Success:   2" in out
         assert "Failed:    1" in out
         # Two from alpha (the duplicate collapsed) plus one from gamma.
@@ -528,10 +562,10 @@ class TestRun:
 
         async def scenario() -> list[str]:
             await _migrated(path)
-            await cli_batch._run(_args("--all", "--database", str(path)))
+            await cli_scan._run(_args("--all", "--database", str(path)))
             first_pass = list(fake.calls)
             fake.calls.clear()
-            await cli_batch._run(_args("--all", "--database", str(path)))
+            await cli_scan._run(_args("--all", "--database", str(path)))
             return [*first_pass, "|", *fake.calls]
 
         calls = _run(scenario())
@@ -546,9 +580,9 @@ class TestRun:
 
         async def scenario() -> list[str]:
             await _migrated(path)
-            await cli_batch._run(_args("-c", "alpha", "--database", str(path)))
+            await cli_scan._run(_args("-c", "alpha", "--database", str(path)))
             fake.calls.clear()
-            await cli_batch._run(
+            await cli_scan._run(
                 _args("-c", "alpha", "--force", "--database", str(path))
             )
             return list(fake.calls)
@@ -562,7 +596,7 @@ class TestRun:
         tmp_path: Path,
         capsys: pytest.CaptureFixture[str],
     ) -> None:
-        """Killing a batch mid-run and re-running resumes, per §7."""
+        """Killing a scan mid-run and re-running resumes, per §7."""
         path = tmp_path / "reap.db"
         args = _args("-c", "alpha", "--database", str(path))
 
@@ -589,7 +623,7 @@ class TestRun:
                         started_at=now - timedelta(hours=3),
                     )
                 )
-            await cli_batch._run(args)
+            await cli_scan._run(args)
 
         _run(scenario())
         out = capsys.readouterr().out
@@ -610,7 +644,7 @@ class TestRun:
 
         async def scenario() -> None:
             await _migrated(path)
-            await cli_batch._run(args)
+            await cli_scan._run(args)
 
         _run(scenario())
 
@@ -627,7 +661,7 @@ class TestRun:
 
         async def scenario() -> None:
             await _migrated(path)
-            await cli_batch._run(_args("-c", "alpha", "--database", str(path)))
+            await cli_scan._run(_args("-c", "alpha", "--database", str(path)))
 
         _run(scenario())
 

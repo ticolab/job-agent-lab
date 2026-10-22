@@ -118,7 +118,7 @@ async def _record_failure(
     Best-effort by design: if the database is what just failed, there is
     nothing left to record into. The outcome still carries *error*, and
     the row left ``in_progress`` is reaped to ``failed`` at the next
-    batch's startup, so the stored state converges without this write.
+    scan's startup, so the stored state converges without this write.
     """
     try:
         async with session_factory() as session:
@@ -126,7 +126,7 @@ async def _record_failure(
     except Exception:  # noqa: BLE001 — see docstring
         logger.warning(
             "could not record failure for run %s (%s); the row will be "
-            "reaped at the next batch",
+            "reaped at the next scan",
             run_id,
             error,
             exc_info=True,
@@ -236,7 +236,7 @@ async def run_company(
 
         # A second transaction rather than one spanning both, for the
         # reason above. Dying in between stores the URLs but leaves the
-        # run `in_progress`, which the next batch reaps to `failed` and
+        # run `in_progress`, which the next scan reaps to `failed` and
         # re-runs — and re-running replaces the same set, so the window
         # is harmless.
         async with session_factory() as session:

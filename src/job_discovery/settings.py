@@ -37,7 +37,7 @@ OUTPUT_DIR: Path = Path("output")
 # Default SQLite database location, relative to the current working
 # directory like OUTPUT_DIR. ``data/`` is gitignored: the dataset answers
 # "what is open right now" and is fully regenerable by re-running a
-# batch, so it is never committed and backup is a file copy.
+# scan, so it is never committed and backup is a file copy.
 #
 # Stored as a filesystem path rather than a driver URL because the path
 # is what an operator types (``sqlite3 data/job-discovery.db '...'``) and what
@@ -47,9 +47,9 @@ OUTPUT_DIR: Path = Path("output")
 DEFAULT_DATABASE_PATH: Path = Path("data") / "job-discovery.db"
 
 # The one environment variable this module reads. It exists because two
-# programs must agree on where the database is — ``job-discovery batch``,
+# programs must agree on where the database is — ``job-discovery scan``,
 # which writes it, and ``alembic``, which migrates it — and only one of
-# them has a command-line flag. ``job-discovery batch --database PATH`` can
+# them has a command-line flag. ``job-discovery scan --database PATH`` can
 # point a run anywhere, but Alembic reads this module and nothing else,
 # so without a shared knob the preflight's "run alembic upgrade head"
 # would migrate the default file rather than the one the operator named.

@@ -4,7 +4,7 @@ Runs the corpus. The whole component is a semaphore and a gather, which
 is the appropriate weight for one operator, one machine, and units of
 work that have no dependencies on each other. A workflow framework is a
 non-goal until there is cross-run durable state or distributed workers
-to justify one; ``ARCHITECTURE.md`` ("Running a batch") records why.
+to justify one; ``ARCHITECTURE.md`` ("Running a scan") records why.
 
 Three modules, one responsibility each:
 

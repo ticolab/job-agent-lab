@@ -33,7 +33,7 @@ test = [
 ]
 
 [project.scripts]
-# ``job-discovery`` is the dispatcher: subcommands ``integrate`` and ``batch``.
+# ``job-discovery`` is the dispatcher: subcommands ``integrate`` and ``scan``.
 # ``job-agent-lab`` remains a compatibility alias pointing straight at the
 # integrate parser's own ``main()`` rather than through the dispatcher.
 job-discovery = "job_discovery.cli.main:main"

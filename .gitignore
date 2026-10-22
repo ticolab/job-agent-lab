@@ -22,7 +22,7 @@ env/
 # Agent run outputs
 output/
 
-# SQLite database (regenerable by re-running a batch; never committed).
+# SQLite database (regenerable by re-running a scan; never committed).
 # The -wal and -shm sidecars are created by WAL journal mode.
 data/
 

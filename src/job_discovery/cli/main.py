@@ -3,7 +3,7 @@
 Owns exactly one decision: which subcommand the operator asked for.
 Every subcommand contributes a :class:`Subcommand` row describing its
 own parser and its own entry function, so this module never learns what
-``integrate`` or ``batch`` actually do and adding a third costs one
+``integrate`` or ``scan`` actually do and adding a third costs one
 tuple entry instead of a new branch.
 
 Notably, the ``integrate`` row reuses
@@ -20,7 +20,7 @@ import argparse
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from job_discovery.cli import batch, integrate
+from job_discovery.cli import integrate, scan
 
 
 @dataclass(frozen=True)
@@ -51,11 +51,11 @@ SUBCOMMANDS: tuple[Subcommand, ...] = (
         execute=integrate.execute,
     ),
     Subcommand(
-        name="batch",
-        summary=batch.BATCH_SUMMARY,
-        description=batch.BATCH_DESCRIPTION,
-        add_arguments=batch.add_batch_arguments,
-        execute=batch.execute,
+        name="scan",
+        summary=scan.SCAN_SUMMARY,
+        description=scan.SCAN_DESCRIPTION,
+        add_arguments=scan.add_scan_arguments,
+        execute=scan.execute,
     ),
 )
 

@@ -15,7 +15,7 @@ this morning would stop being retried.
 ``job_discovery.catalog.companies`` is the source of truth: without it the
 database is a set of slugs with no names, URLs, or targets, and every
 ad-hoc query needs the Python catalog beside it. It is a *projection*,
-refreshed at the start of every batch, never an owner — which is why it
+refreshed at the start of every scan, never an owner — which is why it
 carries ``synced_at`` and no editorial columns.
 
 Timestamps are naive UTC throughout; see

@@ -9,7 +9,7 @@ here.
 
 Startup does two things before any company runs, in this order:
 
-1. **Reap abandoned runs.** A batch killed mid-flight leaves
+1. **Reap abandoned runs.** A scan killed mid-flight leaves
    ``in_progress`` rows that would otherwise sit there forever, invisible
    to the freshness rule and never retried.
 2. **Sync the catalog projection.** ``company_runs`` and ``job_urls``
@@ -63,7 +63,7 @@ class BatchResult:
             input order regardless of completion order.
         reaped: How many abandoned ``in_progress`` rows were failed at
             startup. Zero on a healthy run; non-zero means the previous
-            batch did not exit cleanly.
+            scan did not exit cleanly.
     """
 
     batch_id: str
@@ -116,7 +116,7 @@ async def run_batch(
         policy: Ceilings, freshness window, and timeout. Defaults to
             :class:`BatchPolicy`'s own defaults.
         batch_id: Override the generated id. Intended for tests and for
-            an operator re-running a known batch.
+            an operator re-running a known scan.
 
     Returns:
         The aggregated :class:`BatchResult`.

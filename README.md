@@ -70,42 +70,42 @@ to the console reporting jobs found, elapsed time, agent steps, and errors. The
 `--strict` flag exits non-zero if any run's verdict is not `match`, which makes
 the command usable as a gate.
 
-### Running a batch
+### Running a scan
 
-The commands above onboard and debug one board at a time. `job-discovery batch` is
-the operational counterpart: it runs the corpus concurrently and writes the
-current job-URL set to a SQLite database, which is the artifact that answers
-the question at the top of this file.
+The commands above onboard and debug one board at a time. `job-discovery scan` is
+the operational counterpart: it invokes the internal batch scheduler to run the
+corpus concurrently and writes the current job-URL set to a SQLite database,
+which is the artifact that answers the question at the top of this file.
 
-Apply the migrations before the first run. Pointing at a path that does not
-exist creates an empty database quite happily, so the batch checks the schema
+Apply the migrations before the first scan. Pointing at a path that does not
+exist creates an empty database quite happily, so the scan checks the schema
 first and names the tables it is missing rather than failing part-way through.
 The database defaults to `data/job-discovery.db`; set the `JOB_DISCOVERY_DB` shell variable
-to move it, and both the batch and Alembic will follow. `--database PATH` moves a
-single run instead, in which case migrate that file with
+to move it, and both the scan and Alembic will follow. `--database PATH` moves a
+single scan instead, in which case migrate that file with
 `JOB_DISCOVERY_DB=PATH uv run alembic upgrade head`.
 
 ```bash
-uv run alembic upgrade head                      # once, and after any schema change
-uv run job-discovery batch --dry-run --all            # plan only, writes nothing
-uv run job-discovery batch -c speechify -c cloudbeds  # two named boards
-uv run job-discovery batch --all                      # the whole corpus
+uv run alembic upgrade head                     # once, and after any schema change
+uv run job-discovery scan --dry-run --all        # plan only, writes nothing
+uv run job-discovery scan -c speechify -c cloudbeds  # two named boards
+uv run job-discovery scan --all                  # the whole corpus
 ```
 
-A selection is always required. There is no bare `job-discovery batch` meaning
-"everything", because a full run drives hundreds of boards and most of them
+A selection is always required. There is no bare `job-discovery scan` meaning
+"everything", because a full scan drives hundreds of boards and most of them
 cost a real browser and a paid model, so the whole corpus has to be asked for
 by name. Handles resolve exactly as they do for `integrate`, and an unknown one
 aborts before any work starts.
 
-Start with `--dry-run` whenever a batch behaves unexpectedly. It prints which
+Start with `--dry-run` whenever a scan behaves unexpectedly. It prints which
 companies would run, which are skipped because they already succeeded recently,
 and the concurrency ceilings, without writing anything at all.
 
 Companies that succeeded inside the freshness window are skipped, so re-running
 after a partial failure retries only what is owed, and `--force` ignores the
 window. A board that failed is recorded as a failure in the database rather
-than signalled through the exit code, so a batch that ran to completion exits
+than signalled through the exit code, so a scan that ran to completion exits
 zero even when some of its boards did not succeed.
 
 One query answers the product question, and the run history beside it is where
@@ -130,7 +130,7 @@ stored nothing, leaving 1504 URLs across 107 boards. An empty result is a
 successful run with an unhappy verdict, not a failure, and `company_runs` is
 where to confirm which reading applies.
 
-The verdict distribution is the health query after a batch:
+The verdict distribution is the health query after a scan:
 
 ```bash
 sqlite3 data/job-discovery.db 'select verdict, count(*) from company_runs where batch_id = (select max(batch_id) from company_runs) group by verdict'

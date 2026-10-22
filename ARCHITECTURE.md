@@ -66,11 +66,11 @@ companies to write. `batch` reaches neither `catalog` nor `settings`,
 because the scheduler is handed both the companies to run and the
 factory that opens database sessions, and its ceilings are policy rather
 than shared runtime configuration. `reporting` stays out of `batch`
-because rendering belongs to the command that drives a batch, not to the
+because rendering belongs to the scan command that invokes a batch, not to the
 batch itself.
 
 One row came out *wider* than the design anticipated, and it is the same
-principle viewed from the opposite end. The batch command reaches
+principle viewed from the opposite end. The scan command reaches
 `persistence` as well as `batch`, because something has to decide where
 the database lives, open the engine, and hand the session factory
 inward — and that job belongs to the outermost layer. The command is the
@@ -85,13 +85,15 @@ reach the database.
 
 This graph is not housekeeping. Two entry points share one extraction core:
 the integration CLI drives one board at a time and produces the JSON artifact a
-human reviews before a catalog entry is committed, while the batch scheduler
-runs the corpus concurrently and persists the result. Both call the same
+human reviews before a catalog entry is committed, while the scan command
+invokes the batch scheduler to run the corpus concurrently and persist the
+result. Both call the same
 `extract` coroutine with the same `RunContext`. The integration workflow is
 therefore a correctness signal for scheduled runs — but only for as long as a
 strategy cannot tell which caller invoked it. A strategy that could reach the
 database, or detect that a batch was in progress, could behave differently
-under the scheduler than under the CLI, and the onboarding evidence would stop
+under the scan's scheduler than under the integration CLI, and the onboarding
+evidence would stop
 meaning anything.
 
 `tests/unit/test_layering.py` parses the imports of every module under
@@ -236,7 +238,7 @@ count on the next live run rather than failing silently.
 
 ## Persisting the result
 
-A batch's output is a database rather than a pile of JSON artifacts:
+A scan's output is a database rather than a pile of JSON artifacts:
 SQLite behind SQLAlchemy's async layer, with three tables — `companies`,
 `company_runs`, and `job_urls`. Four decisions in that shape are
 structural rather than incidental.
@@ -248,14 +250,14 @@ while the run history accumulates — and a single `updated_at` spanning
 both would make a failed run indistinguishable from a successful one. A
 board that broke this morning would look done this afternoon and would
 silently stop being retried. `companies` is the third table and a pure
-projection of the catalog, refreshed at the start of every batch so the
+projection of the catalog, refreshed at the start of every scan so the
 database is self-describing; it is never an owner.
 
 **Freshness keys on successes, and crash recovery falls out of that
 rule.** The skip decision asks whether a company *succeeded* recently,
 not whether it was attempted, which keeps failures eligible for retry
-and successes from being repeated inside the window. A batch killed
-mid-run leaves rows still marked in progress; the next batch reaps them
+and successes from being repeated inside the window. A scan killed
+mid-run leaves batch rows still marked in progress; the next scan reaps them
 to failed, and because they are not successes the affected companies
 re-run while genuinely-completed ones are skipped. Resumption is
 therefore not a separate mechanism, and there is no checkpoint file to
@@ -264,9 +266,9 @@ per-company timeout, on the grounds that no run may legitimately
 outlive its own ceiling.
 
 Two consequences of that rule are worth separating out, because both
-were settled by killing a live batch rather than by reasoning. Recovery
+were settled by killing a live scan rather than by reasoning. Recovery
 does not actually *depend* on the reap: an abandoned row is not a
-success, so the company is eligible again the moment the next batch
+success, so the company is eligible again the moment the next scan
 looks at it, and the reap is only the bookkeeping that closes the
 orphaned row once the bound has passed. A run can therefore be retried
 before it has been reaped at all. And a kill does not invalidate work
@@ -283,7 +285,7 @@ posting behind, because there is no "which rows did I not see this
 time" bookkeeping to get wrong. The transaction is the failure
 boundary: a crash before, during, or after leaves either the previous
 snapshot or the new one and never a partial set, so the database stays
-safe to query while a batch is writing.
+safe to query while a scan is writing.
 
 **Workers write directly, with no queue between them and the
 database.** A queue plus a single writer earns its complexity when
@@ -296,14 +298,15 @@ is what makes the decision reversible — if contention ever appeared, a
 queue would slot in behind the unchanged repository interface rather
 than rippling out into the strategies or the scheduler.
 
-## Running a batch
+## Running a scan
 
-The batch is three modules with one responsibility each: one decides
-whether and how expensively a company runs, one defines what a single
-company's unit of work means, and one decides when. Together they are a
-semaphore and a gather rather than a workflow framework, which is the
-right weight for one operator, one machine, and units of work with no
-dependencies between them. Four decisions in that shape are structural.
+The scan command invokes the internal batch component, whose three modules have
+one responsibility each: one decides whether and how expensively a company
+runs, one defines what a single company's unit of work means, and one decides
+when. Together they are a semaphore and a gather rather than a workflow
+framework, which is the right weight for one operator, one machine, and units
+of work with no dependencies between them. Four decisions in that shape are
+structural.
 
 **Concurrency is classified by cost, not by strategy name.** The
 classifier takes a company rather than a strategy identifier, because
@@ -363,11 +366,11 @@ human count, 20 matched, 25 came in under, and 15 over, and the
 deterministic API adapters matched only 2 of 14. Re-running every
 deterministic mismatch and every empty agent board sequentially through
 the integration command, one board at a time with no concurrency,
-reproduced the batch's number exactly on all 23. The disagreement is
+reproduced the scan's number exactly on all 23. The disagreement is
 between the boards and human counts that are days to weeks old, which is
-the drift the verdict layer exists to surface, not the batch degrading
-extraction under load. The verdict distribution is therefore the health
-query to read after a batch, and it is noisy by construction: most of
+the drift the verdict layer exists to surface, not the batch scheduler
+degrading extraction under load. The verdict distribution is therefore
+the health query to read after a scan, and it is noisy by construction: most of
 the corpus carries no count yet, and the counts that exist go stale.
 
 **The worker is the failure-isolation boundary.** Failure modes across a
@@ -390,15 +393,15 @@ entries, and it is what makes the component testable: a fake strategy
 and a temporary database exercise the real scheduler, worker, and
 repositories with no browser and no network in the loop.
 
-Two further decisions belong to the command that drives a batch rather
+Two further decisions belong to the scan command that invokes a batch rather
 than to the batch itself, and both fall out of the isolation boundary
 above.
 
-**The exit code reports whether the batch ran, not whether every board
+**The exit code reports whether the scan ran, not whether every board
 succeeded.** A board-level failure is already data, recorded in the run
-history with its error text, so a batch that reached the end exits zero
+history with its error text, so a scan that reached the end exits zero
 even when boards inside it failed. A non-zero exit is reserved for the
-batch being unable to start at all: a handle that resolves to nothing,
+scan being unable to start at all: a handle that resolves to nothing,
 a selection that empties out, a database with no schema. Folding board
 health into the exit code would contradict the contract that a
 third-party failure is an ordinary event, and the signal would stop
@@ -407,7 +410,7 @@ command behaves the same way, exiting zero on an unhappy verdict unless
 it is explicitly asked to be strict, so neither entry point teaches a
 different habit than the other.
 
-**The aggregate summary is rendered by the command, not by the
+**The aggregate summary is rendered by the scan command, not by the
 reporting layer.** Per-company JSON still routes through the one module
 that authors that artifact, so the output format keeps exactly one
 writer. But an aggregate summary reads the batch's own result object,
@@ -478,8 +481,8 @@ design would decay.
   differently under the scheduler than under the integration CLI.
 - No single board aborts a batch. A third-party failure becomes a
   recorded outcome, and an empty board is a success with an unhappy
-  verdict rather than a failure to retry. The exit code follows from
-  that: it reports whether the batch ran, not whether every board in it
+  verdict rather than a failure to retry. The scan exit code follows from
+  that: it reports whether the scan ran, not whether every board in it
   succeeded.
 - The matcher JavaScript has exactly one copy on disk.
 - Every opt-in knob defaults to inert, so adding one cannot change any

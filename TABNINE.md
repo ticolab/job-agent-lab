@@ -25,7 +25,7 @@ uv run playwright install chromium
 cp .env.example .env                 # add OPENAI_API_KEY for live DOM runs
 ```
 
-Two console scripts are registered. `job-discovery` is the dispatcher, with `integrate` and `batch` subcommands. `job-agent-lab` is a frozen alias pointing straight at the integrate entry point rather than through the dispatcher, so its argument surface is the pre-rename CLI's by construction. Both populate their parser from the same `add_integrate_arguments` function, so the two surfaces cannot drift. Keep the alias working — every doc, skill, and habit is built on it.
+Two console scripts are registered. `job-discovery` is the dispatcher, with `integrate` and `scan` subcommands. `job-agent-lab` is a frozen alias pointing straight at the integrate entry point rather than through the dispatcher, so its argument surface is the pre-rename CLI's by construction. Both populate their parser from the same `add_integrate_arguments` function, so the two surfaces cannot drift. Keep the alias working — every doc, skill, and habit is built on it.
 
 Run the extractor end-to-end. The `-c` flag matches by alias, then acronym, then substring against `catalog.COMPANIES`:
 
@@ -52,7 +52,7 @@ uv run --group test pytest tests/snapshots/      # needs Chromium
 
 Pre-commit gates ruff, mypy, and the full test suite on any change under `src/job_discovery/`, `migrations/`, or `tests/`. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee that the commit passes.
 
-Alembic owns the schema. The database lives at `data/job-discovery.db` by default, which is gitignored because the dataset answers "what is open right now" and is regenerable by re-running a batch:
+Alembic owns the schema. The database lives at `data/job-discovery.db` by default, which is gitignored because the dataset answers "what is open right now" and is regenerable by re-running a scan:
 
 ```bash
 uv run alembic upgrade head                        # create or migrate the database
@@ -60,18 +60,18 @@ uv run alembic revision --autogenerate -m "..."    # new revision from models.py
 sqlite3 data/job-discovery.db 'select * from job_urls'  # query it directly
 ```
 
-The connection URL is built by `migrations/env.py` from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth. The path defaults to `data/job-discovery.db` and is overridden by the `JOB_DISCOVERY_DB` shell variable (not a `.env` key: Alembic never loads `.env`). `job-discovery batch --database PATH` points one run elsewhere, but Alembic has no such flag, so a non-default database is migrated with `JOB_DISCOVERY_DB=PATH uv run alembic upgrade head`; the schema preflight prints that exact command when it applies.
+The connection URL is built by `migrations/env.py` from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth. The path defaults to `data/job-discovery.db` and is overridden by the `JOB_DISCOVERY_DB` shell variable (not a `.env` key: Alembic never loads `.env`). `job-discovery scan --database PATH` points one scan elsewhere, but Alembic has no such flag, so a non-default database is migrated with `JOB_DISCOVERY_DB=PATH uv run alembic upgrade head`; the schema preflight prints that exact command when it applies.
 
-`job-discovery batch` is the only writer. A selection is mandatory — there is no bare invocation that means "the whole corpus" — because a full run drives hundreds of boards, many of them paying for a browser and an LLM:
+`job-discovery scan` is the only writer. A selection is mandatory — there is no bare invocation that means "the whole corpus" — because a full scan drives hundreds of boards, many of them paying for a browser and an LLM:
 
 ```bash
-uv run job-discovery batch --dry-run --all                  # plan only, writes nothing
-uv run job-discovery batch -c speechify -c cloudbeds        # two boards
-uv run job-discovery batch --all --exclude accenture        # everything but one
-uv run job-discovery batch --companies queue.txt --force    # a file of handles, ignore freshness
+uv run job-discovery scan --dry-run --all                  # plan only, writes nothing
+uv run job-discovery scan -c speechify -c cloudbeds        # two boards
+uv run job-discovery scan --all --exclude accenture        # everything but one
+uv run job-discovery scan --companies queue.txt --force    # a file of handles, ignore freshness
 ```
 
-Handles resolve exactly as `integrate -c` resolves them, and unknown ones abort before any work starts. `--dry-run` is the first thing to reach for when a batch misbehaves: it prints which companies would run, which are skipped as fresh, and the concurrency ceilings, without writing even the catalog projection. A completed batch exits zero even when individual boards failed, matching `integrate`'s default; query `company_runs` for board health rather than reading the exit code.
+Handles resolve exactly as `integrate -c` resolves them, and unknown ones abort before any work starts. `--dry-run` is the first thing to reach for when a scan misbehaves: it prints which companies would run, which are skipped as fresh, and the concurrency ceilings, without writing even the catalog projection. A completed scan exits zero even when individual boards failed, matching `integrate`'s default; query `company_runs` for board health rather than reading the exit code.
 
 ## Architecture
 
@@ -79,7 +79,7 @@ Handles resolve exactly as `integrate -c` resolves them, and unknown ones abort 
 
 Three components sit over one shared kernel. `extraction/` owns the port and every strategy. `persistence/` owns the database. `batch/` owns concurrency and the per-company unit of work. The kernel — `domain/`, `catalog/`, `settings.py` — is the vocabulary all three speak.
 
-All three components exist today, alongside `cli/` and `reporting/`, and both subcommands are wired: `job-discovery integrate` drives one board at a time and `job-discovery batch` drives the corpus.
+All three components exist today, alongside `cli/` and `reporting/`, and both subcommands are wired: `job-discovery integrate` drives one board at a time and `job-discovery scan` drives the corpus.
 
 Every SQL statement in the system lives in one of `persistence/`'s three repository modules (`catalog_repo`, `jobs_repo`, `runs_repo`), so transaction boundaries and error translation have exactly one home. `engine.py` owns the connection URL and the four SQLite pragmas; `models.py` owns the three tables.
 
@@ -99,9 +99,9 @@ Enforced today by tests/unit/test_layering.py:
   domain      → (nothing inside job_discovery)
 ```
 
-Two rows are narrower than initially anticipated, and both for the same reason: a component that is *handed* what it needs does not import it. `persistence` does not reach `catalog` because `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`. `batch` does not reach `catalog` or `settings` either — the scheduler is given both the companies to run and the session factory to use, and its ceilings are policy that lives in `batch/policy.py`. `reporting` stays out of `batch` because rendering belongs to the CLI that drives a batch, not to the batch itself.
+Two rows are narrower than initially anticipated, and both for the same reason: a component that is *handed* what it needs does not import it. `persistence` does not reach `catalog` because `sync_catalog` receives the companies to write as an argument rather than importing `COMPANIES`. `batch` does not reach `catalog` or `settings` either — the scheduler is given both the companies to run and the session factory to use, and its ceilings are policy that lives in `batch/policy.py`. `reporting` stays out of `batch` because rendering belongs to the scan CLI that invokes a batch, not to the batch itself.
 
-The `cli → persistence` edge is that same principle seen from the other end. Something has to decide where the database lives and open the engine, and that job belongs to the outermost layer: `cli/batch.py` is the composition root, which is *why* `batch` can be handed a session factory instead of importing one.
+The `cli → persistence` edge is that same principle seen from the other end. Something has to decide where the database lives and open the engine, and that job belongs to the outermost layer: `cli/scan.py` is the composition root, which is *why* `batch` can be handed a session factory instead of importing one.
 
 `tests/unit/test_layering.py` parses every module's imports with `ast` and asserts each package imports only from its allowed set, which makes this structural rather than a matter of discipline. A strategy cannot write to the database, cannot know a batch is running, and cannot behave differently under the scheduler than under the integration CLI. The allowlist is written from the real graph, covers the packages actually present, and may only ever shrink. Because each row is the real graph rather than an intention, widening one — say `extraction → catalog` — is a deliberate allowlist edit that surfaces in review, never something a new import does silently. That `extraction` may reach neither `persistence` nor `batch` is asserted by name as well as by table, so the invariant survives a future edit to the allowlist.
 
@@ -117,7 +117,7 @@ Adding a new strategy requires extending the `StrategyName` literal in `domain/c
 
 ### Package layout
 
-The `src/job_discovery/` tree is organized so each package owns exactly one concern. The CLI lives in `cli/`: `main.py` is the `job-discovery` dispatcher (a table of subcommands rather than a branch per subcommand), `integrate.py` holds the argparse surface and the per-company orchestration loop, and `batch.py` is the batch subcommand. Runtime defaults live in `settings.py` (`DEFAULT_MODEL`, `DEFAULT_MAX_STEPS`, `OUTPUT_DIR`, plus the render-settle constants shared by runtime and capture).
+The `src/job_discovery/` tree is organized so each package owns exactly one concern. The CLI lives in `cli/`: `main.py` is the `job-discovery` dispatcher (a table of subcommands rather than a branch per subcommand), `integrate.py` holds the argparse surface and the per-company orchestration loop, and `scan.py` exposes the scan subcommand and invokes the internal batch scheduler. Runtime defaults live in `settings.py` (`DEFAULT_MODEL`, `DEFAULT_MAX_STEPS`, `OUTPUT_DIR`, plus the render-settle constants shared by runtime and capture).
 
 The `domain/` package holds the pydantic schema: `Company` with its `strategy`, `paginate`, `hooks`, and `pre_filter_urls` knobs; `LinkRule` with `path_prefix`, `min_depth`, and `suppress_ancestor_selector`; `RuntimeHooks`; `ExtractionResult`; and `TargetRegion` together with the `COSTA_RICA_LATAM` singleton. Cross-field validators fire at catalog-import time — hooks require `strategy="dom"`, `pre_filter_urls` must share origin with `job_board_url`, and API strategies require or forbid their tenant config exactly as documented in each class docstring.
 
@@ -127,13 +127,13 @@ The `extraction/dom/` package owns the deterministic matcher. `assets/collect_li
 
 The `extraction/dom/agent/` package holds the agent wiring, and it lives under `extraction/dom/` because `extraction/dom/strategy.py` is its only consumer: the prompt in `prompt.py` (`GOAL_PROMPT` clause constants plus `build_goal_prompt(region)`), the agent/session build in `runner.py`, and the tool registration in `controller.py` (which registers the `extract_job_links` tool the agent calls).
 
-The `reporting/output.py` module writes JSON output to `./output/` and prints the terminal summary. It never authors the report shape itself; that lives in `build_report`. It stays top-level rather than CLI-private because both `integrate` and batch's optional JSON output render through it.
+The `reporting/output.py` module writes JSON output to `./output/` and prints the terminal summary. It never authors the report shape itself; that lives in `build_report`. It stays top-level rather than CLI-private because both `integrate` and scan's optional JSON output render through it.
 
 ### The database
 
-Three tables, and the split between two of them is load-bearing. `job_urls` answers *what is open*; `company_runs` answers *did we successfully look, and when*. A single `updated_at` column spanning both would make a failed run indistinguishable from a successful one, so a board that broke this morning would look "done" this afternoon and would silently stop being retried. `companies` is a third table and a pure projection of `catalog.COMPANIES`, refreshed at the start of every batch so the database is self-describing; it is never an owner, and rows for companies removed from the catalog are deliberately left in place because deleting one would cascade into its URLs and runs.
+Three tables, and the split between two of them is load-bearing. `job_urls` answers *what is open*; `company_runs` answers *did we successfully look, and when*. A single `updated_at` column spanning both would make a failed run indistinguishable from a successful one, so a board that broke this morning would look "done" this afternoon and would silently stop being retried. `companies` is a third table and a pure projection of `catalog.COMPANIES`, refreshed at the start of every scan so the database is self-describing; it is never an owner, and rows for companies removed from the catalog are deliberately left in place because deleting one would cascade into its URLs and runs.
 
-The freshness rule keys on **successes only** (`status = 'success'`), which is what keeps failures eligible for retry and successes from being repeated inside the window. Crash recovery then falls out of that rule rather than needing a mechanism of its own: a killed batch leaves `in_progress` rows, the next batch reaps them into `failed`, and because they are not successes the affected companies re-run while genuinely-completed ones are skipped. No checkpoint file exists.
+The freshness rule keys on **successes only** (`status = 'success'`), which is what keeps failures eligible for retry and successes from being repeated inside the window. Crash recovery then falls out of that rule rather than needing a mechanism of its own: a killed scan leaves `in_progress` batch rows, the next scan reaps them into `failed`, and because they are not successes the affected companies re-run while genuinely-completed ones are skipped. No checkpoint file exists.
 
 A successful extraction replaces a company's URL set wholesale — delete-and-insert inside one transaction. No history is kept by design, and this cannot leave a stale posting behind the way upsert-plus-prune can. The transaction is the failure boundary: a crash before, during, or after leaves either the previous snapshot or the new one, never a partial set.
 
@@ -157,13 +157,13 @@ The per-company timeout lives on `BatchPolicy`, not on `RunContext`. `RunContext
 
 Each repository call gets its **own short-lived session**. Phase 1's repositories each open their own transaction, so a session that has already autobegun one for a read cannot begin another — sharing a session across two repository calls raises `InvalidRequestError`. The same rule keeps a session from being held across the minutes-long `extract` await, where it would pin a pool connection and potentially a write lock.
 
-Crash recovery needs no checkpoint file. A killed batch leaves `in_progress` rows; the next batch reaps them to `failed` at startup, using the per-company timeout as the staleness bound since no run may legitimately exceed it; they are therefore not successes, so the freshness rule re-runs exactly those companies and skips the ones that completed.
+Crash recovery needs no checkpoint file. A killed scan leaves `in_progress` batch rows; the next scan reaps them to `failed` at startup, using the per-company timeout as the staleness bound since no run may legitimately exceed it; they are therefore not successes, so the freshness rule re-runs exactly those companies and skips the ones that completed.
 
-Two consequences of that design are worth knowing before debugging a batch, both observed live rather than reasoned about. **Resumption does not depend on reaping**: an `in_progress` row is not a success, so the company is eligible again immediately, and the reap is only the bookkeeping that closes the abandoned row once the staleness bound has passed. **A killed run does not invalidate an earlier success**, either — so a company whose previous run succeeded inside the freshness window is correctly *skipped* right after a kill, because nothing is owed. And because the staleness bound *is* `--timeout-seconds`, lowering it to reap sooner also shortens every run's ceiling; the flag's help says so.
+Two consequences of that design are worth knowing before debugging a scan, both observed live rather than reasoned about. **Resumption does not depend on reaping**: an `in_progress` row is not a success, so the company is eligible again immediately, and the reap is only the bookkeeping that closes the abandoned batch row once the staleness bound has passed. **A killed scan does not invalidate an earlier success**, either — so a company whose previous run succeeded inside the freshness window is correctly *skipped* right after a kill, because nothing is owed. And because the staleness bound *is* `--timeout-seconds`, lowering it to reap sooner also shortens every run's ceiling; the flag's help says so.
 
-Concurrency at the default ceiling changes no board's count. After the first full run, every deterministic verdict mismatch and every empty agent board was re-run alone through `integrate` and reproduced the batch's number exactly, so a non-match after a batch is drift against a stale `expected_jobs`, not the scheduler degrading extraction. Read the verdict distribution per batch as the health signal, and treat an agent-driven board at `under` with zero URLs stored as the line to look at.
+Concurrency at the default ceiling changes no board's count. After the first full scan, every deterministic verdict mismatch and every empty agent board was re-run alone through `integrate` and reproduced the scan's number exactly, so a non-match after a scan is drift against a stale `expected_jobs`, not the scheduler degrading extraction. Read the verdict distribution by `batch_id` after each scan as the health signal, and treat an agent-driven board at `under` with zero URLs stored as the line to look at.
 
-`cli/batch.py` preflights the schema before doing anything, because connecting to a SQLite path that does not exist creates an empty file quite happily. Without the check, the first ever `job-discovery batch` on a fresh checkout would die with an `OperationalError` from inside a repository instead of naming the `alembic upgrade head` the operator actually owes. `persistence/engine.missing_tables` answers that question, and it lives there rather than in the CLI because nothing outside `persistence/` may build a query.
+`cli/scan.py` preflights the schema before doing anything, because connecting to a SQLite path that does not exist creates an empty file quite happily. Without the check, the first ever `job-discovery scan` on a fresh checkout would die with an `OperationalError` from inside a repository instead of naming the `alembic upgrade head` the operator actually owes. `persistence/engine.missing_tables` answers that question, and it lives there rather than in the CLI because nothing outside `persistence/` may build a query.
 
 ### The deterministic matcher
 
@@ -197,7 +197,7 @@ Persistence tests (`tests/unit/test_persistence.py`) run against a **real SQLite
 
 Batch tests (`tests/unit/test_batch.py`) use no browser and no network: a fake strategy is registered over an entry in `STRATEGIES` with `monkeypatch.setitem`, and the real scheduler, worker, and repositories run against a real SQLite file. The fake records its own per-class high-water mark, so a concurrency ceiling is *observed* rather than assumed. It also gates on an explicit target — each extraction blocks until the expected number are simultaneously live — because simply sleeping made the assertion a race against however long the workers spent in the database, and it under-counted on a fast machine.
 
-`tests/unit/test_cli_batch.py` covers the subcommand the same way, driving the real command against a temporary database with a fake strategy. Every argument namespace in it is produced by `cli.main.build_parser` rather than hand-built, so an unregistered subcommand or a renamed flag fails there instead of in a manual run.
+`tests/unit/test_cli_scan.py` covers the subcommand the same way, driving the real command against a temporary database with a fake strategy. Every argument namespace in it is produced by `cli.main.build_parser` rather than hand-built, so an unregistered subcommand or a renamed flag fails there instead of in a manual run.
 
 The repo does not use `pytest-asyncio`. Async tests are driven on a background thread with a fresh event loop by `tests/unit/asyncio_harness.py`, because the snapshot suite drives Chromium through Playwright's sync API and leaves a running-loop registration on the main thread's `asyncio.events` state that makes both `asyncio.run` and a main-thread `run_until_complete` raise for the rest of the session. `tests/unit/test_prefiltered.py` carries the original diagnosis. The harness also owns engine disposal: an async engine outliving its loop leaves aiosqlite holding a closed one, and the error surfaces in whichever test runs next, so `run_async` disposes every engine passed to `track_engine` on the loop that created it.
 

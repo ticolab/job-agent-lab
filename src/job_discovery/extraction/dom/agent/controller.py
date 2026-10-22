@@ -159,7 +159,7 @@ def build_controller(
         # it is handed; if the agent has wandered into a posting's detail
         # page, the honest answer is the one job link on it — a count of
         # 1 that nothing downstream can tell from a small board, and that
-        # a batch run would persist by deleting the board's previous URL
+        # a scan would persist by deleting the board's previous URL
         # set. Refuse with an error the agent can act on instead.
         # ``is_posting_url`` mirrors the matcher's own id-in-path rule and
         # exempts both the query shape (a filtered listing root) and the

@@ -21,7 +21,7 @@ config = context.config
 # logger that already exists — so invoking a migration in-process
 # silently switches off all `job_discovery` logging for the rest of that
 # process. Two unrelated `caplog` tests caught it; an operator running a
-# migration before a batch would have seen the batch's warnings vanish.
+# migration before a scan would have seen the scan's warnings vanish.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name, disable_existing_loggers=False)
 
@@ -33,7 +33,7 @@ target_metadata = Base.metadata
 # `sqlalchemy.url` in alembic.ini: two sources for one path is how a
 # migration ends up applied to a different file than the application
 # reads. alembic.ini therefore leaves the URL empty and this fills it.
-# `job-discovery batch --database PATH` has no counterpart here; the
+# `job-discovery scan --database PATH` has no counterpart here; the
 # `JOB_DISCOVERY_DB` environment variable, read by `job_discovery.settings`, is
 # how a migration is pointed at the same non-default file.
 #

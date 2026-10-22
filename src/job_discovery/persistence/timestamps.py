@@ -20,7 +20,7 @@ makes the guarantee structural — a caller holding an aware datetime
 cannot corrupt the ordering, and a caller holding a naive one is
 assumed to already be UTC.
 
-UTC rather than local time because a batch that straddles a daylight
+UTC rather than local time because a scan that straddles a daylight
 saving transition would otherwise produce timestamps that go backwards.
 """
 

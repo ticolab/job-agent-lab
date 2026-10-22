@@ -1,4 +1,4 @@
-"""The ``job-discovery batch`` subcommand: run the corpus and persist results.
+"""The ``job-discovery scan`` subcommand: run the corpus and persist results.
 
 The operational entry point. Where ``integrate`` drives one board at a
 time and leaves a JSON artifact for a human to review, this drives the
@@ -15,25 +15,25 @@ job, so ``cli`` reaching both ``batch`` and ``persistence`` is the
 intended direction rather than a leak.
 
 Three decisions worth stating, because none is forced by the batch
-component itself; ``ARCHITECTURE.md`` ("Running a batch") carries the
+component itself; ``ARCHITECTURE.md`` ("Running a scan") carries the
 reasoning beside them:
 
-**A selection is required.** There is no bare ``job-discovery batch`` that
+**A selection is required.** There is no bare ``job-discovery scan`` that
 means "everything". The corpus is approaching 250 boards, many of which
 drive a real browser and a paid LLM, and a full run is measured in
 hours — so the expensive mistake is the one an accidental keystroke
 makes. ``--all`` says it out loud.
 
-**A completed batch exits zero even when boards failed.** Individual
+**A completed scan exits zero even when boards failed.** Individual
 failures are *data*: they are recorded in ``company_runs`` with their
 error text, and the whole point of the worker's isolation boundary is
 that one broken site is an ordinary event rather than a failure of the
-batch. This matches ``integrate``, which likewise exits zero on an
+scan. This matches ``integrate``, which likewise exits zero on an
 unhappy verdict unless ``--strict`` is passed. A non-zero exit means the
-batch could not run at all: an unknown handle, an empty selection, or a
+scan could not run at all: an unknown handle, an empty selection, or a
 database with no schema.
 
-**The batch summary is rendered here rather than in**
+**The scan summary is rendered here rather than in**
 :mod:`job_discovery.reporting`. Per-company JSON still routes through
 ``reporting.output.save_result``, so there remains exactly one JSON
 renderer. But an aggregate summary reads a
@@ -79,9 +79,9 @@ from job_discovery.settings import (
     DEFAULT_MODEL,
 )
 
-BATCH_SUMMARY = "Run the corpus concurrently and persist results."
+SCAN_SUMMARY = "Run the corpus concurrently and persist results."
 
-BATCH_DESCRIPTION = (
+SCAN_DESCRIPTION = (
     "Run extraction across the corpus concurrently and persist the current "
     "job-URL set. Companies that already succeeded inside the freshness "
     "window are skipped, so re-running after a partial failure retries only "
@@ -102,7 +102,7 @@ def _positive_int(text: str) -> int:
     """An ``int`` of at least 1.
 
     A concurrency ceiling of zero would build a semaphore nobody can
-    ever acquire, so the batch would hang rather than refuse — which is
+    ever acquire, so the scan would hang rather than refuse — which is
     the worst of the available failure modes.
     """
     value = int(text)
@@ -123,8 +123,8 @@ def _non_negative_float(text: str) -> float:
     return value
 
 
-def add_batch_arguments(parser: argparse.ArgumentParser) -> None:
-    """Populate *parser* with the batch surface's arguments."""
+def add_scan_arguments(parser: argparse.ArgumentParser) -> None:
+    """Populate *parser* with the scan surface's arguments."""
     selection = parser.add_mutually_exclusive_group(required=True)
     selection.add_argument(
         "--all",
@@ -205,7 +205,7 @@ def add_batch_arguments(parser: argparse.ArgumentParser) -> None:
         help=(
             "Per-company ceiling; exceeding it records the run as failed "
             f"(default: {int(DEFAULT_TIMEOUT.total_seconds())}). Doubles as "
-            "the staleness bound for reaping runs a killed batch abandoned, "
+            "the staleness bound for reaping runs a killed scan abandoned, "
             "since no run may legitimately outlive its own ceiling — so "
             "lowering this to reap sooner also shortens every run."
         ),
@@ -218,7 +218,7 @@ def add_batch_arguments(parser: argparse.ArgumentParser) -> None:
             "Print the plan and exit without writing anything: which "
             "companies would run, which are skipped as fresh, and the "
             "concurrency ceilings. The first thing to reach for when a "
-            "batch misbehaves."
+            "scan misbehaves."
         ),
     )
     parser.add_argument(
@@ -297,7 +297,7 @@ def _resolve(handles: Sequence[str]) -> tuple[list[Company], list[str]]:
 def select_companies(args: argparse.Namespace) -> list[Company]:
     """Resolve the selection flags to a de-duplicated company list.
 
-    Every failure mode here aborts before the batch touches anything,
+    Every failure mode here aborts before the scan touches anything,
     which is the point: discovering a misspelled handle an hour into a
     250-board run is not a recoverable situation.
     """
@@ -345,7 +345,7 @@ def _build_context(args: argparse.Namespace) -> RunContext:
     """Build the run context handed to every strategy.
 
     Headless is not a flag here and is always ``True``; see
-    :func:`add_batch_arguments`.
+    :func:`add_scan_arguments`.
     """
     return RunContext(
         model=args.model,
@@ -368,7 +368,7 @@ def _print_plan(
     """Render the dry-run plan."""
     hours = policy.freshness.total_seconds() / 3600
     print(f"\n{_RULE}")
-    print("  Batch plan — dry run, nothing was written")
+    print("  Scan plan — dry run, nothing was written")
     print(f"{_RULE}")
     print(
         f"  Concurrency:  {policy.browser_concurrency} browser, "
@@ -399,13 +399,13 @@ def _print_summary(result: BatchResult, policy: BatchPolicy) -> None:
     stored = sum(o.url_count or 0 for o in result.outcomes if o.status == "success")
 
     print(f"\n{_RULE}")
-    print(f"  Batch:     {result.batch_id}")
+    print(f"  Scan:      {result.batch_id}")
     print(f"  Companies: {len(result.outcomes)} selected")
     print(f"  Success:   {result.succeeded}")
     print(f"  Failed:    {result.failed}")
     print(f"  Skipped:   {result.skipped}  (succeeded within {hours:g}h)")
     if result.reaped:
-        print(f"  Reaped:    {result.reaped}  (abandoned by an earlier batch)")
+        print(f"  Reaped:    {result.reaped}  (abandoned by an earlier scan)")
     print(f"  Job URLs:  {stored} stored across {result.succeeded} company(ies)")
 
     failures = [o for o in result.outcomes if o.status == "failed"]
@@ -420,7 +420,7 @@ def _save_reports(result: BatchResult, output_dir: Path) -> None:
     """Write one JSON report per successful company.
 
     Routes through the same ``save_result`` the integrate surface uses,
-    so a batch-produced artifact is byte-comparable with an
+    so a scan-produced artifact is byte-comparable with an
     onboarding-produced one.
     """
     for outcome in result.outcomes:
@@ -468,7 +468,7 @@ def _migrate_hint(path: Path | None) -> str:
 
 
 async def _run(args: argparse.Namespace) -> None:
-    """Open the database, then either plan or run the batch."""
+    """Open the database, then either plan or run the scan."""
     companies = select_companies(args)
     policy = build_policy(args)
     path = Path(args.database) if args.database else None
@@ -499,7 +499,7 @@ async def _run(args: argparse.Namespace) -> None:
 
 
 def execute(args: argparse.Namespace) -> None:
-    """Run the batch workflow for an already-parsed *args*.
+    """Run the scan workflow for an already-parsed *args*.
 
     Performs the same process-level setup as the integrate surface —
     ``.env`` loading for the API key a browser-class company needs, and
