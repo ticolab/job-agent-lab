@@ -1,15 +1,15 @@
-"""Unit + integration tests for ``job_discovery.settings``'s UA helpers.
+"""Unit tests for ``job_discovery.settings``'s UA helpers.
 
 The pure derivation helper is the single "contract" every launch site
 depends on: given a Chromium UA string, strip the
 ``HeadlessChrome/<v>`` product token so the WAF class described in
 ``blockers/INTEGRATION_BLOCKERS.md`` (C14) does not 403 the request.
-The unit-level tests lock in the byte-exact transform, and the
-integration test exercises the async resolver against a real Chromium
-launch to confirm the actual UA the runtime will present to origins
-does not carry the ``HeadlessChrome`` token.
+These tests lock in the byte-exact transform. The resolver's checks
+against a real Chromium launch live in
+``tests/snapshots/test_plausible_ua.py``, because this suite runs
+without a browser installed.
 
-The async integration tests follow the same pattern as
+The async tests follow the same pattern as
 ``tests/unit/test_greenhouse.py``: coroutines run in a worker thread's
 fresh event loop rather than via ``asyncio.run`` on the main thread,
 because ``pytest-playwright`` (loaded by the snapshot suite) leaves a
@@ -22,13 +22,11 @@ from __future__ import annotations
 
 import asyncio
 import threading
-from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
 import pytest
 
-from job_discovery import settings
 from job_discovery.settings import (
     BROWSER_LAUNCH_ARGS,
     CAPTURE_BROWSER_CHANNEL,
@@ -37,7 +35,6 @@ from job_discovery.settings import (
     database_path_from_env,
     derive_plausible_ua,
     launch_capture_browser,
-    plausible_headless_ua,
 )
 
 # Representative Chromium headless UA at the time of the C14 isolation
@@ -131,39 +128,6 @@ class TestDerivePlausibleUa:
         # and matches the WAF's own substring check.
         malformed = "Mozilla/5.0 HeadlessChrome Safari/537.36"
         assert derive_plausible_ua(malformed) == malformed
-
-
-class TestPlausibleHeadlessUa:
-    """Integration checks against a real Playwright Chromium launch.
-
-    Marked P1 in the plan: same cost class as the snapshot suite
-    (a real headless launch, ~0.5 s). The unit-level pure-transform
-    tests above are the P0 fast path.
-    """
-
-    @pytest.fixture(autouse=True)
-    def _reset_cache(self) -> Iterator[None]:
-        # Each test in this class exercises cache behaviour explicitly,
-        # so start each one from a cold cache. The autouse fixture is
-        # scoped to this class only — other tests that import
-        # ``settings`` should never observe a mutation.
-        settings._PLAUSIBLE_UA = None
-        yield
-        settings._PLAUSIBLE_UA = None
-
-    def test_resolver_strips_headless_token(self) -> None:
-        ua = _run(plausible_headless_ua())
-        assert isinstance(ua, str)
-        assert "Chrome/" in ua
-        assert "HeadlessChrome" not in ua
-
-    def test_second_call_returns_cached_instance(self) -> None:
-        first = _run(plausible_headless_ua())
-        second = _run(plausible_headless_ua())
-        # Memoization is observable via ``is`` — the same ``str``
-        # instance is returned on the second call, no re-launch of
-        # Chromium.
-        assert first is second
 
 
 # ---------------------------------------------------------------------------
