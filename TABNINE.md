@@ -187,7 +187,7 @@ The region predicate (`domain/region.COSTA_RICA_LATAM.matches`) is text matching
 
 Two independent regression corpora exist, and they must not be conflated.
 
-DOM-strategy companies contribute frozen page copies under `tests/fixtures/snapshots/<slug>/` with `page.html` plus `metadata.json`, optionally with `frames/`, `pages/`, or `states/` subdirectories (a state may carry its own `states/state-N-frames/` and, for declaring boards that also paginate, `states/state-N-pages/` sidecars — Accenture is the first). `tests/snapshots/test_extractor_snapshots.py` replays the production matcher JS in real Chromium and asserts the recorded **unfiltered** count. This validates the matcher's counting, not the agent's filtering.
+DOM-strategy companies contribute frozen page copies under `tests/fixtures/snapshots/<slug>/` with `page.html` plus `metadata.json`, optionally with `frames/`, `pages/`, or `states/` subdirectories (a state may carry its own `states/state-N-frames/` and, for declaring boards that also paginate, `states/state-N-pages/` sidecars — Accenture is the first). `tests/snapshots/test_extractor_snapshots.py` replays the production matcher JS in real Chromium and asserts the recorded **unfiltered** count. This validates the matcher's counting, not the agent's filtering. Replays run offline: `tests/snapshots/conftest.py` disables page JavaScript and answers every network request with `204`, so a replay never waits on the live site or follows a navigation the captured page starts itself.
 
 API-strategy companies contribute recorded payloads under `tests/fixtures/api/<ats>/` with respx-mocked tests in `tests/unit/`. For Greenhouse, filenames are the board *token*, not the company slug.
 

@@ -158,7 +158,7 @@ The capture-side tools (`scripts/capture_snapshot.py`, `scripts/probe_board.py`)
 
 Two independent regression corpora, don't conflate them:
 
-- **DOM companies**: frozen page copies under `tests/fixtures/snapshots/<slug>/` (`page.html` + `metadata.json`, optionally `frames/`, `pages/`, `states/`). `tests/snapshots/test_extractor_snapshots.py` replays the production matcher JS in real Chromium and asserts the recorded **unfiltered** count — this validates the matcher, not the agent's filtering or queue evidence. Supply only the unfiltered ground-truth result to `scripts/capture_snapshot.py -c <handle> --expected N` (pass `--paginate` iff the entry has `paginate=True`).
+- **DOM companies**: frozen page copies under `tests/fixtures/snapshots/<slug>/` (`page.html` + `metadata.json`, optionally `frames/`, `pages/`, `states/`). `tests/snapshots/test_extractor_snapshots.py` replays the production matcher JS in real Chromium and asserts the recorded **unfiltered** count — this validates the matcher, not the agent's filtering or queue evidence. Replays run offline: `tests/snapshots/conftest.py` disables page JavaScript and answers every network request with `204`, so a replay never waits on the live site or follows a navigation the captured page starts itself. Supply only the unfiltered ground-truth result to `scripts/capture_snapshot.py -c <handle> --expected N` (pass `--paginate` iff the entry has `paginate=True`).
 - **API companies**: recorded payloads under `tests/fixtures/api/<ats>/` with respx-mocked tests in `tests/unit/`. Greenhouse filenames are the board *token*, not the company slug.
 
 `tests/snapshots/test_linkrule_parity.py` pins the Talentbrew Python URL-bucketing mirror to the shipped JS matcher — matcher edits must keep both in sync.
