@@ -50,7 +50,7 @@ uv run --group test pytest tests/unit/           # browser-free
 uv run --group test pytest tests/snapshots/      # needs Chromium
 ```
 
-Pre-commit gates ruff, mypy, and the full test suite on any change under `src/job_discovery/`, `migrations/`, or `tests/`. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The ruff and mypy hooks run through `uv run`, so they use the versions pinned in `uv.lock` — the same ones the commands above use — and the mypy hook checks the whole `files` set in `pyproject.toml` rather than only the staged files, so a green `uv run mypy` means the hook passes too.
+Pre-commit gates ruff, mypy, and the full test suite on any change under `src/job_discovery/`, `migrations/`, `tests/`, or either `integrate-company` skill copy. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The ruff and mypy hooks run through `uv run`, so they use the versions pinned in `uv.lock` — the same ones the commands above use — and the mypy hook checks the whole `files` set in `pyproject.toml` rather than only the staged files, so a green `uv run mypy` means the hook passes too.
 
 Alembic owns the schema. The database lives at `data/job-discovery.db` by default, which is gitignored because the dataset answers "what is open right now" and is regenerable by re-running a scan:
 
@@ -229,7 +229,7 @@ When a task involves researching, investigating, exploring, or searching code in
 
 The `integrate-company` skill lives at `.tabnine/agent/skills/integrate-company/SKILL.md`. Activate it when the user names a company they want integrated into the corpus, when debugging why an already-configured company returns the wrong job count, or when troubleshooting zero/short/over-count extraction at integration time. The full entry (name, aliases, job_board_url, sample_job_url, expected_jobs) is read from `new-companies.json` at the repo root. Only the first four fields inform `Company`; `expected_jobs` remains external onboarding evidence.
 
-The skill is maintained in two copies, `.claude/skills/integrate-company/` and `.tabnine/agent/skills/integrate-company/`. They are identical except for two deliberate per-assistant adaptations: the Playwright MCP tool prefix (`mcp_playwright_` here, `mcp__playwright__` for Claude Code) and the guidance file each cites for the commit convention. Keep every other change in sync across both copies.
+The skill is maintained in two copies, `.claude/skills/integrate-company/` and `.tabnine/agent/skills/integrate-company/`. They are identical except for two deliberate per-assistant adaptations: the Playwright MCP tool prefix (`mcp_playwright_` here, `mcp__playwright__` for Claude Code) and the guidance file each cites for the commit convention. Keep every other change in sync across both copies; `tests/unit/test_skill_sync.py` fails on any other difference, and a new deliberate one goes into its `SKILL_ADAPTATIONS` table.
 
 ### Playwright MCP
 

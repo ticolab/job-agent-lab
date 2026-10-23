@@ -49,4 +49,6 @@ repos:
         # Every package under src/, not just the matcher's: cli/, batch/
         # and persistence/ are exercised only by this suite, and a
         # migration that drifts from models.py is caught only here too.
-        files: '^(src/job_discovery/.*|migrations/.*|tests/.*)$'
+        # The skill copies are in the trigger because test_skill_sync.py is
+        # the only thing that notices an edit landing in just one of them.
+        files: '^(src/job_discovery/.*|migrations/.*|tests/.*|\.claude/skills/.*|\.tabnine/agent/skills/.*)$'
