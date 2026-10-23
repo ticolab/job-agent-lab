@@ -100,9 +100,8 @@ that default is implementation configuration rather than evidence of a reviewed
 model rollout.
 
 V1 deliberately omits URL-reuse detection and cross-company duplicate
-reconciliation under D15. It also leaves structured compensation, a dashboard
-read model, slow completed-job rechecks, and version-selected bulk reprocessing
-to `spike/job-pipeline/07-followups.md`.
+reconciliation. Structured compensation, a dashboard read model, slow
+completed-job rechecks, and version-selected bulk reprocessing are future work.
 
 The Phase 5 runner and all four `job-pipeline` commands are implemented.
 `preview` observes the selected discovery snapshot by default and reports
