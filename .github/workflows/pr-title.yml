@@ -1,0 +1,50 @@
+# Pull requests are squash-merged with the title as the commit subject and
+# no body, so the title is the commit message main keeps. It must follow
+# the repo's commit convention: a conventional-commit type, then a single
+# short sentence, 100 characters at most once GitHub appends " (#N)".
+#
+# Kept apart from ci.yml so that editing a title re-runs this check alone
+# instead of the whole suite. The title reaches the script through an
+# environment variable, never through ${{ }} inside `run:`, because a
+# crafted title would otherwise be executed as shell.
+
+name: PR title
+
+on:
+  pull_request:
+    # `synchronize` re-reports the check on each new head commit, which a
+    # required check must do or the pull request waits for it.
+    types: [opened, edited, reopened, synchronize]
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-title:
+    name: pr-title
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check the title is a one-sentence conventional commit subject
+        shell: bash
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          suffix=" (#${NUMBER})"
+          limit=$((100 - ${#suffix}))
+          types="build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test"
+          pattern="^(${types})(\([a-z0-9-]+\))?!?: [^ ].*$"
+          status=0
+          if ! [[ "$TITLE" =~ $pattern ]]; then
+            echo "::error::PR title must look like 'feat: add Acme to company test sample' (types: ${types//|/, })."
+            status=1
+          fi
+          if (( ${#TITLE} > limit )); then
+            echo "::error::PR title is ${#TITLE} characters; keep it to ${limit} so '<title>${suffix}' fits in 100."
+            status=1
+          fi
+          exit "$status"

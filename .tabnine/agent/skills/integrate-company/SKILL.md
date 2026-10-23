@@ -20,8 +20,9 @@ Append **one** company to `COMPANIES` in
 in working context, run the live integration, and verify its saved JSON report
 externally. "Done" means the live report has no error and reports exactly the
 queue count, the unfiltered regression snapshot is captured, the corpus passes,
-the integrated queue entry is removed, and one `feat:` commit passes hooks.
-Then notify and wait for instructions. Never push.
+the integrated queue entry is removed, and one `feat:` commit on an
+`integrate/<slug>` branch passes hooks. Then notify and wait for instructions.
+Never push.
 
 One invocation = one company. Do not batch.
 
@@ -408,8 +409,10 @@ whether a filter the browser-use agent is applying shrinks the count below
    sync with what is actually in `catalog/companies.py`. This is part of the
    integration change and enters git.
 
-9. **Commit the integration.** Stage the `catalog/companies.py` edit, the new
-   `tests/fixtures/snapshots/<slug>/` directory, and the tracked
+9. **Commit the integration.** `main` accepts changes only through a pull
+   request, so if `HEAD` is on `main`, first create a branch with
+   `git switch -c integrate/<slug>`. Stage the `catalog/companies.py` edit, the
+   new `tests/fixtures/snapshots/<slug>/` directory, and the tracked
    `new-companies.json` queue removal. Leave unrelated changes unstaged. Use a
    lowercase `feat:` subject (`feat: add <Name> to company test sample`) —
    subject line only, 100 characters max, no body and no trailers, per
@@ -420,7 +423,9 @@ whether a filter the browser-use agent is applying shrinks the count below
    snapshot-regression pytest hook. If `end-of-file-fixer` or any other
    auto-fixer modifies a file, re-stage and retry — do **not** bypass with
    `--no-verify`. After the commit, run `git status` to confirm the working tree
-   is clean, then report (format below). Never push.
+   is clean, then report (format below). Never push: the human pushes the
+   branch and opens the pull request, titled with the same `feat:` subject,
+   which becomes the squash-merge commit on `main`.
 
 ## Debugging playbook (symptom → likely cause → fix)
 
@@ -513,14 +518,14 @@ and the pattern classes that are now closed vs still open.
 
 ## Constraints & guardrails
 
-- **Commit exactly once, only on success, never push, never branch.** When all
+- **Commit exactly once, only on success, on a branch, never push.** When all
   quality gates and the live agent run pass (steps 5–7), step 9 commits the
   integration in a single `feat:` commit covering `catalog/companies.py`, the
   new `tests/fixtures/snapshots/<slug>/` directory, and the tracked queue-entry
   removal from `new-companies.json`, subject line only, no body. Do not stage
   unrelated changes. On a blocker, do **not** commit at all; leave changes in
-  the working tree for human review. Never `git push`, never create branches,
-  never bypass pre-commit with `--no-verify`.
+  the working tree for human review. Never `git push`, never commit directly
+  to `main`, never bypass pre-commit with `--no-verify`.
 - **Prefer config-level fixes** (`sample_job_url`, `job_board_url`, `aliases`,
   `link_rule.path_prefix`) over code changes. They solve the vast majority of
   cases.
@@ -572,8 +577,8 @@ All of the following hold:
    site-specific hacks).
 6. The integrated company's entry has been removed from the tracked
    `new-companies.json` queue file at the repo root.
-7. A single `feat: add <Name> to company test sample` commit has been created,
-   staging `catalog/companies.py`, the new
+7. A single `feat: add <Name> to company test sample` commit has been created
+   on a branch other than `main`, staging `catalog/companies.py`, the new
    `tests/fixtures/snapshots/<slug>/` directory, and the queue-entry removal,
    subject line only with no body or trailers; all pre-commit hooks passed
    (ruff, mypy, end-of-file-fixer, snapshot regression). Nothing was pushed.

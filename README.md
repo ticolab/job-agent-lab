@@ -199,7 +199,8 @@ awkward to type as `-c <handle>`.
 Once at least one entry is filled in, invoke the `integrate-company` skill with
 the company name or any alias. The skill handles ground-truth verification,
 snapshot capture, the live agent run, the quality gates, and a single `feat:`
-commit covering `catalog/companies.py` plus the new snapshot directory. On
+commit on its own branch covering `catalog/companies.py` plus the new snapshot
+directory, ready to push as a pull request. On
 success, it removes the entry from `new-companies.json`. That removal is a
 tracked workflow change and should be staged with the integration when removing
 the completed entry is the intended workflow.
@@ -214,6 +215,12 @@ uv run --group test pytest tests/          # full suite
 uv run --group test pytest tests/unit/     # browser-free subset
 uv run pre-commit install                  # optional: git hooks
 ```
+
+Changes reach `main` only through pull requests, which are squash-merged with
+the PR title as the commit subject. CI (`.github/workflows/ci.yml`) runs the
+same gates as the hooks, plus a check that the built wheel installs and runs,
+and it must pass — along with a check that the PR title follows the commit
+convention — before a pull request can merge.
 
 Design documents are kept close to the code. `ARCHITECTURE.md` holds the
 big-picture map and the invariants. `CLAUDE.md` and `TABNINE.md` are guidance

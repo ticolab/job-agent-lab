@@ -1,0 +1,206 @@
+# The merge gate for main. Every job here runs on every pull request with
+# no secrets and no network access to career sites: the whole suite is
+# designed to pass without OPENAI_API_KEY, and nothing here may change that.
+#
+# Branch protection requires only `ci-ok`, which succeeds when every other
+# job does, so adding or renaming a job never means editing the ruleset.
+# Do not add `paths:` filters to this workflow: a required check whose
+# workflow is skipped never reports, and the pull request waits forever.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  # Every uv command fails instead of quietly rewriting a stale uv.lock.
+  UV_LOCKED: "1"
+
+jobs:
+  static:
+    name: static
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # uv is pinned to the version used locally so the lockfile check judges
+      # uv.lock the same way here as on a workstation; bump all four together.
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: "0.11.25"
+      - name: Check uv.lock matches pyproject.toml
+        run: uv lock --check
+      # The test group is installed too so mypy sees the same packages
+      # it does locally rather than resolving pytest and respx to Any.
+      - name: Install dependencies
+        run: uv sync --extra dev --group test
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+      # The same hooks a local commit runs. The test hook is skipped because
+      # the unit and snapshots jobs run the suite in parallel.
+      - name: Run pre-commit hooks
+        env:
+          SKIP: snapshot-regression
+        run: uv run --extra dev pre-commit run --all-files --show-diff-on-failure
+
+  unit:
+    name: unit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: "0.11.25"
+      - name: Install dependencies
+        run: uv sync --group test
+      - name: Run the browser-free tests
+        run: uv run --group test pytest tests/unit/
+
+  snapshots:
+    name: snapshots
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: "0.11.25"
+      - name: Install dependencies
+        run: uv sync --group test
+      # Browser builds are tied to the Playwright release, so the cache key
+      # follows the version uv.lock resolved rather than a hand-kept copy.
+      - name: Read the locked Playwright version
+        id: playwright
+        run: |
+          version="$(uv run --group test python -c 'import importlib.metadata as m; print(m.version("playwright"))')"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: browsers
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - name: Install Chromium
+        if: steps.browsers.outputs.cache-hit != 'true'
+        run: uv run --group test playwright install --with-deps chromium
+      # A cache hit restores the browser but not the system libraries it
+      # links against, which live outside the cached directory.
+      - name: Install Chromium system dependencies
+        if: steps.browsers.outputs.cache-hit == 'true'
+        run: uv run --group test playwright install-deps chromium
+      - name: Replay the frozen-DOM snapshots in Chromium
+        run: uv run --group test pytest tests/snapshots/
+
+  # The test suites import the package from an editable install with the
+  # test group present, so none of them would notice a wheel that ships
+  # without its JS assets, a broken console-script entry point, a migration
+  # that cannot be reversed, or a runtime dependency that only the test
+  # group happened to provide. macOS runs too because dependency markers
+  # differ by CPU: greenlet reached Apple Silicon only through Playwright
+  # until sqlalchemy[asyncio] was declared, and Linux could not see that.
+  package:
+    name: package (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: "0.11.25"
+      - name: Build the sdist and wheel
+        run: uv build
+      # Constrained to uv.lock so this job tests the wheel, not whatever
+      # newer dependency releases happened to land on PyPI today.
+      - name: Install the wheel into a clean environment
+        run: |
+          uv export --no-emit-project --no-hashes --format requirements-txt \
+            -o "$RUNNER_TEMP/constraints.txt"
+          uv venv "$RUNNER_TEMP/wheel-env"
+          uv pip install --python "$RUNNER_TEMP/wheel-env" dist/*.whl \
+            --constraint "$RUNNER_TEMP/constraints.txt"
+          echo "$RUNNER_TEMP/wheel-env/bin" >> "$GITHUB_PATH"
+      - name: Load the matcher assets from the installed wheel
+        working-directory: ${{ runner.temp }}
+        run: |
+          python - <<'EOF'
+          import job_discovery.extraction.dom as dom
+
+          assert "site-packages" in dom.__file__, dom.__file__
+          assert dom.EXTRACT_JOB_LINKS_JS.strip(), "collect_links.js is empty"
+          assert dom.FIND_NEXT_CONTROL_JS.strip(), "find_next_control.js is empty"
+          print("matcher assets load from", dom.__file__)
+          EOF
+      - name: Run both console scripts
+        run: |
+          job-discovery --help
+          job-discovery integrate --help
+          job-discovery scan --help
+          job-agent-lab --help
+      - name: Migrate a fresh database up, down, and up again
+        env:
+          JOB_DISCOVERY_DB: ${{ runner.temp }}/smoke.db
+        run: |
+          alembic upgrade head
+          alembic downgrade base
+          alembic upgrade head
+      # Two pull requests that each add a migration off the same parent pass
+      # on their own and leave main with two heads once both merge.
+      - name: Require a single migration head
+        run: |
+          heads="$(alembic heads)"
+          echo "$heads"
+          if [ "$(grep -c . <<<"$heads")" -ne 1 ]; then
+            echo "::error::Expected exactly one Alembic head; merge the branches with 'alembic merge heads'."
+            exit 1
+          fi
+      - name: Plan a full scan against the migrated database
+        run: job-discovery scan --dry-run --all --database "$RUNNER_TEMP/smoke.db"
+
+  ci-ok:
+    name: ci-ok
+    if: always()
+    needs: [static, unit, snapshots, package]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      # A skipped or cancelled dependency must fail this job: branch
+      # protection treats a skipped required check as passing.
+      - name: Require every job to succeed
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "job results: $RESULTS"
+          for result in $RESULTS; do
+            if [ "$result" != "success" ]; then
+              echo "::error::A required job finished as '$result'."
+              exit 1
+            fi
+          done

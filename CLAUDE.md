@@ -38,7 +38,9 @@ Two console scripts are registered. `job-discovery` is the dispatcher with `inte
 
 `OPENAI_API_KEY` in `.env` is required only for live `strategy="dom"` agent runs. Unit tests, snapshot tests, API strategies, and `pre_filter_urls` companies all run without it.
 
-Pre-commit gates: ruff, mypy, and the full test suite runs on any change under `src/job_discovery/`, `migrations/`, `tests/`, or either `integrate-company` skill copy. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The ruff and mypy hooks run through `uv run`, so they use the versions pinned in `uv.lock` — the same ones the commands above use — and the mypy hook checks the whole `files` set in `pyproject.toml` rather than only the staged files, so a green `uv run mypy` means the hook passes too.
+Pre-commit gates: ruff, mypy, and the full test suite runs on any change under `src/job_discovery/`, `migrations/`, `tests/`, or either `integrate-company` skill copy. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The ruff and mypy hooks run through `uv run`, so they use the versions pinned in `uv.lock` — the same ones the commands above and CI use — and the mypy hook checks the whole `files` set in `pyproject.toml` rather than only the staged files, so a green `uv run mypy` means the hook passes too.
+
+CI (`.github/workflows/ci.yml`) runs on every pull request and on `main`: `static` (the pre-commit hooks other than the test hook, plus a `uv.lock` freshness check), `unit`, `snapshots` (Chromium on Linux), and `package`. That last job exists because every test imports the package from an editable install with the test group present: it installs the built wheel into a clean environment on Linux and macOS, loads both JS assets, runs both console scripts, migrates a fresh database up, down, and up again, requires a single Alembic head, and plans a `scan --dry-run --all`. CI holds no secrets and must stay that way — the suite is designed to pass without `OPENAI_API_KEY`, and a live agent run is never a merge gate. The ruleset on `main` requires only the `ci-ok` aggregate (plus `pr-title`), so a job can be added or renamed without touching it. Never put `paths:` filters on that workflow: a required check whose workflow is skipped never reports, and the pull request waits forever. uv is pinned in the workflow to the version used locally; bump it there when upgrading uv.
 
 Alembic owns the schema. The database lives at `data/job-discovery.db`, gitignored because the dataset answers "what is open right now" and is regenerable by re-running a scan.
 
@@ -65,9 +67,9 @@ Four things there are decisions rather than accidents. The mandatory selection i
 
 Reach for `--dry-run` first when a scan misbehaves: it prints what would run, what is skipped as fresh, and the ceilings, without writing even the catalog projection. Note that `--timeout-seconds` doubles as the reaper's staleness bound, so lowering it to reap sooner also shortens every run's ceiling.
 
-Commit directly to `main` — no feature branches in this repo. Never bypass the pre-commit hooks with `--no-verify`; if an auto-fixer modifies a file, re-stage and commit again.
+Changes reach `main` only through a pull request: commit on a branch, push it, and open one. The ruleset on `main` blocks direct pushes and force-pushes and allows only a squash merge, once `ci-ok` and `pr-title` pass and the branch is up to date with `main`. Never bypass the pre-commit hooks with `--no-verify`; if an auto-fixer modifies a file, re-stage and commit again.
 
-Commit messages are a **single short sentence, 100 characters max** — subject line only, no body. Reasoning belongs in the code, the design docs, or `blockers/`, not in the commit message.
+Commit messages are a **single short sentence, 100 characters max** — subject line only, no body. Reasoning belongs in the code, the design docs, or `blockers/`, not in the commit message. The squash merge makes the PR title the commit subject on `main`, with no body, so the PR title follows the same rule — `pr-title` enforces a conventional-commit type and a length that still fits in 100 after GitHub appends ` (#N)`.
 
 ## Architecture
 
