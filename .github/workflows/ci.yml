@@ -102,14 +102,13 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      # No --with-deps: the runner image already carries every library
+      # Chromium links against (on the first run it added only fonts), and
+      # that apt step once took seven minutes on a slow mirror. If the image
+      # ever drops a library, the launch fails loudly; add --with-deps then.
       - name: Install Chromium
         if: steps.browsers.outputs.cache-hit != 'true'
-        run: uv run --group test playwright install --with-deps chromium
-      # A cache hit restores the browser but not the system libraries it
-      # links against, which live outside the cached directory.
-      - name: Install Chromium system dependencies
-        if: steps.browsers.outputs.cache-hit == 'true'
-        run: uv run --group test playwright install-deps chromium
+        run: uv run --group test playwright install chromium
       - name: Replay the frozen-DOM snapshots in Chromium
         run: uv run --group test pytest tests/snapshots/
 
@@ -157,6 +156,48 @@ jobs:
           assert dom.EXTRACT_JOB_LINKS_JS.strip(), "collect_links.js is empty"
           assert dom.FIND_NEXT_CONTROL_JS.strip(), "find_next_control.js is empty"
           print("matcher assets load from", dom.__file__)
+          EOF
+      # Importing the package only runs module-level imports, so this walks
+      # every import statement, including those inside functions, and asks
+      # whether the clean environment can satisfy it. Playwright was missing
+      # this way: settings.py imports it inside the UA resolver, and only
+      # the test group installed it once browser-use stopped depending on it.
+      - name: Check every module the package imports is installed
+        working-directory: ${{ runner.temp }}
+        run: |
+          python - <<'EOF'
+          import ast
+          import importlib.util
+          import pathlib
+          import sys
+
+          import job_discovery
+
+          root = pathlib.Path(job_discovery.__file__).parent
+
+
+          def imported(node, found):
+              if isinstance(node, ast.If) and "TYPE_CHECKING" in ast.unparse(node.test):
+                  children = node.orelse
+              else:
+                  if isinstance(node, ast.Import):
+                      found.update(alias.name.split(".")[0] for alias in node.names)
+                  elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+                      found.add(node.module.split(".")[0])
+                  children = list(ast.iter_child_nodes(node))
+              for child in children:
+                  imported(child, found)
+
+
+          missing = {}
+          for path in sorted(root.rglob("*.py")):
+              found = set()
+              imported(ast.parse(path.read_text(encoding="utf-8")), found)
+              for name in sorted(found - set(sys.stdlib_module_names) - {"job_discovery"}):
+                  if importlib.util.find_spec(name) is None:
+                      missing.setdefault(name, []).append(str(path.relative_to(root)))
+          assert not missing, f"imported but not installed with the wheel: {missing}"
+          print("every imported module is installed")
           EOF
       - name: Run both console scripts
         run: |
