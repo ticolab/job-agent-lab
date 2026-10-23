@@ -96,8 +96,7 @@ Failure semantics
 Under-fetch is reported, not paginated. The request asks for
 ``size:100`` in one call; BCG's Costa Rica facet returns 14, roughly a
 seventh of that. If a region ever exceeds the page size the adapter
-emits what it received and logs a warning naming the shortfall — the
-verdict layer then flips ``verdict="under"``, which is its job. A
+emits what it received and logs a warning naming the shortfall. A
 pagination loop is deliberately not built ahead of a board that needs
 one.
 """
@@ -421,12 +420,10 @@ class PhenomStrategy:
 
             total_hits = refine.get("totalHits")
             if isinstance(total_hits, int) and total_hits > len(raw_jobs):
-                # Single-call contract exceeded. Emit what we have; the
-                # verdict layer classifies the shortfall.
+                # Single-call contract exceeded. Emit what we have.
                 logger.warning(
                     "Phenom reported totalHits=%s but returned %s records for "
-                    "company=%s (size=%s). Emitting the received subset; the "
-                    "verdict layer will classify the shortfall.",
+                    "company=%s (size=%s). Emitting the received subset.",
                     total_hits,
                     len(raw_jobs),
                     company.name,
@@ -448,8 +445,7 @@ class PhenomStrategy:
                     # whose primary fields read "United Kingdom". Dropping
                     # them is a silent under-count biased against
                     # multi-region postings; logging keeps the
-                    # disagreement visible without inventing a verdict
-                    # the string evidence cannot support. Matches the
+                    # disagreement visible. Matches the
                     # Talentbrew adapter's stance ("the facet-applied GET
                     # *is* the filter"), which ships no client re-check at
                     # all.
@@ -499,5 +495,4 @@ class PhenomStrategy:
             agent_completed=None,
             agent_had_errors=None,
             error=error,
-            expected_jobs=company.expected_jobs,
         )

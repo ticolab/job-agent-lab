@@ -211,9 +211,8 @@ class TestExtractHappyPathRecorded:
     Zscaler 2, Movable Ink 3, West Monroe 11. West Monroe grew by 2
     postings between the initial integration count (9) and fixture
     capture (11); the tests pin the recorded reality rather than the
-    older count. Elastic 3 was added later when Elastic was integrated
-    (queue ``expected_jobs=3``, matches recorded payload's CR count
-    exactly).
+    older count. Elastic 3 was added later when Elastic was integrated;
+    its historical onboarding evidence also recorded 3 CR postings.
     """
 
     def test_zscaler(self) -> None:
@@ -281,8 +280,8 @@ class TestExtractHappyPathRecorded:
     def test_elastic_recorded_three(self) -> None:
         # Elastic's Greenhouse tenant hosts 177 postings at fixture
         # capture time; 3 carry ``location.name == "Costa Rica"`` and
-        # the region filter keeps exactly those. The queue's
-        # ``expected_jobs=3`` matches recorded reality — no drift.
+        # the region filter keeps exactly those. Historical onboarding
+        # evidence also recorded 3 CR postings.
         #
         # Elastic's ``absolute_url`` has a tenant-configured quirk:
         # the ``gh_jid`` query parameter is doubled
@@ -313,12 +312,9 @@ class TestExtractHappyPathRecorded:
         # Newsela's Greenhouse tenant hosts 16 postings at fixture
         # capture time; 2 carry a compound-LATAM ``location.name``
         # that includes ``Costa Rica`` and the region filter keeps
-        # exactly those. The queue's ``expected_jobs=16`` reflects
-        # the *tenant total*, not the CR-filtered count — a drift
-        # from the L11 queue-authoring convention (queue values are
-        # supposed to be the filtered target). Per
-        # we pin to recorded reality and document the drift in the
-        # commit; the test asserts 2, not 16.
+        # exactly those. Historical onboarding evidence recorded 16,
+        # reflecting the *tenant total*, not the CR-filtered count. This
+        # test pins the observed fixture count of 2.
         #
         # Both matches are pan-LATAM remote roles whose
         # ``location.name`` is a compound string listing multiple
@@ -356,13 +352,10 @@ class TestExtractHappyPathRecorded:
         # Newsela's two compound-LATAM strings — Armis has a real
         # single-country CR posting.
         #
-        # Queue drift: ``expected_jobs=11`` matches neither the
-        # tenant total (29) nor the CR-filtered count (1). Unlike
-        # Newsela's tenant-total drift, this is a third drift shape
-        # — likely stale (a snapshot from months earlier when Armis
-        # had more CR postings) or a broader-region filter at
-        # queue-authoring time. Per the test pins
-        # to recorded reality: 1, not 11.
+        # Historical onboarding evidence recorded 11, matching neither
+        # the tenant total (29) nor the CR-filtered count (1). It was
+        # likely stale or produced with a broader region filter. This
+        # test pins the observed fixture count of 1.
         payload = _load_fixture("armissecurity")
         with respx.mock(assert_all_called=True) as mock:
             mock.get(f"{_API_BASE}/armissecurity/jobs").mock(
@@ -401,8 +394,6 @@ class TestExtractHappyPathRecorded:
             "agent_completed",
             "agent_had_errors",
             "error",
-            "expected_jobs",
-            "verdict",
         }
         assert result["metadata"]["total_jobs_found"] == len(result["jobs"])
 

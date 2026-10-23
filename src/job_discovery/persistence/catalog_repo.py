@@ -3,7 +3,7 @@
 ``job_discovery.catalog.companies`` is the source of truth for the corpus.
 This module only ever copies it forward so the database is
 self-describing: without it, ``job_urls`` is a set of slugs with no
-names, board URLs, or human-counted targets, and every ad-hoc SQL query
+names or board URLs, and every ad-hoc SQL query
 would need the Python catalog open beside it.
 
 The sync is refreshed at the start of every scan, which makes the
@@ -61,7 +61,6 @@ async def sync_catalog(session: AsyncSession, companies: Sequence[Company]) -> N
                     name=company.name,
                     job_board_url=company.job_board_url,
                     strategy=company.strategy,
-                    expected_jobs=company.expected_jobs,
                     synced_at=synced_at,
                 )
             )

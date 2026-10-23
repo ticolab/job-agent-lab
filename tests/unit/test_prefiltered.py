@@ -403,7 +403,6 @@ class TestAgentLessProof:
         patched["states"] = [["https://example.com/jobs/1"]]
         company = _make_company(
             pre_filter_urls=("https://example.com/careers?a=1",),
-            expected_jobs=1,
         )
 
         # If _extract_prefiltered ever imported/called build_agent, the
@@ -416,8 +415,8 @@ class TestAgentLessProof:
         assert meta["agent_steps"] is None
         assert meta["agent_completed"] is None
         assert meta["agent_had_errors"] is None
-        assert meta["expected_jobs"] == 1
-        assert meta["verdict"] == "match"
+        assert "expected_jobs" not in meta
+        assert "verdict" not in meta
         assert meta["states_visited"] == 1
         assert meta["total_jobs_found"] == 1
 
@@ -484,8 +483,8 @@ class TestReportShapeByteStability:
     (agent DOM path, Greenhouse strategy, any future caller that does
     not opt in) pass ``None`` as the default and must produce a
     ``metadata`` dict without the key at all — not present-with-null.
-    This is the load-bearing property honoured by JSON serialisation,
-    ``print_summary``, and ``--strict``.
+    This is the load-bearing property honoured by JSON serialisation
+    and ``print_summary``.
     """
 
     def test_states_visited_absent_when_kwarg_omitted(self) -> None:
@@ -502,7 +501,6 @@ class TestReportShapeByteStability:
             agent_completed=True,
             agent_had_errors=False,
             error=None,
-            expected_jobs=1,
         )
 
         assert "states_visited" not in report["metadata"]
@@ -521,7 +519,6 @@ class TestReportShapeByteStability:
             agent_completed=None,
             agent_had_errors=None,
             error=None,
-            expected_jobs=None,
             states_visited=3,
         )
 

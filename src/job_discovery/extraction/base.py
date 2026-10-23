@@ -87,49 +87,6 @@ class ExtractionStrategy(Protocol):
         ...
 
 
-def compute_verdict(found: int, expected: int | None) -> str:
-    """Classify a run's ``total_jobs_found`` against its human target.
-
-    Returns one of the four ``metadata.verdict`` values:
-
-    - ``"unverified"`` when ``expected is None`` — the catalog entry has
-      never been counted, so no judgement is possible. This is the
-      state every pre-verdict catalog entry lands in (no backfill).
-    - ``"match"`` when ``found == expected``.
-    - ``"under"`` when ``found < expected``.
-    - ``"over"`` when ``found > expected``.
-
-    Two edge cases follow directly from those rules and are worth
-    calling out because ``0`` is a legitimate ``expected_jobs`` value
-    for a Case-C board (a location filter exists but has no options
-    matching the target region):
-
-    - ``expected=0, found=0`` → ``"match"``. A Case-C board honestly
-      reporting zero listings is a passing run.
-    - ``expected=0, found>0`` → ``"over"``. A Case-C board that
-      suddenly returns listings deserves the same "delta from human
-      count" attention as any other overshoot; the CLI's ``--strict``
-      flag treats it accordingly.
-
-    Args:
-        found: The value :func:`build_report` puts into
-            ``metadata.total_jobs_found`` (``len(jobs)`` at the call
-            site).
-        expected: The company's ``expected_jobs`` field, passed
-            through unchanged from the ``Company`` model. Never
-            adjusted to match observed reality — expectations move
-            through :file:`new-companies.json` and a fresh integrate-
-            company run, not through this function.
-    """
-    if expected is None:
-        return "unverified"
-    if found == expected:
-        return "match"
-    if found < expected:
-        return "under"
-    return "over"
-
-
 def build_report(
     *,
     strategy: str,
@@ -142,7 +99,6 @@ def build_report(
     agent_completed: bool | None,
     agent_had_errors: bool | None,
     error: str | None,
-    expected_jobs: int | None,
     states_visited: int | None = None,
 ) -> dict[str, Any]:
     """Build the extraction report dict (single author of the shape).
@@ -150,33 +106,20 @@ def build_report(
     The report is the on-disk JSON payload
     :func:`job_discovery.reporting.output.save_result` writes and the
     input :func:`~job_discovery.reporting.output.print_summary`
-    renders. The shape is byte-compatible with the legacy
-    ``_build_output`` dict *modulo three additive-key rounds*:
-
-    - ``metadata.strategy`` is present on every run.
-    - ``metadata.expected_jobs`` and ``metadata.verdict`` are
-      appended *after* ``metadata.error`` so the serialisation order
-      of every pre-verdict key is byte-identical.
-    - ``metadata.states_visited`` is appended *after*
-      ``metadata.verdict`` **only when the ``states_visited`` argument
-      is not ``None``**. Every single-state caller passes ``None`` (the
-      default) and their reports stay byte-identical — the key is
-      absent from those dicts, not present-with-null. The agent-less
-      multi-state ``DomStrategy._extract_prefiltered`` path
-      is the sole current producer of a non-``None`` value; it passes
-      ``len(company.pre_filter_urls)``.
+    renders. ``metadata.strategy`` is present on every run.
+    ``metadata.states_visited`` is included only when the
+    ``states_visited`` argument is not ``None``. Every single-state
+    caller passes ``None`` (the default), so the key is absent from
+    those dicts. The agent-less multi-state
+    ``DomStrategy._extract_prefiltered`` path is the sole current
+    producer of a non-``None`` value; it passes
+    ``len(company.pre_filter_urls)``.
 
     API strategies (Greenhouse and future siblings) pass ``None`` for
     the agent fields (``model``, ``agent_steps``, ``agent_completed``,
     ``agent_had_errors``) — they do not run an LLM agent and reporting
     honest nulls is more informative than fabricated zeros.
     ``print_summary`` renders each ``None`` as ``n/a``.
-
-    The ``expected_jobs`` argument is *always* the value of the
-    ``Company.expected_jobs`` field for the run — strategies pass it
-    straight through and never mutate it. Verdict classification is
-    centralised in :func:`compute_verdict`; strategies never compute
-    verdicts themselves.
 
     Args:
         strategy: The strategy name (``"dom"`` or ``"greenhouse"``).
@@ -195,15 +138,10 @@ def build_report(
         agent_had_errors: Whether the agent's history recorded any
             errors, or ``None`` for API strategies.
         error: The extraction-terminating error string, if any.
-        expected_jobs: The company's human-counted, region-filtered
-            target (``Company.expected_jobs``). ``None`` when the
-            company has never been counted, in which case the emitted
-            verdict is ``"unverified"``.
         states_visited: additive metadata for the agent-less
             multi-state union path. ``None`` (the default) omits the
             key entirely from ``metadata`` for byte-identical parity
-            with single-state reports; an integer value is appended to
-            ``metadata`` after ``verdict``. ``DomStrategy._extract_prefiltered``
+            with single-state reports. ``DomStrategy._extract_prefiltered``
             is the sole current producer and passes
             ``len(company.pre_filter_urls)`` — even on the error path,
             the value reflects the declared state count, not the
@@ -221,14 +159,7 @@ def build_report(
         "agent_completed": agent_completed,
         "agent_had_errors": agent_had_errors,
         "error": error,
-        "expected_jobs": expected_jobs,
-        "verdict": compute_verdict(len(jobs), expected_jobs),
     }
-    # Conditional additive key. Every single-state caller passes
-    # states_visited=None (the default) and the key is absent from their
-    # metadata — this is a load-bearing byte-stability property for the
-    # agent + Greenhouse report shapes, honoured by JSON serialisation
-    # and every existing consumer (print_summary, save_result, --strict).
     if states_visited is not None:
         metadata["states_visited"] = states_visited
     return {

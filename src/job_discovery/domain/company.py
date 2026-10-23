@@ -170,8 +170,8 @@ class LinkRule(BaseModel):
             mechanism is UltiPro-family-generic. An invalid selector is
             a loud error rather than a silent no-op: the matcher
             validates it once per invocation and throws a named error.
-            Selectors rot on board redesigns; the verdict layer
-            is the designated detector.
+            Selectors rot on board redesigns; extraction counts expose
+            that drift.
     """
 
     model_config = ConfigDict(frozen=True, extra="forbid")
@@ -447,8 +447,8 @@ class RuntimeHooks(BaseModel):
             aria-label, so the selector keys on its Tailwind
             important-modifier class
             (``button.\\!bg-primary``), which resolves uniquely on
-            the board today; a redesign that restyles it is caught at
-            the verdict layer as an ``under``.
+            the board today; a redesign that restyles it is visible as
+            a lower extracted URL count.
         filter_already_applied: When ``True``, ``build_goal_prompt``
             renders a conditional clause between the intro and Step 1a
             telling the agent the location filter is already carried by
@@ -560,22 +560,6 @@ class Company(BaseModel):
             pass and is byte-identical to the single-page behaviour. Only
             meaningful for ``strategy="dom"``; the Greenhouse API
             strategy pages internally at the request level.
-        expected_jobs: human-counted, region-filtered live target
-            from the integration queue. ``None`` (the default) means the
-            entry has never been counted — every catalog entry that
-            predates carries ``None``, no backfill is done. ``0``
-            is a legitimate value: a Case-C board that has no listings
-            in the target region has a well-defined expectation of zero.
-            This value is *never* adjusted to match observed reality —
-            :func:`~job_discovery.extraction.base.build_report` compares
-            it against ``total_jobs_found`` and emits a
-            ``metadata.verdict`` key
-            (``match``/``under``/``over``/``unverified``) that
-            :func:`~job_discovery.reporting.output.print_summary`
-            renders, and that ``--strict`` gates the CLI exit code on.
-            Deliberately absent from any agent-visible surface (never
-            interpolated into ``extraction.dom.agent.prompt``) so the LLM cannot
-            curve-fit to the count.
         hooks: nested :class:`RuntimeHooks` bag of opt-in per-board
             page-preparation knobs. Defaults to ``RuntimeHooks()`` — the
             inert value that leaves every pre-hooks code path
@@ -607,11 +591,9 @@ class Company(BaseModel):
             loop, closing C18 structurally. No ``OPENAI_API_KEY`` is
             consumed on this path — the agent is never constructed.
             Fragility of the declared URLs (a city id changing upstream,
-            a query-string schema change) is caught at the verdict layer:
-            a stale URL that no longer matches any postings degrades to
-            zero anchors for that state, and the union count falls below
-            ``expected_jobs`` producing a ``verdict="under"``. Two
-            cross-field validators below enforce (a) non-empty
+            a query-string schema change) remains visible as a lower or
+            empty extracted URL set. Two cross-field validators below enforce
+            (a) non-empty
             ``pre_filter_urls`` requires
             ``strategy="dom"`` (the runner lives in :class:`DomStrategy`
             and the Greenhouse API path never navigates URLs) and (b)
@@ -689,7 +671,6 @@ class Company(BaseModel):
     link_rule: LinkRule = LinkRule()
     strategy: StrategyName = "dom"
     paginate: bool = False
-    expected_jobs: int | None = Field(default=None, ge=0)
     hooks: RuntimeHooks = RuntimeHooks()
     pre_filter_urls: tuple[str, ...] = ()
     phenom: PhenomConfig | None = None

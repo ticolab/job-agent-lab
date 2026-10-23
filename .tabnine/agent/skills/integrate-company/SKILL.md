@@ -1,26 +1,26 @@
 ---
 name: integrate-company
-description: Integrate a single company into job-discovery's COMPANIES catalog and iterate until the deterministic extractor returns the human-counted expected_jobs target. Use when the user names a company they want integrated into the corpus — the full entry (name, aliases, job_board_url, sample_job_url, expected_jobs) is read from new-companies.json at the repo root, which the user populates from the committed new-companies.example.json template. Also use when debugging why an already-configured company returns the wrong job count, or troubleshooting zero / short / over-count extraction at integration time.
+description: Integrate one company into job-discovery's COMPANIES catalog and verify the saved live report against onboarding-only expected_jobs queue evidence. Use when the user names a company to integrate, when debugging an integration count, or when troubleshooting zero, short, or over-count extraction. Read name, aliases, job_board_url, sample_job_url, and expected_jobs from new-companies.json; never copy expected_jobs into Company or runtime data.
 ---
 
 # Integrate One Company into the Job Discovery Corpus
 
-Integrate **one** company into the `job-discovery` corpus so that the extractor
-returns the **exact number of job listings** that a human counted on that
-company's career site. Iterate — add the company, run it, debug failures —
-until the extracted count matches the target. On success, remove the
-company's entry from the `new-companies.json` queue and commit the
-integration (config + snapshot) in a single commit; on a blocker, stop and
-report without committing.
+Integrate **one** company into the `job-discovery` corpus, then externally
+verify that the saved live report contains the exact number of job listings
+recorded as queue evidence. Iterate — add the company, run it, debug failures —
+until the observed report count matches the evidence. On success, remove the
+company's entry from the tracked `new-companies.json` queue and commit the
+integration (config + snapshot + queue workflow change) in a single commit; on
+a blocker, stop and report without committing.
 
 ## Objective
 
-Append **one** company (provided in the input) to `COMPANIES` in
-`src/job_discovery/catalog/companies.py`, then make the extractor return the
-**expected number of jobs**. "Done" means the deterministic extractor returns
-exactly that count on the real site, with no errors, the regression snapshot
-is captured and the corpus passes, the integrated entry is removed from the
-queue, and a single `feat:` commit lands cleanly through the pre-commit hooks.
+Append **one** company to `COMPANIES` in
+`src/job_discovery/catalog/companies.py`. Keep the queue's `expected_jobs` only
+in working context, run the live integration, and verify its saved JSON report
+externally. "Done" means the live report has no error and reports exactly the
+queue count, the unfiltered regression snapshot is captured, the corpus passes,
+the integrated queue entry is removed, and one `feat:` commit passes hooks.
 Then notify and wait for instructions. Never push.
 
 One invocation = one company. Do not batch.
@@ -28,12 +28,12 @@ One invocation = one company. Do not batch.
 ## Inputs
 
 Expect to be invoked with a **single company name** — the canonical `name`,
-an alias, or any substring. The integration target lives in `new-companies.json`
-at the repo root, an untracked, personal backlog file the user maintains by
-copying the committed `new-companies.example.json` template (see
-`README.md` → "Adding a new company"). Resolve the supplied name against the
-queue by case-insensitive substring match on `name`, or exact match against
-any entry in `aliases`.
+an alias, or any substring. The integration target lives in the tracked
+`new-companies.json` queue at the repo root (schema documented by
+`new-companies.example.json`; see `README.md` → "Adding a new company"). Resolve
+the supplied name against the queue by case-insensitive substring match on
+`name`, or exact match against any entry in `aliases`. After resolving exactly
+one entry, use its canonical `name` verbatim as `QUEUE_NAME` in the final check.
 
 Each entry has five fields:
 
@@ -50,12 +50,14 @@ Each entry has five fields:
 **Refuse to start, and tell the user what is wrong**, in any of the following
 cases:
 
-- `new-companies.json` does not exist at the repo root. Tell the user to
-  `cp new-companies.example.json new-companies.json` and add their entry.
+- `new-companies.json` does not exist at the repo root. Tell the user that the
+  tracked queue is missing and to restore it with `git restore new-companies.json`.
 - No entry in the queue matches the supplied name.
 - More than one entry matches (ambiguous name — ask the user to pick).
 - The matched entry has placeholder values: `name` or either URL contains a
-  `<` or `>` character, or `expected_jobs` is `null`. Name the missing field.
+  `<` or `>` character.
+- `expected_jobs` is not a nonnegative JSON integer. Reject `null`, booleans,
+  strings, floats, and negative integers, and name the invalid field.
 
 Treat the four `Company`-shaped fields (`name`, `aliases`, `job_board_url`,
 `sample_job_url`) as a **starting proposal**, not gospel. Part of the job is
@@ -68,11 +70,11 @@ Never write the correction back to `new-companies.json`; that file is removed
 wholesale at step 8 anyway, and `catalog/companies.py` plus git history are
 the durable record.
 
-`expected_jobs` is the immovable target. The deterministic extractor must
-return exactly that number on the real site, or the run is a blocker. Never
-adjust the target to match observed reality — if the count is wrong, the
-config is wrong (or the site has genuinely drifted and the user needs to
-update the entry).
+`expected_jobs` is immutable onboarding-only queue evidence. Keep the validated
+integer in working context for the final external report check. Never add it to
+a `Company(...)` entry, runtime report, database row, prompt, or snapshot
+metadata. Never adjust it to match observed reality; disagreement is a blocker
+or requires the user to update the queue evidence.
 
 ## Bundled resources
 
@@ -309,52 +311,72 @@ whether a filter the browser-use agent is applying shrinks the count below
 
 2. **Add the company** to the `COMPANIES` list in `catalog/companies.py`
    (append; do not duplicate an existing entry). Keep `aliases` lowercase
-   and short. Set the `expected_jobs` field to the exact value from the
-   queue entry (SYS-9 `Company.expected_jobs`; the queue schema in
-   `new-companies.example.json` and `blocked-companies.example.json`
-   already carries this human-counted target). Never adjust the value
-   to match observed reality — if the number is wrong, the config is
-   wrong, and Step 5's verdict gate will surface it.
+   and short. Add only `Company` fields supported by the domain model.
+   `expected_jobs` stays in working context as queue evidence and must not
+   appear in the `Company(...)` entry.
 
-3. **Validate deterministically first (no LLM, no cost).** Run the bundled
-   extractor ground-truth script. It runs the **real** extractor against the
-   **real rendered DOM**, bypassing the flaky LLM agent:
+3. **Measure unfiltered ground truth first (no LLM, no cost).** Run the bundled
+   script against the real rendered listing:
    ```bash
    uv run python <skill-root>/scripts/extractor_ground_truth.py
        --job-board-url <url> --sample-job-url <url>
    ```
-   - If it prints `EXTRACTOR RETURNED: <expected_jobs>` → the config is
-     correct; go to step 5.
-   - If not → debug (step 4). Use the Playwright MCP recipes above to see the
-     actual link shapes, hosts, and counts in the live page. For lazy-loaded
-     sites, retry the script with `--wait 12 --scroll 4` (or higher).
+   Use this result only as the expected count for the unfiltered snapshot in
+   step 6. Do not use it to validate queue `expected_jobs`, even when the two
+   values happen to coincide.
+   If the result is structurally wrong, debug in step 4. For lazy-loaded sites,
+   retry with `--wait 12 --scroll 4` or measured higher values.
 
-4. **Debug** using the playbook below until the script returns `expected_jobs`.
+4. **Debug** until the deterministic result accurately measures the unfiltered
+   listing that will be frozen.
    Reach for Playwright MCP first on any failure — it is faster than writing
    throwaway scripts and answers most "what does the page actually do"
    questions in one or two tool calls.
 
-5. **Confirm end-to-end** with one real run:
+5. **Confirm end-to-end** with one live integration:
    ```bash
-   uv run job-agent-lab -c <handle>
+   uv run job-discovery integrate -c <handle>
    ```
-   Read the `Verdict:` line from the printed summary (or
-   `metadata.verdict` in the `output/*.json` file). It must be
-   `match`, with `agent_completed: true`. SYS-9 authors the
-   comparison inside `build_report`, so this is a machine check,
-   not a human eyeball against `total_jobs_found` — the four
-   possible verdicts are `match`, `under`, `over`, and `unverified`.
-   Under `--strict` (opt-in), anything other than `match` exits
-   non-zero after the loop drains.
-   - A `match` line annotated with `(agent reported step errors)`
-     is landable but warrants a look at the run log first: the
-     count is right *and* the DOM agent hit a non-fatal step
-     error along the way, which is often a benign transient but
-     is worth confirming before commit.
-   - If the script matched but the full run is short or zero, that's **agent
-     flakiness** (didn't reach extraction, didn't scroll enough, etc.) —
-     re-run up to ~3 times. Persistent end-to-end failure despite a correct
-     script result is itself a finding worth reporting.
+   Capture the exact path printed on the `Output:` line; do not select an
+   `output/*.json` file by glob or modification time. Machine-check that report
+   against the queue evidence, replacing both placeholders. `QUEUE_NAME` must
+   be the exact canonical `name` from the uniquely resolved queue entry. Never
+   accept or derive the expected count from an `EXPECTED_JOBS` environment
+   variable or any manually supplied value:
+   ```bash
+   REPORT_PATH='<exact Output path>' QUEUE_NAME='<exact queue company name>' \
+   uv run python - <<'PY'
+   import json
+   import os
+   from pathlib import Path
+
+   queue = json.loads(Path("new-companies.json").read_text())
+   matches = [entry for entry in queue if entry.get("name") == os.environ["QUEUE_NAME"]]
+   assert len(matches) == 1, "QUEUE_NAME must select exactly one queue entry"
+   expected = matches[0].get("expected_jobs")
+   assert type(expected) is int and expected >= 0, (
+       "expected_jobs must be a nonnegative JSON integer"
+   )
+
+   report = json.loads(Path(os.environ["REPORT_PATH"]).read_text())
+   metadata = report["metadata"]
+   jobs = report["jobs"]
+   assert metadata["error"] is None
+   assert metadata["total_jobs_found"] == len(jobs) == expected
+   completed = metadata["agent_completed"]
+   if metadata["strategy"] == "dom" and "states_visited" not in metadata:
+       assert completed is True
+   else:
+       assert completed is None
+   PY
+   ```
+   This strict `type(...) is int` check rejects booleans, nulls, strings,
+   floats, and negative integers before the same raw queue value is used in the
+   report comparison. API and agent-less runs legitimately use
+   `agent_completed: null`; an actual DOM-agent run must report `true`. If
+   deterministic ground truth is accurate
+   but the live report is short or zero, re-run up to three times. Persistent
+   disagreement is a blocker.
 
 6. **Capture a regression snapshot.** Freeze the rendered HTML so the matcher's
    current behaviour on this site is locked in and any future change to the
@@ -363,13 +385,11 @@ whether a filter the browser-use agent is applying shrinks the count below
    ```bash
    uv run python scripts/capture_snapshot.py -c <handle> --expected <N>
    ```
-   `<N>` is the count `extractor_ground_truth.py` returned in step 3 — i.e. the
-   **unfiltered** count. For sites with an on-page location filter (Atmosera,
-   Zencore, etc.) this is **not** the same as `expected_jobs`; it is the
-   larger, pre-filter number, because the snapshot test runs the matcher
-   against the unfiltered listing. For sites without an on-page location
-   filter, `<N>` equals `expected_jobs`. The snapshot is written to
-   `tests/fixtures/snapshots/<slug>/` (`page.html` + `metadata.json`).
+   `<N>` is only the **unfiltered** ground-truth count from step 3. Never use
+   queue `expected_jobs` merely because the values happen to coincide. The
+   snapshot test runs the matcher against the unfiltered listing, while queue
+   evidence validates the saved live report externally. The snapshot is written
+   to `tests/fixtures/snapshots/<slug>/` (`page.html` + `metadata.json`).
 
 7. **Run quality gates.** All must pass:
    ```bash
@@ -382,26 +402,25 @@ whether a filter the browser-use agent is applying shrinks the count below
    under `extraction/`, which now covers the agent wiring too) regressed an
    older company, this is where you find out.
 
-8. **Remove the company from the queue.** The repo root carries an untracked
+8. **Remove the company from the queue.** The repo root carries the tracked
    `new-companies.json` file that lists the remaining integration backlog.
    Delete the entry for the company you just integrated so the queue stays in
-   sync with what is actually in `catalog/companies.py`. The file stays
-   untracked — this edit does not enter git.
+   sync with what is actually in `catalog/companies.py`. This is part of the
+   integration change and enters git.
 
-9. **Commit the integration.** Stage **only** the `catalog/companies.py` edit
-   and the new `tests/fixtures/snapshots/<slug>/` directory; leave
-   `new-companies.json` and `ARCHITECTURE.md` untracked. Use a lowercase
-   `feat:` subject (`feat: add <Name> to company test sample`) — subject line
-   only, 100 characters max, no body and no trailers, per `TABNINE.md`. The
-   ATS, any cross-origin / prefix gotchas, the live agent run numbers, and
-   the snapshot path belong in the report below, not in the commit message.
-   The pre-commit hooks (run `pre-commit install` once per clone if not yet
-   installed) will fire ruff, mypy, end-of-file-fixer, and the
+9. **Commit the integration.** Stage the `catalog/companies.py` edit, the new
+   `tests/fixtures/snapshots/<slug>/` directory, and the tracked
+   `new-companies.json` queue removal. Leave unrelated changes unstaged. Use a
+   lowercase `feat:` subject (`feat: add <Name> to company test sample`) —
+   subject line only, 100 characters max, no body and no trailers, per
+   `TABNINE.md`. The ATS, any cross-origin / prefix gotchas, the live agent run
+   numbers, and the snapshot path belong in the report below, not in the commit
+   message. The pre-commit hooks (run `pre-commit install` once per clone if not
+   yet installed) will fire ruff, mypy, end-of-file-fixer, and the
    snapshot-regression pytest hook. If `end-of-file-fixer` or any other
    auto-fixer modifies a file, re-stage and retry — do **not** bypass with
-   `--no-verify`. After the commit, run `git status` to confirm the working
-   tree is clean (modulo the intentionally-untracked files), then report
-   (format below). Never push.
+   `--no-verify`. After the commit, run `git status` to confirm the working tree
+   is clean, then report (format below). Never push.
 
 ## Debugging playbook (symptom → likely cause → fix)
 
@@ -496,12 +515,11 @@ and the pattern classes that are now closed vs still open.
 
 - **Commit exactly once, only on success, never push, never branch.** When all
   quality gates and the live agent run pass (steps 5–7), step 9 commits the
-  integration in a single `feat:` commit covering only the `catalog/companies.py`
-  edit and the new `tests/fixtures/snapshots/<slug>/` directory, subject line
-  only, no body. Do not stage or commit anything else (especially not
-  `new-companies.json` or `ARCHITECTURE.md` — both are intentionally
-  untracked). On a blocker, do **not** commit at all; leave changes in the
-  working tree for human review. Never `git push`, never create branches,
+  integration in a single `feat:` commit covering `catalog/companies.py`, the
+  new `tests/fixtures/snapshots/<slug>/` directory, and the tracked queue-entry
+  removal from `new-companies.json`, subject line only, no body. Do not stage
+  unrelated changes. On a blocker, do **not** commit at all; leave changes in
+  the working tree for human review. Never `git push`, never create branches,
   never bypass pre-commit with `--no-verify`.
 - **Prefer config-level fixes** (`sample_job_url`, `job_board_url`, `aliases`,
   `link_rule.path_prefix`) over code changes. They solve the vast majority of
@@ -537,31 +555,28 @@ and the pattern classes that are now closed vs still open.
 
 All of the following hold:
 
-1. The company is appended to `COMPANIES` in `catalog/companies.py` with all
-   five fields (`name`, `aliases`, `job_board_url`, `sample_job_url`,
-   `expected_jobs`).
-2. The bundled `extractor_ground_truth.py` script returns **exactly
-   `expected_jobs`**.
-3. A real `uv run job-agent-lab -c <handle>` run reports
-   `metadata.verdict == "match"` (SYS-9's machine-authored check
-   inside `build_report`) with `agent_completed: true`. A `match`
-   line annotated with `(agent reported step errors)` — that is,
-   the count is right *and* `agent_had_errors: true` — is landable
-   but requires a look at the run log first to rule out a
-   non-transient issue.
+1. The company is appended to `COMPANIES` in `catalog/companies.py` without
+   `expected_jobs`; the validated nonnegative queue integer remains only in
+   working context.
+2. The bundled `extractor_ground_truth.py` result is used only as the unfiltered
+   snapshot expected count.
+3. A live `uv run job-discovery integrate -c <handle>` run's exact `Output:` report path
+   is captured and machine-checked: `metadata.error is None` and
+   `metadata.total_jobs_found == len(jobs) ==` queue `expected_jobs`. API and
+   agent-less `agent_completed: null` is valid; a DOM-agent run requires `true`.
 4. A regression snapshot exists at `tests/fixtures/snapshots/<slug>/`
    (`page.html` + `metadata.json`), and
    `uv run --group test pytest tests/` passes against the whole corpus.
 5. If any code was changed: `ruff format`, `ruff check`, and
    `mypy src scripts tests` all pass, and the change is generic (no
    site-specific hacks).
-6. The integrated company's entry has been removed from the untracked
+6. The integrated company's entry has been removed from the tracked
    `new-companies.json` queue file at the repo root.
-7. A single `feat: add <Name> to company test sample` commit has been
-   created, staging only `catalog/companies.py` and the new
-   `tests/fixtures/snapshots/<slug>/` directory, subject line only with no
-   body or trailers; all pre-commit hooks passed (ruff, mypy,
-   end-of-file-fixer, snapshot regression). Nothing was pushed.
+7. A single `feat: add <Name> to company test sample` commit has been created,
+   staging `catalog/companies.py`, the new
+   `tests/fixtures/snapshots/<slug>/` directory, and the queue-entry removal,
+   subject line only with no body or trailers; all pre-commit hooks passed
+   (ruff, mypy, end-of-file-fixer, snapshot regression). Nothing was pushed.
 8. Temporary debug artifacts (throwaway scripts, `print`s, MCP dumps)
    removed.
 
@@ -581,8 +596,8 @@ When done (or blocked), output a concise report.
    job_board_url:   <final value>
    sample_job_url:  <final value>
    derived prefix:  <prefix>
-   expected jobs:   <N>
-   extracted jobs:  <N>   (script: <N>, full run: <N>)
+   queue evidence:  expected_jobs=<N> (external only)
+   extracted jobs:  <N>   (live report: <exact Output path>)
    snapshot:        tests/fixtures/snapshots/<slug>/  (unfiltered: <M>)
    corpus tests:    all passed
    code changed:    none | <file + 1-line why, generic>

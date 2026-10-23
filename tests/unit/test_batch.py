@@ -86,7 +86,9 @@ def _http_company(index: int) -> Company:
     )
 
 
-def _report_for(company: Company, jobs: list[str]) -> dict[str, Any]:
+def _report_for(
+    company: Company, jobs: list[str], *, error: str | None = None
+) -> dict[str, Any]:
     """Build an honest report through the real report author."""
     return build_report(
         strategy=company.strategy,
@@ -98,8 +100,7 @@ def _report_for(company: Company, jobs: list[str]) -> dict[str, Any]:
         agent_steps=None,
         agent_completed=None,
         agent_had_errors=None,
-        error=None,
-        expected_jobs=company.expected_jobs,
+        error=error,
     )
 
 
@@ -207,7 +208,6 @@ async def _seed_run(
                 name=company.name,
                 job_board_url=company.job_board_url,
                 strategy=company.strategy,
-                expected_jobs=company.expected_jobs,
                 synced_at=now,
             )
         )
@@ -414,6 +414,53 @@ class TestFailureIsolation:
         assert outcome.status == "failed"
         assert outcome.error == recorded
 
+    def test_returned_error_report_fails_without_replacing_existing_urls(
+        self, tmp_path: Path, fake: _FakeStrategy
+    ) -> None:
+        company = _http_company(0)
+        existing = [f"{company.job_board_url}/jobs/existing"]
+        error = "strategy returned an incomplete report"
+
+        async def return_error(c: Company) -> dict[str, Any]:
+            return _report_for(c, [], error=error)
+
+        fake.handlers[company.slug] = return_error
+
+        async def scenario() -> tuple[CompanyOutcome, Any, tuple[str, ...]]:
+            factory = await _fresh_database(tmp_path / "returned-error.db")
+            await _seed_run(factory, company=company, status="failed")
+            async with factory() as session:
+                await jobs_repo.replace_company_urls(
+                    session,
+                    company_slug=company.slug,
+                    urls=existing,
+                    captured_at=utc_now(),
+                )
+            result = await run_batch([company], CTX, session_factory=factory)
+            async with factory() as session:
+                run = (
+                    await session.execute(
+                        select(
+                            models.CompanyRun.status,
+                            models.CompanyRun.error_message,
+                            models.CompanyRun.url_count,
+                        ).order_by(models.CompanyRun.id.desc())
+                    )
+                ).first()
+                stored = await jobs_repo.list_company_urls(
+                    session, company_slug=company.slug
+                )
+            return result.outcomes[0], run, stored
+
+        outcome, run, stored = _run(scenario())
+
+        assert outcome.status == "failed"
+        assert outcome.error == error
+        assert run.status == "failed"
+        assert run.error_message == error
+        assert run.url_count is None
+        assert stored == tuple(existing)
+
     def test_a_persistence_failure_after_extraction_is_isolated_too(
         self, tmp_path: Path, fake: _FakeStrategy, monkeypatch: pytest.MonkeyPatch
     ) -> None:
@@ -557,7 +604,7 @@ class TestFailureIsolation:
     def test_zero_jobs_is_a_success_not_a_failure(
         self, tmp_path: Path, fake: _FakeStrategy
     ) -> None:
-        """An empty board is an unhappy verdict on a successful run.
+        """An empty board is a successful run.
 
         Marking it failed would put honestly-empty boards into the retry
         path forever and hide genuine breakage among them.
@@ -767,7 +814,7 @@ class TestReaping:
 class TestPersistedResult:
     """The batch's whole output is what lands in the two tables."""
 
-    def test_a_successful_run_stores_its_urls_and_verdict(
+    def test_a_successful_run_stores_its_urls_and_count(
         self, tmp_path: Path, fake: _FakeStrategy
     ) -> None:
         company = _http_company(0)
@@ -795,7 +842,6 @@ class TestPersistedResult:
                     await session.execute(
                         select(
                             models.CompanyRun.url_count,
-                            models.CompanyRun.verdict,
                             models.CompanyRun.batch_id,
                         )
                     )
@@ -806,9 +852,6 @@ class TestPersistedResult:
 
         assert stored == urls
         assert run.url_count == 3
-        # `expected_jobs` is None on these fixtures, so the report's own
-        # verdict is "unverified" — stored verbatim rather than recomputed.
-        assert run.verdict == "unverified"
         assert run.batch_id
 
     def test_url_count_matches_the_rows_actually_stored(
@@ -923,7 +966,6 @@ class TestRunCompany:
                         name=company.name,
                         job_board_url=company.job_board_url,
                         strategy=company.strategy,
-                        expected_jobs=None,
                         synced_at=utc_now(),
                     )
                 )

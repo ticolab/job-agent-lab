@@ -221,20 +221,18 @@ about what the region means.
 
 ## Verifying a run
 
-A company entry carries a human-counted, region-filtered target. The report
-layer compares it against what was found and emits a verdict —
-`match`, `under`, `over`, or `unverified` when no target has been counted. A
-CLI flag turns a non-match into a non-zero exit.
+`expected_jobs` is onboarding-only evidence from the queue. It is validated as
+a nonnegative JSON integer, kept outside the domain model, and never copied into
+`Company`, runtime reports, or the database. The live integration writes only
+observations; the onboarding workflow then machine-checks the saved report's
+`metadata.error`, `metadata.total_jobs_found`, and `jobs` length against the
+queue value.
 
-Two properties matter. The target is **never** adjusted to match observed
+Two properties matter. The evidence is **never** adjusted to match observed
 output; if the two disagree, either the configuration is wrong or the board
-moved, and both deserve a human decision. And the target is never interpolated
-into any agent-visible text, so the model cannot curve-fit toward the number
-it is being scored against.
-
-The verdict layer is also the designated detector for configuration rot. A
-selector, facet id, or pre-filter URL that stops working degrades to a lower
-count on the next live run rather than failing silently.
+moved, and both deserve a human decision. The evidence is also never
+interpolated into agent-visible text, so the model cannot curve-fit toward the
+number checked after the run. Runtime has no verdict field or strict exit mode.
 
 ## Persisting the result
 
@@ -361,17 +359,17 @@ with different memory.
 first full run has to establish. The shared-core constraint says a board
 must extract the same set under the scheduler as under the integration
 command, and that is a claim about quality rather than throughput. The
-run's verdicts looked alarming on their own: of the 60 boards carrying a
-human count, 20 matched, 25 came in under, and 15 over, and the
+run's count comparisons against then-current onboarding evidence looked
+alarming on their own: of 60 measured boards, 20 were equal, 25 lower, and 15
+higher, and the
 deterministic API adapters matched only 2 of 14. Re-running every
 deterministic mismatch and every empty agent board sequentially through
 the integration command, one board at a time with no concurrency,
-reproduced the scan's number exactly on all 23. The disagreement is
-between the boards and human counts that are days to weeks old, which is
-the drift the verdict layer exists to surface, not the batch scheduler
-degrading extraction under load. The verdict distribution is therefore
-the health query to read after a scan, and it is noisy by construction: most of
-the corpus carries no count yet, and the counts that exist go stale.
+reproduced the scan's number exactly on all 23. The disagreement was
+between the boards and onboarding counts that were days to weeks old, not the
+batch scheduler degrading extraction under load. Those measured reruns remain
+useful scheduler evidence, but queue counts do not become runtime health data.
+Inspect observed status, stored URL count, errors, and timestamps after a scan.
 
 **The worker is the failure-isolation boundary.** Failure modes across a
 corpus of third-party sites are open-ended — a crashed browser, a
@@ -380,9 +378,8 @@ contract is that no single board aborts the batch. Every board-level
 exception is caught there and written to the run history for an operator
 to read, while interrupt and cancellation still propagate so Ctrl-C
 behaves normally. An extraction returning zero jobs is a **successful
-run with an unhappy verdict**, never a failure: marking it failed would
-put honestly empty boards in the retry path forever and hide real
-breakage among them. Crash recovery needs nothing of its own here — the
+run**, never a failure: marking it failed would put honestly empty boards in
+the retry path forever and hide real breakage among them. Crash recovery needs nothing of its own here — the
 scheduler reaps abandoned runs before any company starts, and the rest
 follows from the freshness rule above.
 
@@ -406,9 +403,8 @@ a selection that empties out, a database with no schema. Folding board
 health into the exit code would contradict the contract that a
 third-party failure is an ordinary event, and the signal would stop
 carrying information the first week a site went down. The single-board
-command behaves the same way, exiting zero on an unhappy verdict unless
-it is explicitly asked to be strict, so neither entry point teaches a
-different habit than the other.
+command also reports extraction failure through its observed error data rather
+than through a count-comparison mode; no strict verdict mode exists.
 
 **The aggregate summary is rendered by the scan command, not by the
 reporting layer.** Per-company JSON still routes through the one module
@@ -422,22 +418,23 @@ invert a dependency to buy a symmetry that nothing needs.
 Two corpora, deliberately separate.
 
 **Frozen DOM fixtures.** Every DOM-strategy company contributes a captured
-copy of its rendered listing page plus metadata recording the expected count.
+copy of its rendered listing page plus metadata recording the observed
+unfiltered count.
 Multi-state boards store one file per state. The suite loads each document
 into a real Chromium page under its original base href, runs the production
 matcher, and asserts the union matches the recorded count. Capture bakes
 visibility decisions and open shadow roots into the serialized HTML so a
-JavaScript-disabled replay reaches the same verdict the live matcher did.
+JavaScript-disabled replay reaches the same measured count the live matcher did.
 
 **Recorded API payloads.** Every API-strategy company contributes a captured
 response, replayed through a mocked HTTP layer. An API-strategy company
 deliberately has no page fixture — substituting the payload *is* the point,
 since the reason it took the API path was that no honest page fixture exists.
 
-Fixtures freeze the **unfiltered** listing, not the region-filtered target.
-This is the same separation of concerns as the central split: the fixture
-validates the matcher's counting, the live run validates the agent's
-filtering. Conflating them would produce failures that localise to neither. A
+Fixtures freeze the **unfiltered** listing, not the queue's onboarding
+expectation. This is the same separation of concerns as the central split: the
+fixture validates the matcher's counting, while the live report records what
+the integration observed after filtering. Conflating them would produce failures that localise to neither. A
 board whose configuration suppresses a container is the one case that must be
 captured *with* suppression active — the suppressed sections are typically
 personalized and drift independently of the real results, so freezing one
@@ -458,14 +455,14 @@ Each new company follows a fixed pipeline, and every stage is a gate:
    fingerprints. Nothing is driven and nothing is written.
 2. **Settle the prefix**, then confirm the count deterministically with no
    agent in the loop.
-3. **Run live** and require a `match` verdict.
+3. **Run live**, capture the exact `Output:` report path, and externally require `metadata.error is None` plus `metadata.total_jobs_found == len(jobs) ==` the queue's `expected_jobs`.
 4. **Freeze** the fixture — page snapshot or recorded payload.
 5. **Run the gates**: format, lint, types, and the full corpus.
 6. **Commit once**, config plus fixture together.
 
 The profiler's suggested configuration is a starting point, never applied
 without the later stages confirming it. Failure at any stage is reported as a
-blocker with evidence rather than worked around by loosening the target.
+blocker with evidence rather than worked around by loosening the queue evidence.
 
 ## Invariants
 
@@ -480,18 +477,18 @@ design would decay.
   `batch`, so a strategy cannot tell which caller invoked it and cannot behave
   differently under the scheduler than under the integration CLI.
 - No single board aborts a batch. A third-party failure becomes a
-  recorded outcome, and an empty board is a success with an unhappy
-  verdict rather than a failure to retry. The scan exit code follows from
-  that: it reports whether the scan ran, not whether every board in it
-  succeeded.
+  recorded outcome, and an empty board is a success rather than a failure to
+  retry. Runtime retains observed status, URL count, errors, and timestamps.
+  The scan exit code reports whether the scan ran, not whether every board in
+  it succeeded.
 - The matcher JavaScript has exactly one copy on disk.
 - Every opt-in knob defaults to inert, so adding one cannot change any
   existing board's behaviour.
 - Every emitted URL is read from the page or payload, not reconstructed —
   except where a platform genuinely publishes no posting URL, in which case
   the synthesis must be verified against live responses before it ships.
-- Fixtures capture the unfiltered board; filtering is the live run's business.
-- The human-counted target is immovable.
+- Fixtures capture the unfiltered board; only onboarding compares a live report with queue evidence.
+- `expected_jobs` remains immutable onboarding-only queue evidence and never enters `Company`, runtime reports, or the database.
 
 ## Alternatives considered
 

@@ -17,9 +17,8 @@ Two layers, matching the plan's split:
   a DOM
   snapshot — the substitution that closes C12 — so it is asserted
   against exactly, including the 14-job count it froze. The live board
-  has since drifted to 13; fixtures record history, live runs record
-  the present, and conflating the two is what the verdict layer
-  exists to surface.
+  has since drifted to 13; fixtures record history, while live runs
+  record the currently observed count, logs, and errors.
 
 The ``_run`` worker-thread helper is copied from
 ``test_greenhouse.py``; see its docstring for why ``asyncio.run`` is
@@ -78,7 +77,6 @@ def _make_company(**overrides: Any) -> Company:
         "strategy": "phenom",
         "phenom": PhenomConfig(page_id="page17-ds"),
         "link_rule": LinkRule(path_prefix=_PATH_PREFIX),
-        "expected_jobs": 14,
     }
     defaults.update(overrides)
     return Company(**defaults)
@@ -252,9 +250,8 @@ class TestExtractHappyPathRecorded:
         assert meta["agent_steps"] is None
         assert meta["agent_completed"] is None
         assert meta["agent_had_errors"] is None
-        # verdict fields flow automatically through build_report.
-        assert meta["expected_jobs"] == 14
-        assert meta["verdict"] == "match"
+        assert "expected_jobs" not in meta
+        assert "verdict" not in meta
         assert meta["total_jobs_found"] == 14
         assert len(result["jobs"]) == 14
 
@@ -415,10 +412,8 @@ class TestHonestEmpty:
             result = _run(PhenomStrategy().extract(_make_company(), _ctx()))
 
         assert result["jobs"] == []
+        assert result["metadata"]["total_jobs_found"] == 0
         assert result["metadata"]["error"] is None
-        # A tenant with no CR postings today is a legitimate outcome;
-        # the verdict layer classifies it against expected_jobs.
-        assert result["metadata"]["verdict"] == "under"
 
 
 class TestServerFacetIsAuthoritative:
@@ -439,8 +434,7 @@ class TestServerFacetIsAuthoritative:
     with the Talentbrew adapter, which documents the same stance and
     ships no client-side re-check at all. The trade is explicit: a
     genuinely mis-faceted record would now be emitted rather than
-    silently dropped, and the log plus the verdict layer are what
-    surface it.
+    silently dropped, and the observed count plus the log surface it.
     """
 
     def test_a_record_the_text_cannot_place_is_kept_not_dropped(self) -> None:
@@ -580,8 +574,7 @@ class TestServerFacetIsAuthoritative:
         # distinguish "Phenom promoted the wrong location and the array
         # is incomplete" from "the facet is wrong", and the HPE evidence
         # says the former is what actually happens. Emitting with a log
-        # is the honest reading; the verdict layer catches the other case
-        # as an over-count.
+        # is the honest reading; observed counts expose an over-count.
         payload = _load_fixture()
         payload["refineSearch"]["data"]["jobs"] = [
             {
@@ -639,8 +632,8 @@ class TestUnderFetchWarning:
             with caplog.at_level(logging.WARNING):
                 result = _run(PhenomStrategy().extract(_make_company(), _ctx()))
 
-        # The received subset is still emitted — the verdict layer, not
-        # the adapter, decides what a shortfall means.
+        # The received subset is still emitted; the warning and observed
+        # count make the shortfall visible.
         assert len(result["jobs"]) == 14
         assert result["metadata"]["error"] is None
         assert any("totalHits=250" in r.getMessage() for r in caplog.records)
@@ -674,7 +667,6 @@ def _make_roche_company(**overrides: Any) -> Company:
         "strategy": "phenom",
         "phenom": PhenomConfig(page_id="page11-ds"),
         "link_rule": LinkRule(path_prefix=_PATH_PREFIX),
-        "expected_jobs": 12,
     }
     defaults.update(overrides)
     return Company(**defaults)
@@ -821,7 +813,6 @@ def _make_philips_company(**overrides: Any) -> Company:
         "strategy": "phenom",
         "phenom": PhenomConfig(page_id="page31-ds"),
         "link_rule": LinkRule(path_prefix=_PATH_PREFIX),
-        "expected_jobs": 1,
     }
     defaults.update(overrides)
     return Company(**defaults)
@@ -909,7 +900,6 @@ def _make_zimmer_company(**overrides: Any) -> Company:
         "strategy": "phenom",
         "phenom": PhenomConfig(page_id="page12-ds", locale="en_us"),
         "link_rule": LinkRule(path_prefix=_ZB_PATH_PREFIX),
-        "expected_jobs": 11,
     }
     defaults.update(overrides)
     return Company(**defaults)
@@ -1012,7 +1002,6 @@ def _make_tdsynnex_company(**overrides: Any) -> Company:
         ),
         "link_rule": LinkRule(path_prefix="/us/en/job"),
         "strategy": "phenom",
-        "expected_jobs": 28,
         "phenom": PhenomConfig(page_id="page11-ds", locale="en_us"),
     }
     defaults.update(overrides)
@@ -1119,7 +1108,6 @@ def _make_hpe_company(**overrides: Any) -> Company:
         ),
         "link_rule": LinkRule(path_prefix="/us/en/job"),
         "strategy": "phenom",
-        "expected_jobs": 27,
         "phenom": PhenomConfig(page_id="page15", locale="en_us"),
     }
     defaults.update(overrides)
@@ -1221,7 +1209,6 @@ def _make_cisco_company(**overrides: Any) -> Company:
         ),
         "link_rule": LinkRule(path_prefix="/global/en/job"),
         "strategy": "phenom",
-        "expected_jobs": 1,
         "phenom": PhenomConfig(page_id="page4", locale="en_global"),
     }
     defaults.update(overrides)

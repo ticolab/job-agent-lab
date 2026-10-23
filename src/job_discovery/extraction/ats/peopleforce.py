@@ -25,11 +25,8 @@ that was ``Company.pre_filter_urls``: declare one URL per city and
 union the results. It is correct on the day it is written and silently
 incomplete afterwards, because the declared set is frozen while the
 tenant's location list is not. A posting opened in a city that is not
-declared is missed, and — the part that makes it dangerous — the
-verdict layer cannot see it: the union still equals the frozen
-``expected_jobs``, so the run reports ``match`` while under-counting.
-Only the inverse (a declared id that stops resolving) shows up, as
-``under``.
+declared is missed without any runtime signal that the configured set
+is incomplete.
 
 This adapter removes the frozen set. Each run reads the board's own
 location list and keeps every option whose label the target region
@@ -115,7 +112,7 @@ PEOPLEFORCE_HOST_SUFFIX = ".peopleforce.io"
 # The board paginates ten postings per page. A region-filtered view is
 # far smaller in practice, so this cap only exists so a pathological
 # response cannot spin the loop; hitting it logs loudly and emits what
-# was collected, leaving the shortfall to the verdict layer.
+# was collected.
 _MAX_PAGES = 20
 
 # PeopleForce marks each filter option with a field-scoped automation
@@ -332,7 +329,6 @@ class PeopleForceStrategy:
             agent_completed=None,
             agent_had_errors=None,
             error=error,
-            expected_jobs=company.expected_jobs,
         )
 
     async def _collect(

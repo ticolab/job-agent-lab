@@ -163,11 +163,11 @@ hidden inputs fully determine `/v_empleo?id=336&nombre=…`.
 ```text
 today                                0
 + form rule                          9   (page 1)
-+ form rule + pagination            23   (whole board — verdict `over`)
++ form rule + pagination            23   (whole board; 12 above queue evidence)
 Costa Rica, four-way union          10   (target 11)
 ```
 
-**Target drift.** Live Costa Rica count is 10 against `expected_jobs: 11`.
+**Queue-evidence drift.** Live Costa Rica count is 10 against the onboarding evidence `expected_jobs: 11`.
 Posting 312 carries a blank city (`Costa Rica,`) and is easy to miss or
 double-count. Needs a human re-count before any route can verify.
 

@@ -32,7 +32,6 @@ from job_discovery.extraction.base import (
     STRATEGIES,
     RunContext,
     build_report,
-    compute_verdict,
     get_strategy,
 )
 from job_discovery.extraction.dom.strategy import DomStrategy
@@ -52,8 +51,6 @@ _EXPECTED_METADATA: frozenset[str] = frozenset(
         "agent_completed",
         "agent_had_errors",
         "error",
-        "expected_jobs",
-        "verdict",
     }
 )
 
@@ -120,7 +117,6 @@ class TestBuildReportShape:
             agent_completed=True,
             agent_had_errors=False,
             error=None,
-            expected_jobs=2,
         )
 
         assert set(report) == _EXPECTED_TOP_LEVEL
@@ -144,8 +140,8 @@ class TestBuildReportShape:
         assert meta["agent_completed"] is True
         assert meta["agent_had_errors"] is False
         assert meta["error"] is None
-        assert meta["expected_jobs"] == 2
-        assert meta["verdict"] == "match"
+        assert "expected_jobs" not in meta
+        assert "verdict" not in meta
 
     def test_api_shape_carries_honest_nulls(self) -> None:
         # Greenhouse and future API strategies don't run an LLM agent.
@@ -164,7 +160,6 @@ class TestBuildReportShape:
             agent_completed=None,
             agent_had_errors=None,
             error=None,
-            expected_jobs=None,
         )
 
         assert set(report) == _EXPECTED_TOP_LEVEL
@@ -177,8 +172,8 @@ class TestBuildReportShape:
         assert meta["agent_completed"] is None
         assert meta["agent_had_errors"] is None
         assert meta["total_jobs_found"] == 0
-        assert meta["expected_jobs"] is None
-        assert meta["verdict"] == "unverified"
+        assert "expected_jobs" not in meta
+        assert "verdict" not in meta
 
     def test_metadata_strategy_key_is_present_on_every_report(self) -> None:
         # The additive ``metadata.strategy`` key is the one deliberate
@@ -196,7 +191,6 @@ class TestBuildReportShape:
             agent_completed=False,
             agent_had_errors=True,
             error="boom",
-            expected_jobs=None,
         )
         assert "strategy" in report["metadata"]
 
@@ -212,7 +206,6 @@ class TestBuildReportShape:
             agent_completed=False,
             agent_had_errors=True,
             error="timeout",
-            expected_jobs=None,
         )
         assert report["metadata"]["error"] == "timeout"
 
@@ -235,136 +228,3 @@ class TestRunContext:
         )
         with pytest.raises(FrozenInstanceError):
             ctx.model = "other"  # type: ignore[misc]
-
-
-class TestVerdictSemantics:
-    """``compute_verdict`` and its downstream ``metadata.verdict``.
-
-    Verdict classification is a pure function of the ``found`` and
-    ``expected`` pair; every case worth naming is enumerated here as a
-    parametrised row plus a handful of explicit edge-case tests that
-    lock the ``0`` semantics called out in the ``compute_verdict``
-    docstring. A second layer of tests goes through :func:`build_report`
-    itself, so the end-to-end path — expected value in, verdict key out
-    — is exercised at least once for each verdict.
-    """
-
-    @pytest.mark.parametrize(
-        ("found", "expected", "verdict"),
-        [
-            # None → unverified: every pre-verdict catalog entry lands
-            # here until it is human-counted.
-            (0, None, "unverified"),
-            (5, None, "unverified"),
-            (999, None, "unverified"),
-            # match: found == expected, both endpoints inclusive.
-            (0, 0, "match"),
-            (1, 1, "match"),
-            (42, 42, "match"),
-            # under: agent / API returned fewer than the human counted.
-            # A run that crashed before any extraction (found=0)
-            # against a positive expectation lands here too.
-            (0, 1, "under"),
-            (0, 100, "under"),
-            (7, 12, "under"),
-            # over: agent / API returned more than the human counted.
-            # The 0/>0 case is deliberate — a Case-C board suddenly
-            # returning listings is an ``over``, not a ``match``.
-            (1, 0, "over"),
-            (5, 3, "over"),
-            (100, 99, "over"),
-        ],
-    )
-    def test_compute_verdict_matrix(
-        self, found: int, expected: int | None, verdict: str
-    ) -> None:
-        assert compute_verdict(found, expected) == verdict
-
-    def test_zero_over_zero_is_match(self) -> None:
-        # Locked as an explicit test because it is the most
-        # counter-intuitive of the four verdicts: a Case-C board that
-        # legitimately has zero region postings and returns zero is a
-        # passing run, not an "unverified" or "under".
-        assert compute_verdict(0, 0) == "match"
-
-    def test_zero_over_positive_is_under_not_error(self) -> None:
-        # A crashed / empty run against a positive expectation is an
-        # ``under`` verdict — the CLI's ``--strict`` gate will trip on
-        # it, but ``compute_verdict`` itself does not conflate the
-        # extraction-terminating ``error`` field with the arithmetic
-        # verdict.
-        assert compute_verdict(0, 5) == "under"
-
-    def test_positive_over_zero_is_over(self) -> None:
-        assert compute_verdict(3, 0) == "over"
-
-    def test_build_report_emits_match_verdict_when_counts_agree(self) -> None:
-        # End-to-end: the strategy layer passes ``expected_jobs``
-        # straight through to ``build_report``, which computes and
-        # emits ``metadata.verdict``. The four rows below exercise
-        # every verdict through the ``build_report`` surface.
-        report = build_report(
-            strategy="dom",
-            company_name="X",
-            company_url="u",
-            jobs=["a", "b", "c"],
-            elapsed=0.0,
-            model="m",
-            agent_steps=0,
-            agent_completed=True,
-            agent_had_errors=False,
-            error=None,
-            expected_jobs=3,
-        )
-        assert report["metadata"]["verdict"] == "match"
-        assert report["metadata"]["expected_jobs"] == 3
-
-    def test_build_report_emits_under_verdict_when_short(self) -> None:
-        report = build_report(
-            strategy="dom",
-            company_name="X",
-            company_url="u",
-            jobs=["a"],
-            elapsed=0.0,
-            model="m",
-            agent_steps=0,
-            agent_completed=True,
-            agent_had_errors=False,
-            error=None,
-            expected_jobs=5,
-        )
-        assert report["metadata"]["verdict"] == "under"
-        assert report["metadata"]["expected_jobs"] == 5
-
-    def test_build_report_emits_over_verdict_when_long(self) -> None:
-        report = build_report(
-            strategy="dom",
-            company_name="X",
-            company_url="u",
-            jobs=["a", "b", "c", "d"],
-            elapsed=0.0,
-            model="m",
-            agent_steps=0,
-            agent_completed=True,
-            agent_had_errors=False,
-            error=None,
-            expected_jobs=2,
-        )
-        assert report["metadata"]["verdict"] == "over"
-
-    def test_build_report_emits_unverified_when_expected_none(self) -> None:
-        report = build_report(
-            strategy="dom",
-            company_name="X",
-            company_url="u",
-            jobs=["a", "b"],
-            elapsed=0.0,
-            model="m",
-            agent_steps=0,
-            agent_completed=True,
-            agent_had_errors=False,
-            error=None,
-            expected_jobs=None,
-        )
-        assert report["metadata"]["verdict"] == "unverified"
-        assert report["metadata"]["expected_jobs"] is None

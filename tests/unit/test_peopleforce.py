@@ -73,7 +73,6 @@ def _company(**overrides: object) -> Company:
         "job_board_url": BOARD_URL,
         "sample_job_url": f"{BOARD_URL}/v/172812",
         "strategy": "peopleforce",
-        "expected_jobs": 3,
     }
     kwargs.update(overrides)
     return Company(**kwargs)  # type: ignore[arg-type]
@@ -201,9 +200,8 @@ class TestSelectRegionLocations:
         )
 
     def test_a_newly_added_city_is_picked_up(self) -> None:
-        # The point of the whole adapter: this is the case a frozen
-        # pre_filter_urls tuple misses silently, because the union still
-        # equals the stale expected_jobs and the verdict stays "match".
+        # The point of the adapter: a frozen pre_filter_urls tuple would
+        # silently miss a newly added matching city.
         selected = select_region_locations(
             [
                 (CARTAGO, "Costa Rica/Cartago"),

@@ -13,7 +13,7 @@ this morning would stop being retried.
 
 **Why ``companies`` exists at all**, given that
 ``job_discovery.catalog.companies`` is the source of truth: without it the
-database is a set of slugs with no names, URLs, or targets, and every
+database is a set of slugs with no names or URLs, and every
 ad-hoc query needs the Python catalog beside it. It is a *projection*,
 refreshed at the start of every scan, never an owner — which is why it
 carries ``synced_at`` and no editorial columns.
@@ -69,12 +69,6 @@ class Company(Base):
     name: Mapped[str] = mapped_column(String, nullable=False)
     job_board_url: Mapped[str] = mapped_column(String, nullable=False)
     strategy: Mapped[str] = mapped_column(String, nullable=False)
-    # Nullable because it is a *human-counted* target: an entry that has
-    # never been counted has no honest value, and 0 is a legitimate
-    # count (a board with a location filter that has no options matching
-    # the target region). Conflating "uncounted" with 0 would turn
-    # verdicts from "unverified" into a false "match".
-    expected_jobs: Mapped[int | None] = mapped_column(Integer, nullable=True)
     synced_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
 
@@ -117,11 +111,6 @@ class CompanyRun(Base):
     # but no finish.
     finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     url_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    # Stores what extraction.base.compute_verdict already produces
-    # ("match", "under", "over", "unverified"), so drift from a
-    # human-counted expected_jobs is a direct query rather than a
-    # recomputation.
-    verdict: Mapped[str | None] = mapped_column(String, nullable=True)
     error_message: Mapped[str | None] = mapped_column(String, nullable=True)
 
 

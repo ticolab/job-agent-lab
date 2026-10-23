@@ -488,7 +488,6 @@ def _make_company(**overrides: Any) -> Company:
             records_per_page=10,
         ),
         "link_rule": LinkRule(path_prefix=_CITI_PATH_PREFIX),
-        "expected_jobs": 10,
     }
     defaults.update(overrides)
     return Company(**defaults)
@@ -737,8 +736,8 @@ class TestHasJobsFalseSemantics:
     """The ``hasJobs`` flag drives honest-empty vs. error branches."""
 
     def test_hasjobs_false_on_page_one_returns_honest_empty(self) -> None:
-        # A tenant with zero region-matching postings today. Not an
-        # error — the verdict layer classifies the empty result.
+        # A tenant with zero region-matching postings today. The observed
+        # count is zero and no error is reported.
         with respx.mock() as mock:
             mock.get(_CITI_ENDPOINT).mock(
                 return_value=httpx.Response(200, json=_empty_page_payload())
@@ -1016,7 +1015,6 @@ def _make_veeam_company(**overrides: Any) -> Company:
             facet_display="Costa Rica",
         ),
         "link_rule": LinkRule(path_prefix="/job"),
-        "expected_jobs": 11,
     }
     defaults.update(overrides)
     return Company(**defaults)
@@ -1126,7 +1124,6 @@ def _make_moodys_company(**overrides: Any) -> Company:
             results_path="/en/search-jobs/results",
         ),
         "link_rule": LinkRule(path_prefix="/en/job"),
-        "expected_jobs": 27,
     }
     defaults.update(overrides)
     return Company(**defaults)
@@ -1240,7 +1237,6 @@ def _make_heraeus_company(**overrides: Any) -> Company:
             results_path="/en/search-jobs/results",
         ),
         "link_rule": LinkRule(path_prefix="/en/job"),
-        "expected_jobs": 27,
     }
     defaults.update(overrides)
     return Company(**defaults)
@@ -1357,7 +1353,6 @@ def _make_midland_company(**overrides: Any) -> Company:
             results_path="/en/search-jobs/results",
         ),
         "link_rule": LinkRule(path_prefix="/en/job"),
-        "expected_jobs": 1,
     }
     defaults.update(overrides)
     return Company(**defaults)
@@ -1448,7 +1443,6 @@ def _make_cargill_company(**overrides: Any) -> Company:
             results_path="/en/search-jobs/results",
         ),
         "link_rule": LinkRule(path_prefix="/en/job"),
-        "expected_jobs": 60,
     }
     defaults.update(overrides)
     return Company(**defaults)

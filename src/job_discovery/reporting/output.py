@@ -14,20 +14,13 @@ consumes it. API strategies (Greenhouse and future siblings) emit
 loop; :func:`print_summary` renders each ``None`` as ``n/a`` rather
 than the literal ``None`` string.
 
-Verdict-related additive keys consumed here: ``metadata.expected_jobs``
-(the human-counted target, ``None`` if never counted) and
-``metadata.verdict`` (one of ``"match"``/``"under"``/``"over"``/
-``"unverified"``). :func:`print_summary` renders both through the
-``Verdict:`` line built by :func:`_verdict_line`, and the CLI's
-``--strict`` gate reads ``metadata.verdict`` verbatim to decide the
-exit code — this module never mutates either value.
-
-States-related additive key consumed here: ``metadata.states_visited``, an
+The states-related additive key consumed here is
+``metadata.states_visited``, an
 optional integer emitted only by the agent-less multi-state
 ``DomStrategy._extract_prefiltered`` path (see :func:`build_report`
 for the serialisation contract). :func:`print_summary` renders a
-``States:`` line right after the verdict when the key is present and
-omits the line entirely otherwise, keeping every single-state report's
+``States:`` line when the key is present and omits the line entirely
+otherwise, keeping every single-state report's
 console rendering byte-identical.
 """
 
@@ -62,51 +55,6 @@ def _fmt(value: Any) -> str:
     return "n/a" if value is None else str(value)
 
 
-def _verdict_line(meta: dict[str, Any]) -> str:
-    """Render the verdict as a single ``Verdict:`` line.
-
-    Format is fixed by the plan:
-
-    - ``Verdict:  match`` (double space after label; no delta).
-    - ``Verdict:  under — found N, expected M (-K)`` where ``K = M - N``,
-      rendered with an em-dash separator and a signed delta.
-    - ``Verdict:  over — found N, expected M (+K)`` where ``K = N - M``,
-      likewise signed.
-    - ``Verdict:  unverified`` (the ``expected_jobs`` was ``None``).
-
-    When ``meta["agent_had_errors"] is True`` — and *only* then, so
-    ``None`` (API strategies) and ``False`` never trigger — the
-    suffix ``" (agent reported step errors)"`` is appended. This is a
-    warning annotation, not a verdict override: a ``match`` run with
-    agent step errors is still worth landing but merits a run-log
-    look before commit, and the DoD in ``integrate-company/SKILL.md``
-    reflects that.
-
-    Uses ``format(delta, "+d")`` so both signs render explicitly
-    (``+3`` / ``-3``), keeping the delta unambiguous at a glance.
-    """
-    verdict: str = meta["verdict"]
-    expected: int | None = meta["expected_jobs"]
-    found: int = meta["total_jobs_found"]
-
-    if verdict == "match":
-        line = "Verdict:  match"
-    elif verdict == "unverified":
-        line = "Verdict:  unverified"
-    else:
-        # ``under`` / ``over``. ``expected`` is guaranteed non-None
-        # here because ``compute_verdict`` only produces those two
-        # verdicts when ``expected is not None``.
-        assert expected is not None, "under/over verdict requires expected_jobs"
-        delta = found - expected  # positive for over, negative for under
-        line = f"Verdict:  {verdict} — found {found}, expected {expected} ({delta:+d})"
-
-    if meta.get("agent_had_errors") is True:
-        line = f"{line} (agent reported step errors)"
-
-    return line
-
-
 def print_summary(result: dict[str, Any]) -> None:
     """Print a human-readable extraction summary to console."""
     meta = result["metadata"]
@@ -124,7 +72,6 @@ def print_summary(result: dict[str, Any]) -> None:
     print(f"  Steps:    {_fmt(meta['agent_steps'])}")
     print(f"  Done:     {_fmt(meta['agent_completed'])}")
     print(f"  Errors:   {_fmt(meta['agent_had_errors'])}")
-    print(f"  {_verdict_line(meta)}")
     # additive line: rendered only when the report came from the
     # agent-less multi-state path (build_report omits the key from
     # metadata otherwise, so every agent + Greenhouse report's console

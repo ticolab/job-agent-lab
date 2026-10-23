@@ -28,10 +28,9 @@ makes. ``--all`` says it out loud.
 failures are *data*: they are recorded in ``company_runs`` with their
 error text, and the whole point of the worker's isolation boundary is
 that one broken site is an ordinary event rather than a failure of the
-scan. This matches ``integrate``, which likewise exits zero on an
-unhappy verdict unless ``--strict`` is passed. A non-zero exit means the
-scan could not run at all: an unknown handle, an empty selection, or a
-database with no schema.
+scan. This matches ``integrate``, which likewise exits zero after a
+completed extraction. A non-zero exit means the scan could not run at
+all: an unknown handle, an empty selection, or a database with no schema.
 
 **The scan summary is rendered here rather than in**
 :mod:`job_discovery.reporting`. Per-company JSON still routes through

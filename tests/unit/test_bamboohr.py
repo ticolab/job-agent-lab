@@ -77,7 +77,6 @@ def _make_company(**overrides: Any) -> Company:
         "job_board_url": f"{_ORIGIN}/careers",
         "sample_job_url": f"{_ORIGIN}/careers/236",
         "strategy": "bamboohr",
-        "expected_jobs": 7,
     }
     defaults.update(overrides)
     return Company(**defaults)
@@ -361,13 +360,13 @@ class TestRecordedPayload:
         for key in ("model", "agent_steps", "agent_completed", "agent_had_errors"):
             assert meta[key] is None, key
 
-    def test_verdict_matches_expected_jobs(self) -> None:
+    def test_report_count_matches_jobs(self) -> None:
         with respx.mock(assert_all_called=False) as mock:
             mock.get(_ENDPOINT).mock(
                 return_value=httpx.Response(200, json=_load_fixture())
             )
             result = _run(BambooHrStrategy().extract(_make_company(), _ctx()))
-        assert result["metadata"]["verdict"] == "match"
+        assert result["metadata"]["total_jobs_found"] == len(result["jobs"])
 
 
 class TestRetryPolicy:

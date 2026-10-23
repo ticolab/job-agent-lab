@@ -379,7 +379,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://careers.coloplast.com/search/?optionsFacetsDD_country=CR",
         sample_job_url="https://careers.coloplast.com/job/Cartago-Quality-Systems-Engineer-Cost/1404074033/",
         link_rule=LinkRule(path_prefix="/job"),
-        expected_jobs=22,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -393,7 +392,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://svitla.com/career?country=10",
         sample_job_url="https://svitla.com/career/job/senior-full-stack-engineer-with-cnet-1782992537",
-        expected_jobs=31,
         paginate=True,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
@@ -404,7 +402,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://careers.bcg.com/global/en/job/58217/Creative-Manager-Hybrid",
         link_rule=LinkRule(path_prefix="/global/en/job"),
         strategy="phenom",
-        expected_jobs=13,
         phenom=PhenomConfig(page_id="page17-ds"),
     ),
     Company(
@@ -412,7 +409,6 @@ COMPANIES: list[Company] = [
         aliases=("devpro",),
         job_board_url="https://career.dev.pro/open-positions/",
         sample_job_url="https://career.dev.pro/vacancy/4f6939/",
-        expected_jobs=25,
         paginate=True,
     ),
     Company(
@@ -422,7 +418,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://jobs.citi.com/job/heredia/in-business-risk-lead-analyst/287/93724047344",
         link_rule=LinkRule(path_prefix="/job"),
         strategy="talentbrew",
-        expected_jobs=12,
         talentbrew=TalentbrewConfig(facet_id="3624060", facet_display="Costa Rica"),
     ),
     Company(
@@ -434,7 +429,6 @@ COMPANIES: list[Company] = [
             path_prefix="/ULT1008ULTE/JobBoard/71bc1da6-c7b0-4b37-9f7b-076d7d68c57b/OpportunityDetail",
             suppress_ancestor_selector='[data-automation="featured-opportunities"]',
         ),
-        expected_jobs=10,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -446,7 +440,6 @@ COMPANIES: list[Company] = [
             path_prefix="/jobs",
             suppress_ancestor_selector='a[href^="#"]',
         ),
-        expected_jobs=7,
         hooks=RuntimeHooks(
             pre_extract_css=r".md\:hidden{display:block!important}",
             filter_already_applied=True,
@@ -457,7 +450,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://careers.jobsity.com/",
         sample_job_url="https://careers.jobsity.com/opportunities/live-receptionist",
-        expected_jobs=6,
         hooks=RuntimeHooks(
             expand_selector='a[href="javascript:void(0)"].border-solid',
         ),
@@ -467,7 +459,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://jobs.lever.co/smarsh?location=Costa%20Rica%20-%20Heredia",
         sample_job_url="https://jobs.lever.co/smarsh/520c2bd4-47d0-414b-b3bf-cf30c59d7712",
-        expected_jobs=1,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -475,7 +466,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://careers.reap.global/jobs",
         sample_job_url="https://careers.reap.global/jobs/8123152-compliance-officer-and-money-laundering-reporting-officer-hong-kong",
-        expected_jobs=6,
         pre_filter_urls=("https://careers.reap.global/jobs?location=Latin+America",),
     ),
     Company(
@@ -484,14 +474,12 @@ COMPANIES: list[Company] = [
         job_board_url="https://job-boards.greenhouse.io/cloudbeds",
         sample_job_url="https://job-boards.greenhouse.io/cloudbeds/jobs/4715584005",
         strategy="greenhouse",
-        expected_jobs=9,
     ),
     Company(
         name="Convera",
         aliases=(),
         job_board_url="https://job-boards.eu.greenhouse.io/convera?offices%5B%5D=4010277101",
         sample_job_url="https://job-boards.eu.greenhouse.io/convera/jobs/4851547101",
-        expected_jobs=3,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -500,7 +488,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://luminegrp.wd3.myworkdayjobs.com/en-US/TOMIA?locations=8aa2197b5d571001aa59c2b0b57e0000",
         sample_job_url="https://luminegrp.wd3.myworkdayjobs.com/en-US/TOMIA/details/Operations-Support-Engineer_JR107533",
         link_rule=LinkRule(path_prefix="/en-US/TOMIA/job"),
-        expected_jobs=1,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -508,7 +495,6 @@ COMPANIES: list[Company] = [
         aliases=("oceanscode",),
         job_board_url="https://www.oceanscode.com/careers",
         sample_job_url="https://www.oceanscode.com/careers/senior-azure-cloud-engineer-hs-17",
-        expected_jobs=7,
     ),
     Company(
         name="doola",
@@ -524,7 +510,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://railway.com/careers#open-positions",
         sample_job_url="https://railway.com/careers/orchestration-baremetal",
-        expected_jobs=16,
     ),
     Company(
         name="Babel",
@@ -532,7 +517,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://babelgroup.wd103.myworkdayjobs.com/es/REC_External_Career_Site?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
         sample_job_url="https://babelgroup.wd103.myworkdayjobs.com/es/REC_External_Career_Site/details/QA-Analyst-Salesforce_JR108342?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
         link_rule=LinkRule(path_prefix="/es/REC_External_Career_Site/job"),
-        expected_jobs=5,
     ),
     Company(
         name="Varicent",
@@ -540,7 +524,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://job-boards.greenhouse.io/varicent",
         sample_job_url="https://job-boards.greenhouse.io/varicent/jobs/5362380008",
         strategy="greenhouse",
-        expected_jobs=4,
     ),
     Company(
         name="Find Job Latam",
@@ -550,7 +533,6 @@ COMPANIES: list[Company] = [
         link_rule=LinkRule(
             suppress_ancestor_selector='a[href$="/apply"], a[href$="/refer"]',
         ),
-        expected_jobs=2,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -559,21 +541,18 @@ COMPANIES: list[Company] = [
         job_board_url="https://planatechnologies.peopleforce.io/careers",
         sample_job_url="https://planatechnologies.peopleforce.io/careers/v/172812",
         strategy="peopleforce",
-        expected_jobs=3,
     ),
     Company(
         name="Imprivata",
         aliases=(),
         job_board_url="https://jobs.jobvite.com/imprivata/search?r=Costa+Rica&nl=1",
         sample_job_url="https://jobs.jobvite.com/imprivata/job/ovQvAfwa",
-        expected_jobs=1,
     ),
     Company(
         name="Movate",
         aliases=(),
         job_board_url="https://www.movate.com/careers-at-movate-costa-rica/?search_keywords=&selected_location=costa-rica&selected_job_level=-1",
         sample_job_url="https://www.movate.com/jobs/outbound-sales-representative-2/",
-        expected_jobs=8,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -582,7 +561,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://jobs.hirewithnear.com/#/",
         sample_job_url="https://jobs.hirewithnear.com/jobs/4140",
         paginate=True,
-        expected_jobs=214,
         hooks=RuntimeHooks(next_control_selector="button.\\!bg-primary"),
     ),
     Company(
@@ -590,7 +568,6 @@ COMPANIES: list[Company] = [
         aliases=("sapphirelabs",),
         job_board_url="https://careers.sapphirelabs.io/jobs",
         sample_job_url="https://careers.sapphirelabs.io/jobs/673426-senior-qa-engineer",
-        expected_jobs=10,
         pre_filter_urls=("https://careers.sapphirelabs.io/jobs",),
     ),
     Company(
@@ -599,14 +576,12 @@ COMPANIES: list[Company] = [
         job_board_url="https://gslate.applytojob.com/apply",
         sample_job_url="https://gslate.applytojob.com/apply/uRedT4R3qU/Accounting-Success-Specialist",
         link_rule=LinkRule(path_prefix="/apply"),
-        expected_jobs=10,
     ),
     Company(
         name="CSC Generation",
         aliases=("cscgeneration",),
         job_board_url="https://jobs.lever.co/cscgeneration-2?location=Costa%20Rica",
         sample_job_url="https://jobs.lever.co/cscgeneration-2/dc1c9985-49b6-444d-a431-632df72b535a",
-        expected_jobs=7,
         pre_filter_urls=(
             "https://jobs.lever.co/cscgeneration-2?location=Costa%20Rica",
         ),
@@ -617,7 +592,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://cohesity.wd5.myworkdayjobs.com/en-US/Cohesity_Careers?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
         sample_job_url="https://cohesity.wd5.myworkdayjobs.com/en-US/Cohesity_Careers/details/Senior-Technical-Support-Engineer_R03657",
         link_rule=LinkRule(path_prefix="/en-US/Cohesity_Careers/job"),
-        expected_jobs=2,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -625,7 +599,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://edel.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2001/jobs?lastSelectedFacet=LOCATIONS&selectedLocationsFacet=300000000361322",
         sample_job_url="https://edel.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2001/job/23140/",
-        expected_jobs=3,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -635,7 +608,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://careers.veeam.com/job/-/-/22681/97474976224",
         link_rule=LinkRule(path_prefix="/job"),
         strategy="talentbrew",
-        expected_jobs=11,
         talentbrew=TalentbrewConfig(facet_id="3624060", facet_display="Costa Rica"),
     ),
     Company(
@@ -644,7 +616,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://cornelisnetworks.bamboohr.com/careers",
         sample_job_url="https://cornelisnetworks.bamboohr.com/careers/236",
         strategy="bamboohr",
-        expected_jobs=7,
     ),
     Company(
         name="American Express Global Business Travel",
@@ -652,7 +623,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://travelhrportal.wd1.myworkdayjobs.com/en-US/Jobs/jobs?locations=dfd470ecbdc910a5fa3bc4553ab8236b",
         sample_job_url="https://travelhrportal.wd1.myworkdayjobs.com/en-US/Jobs/jobs/details/PAM-Engineer_J-83503-1",
         link_rule=LinkRule(path_prefix="/en-US/Jobs/job"),
-        expected_jobs=1,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -660,14 +630,12 @@ COMPANIES: list[Company] = [
         aliases=("definity",),
         job_board_url="https://definity.applytojob.com/apply",
         sample_job_url="https://definity.applytojob.com/apply/7jQMoIlS27",
-        expected_jobs=10,
     ),
     Company(
         name="AireSpring",
         aliases=("airespring",),
         job_board_url="https://jobs.smartrecruiters.com/AireSpring1?locationType=REMOTE",
         sample_job_url="https://jobs.smartrecruiters.com/AireSpring1/744000136109539-network-engineer-juniper-focused-remote",
-        expected_jobs=12,
         pre_filter_urls=(
             "https://jobs.smartrecruiters.com/AireSpring1?locationType=REMOTE",
         ),
@@ -678,7 +646,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://apply.workable.com/nextern/?location=Costa%20Rica",
         sample_job_url="https://apply.workable.com/nextern/j/C3DE60B03F/",
         paginate=True,
-        expected_jobs=19,
         hooks=RuntimeHooks(
             filter_already_applied=True,
             next_control_selector='button[data-ui="load-more-button"]',
@@ -690,7 +657,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://lseg.wd3.myworkdayjobs.com/en-US/Careers?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
         sample_job_url="https://lseg.wd3.myworkdayjobs.com/en-US/Careers/details/Sales-Order-Specialist_R0121803",
         link_rule=LinkRule(path_prefix="/en-US/Careers/job"),
-        expected_jobs=7,
         pre_filter_urls=(
             "https://lseg.wd3.myworkdayjobs.com/en-US/Careers?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
         ),
@@ -700,7 +666,6 @@ COMPANIES: list[Company] = [
         aliases=("oliver",),
         job_board_url="https://oliver1.csod.com/ux/ats/careersite/1/home?c=oliver1&lq=Costa%20Rica&pl=ChIJJcmsIWLlko8RK5qBNSX3VGI",
         sample_job_url="https://oliver1.csod.com/ux/ats/careersite/1/home/requisition/342?c=oliver1",
-        expected_jobs=1,
         pre_filter_urls=(
             "https://oliver1.csod.com/ux/ats/careersite/1/home?c=oliver1&lq=Costa%20Rica&pl=ChIJJcmsIWLlko8RK5qBNSX3VGI",
         ),
@@ -712,7 +677,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://careers.roche.com/global/en/job/202605-113325/Senior-Network-Security-Engineer-for-Edge-Network-Security",
         link_rule=LinkRule(path_prefix="/global/en/job"),
         strategy="phenom",
-        expected_jobs=12,
         phenom=PhenomConfig(page_id="page11-ds"),
     ),
     Company(
@@ -720,7 +684,6 @@ COMPANIES: list[Company] = [
         aliases=("cirtec",),
         job_board_url="https://cirteccareers.ttcportals.com/search/jobs/in/country/costa-rica",
         sample_job_url="https://cirteccareers.ttcportals.com/jobs/18100382-sr-accountant",
-        expected_jobs=5,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -729,7 +692,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://careers.dxc.com/job-search-results/?compliment=Costa%20Rica",
         sample_job_url="https://careers.dxc.com/job/23651366/software-engineer-assure-commercialization-platform-san-jose-cr/",
         link_rule=LinkRule(path_prefix="/job"),
-        expected_jobs=3,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -737,7 +699,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://www.progress.com/company/careers/open-positions?location=Costa+Rica",
         sample_job_url="https://www.progress.com/company/careers/open-positions/principal-cloud-security-engineer-oaykafwm",
-        expected_jobs=4,
         pre_filter_urls=(
             "https://www.progress.com/company/careers/open-positions?location=Costa+Rica",
         ),
@@ -747,7 +708,6 @@ COMPANIES: list[Company] = [
         aliases=("vintti",),
         job_board_url="https://careers.vintti.com/#jobs",
         sample_job_url="https://careers.vintti.com/jobs/209",
-        expected_jobs=51,
         pre_filter_urls=("https://careers.vintti.com/#jobs",),
     ),
     Company(
@@ -756,7 +716,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://www.ust.com/en/jobsearch",
         sample_job_url="https://www.ust.com/jobs/80708213",
         strategy="coveo",
-        expected_jobs=20,
         coveo=CoveoConfig(
             organization_id="ustglobalproduction4ggrtx7v",
             search_hub="prod-jobs-search-hub",
@@ -768,7 +727,6 @@ COMPANIES: list[Company] = [
         aliases=("viant", "medplast"),
         job_board_url="https://jobs.dayforcehcm.com/es-MX/medplast/COSTARICA",
         sample_job_url="https://jobs.dayforcehcm.com/es-MX/medplast/COSTARICA/jobs/30656",
-        expected_jobs=10,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -777,7 +735,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://jobs.bostonscientific.com/search/?createNewAlert=false&q=&optionsFacetsDD_country=CR",
         sample_job_url="https://jobs.bostonscientific.com/job/Global-Park%2C-La-Aurora-de-Here-Sr_-Quality-Engineer/1422718400/",
         link_rule=LinkRule(path_prefix="/job"),
-        expected_jobs=6,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -787,7 +744,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://careers.zimmerbiomet.com/us/en/job/11373/Operations-Project-Manager",
         link_rule=LinkRule(path_prefix="/us/en/job"),
         strategy="phenom",
-        expected_jobs=11,
         phenom=PhenomConfig(page_id="page12-ds", locale="en_us"),
     ),
     Company(
@@ -797,7 +753,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://www.careers.philips.com/global/en/job/583860/Finance-Controller-Assistant",
         link_rule=LinkRule(path_prefix="/global/en/job"),
         strategy="phenom",
-        expected_jobs=1,
         phenom=PhenomConfig(page_id="page31-ds"),
     ),
     Company(
@@ -807,7 +762,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://careers.moodys.com/en/job/heredia/fin-rptg-and-acct-policy-accountant/49841/99229266848",
         link_rule=LinkRule(path_prefix="/en/job"),
         strategy="talentbrew",
-        expected_jobs=27,
         talentbrew=TalentbrewConfig(
             facet_id="3624060",
             facet_display="Costa Rica",
@@ -820,7 +774,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://medtronic.wd1.myworkdayjobs.com/es/MedtronicCareers?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
         sample_job_url="https://medtronic.wd1.myworkdayjobs.com/es/MedtronicCareers/details/Machine-Operator-I_R74658-1?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
         link_rule=LinkRule(path_prefix="/es/MedtronicCareers/job"),
-        expected_jobs=14,
         pre_filter_urls=(
             "https://medtronic.wd1.myworkdayjobs.com/es/MedtronicCareers?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
         ),
@@ -831,7 +784,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://jobs.concentrix.com/job-search/?country=Costa+Rica",
         sample_job_url="https://jobs.concentrix.com/job/?id=R1750118",
         link_rule=LinkRule(path_prefix="/job"),
-        expected_jobs=16,
         paginate=True,
         pre_filter_urls=("https://jobs.concentrix.com/job-search/?country=Costa+Rica",),
     ),
@@ -841,7 +793,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://careers.terumobct.com/search/?createNewAlert=false&q=&locationsearch=costa+rica",
         sample_job_url="https://careers.terumobct.com/job/Cartago-Sr-Quality-Engineer-QMS-C/1422008100/",
         link_rule=LinkRule(path_prefix="/job"),
-        expected_jobs=5,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -849,14 +800,12 @@ COMPANIES: list[Company] = [
         aliases=("acuity",),
         job_board_url="https://acuitykp.darwinbox.com/ms/candidatev2/main/careers/allJobs",
         sample_job_url="https://acuitykp.darwinbox.com/ms/candidatev2/main/careers/jobDetails/a6a7501a2c20d4",
-        expected_jobs=5,
     ),
     Company(
         name="Pythian",
         aliases=(),
         job_board_url="https://ats.rippling.com/en-GB/pythian/jobs?country=CR",
         sample_job_url="https://ats.rippling.com/en-GB/pythian/jobs/9cd647df-0857-4768-954e-9d71468c311b",
-        expected_jobs=3,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -866,7 +815,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://jobs.heraeus.com/en/job/cartago/quality-engineer-ii/3105/35497250368",
         link_rule=LinkRule(path_prefix="/en/job"),
         strategy="talentbrew",
-        expected_jobs=27,
         talentbrew=TalentbrewConfig(
             facet_id="3624060",
             facet_display="Costa Rica",
@@ -879,7 +827,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://jobs-auxis.icims.com/jobs/search?ss=1&searchLocation=13002-13006-Costa%20Rica",
         sample_job_url="https://jobs-auxis.icims.com/jobs/4659/forward-deployed-engineer/job",
         link_rule=LinkRule(path_prefix="/jobs", min_depth=2),
-        expected_jobs=11,
         pre_filter_urls=(
             "https://jobs-auxis.icims.com/jobs/search?ss=1&searchLocation=13002-13006-Costa%20Rica&pr=0",
             "https://jobs-auxis.icims.com/jobs/search?ss=1&searchLocation=13002-13006-Costa%20Rica&pr=1",
@@ -890,7 +837,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://hdjq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs?lastSelectedFacet=LOCATIONS&selectedLocationsFacet=300000000228624",
         sample_job_url="https://hdjq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/26010327/",
-        expected_jobs=16,
         hooks=RuntimeHooks(filter_already_applied=True),
     ),
     Company(
@@ -899,7 +845,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://www.careers.jnj.com/en/jobs/?country=Costa%20Rica",
         sample_job_url="https://www.careers.jnj.com/en/jobs/r-078067/sr-data-engineer/",
         link_rule=LinkRule(path_prefix="/en/jobs", min_depth=2),
-        expected_jobs=12,
         pre_filter_urls=("https://www.careers.jnj.com/en/jobs/?country=Costa%20Rica",),
     ),
     Company(
@@ -907,7 +852,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://ats.rippling.com/en-GB/commandlink/jobs?country=CR",
         sample_job_url="https://ats.rippling.com/en-GB/commandlink/jobs/d9f89979-d7e5-4e70-9ebf-0a1b919c0f34",
-        expected_jobs=7,
         pre_filter_urls=("https://ats.rippling.com/en-GB/commandlink/jobs?country=CR",),
     ),
     Company(
@@ -916,14 +860,12 @@ COMPANIES: list[Company] = [
         job_board_url="https://job-boards.greenhouse.io/speechify",
         sample_job_url="https://job-boards.greenhouse.io/speechify/jobs/5975117004",
         strategy="greenhouse",
-        expected_jobs=2,
     ),
     Company(
         name="Align Technology",
         aliases=("aligntech",),
         job_board_url="https://jobs.aligntech.com/search-job?location_id=[40486,40341]",
         sample_job_url="https://jobs.aligntech.com/en/postings/e0ec4afb-a180-412c-9e86-684ca248f5e4",
-        expected_jobs=10,
         pre_filter_urls=(
             "https://jobs.aligntech.com/search-job?location_id=[40486,40341]",
         ),
@@ -933,7 +875,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://excelnearshore.com/careers/",
         sample_job_url="https://excelnearshore.com/job/qa-engineer/",
-        expected_jobs=7,
     ),
     Company(
         name="Accenture",
@@ -942,7 +883,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://www.accenture.com/cr-en/careers/jobdetails?id=R00355087_en&title=Senior+Manager+%E2%80%93+Value+Architect",
         link_rule=LinkRule(path_prefix="/cr-en/careers/jobdetails"),
         paginate=True,
-        expected_jobs=56,
         hooks=RuntimeHooks(
             pre_extract_css=(
                 ".rad-filters-vertical__job-card-content-wrapper"
@@ -957,7 +897,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://www.jobs.global.fujitsu.com/search?searchResultView=LIST&facetFilters=%7B%22jobLocationCountry%22%3A%5B%22Costa%20Rica%22%5D%7D",
         sample_job_url="https://www.jobs.global.fujitsu.com/job/French-Service-Desk-Agent/12171-en_US",
         link_rule=LinkRule(path_prefix="/job"),
-        expected_jobs=2,
         pre_filter_urls=(
             "https://www.jobs.global.fujitsu.com/search?searchResultView=LIST&facetFilters=%7B%22jobLocationCountry%22%3A%5B%22Costa%20Rica%22%5D%7D",
         ),
@@ -968,14 +907,12 @@ COMPANIES: list[Company] = [
         job_board_url="https://job-boards.greenhouse.io/perform-careers",
         sample_job_url="https://job-boards.greenhouse.io/perform-careers/jobs/4250843009",
         strategy="greenhouse",
-        expected_jobs=1,
     ),
     Company(
         name="Baja Nearshore",
         aliases=("baja",),
         job_board_url="https://recruitcrm.io/jobs/View%20Openings",
         sample_job_url="https://recruitcrm.io/apply/17726607186750106969zOp?source=Jobspage&new=yes",
-        expected_jobs=17,
         pre_filter_urls=("https://recruitcrm.io/jobs/View%20Openings",),
     ),
     Company(
@@ -983,7 +920,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://easyapplyrekluti.recruitee.com/?jobs-9da8b313%5Bsearch%5D=costa%20rica",
         sample_job_url="https://easyapplyrekluti.recruitee.com/o/administrador-de-base-de-datos-oracle",
-        expected_jobs=49,
         pre_filter_urls=(
             "https://easyapplyrekluti.recruitee.com/?jobs-9da8b313%5Bsearch%5D=costa%20rica",
         ),
@@ -993,7 +929,6 @@ COMPANIES: list[Company] = [
         aliases=("atomicvest",),
         job_board_url="https://jobs.ashbyhq.com/atomic-invest?locationId=d88d1d51-572a-46b3-85a2-a899912a3487",
         sample_job_url="https://jobs.ashbyhq.com/atomic-invest/2dbcd665-1e90-49b0-b164-4776e85fae25",
-        expected_jobs=1,
     ),
     Company(
         name="Appnovation",
@@ -1001,14 +936,12 @@ COMPANIES: list[Company] = [
         job_board_url="https://job-boards.greenhouse.io/appnovation",
         sample_job_url="https://job-boards.greenhouse.io/appnovation/jobs/8708667002",
         strategy="greenhouse",
-        expected_jobs=3,
     ),
     Company(
         name="Tyk",
         aliases=(),
         job_board_url="https://tyk.io/tyk-current-vacancies/",
         sample_job_url="https://tyk.io/jobs/site-reliability-engineer/",
-        expected_jobs=8,
         pre_filter_urls=("https://tyk.io/tyk-current-vacancies/",),
     ),
     Company(
@@ -1016,7 +949,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://ats.rippling.com/en-GB/sparq/jobs?country=CR",
         sample_job_url="https://ats.rippling.com/en-GB/sparq/jobs/808bb533-70c8-40a7-86c5-5fdd6d42c31f",
-        expected_jobs=4,
         pre_filter_urls=("https://ats.rippling.com/en-GB/sparq/jobs?country=CR",),
     ),
     Company(
@@ -1025,7 +957,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://job-boards.greenhouse.io/powerdigitalmarketing",
         sample_job_url="https://job-boards.greenhouse.io/powerdigitalmarketing/jobs/5185164007",
         strategy="greenhouse",
-        expected_jobs=47,
     ),
     Company(
         name="Unisys",
@@ -1033,7 +964,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://unisys.wd5.myworkdayjobs.com/External?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
         sample_job_url="https://unisys.wd5.myworkdayjobs.com/en-US/External/details/QA-Tester_REQ575669",
         link_rule=LinkRule(path_prefix="/en-US/External/job"),
-        expected_jobs=9,
     ),
     Company(
         name="Midland Credit Management",
@@ -1042,7 +972,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://careers.encorecapital.com/en/job/san-jose/risk-and-compliance-analyst/29781/100036864432",
         link_rule=LinkRule(path_prefix="/en/job"),
         strategy="talentbrew",
-        expected_jobs=1,
         talentbrew=TalentbrewConfig(
             facet_id="3624060",
             facet_display="Costa Rica",
@@ -1055,14 +984,12 @@ COMPANIES: list[Company] = [
         job_board_url="https://job-boards.greenhouse.io/wundermanthompson",
         sample_job_url="https://www.vml.com/careers/job/8692067002-cr-associate-qa-analyst",
         strategy="greenhouse",
-        expected_jobs=7,
     ),
     Company(
         name="Oowlish",
         aliases=(),
         job_board_url="https://jobs.lever.co/oowlish?location=Costa%20Rica",
         sample_job_url="https://jobs.lever.co/oowlish/4f805246-8df1-468d-9ba9-fa1dd205e0dc",
-        expected_jobs=3,
         pre_filter_urls=(
             "https://jobs.lever.co/oowlish?location=Costa%20Rica",
             "https://jobs.lever.co/oowlish?location=San%20Jos%C3%A9%2C%20San%20Jose%2C%20Costa%20Rica",
@@ -1073,7 +1000,6 @@ COMPANIES: list[Company] = [
         aliases=(),
         job_board_url="https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs?location=Remote%20from%20Costa%20Rica",
         sample_job_url="https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs/536",
-        expected_jobs=11,
         pre_filter_urls=(
             "https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs?location=Remote%20from%20Costa%20Rica",
         ),
@@ -1084,7 +1010,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://www.comeet.com/jobs/comm-it/76.008?location=Costa%20Rica",
         sample_job_url="https://www.comeet.com/jobs/comm-it/76.008/senior-backend-engineer/00.175-F2.50D",
         link_rule=LinkRule(path_prefix="/jobs/comm-it/76.008"),
-        expected_jobs=2,
     ),
     Company(
         name="Cargill",
@@ -1093,7 +1018,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://careers.cargill.com/en/job/alajuela/generalist-process-operator-i/23251/100409215360",
         link_rule=LinkRule(path_prefix="/en/job"),
         strategy="talentbrew",
-        expected_jobs=60,
         talentbrew=TalentbrewConfig(
             facet_id="3624060",
             facet_display="Costa Rica",
@@ -1106,7 +1030,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://www.mckinsey.com/careers/search-jobs?cities=San+Jose",
         sample_job_url="https://www.mckinsey.com/careers/search-jobs/jobs/associate-15178",
         paginate=True,
-        expected_jobs=24,
         pre_filter_urls=(
             "https://www.mckinsey.com/careers/search-jobs?cities=San+Jose",
         ),
@@ -1118,7 +1041,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://careers.tdsynnex.com/us/en/job/R55610/Technical-Support-Technician-CR",
         link_rule=LinkRule(path_prefix="/us/en/job"),
         strategy="phenom",
-        expected_jobs=28,
         phenom=PhenomConfig(page_id="page11-ds", locale="en_us"),
     ),
     Company(
@@ -1128,7 +1050,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://www.edwards.com/job/50732/rep-hr-solutions",
         link_rule=LinkRule(path_prefix="/job"),
         paginate=True,
-        expected_jobs=18,
         hooks=RuntimeHooks(render_wait_sec=60, render_scroll_count=6),
         pre_filter_urls=(
             "https://www.edwards.com/careers/jobsearch?country=Costa%20Rica",
@@ -1140,7 +1061,6 @@ COMPANIES: list[Company] = [
         job_board_url="https://carrera.deloitteslatam.com/search/?createNewAlert=false&q=&locationsearch=costa+rica",
         sample_job_url="https://carrera.deloitteslatam.com/job/Costa-Rica-Consultor%28a%29-SnrDevOps-Cloud-Centro-Am%C3%A9rica-San-Jos%C3%A9/1377581033/",
         link_rule=LinkRule(path_prefix="/job"),
-        expected_jobs=13,
         pre_filter_urls=(
             "https://carrera.deloitteslatam.com/search/?createNewAlert=false&q=&locationsearch=costa+rica",
         ),
@@ -1152,7 +1072,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://careers.hpe.com/us/en/job/1207481/Technical-Courseware-Developer",
         link_rule=LinkRule(path_prefix="/us/en/job"),
         strategy="phenom",
-        expected_jobs=27,
         phenom=PhenomConfig(page_id="page15", locale="en_us"),
     ),
     Company(
@@ -1162,7 +1081,6 @@ COMPANIES: list[Company] = [
         sample_job_url="https://careers.cisco.com/global/en/job/2023794/Renewals-Specialist-Splunk-COE-Hybrid",
         link_rule=LinkRule(path_prefix="/global/en/job"),
         strategy="phenom",
-        expected_jobs=1,
         phenom=PhenomConfig(page_id="page4", locale="en_global"),
     ),
 ]

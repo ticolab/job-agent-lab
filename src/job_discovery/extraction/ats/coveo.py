@@ -133,8 +133,7 @@ response's ``totalCount`` exceeds the number of records seen so far
 *and* the last page returned at least one record; a defensive
 ``_MAX_PAGES`` cap mirrors the pagination walker. Ending short of
 ``totalCount`` logs a warning naming the shortfall and emits what was
-collected — the verdict layer then flips ``under``, which is its
-job. Note ``totalCount`` counts the server's facet-filtered set, so it
+collected. Note ``totalCount`` counts the server's facet-filtered set, so it
 is the right paging bound but *not* the expected emit count: the
 client-side re-verification can legitimately drop records below it.
 
@@ -163,8 +162,7 @@ The search half of the contract is verified against the live endpoint
 with a browser-borrowed token; the mint half is blocked by the
 Cloudflare gate above. What the live call established:
 
-- ``totalCount: 20`` and 20 records returned in a single call, matching
-  the ledger's human-counted ``expected_jobs: 20``.
+- ``totalCount: 20`` and 20 records returned in a single call.
 - **The trimmed body works, and ``fieldsToInclude`` is load-bearing**:
   zero of the 20 records were missing ``raw.country`` or ``raw.city``.
   This was the open contract risk — Coveo scopes ``raw.*`` to a default
@@ -599,8 +597,7 @@ class CoveoStrategy:
                         logger.warning(
                             "Coveo pagination hit the _MAX_PAGES=%s cap for "
                             "company=%s after %s records (totalCount=%s). "
-                            "Emitting the collected subset; the verdict layer "
-                            "will classify the shortfall.",
+                            "Emitting the collected subset.",
                             _MAX_PAGES,
                             company.name,
                             records_seen,
@@ -610,8 +607,7 @@ class CoveoStrategy:
             if total_count is not None and records_seen < total_count:
                 logger.warning(
                     "Coveo reported totalCount=%s but only %s records were "
-                    "retrieved for company=%s. Emitting the received subset; "
-                    "the verdict layer will classify the shortfall.",
+                    "retrieved for company=%s. Emitting the received subset.",
                     total_count,
                     records_seen,
                     company.name,
@@ -634,5 +630,4 @@ class CoveoStrategy:
             agent_completed=None,
             agent_had_errors=None,
             error=error,
-            expected_jobs=company.expected_jobs,
         )

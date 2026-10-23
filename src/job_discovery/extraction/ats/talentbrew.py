@@ -78,7 +78,7 @@ filter. Talentbrew records carry no structured location field that
 could be re-verified client-side, and per-card location text
 (``<span class="job-location">``) is a fragile second contract that
 would drift independently of the primary facet. Rot in the facet id
-is owned by the ``verdict`` layer on the next live run.
+is visible in the extracted URL count on the next live run.
 
 Pagination
 ----------
@@ -91,8 +91,7 @@ that LinkRule drops (so a partial last page can still have
 terminate one page too late in some tenants. A defensive
 ``_MAX_PAGES=20`` cap mirrors the pagination walker: a tenant genuinely
 requiring more pages fires a loud warning and emits the union
-collected so far, letting the verdict layer surface the shortfall on
-the next live run.
+collected so far.
 
 Citi's Costa Rica facet returns exactly 10 postings on 2026-08-04 —
 below the 15-default ``records_per_page`` — so the multi-page code
@@ -108,8 +107,7 @@ same client code against a real second page — no new contract
 surface. The first Talentbrew tenant whose filtered region genuinely
 spans multiple pages is the trigger to live-verify the loop, and
 any request-parameter drift (e.g. an ``IsPagination=True`` toggle
-required for pages ≥ 2) will surface as a partial page-2 count that
-verdict layer flags on the next run.
+required for pages ≥ 2) will surface as a partial page-2 count.
 
 Failure semantics
 -----------------
@@ -129,7 +127,7 @@ Failure semantics
   applied to a different board than the LinkRule targets.
 - 200 on page 1 with ``hasJobs=false``: honest empty (``jobs=[]``,
   ``error=None``). Legitimate outcome for a tenant with no
-  region-matching postings today; the verdict layer classifies it.
+  region-matching postings today.
 - 200 on pages ≥ 2 with zero survivors or ``hasJobs=false``:
   legitimate pagination terminator, not an error.
 - Missing ``talentbrew`` config or ``link_rule.path_prefix``: error
@@ -597,8 +595,7 @@ class TalentbrewStrategy:
                         break
                 else:
                     # for/else: loop exhausted ``_MAX_PAGES`` without
-                    # breaking. Emit union collected; verdict layer
-                    # surfaces the shortfall on the next live run.
+                    # breaking. Emit the union collected so far.
                     logger.warning(
                         "Talentbrew pagination reached _MAX_PAGES=%s for "
                         "company=%s; emitting %s URLs collected so far. "
@@ -628,5 +625,4 @@ class TalentbrewStrategy:
             agent_completed=None,
             agent_had_errors=None,
             error=error,
-            expected_jobs=company.expected_jobs,
         )

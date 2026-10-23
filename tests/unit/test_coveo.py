@@ -113,7 +113,6 @@ def _make_company(**overrides: Any) -> Company:
         "sample_job_url": "https://www.ust.com/jobs/80708213",
         "strategy": "coveo",
         "coveo": _config(),
-        "expected_jobs": 20,
     }
     defaults.update(overrides)
     return Company(**defaults)
@@ -365,8 +364,8 @@ class TestExtractHappyPathRecorded:
         assert meta["agent_steps"] is None
         assert meta["agent_completed"] is None
         assert meta["agent_had_errors"] is None
-        assert meta["expected_jobs"] == 20
-        assert "verdict" in meta
+        assert "expected_jobs" not in meta
+        assert "verdict" not in meta
 
 
 class TestClickUriVerbatimEmission:
@@ -931,8 +930,8 @@ class TestUnderFetchWarning:
             )
             result = _run(CoveoStrategy().extract(_make_company(), _ctx()))
         assert len(result["jobs"]) == 3
+        assert result["metadata"]["total_jobs_found"] == 3
         assert result["metadata"]["error"] is None
-        assert result["metadata"]["verdict"] == "under"
         assert any("totalCount=20" in r.getMessage() for r in caplog.records)
 
 
@@ -1128,7 +1127,6 @@ class TestBrowserTokenFailures:
             link_rule=LinkRule(),
             aliases=(),
             paginate=False,
-            expected_jobs=20,
             hooks=RuntimeHooks(),
             pre_filter_urls=(),
             phenom=None,
@@ -1156,7 +1154,7 @@ class TestBrowserPathRecordedPayload:
             result = _run(CoveoStrategy().extract(_make_browser_company(), _ctx()))
 
         assert len(result["jobs"]) == 20
-        assert result["metadata"]["verdict"] == "match"
+        assert result["metadata"]["total_jobs_found"] == 20
 
     def test_click_uri_emitted_verbatim(self, monkeypatch: Any) -> None:
         # the Coveo adapter's sharpest rule, re-pinned on the new token path:

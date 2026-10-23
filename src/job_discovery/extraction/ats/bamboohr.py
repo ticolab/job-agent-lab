@@ -289,5 +289,4 @@ class BambooHrStrategy:
             agent_completed=None,
             agent_had_errors=None,
             error=error,
-            expected_jobs=company.expected_jobs,
         )

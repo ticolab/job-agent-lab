@@ -82,13 +82,6 @@ async def run_extraction(args: argparse.Namespace) -> None:
         f"Headless: {not args.headed}"
     )
 
-    # accumulate every per-company report so the ``--strict``
-    # exit gate can inspect the corpus-wide set of verdicts *after*
-    # every company has been processed and saved. Draining the loop
-    # first (rather than short-circuiting on the first non-match)
-    # is deliberate — a strict run should still leave a full set of
-    # JSON artefacts on disk for the operator to inspect.
-    results: list[dict] = []
     for company in companies:
         print(f"\nProcessing: {company.name} (strategy={company.strategy})...")
         strategy = get_strategy(company.strategy)
@@ -97,27 +90,6 @@ async def run_extraction(args: argparse.Namespace) -> None:
         filepath = save_result(result, output_dir)
         print_summary(result)
         print(f"  Output:   {filepath}")
-        results.append(result)
-
-    if args.strict and _has_non_match(results):
-        # Post-loop gate. The default path (``--strict`` off) never
-        # reaches this branch, so corpus behaviour is byte-identical
-        # to the pre-verdict CLI.
-        sys.exit(1)
-
-
-def _has_non_match(results: list[dict]) -> bool:
-    """Return ``True`` if any accumulated report is not a ``match``.
-
-    Treats ``"unverified"``, ``"under"``, and ``"over"`` uniformly as
-    non-match: a never-counted company (``expected_jobs=None``) is
-    not a passing run under ``--strict``, which is the intended
-    forcing function for backfilling the corpus's human counts.
-    Empty ``results`` returns ``False`` (nothing ran → nothing to
-    fail on); the CLI still exits 0 in that edge case, matching
-    the pre-verdict no-op semantics.
-    """
-    return any(r["metadata"]["verdict"] != "match" for r in results)
 
 
 INTEGRATE_DESCRIPTION = "Extract job postings from one company, or the whole corpus."
@@ -165,22 +137,6 @@ def add_integrate_arguments(parser: argparse.ArgumentParser) -> None:
         type=str,
         default=str(OUTPUT_DIR),
         help=f"Output directory for JSON results (default: {OUTPUT_DIR}).",
-    )
-    parser.add_argument(
-        "--strict",
-        action="store_true",
-        default=False,
-        help=(
-            "Exit non-zero if any run's metadata.verdict is not 'match'. "
-            "The four verdicts are 'match' (found == expected), 'under' "
-            "(found < expected), 'over' (found > expected), and "
-            "'unverified' (expected_jobs=None). Under --strict, "
-            "'unverified' counts as non-match — a never-counted company "
-            "fails the gate, which is the intended forcing function for "
-            "backfilling expected_jobs across the corpus. Every company "
-            "still runs to completion and every result is saved to disk; "
-            "the exit code is decided after the loop drains."
-        ),
     )
 
 

@@ -97,34 +97,7 @@ class TestNoMatchDescriptionGolden:
 
 
 class TestExpectedJobsNeverLeaksToPrompt:
-    """``expected_jobs`` MUST NOT enter the agent-visible surface.
-
-    The verdict layer is a runtime *judge* — an out-of-band scoreboard
-    that classifies a run after it finishes. Threading the human count
-    into the prompt would turn the LLM into a target-driven optimiser
-    (invent listings until you hit N, stop early once N is reached),
-    contaminating every run's evidence value.
-
-    This test locks the invariant on two independent axes:
-
-    - **Source-level:** the substring ``expected_jobs`` appears
-      nowhere in :mod:`job_discovery.extraction.dom.agent.prompt` — not in a
-      clause constant, not in a comment, not in a docstring. The
-      check is via :func:`inspect.getsource` so any refactor that
-      moves the clauses into a different module also has to move
-      the guard.
-    - **Rendered-output-level:** the string ``expected_jobs`` does
-      not appear in the rendered ``GOAL_PROMPT`` for the canonical
-      region. Belt on top of the source check — the clause file could
-      hypothetically pull a value in via ``str.format`` from a
-      dynamic source, and this catches that class of regression at
-      the rendered output.
-
-    Neither check inspects the Case C tool description because the
-    verdict layer has no rendering path into
-    :func:`~job_discovery.extraction.dom.agent.controller.build_no_match_description`,
-    and the golden test above already locks that surface byte-identical.
-    """
+    """Queue-only onboarding metadata must not enter the runtime prompt."""
 
     def test_expected_jobs_absent_from_prompt_module_source(self) -> None:
         import inspect
@@ -132,11 +105,7 @@ class TestExpectedJobsNeverLeaksToPrompt:
         import job_discovery.extraction.dom.agent.prompt as prompt_mod
 
         source = inspect.getsource(prompt_mod)
-        assert "expected_jobs" not in source, (
-            "expected_jobs leaked into the prompt module source. The "
-            "verdict layer is out-of-band by design — never thread the "
-            "human count through GOAL_PROMPT or its clause constants."
-        )
+        assert "expected_jobs" not in source
 
     def test_expected_jobs_absent_from_rendered_goal_prompt(self) -> None:
         rendered = build_goal_prompt(COSTA_RICA_LATAM)

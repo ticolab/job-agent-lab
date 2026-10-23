@@ -101,7 +101,7 @@ class CompanyOutcome:
 
     @classmethod
     def failed(cls, company: Company, error: str) -> CompanyOutcome:
-        """Build the outcome for a company whose run raised."""
+        """Build the outcome for a company whose run failed."""
         return cls(company=company, status="failed", error=error)
 
     @classmethod
@@ -148,10 +148,10 @@ async def run_company(
     temporary database — and what keeps this module from deciding where
     the database lives.
 
-    An extraction that returns zero jobs is a **successful run with an
-    unhappy verdict**, not a failure. Only an exception marks ``failed``,
-    so retries target genuine breakage rather than boards that are
-    honestly empty.
+    An extraction that returns zero jobs with no reported error is a
+    successful run, not a failure. An exception or a non-null
+    ``metadata.error`` marks ``failed``, so retries target genuine
+    breakage rather than boards that are honestly empty.
 
     Args:
         company: The company to extract.
@@ -215,6 +215,13 @@ async def run_company(
         await _record_failure(session_factory, run_id=run_id, error=message)
         return CompanyOutcome.failed(company, message)
 
+    report_error = report["metadata"]["error"]
+    if report_error is not None:
+        message = str(report_error)
+        logger.warning("failed %s: %s", company.slug, message)
+        await _record_failure(session_factory, run_id=run_id, error=message)
+        return CompanyOutcome.failed(company, message)
+
     # Zone 3 — persisting the result. A database error here is still
     # this company's failure: letting it escape would abort the batch
     # through ``gather`` while every other task ran on detached.
@@ -224,9 +231,7 @@ async def run_company(
             # `url_count` is the number of rows actually stored, which is
             # the de-duplicated count, not `len(jobs)`. A board that emits
             # the same posting twice would otherwise record a count that
-            # no `select count(*) from job_urls` could ever reproduce. The
-            # verdict beside it is computed from the unfiltered extraction,
-            # so the two answer different questions on purpose.
+            # no `select count(*) from job_urls` could ever reproduce.
             url_count = await jobs_repo.replace_company_urls(
                 session,
                 company_slug=company.slug,
@@ -244,7 +249,6 @@ async def run_company(
                 session,
                 run_id=run_id,
                 url_count=url_count,
-                verdict=report["metadata"]["verdict"],
             )
     except Exception as exc:  # noqa: BLE001 — the isolation boundary, persistence
         message = repr(exc)
@@ -252,10 +256,5 @@ async def run_company(
         await _record_failure(session_factory, run_id=run_id, error=message)
         return CompanyOutcome.failed(company, message)
 
-    logger.info(
-        "succeeded %s: %d url(s) stored, verdict %s",
-        company.slug,
-        url_count,
-        report["metadata"]["verdict"],
-    )
+    logger.info("succeeded %s: %d url(s) stored", company.slug, url_count)
     return CompanyOutcome.succeeded(company, report, url_count)

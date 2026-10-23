@@ -107,7 +107,6 @@ class DomStrategy:
             min_depth=company.link_rule.min_depth,
             suppress_selector=company.link_rule.suppress_ancestor_selector,
             paginate=company.paginate,
-            expected_jobs=company.expected_jobs,
             hooks=company.hooks,
             model=ctx.model,
             headless=ctx.headless,
@@ -269,7 +268,6 @@ class DomStrategy:
             agent_completed=None,
             agent_had_errors=None,
             error=error_str,
-            expected_jobs=company.expected_jobs,
             states_visited=len(company.pre_filter_urls),
         )
 
@@ -283,7 +281,6 @@ async def extract_jobs(
     min_depth: int = 1,
     suppress_selector: str | None = None,
     paginate: bool = False,
-    expected_jobs: int | None = None,
     hooks: RuntimeHooks | None = None,
     model: str = DEFAULT_MODEL,
     headless: bool = True,
@@ -319,15 +316,6 @@ async def extract_jobs(
             which unions matcher results across paginated DOM states via
             a driver-side click. Default ``False`` is byte-identical to
             the single-shot behaviour.
-        expected_jobs: human-counted target (mirrors
-            ``Company.expected_jobs``). Threaded straight through to
-            :func:`~job_discovery.extraction.base.build_report` so the
-            emitted ``metadata.verdict`` reflects the run's
-            found-vs-expected classification. ``None`` (the default)
-            preserves the pre-verdict legacy signature — scripts and
-            internal callers that construct an ``extract_jobs`` call
-            without a ``Company`` instance stay working, and their
-            reports emit ``verdict="unverified"``.
         hooks: :class:`~job_discovery.domain.company.RuntimeHooks`
             executed between agent handoff and matcher invocation.
             Forwarded verbatim to :func:`build_controller` (the single
@@ -399,7 +387,6 @@ async def extract_jobs(
             history=history,
             elapsed=elapsed,
             error=None,
-            expected_jobs=expected_jobs,
         )
     except Exception as e:
         elapsed = time.time() - start_time
@@ -412,7 +399,6 @@ async def extract_jobs(
             history=history,
             elapsed=elapsed,
             error=str(e),
-            expected_jobs=expected_jobs,
         )
     finally:
         await browser_session.stop()
@@ -455,7 +441,6 @@ def _build_output(
     history: AgentHistoryList | None,
     elapsed: float,
     error: str | None,
-    expected_jobs: int | None,
 ) -> dict[str, Any]:
     """Build the final output dict from agent history + parsed result.
 
@@ -465,12 +450,6 @@ def _build_output(
     ``history`` is ``None`` (agent failed before completing a step) —
     to stay byte-compatible with the legacy report; API strategies
     emit ``None`` for the same fields.
-
-    ``expected_jobs`` is passed through unchanged from
-    ``Company.expected_jobs`` (or ``None`` for legacy free-function
-    callers). Verdict classification is centralised in
-    :func:`~job_discovery.extraction.base.compute_verdict` — this
-    helper never inspects or transforms the value.
     """
     jobs_data: list[str] = result.model_dump()["jobs"] if result else []
     return build_report(
@@ -484,5 +463,4 @@ def _build_output(
         agent_completed=history.is_done() if history else False,
         agent_had_errors=history.has_errors() if history else True,
         error=error,
-        expected_jobs=expected_jobs,
     )

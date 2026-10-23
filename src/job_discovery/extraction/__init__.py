@@ -30,8 +30,8 @@ Seven strategies are registered here at import time:
   persists one location per posting behind a single-select filter
   (C18), so a region spanning several cities has no single URL and
   the first closure was a frozen ``pre_filter_urls`` union — correct
-  the day it is written and silently incomplete afterwards, in a way
-  the verdict layer cannot see. This adapter discovers the tenant's
+  the day it is written and silently incomplete afterwards. This
+  adapter discovers the tenant's
   live location list on every run instead of freezing it.
 - :class:`~job_discovery.extraction.ats.bamboohr.BambooHrStrategy` —
   the BambooHR ``/careers/list`` adapter. Unlike its siblings this one

@@ -1,201 +1,80 @@
-"""Unit tests for :mod:`job_discovery.reporting.output`.
-
-Focused on the additions:
-
-- :func:`_verdict_line` renders each of the four verdicts in the exact
-  format the plan mandates (double space, em-dash, signed delta) and
-  appends the ``(agent reported step errors)`` warning suffix only
-  when ``agent_had_errors is True`` — not on ``None`` (API strategies)
-  or ``False`` (successful DOM runs).
-- :func:`print_summary` prints the verdict line for a full API-shape
-  report where every agent field is ``None`` and the verdict is
-  ``unverified`` — that combination is the most likely to break if
-  the ``_fmt`` / verdict interaction ever regresses.
-
-The pre-verdict ``save_result`` / ``print_summary`` shape (``Company:``,
-``URL:``, ``Strategy:``, ``Jobs:`` etc.) is exercised indirectly by
-the golden runs in the snapshot harness and the CLI integration; the
-tests here focus specifically on the verdict-line contract.
-"""
+"""Unit tests for :mod:`job_discovery.reporting.output`."""
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Any
 
 import pytest
 
-from job_discovery.reporting.output import _verdict_line, print_summary
+from job_discovery.reporting.output import print_summary, save_result
 
 
-def _meta(
-    *,
-    verdict: str,
-    expected_jobs: int | None,
-    total_jobs_found: int,
-    agent_had_errors: bool | None = False,
+def _report(
+    *, jobs: list[str] | None = None, error: str | None = None
 ) -> dict[str, Any]:
-    """Build the minimal metadata dict `_verdict_line` reads."""
+    urls = jobs or []
     return {
-        "verdict": verdict,
-        "expected_jobs": expected_jobs,
-        "total_jobs_found": total_jobs_found,
-        "agent_had_errors": agent_had_errors,
+        "company": "Zscaler",
+        "url": "https://job-boards.greenhouse.io/zscaler",
+        "jobs": urls,
+        "metadata": {
+            "strategy": "greenhouse",
+            "model": None,
+            "total_jobs_found": len(urls),
+            "extraction_time_seconds": 0.5,
+            "agent_steps": None,
+            "agent_completed": None,
+            "agent_had_errors": None,
+            "error": error,
+        },
     }
 
 
-class TestVerdictLine:
-    """Format contract for the ``Verdict:`` line."""
-
-    def test_match_verdict_is_bare(self) -> None:
-        # No delta, no annotation — a match is the clean case.
-        line = _verdict_line(
-            _meta(verdict="match", expected_jobs=3, total_jobs_found=3)
-        )
-        assert line == "Verdict:  match"
-
-    def test_unverified_verdict_is_bare(self) -> None:
-        # ``None`` expectation → no delta arithmetic possible.
-        line = _verdict_line(
-            _meta(verdict="unverified", expected_jobs=None, total_jobs_found=7)
-        )
-        assert line == "Verdict:  unverified"
-
-    def test_over_verdict_renders_signed_positive_delta(self) -> None:
-        # +36: the canonical "board grew unexpectedly" case from the
-        # plan's example.
-        line = _verdict_line(
-            _meta(verdict="over", expected_jobs=3, total_jobs_found=39)
-        )
-        assert line == "Verdict:  over — found 39, expected 3 (+36)"
-
-    def test_under_verdict_renders_signed_negative_delta(self) -> None:
-        # -8: the "agent found fewer than the human counted" case.
-        line = _verdict_line(
-            _meta(verdict="under", expected_jobs=12, total_jobs_found=4)
-        )
-        assert line == "Verdict:  under — found 4, expected 12 (-8)"
-
-    def test_delta_of_one_is_still_signed(self) -> None:
-        # Guards against a silent switch from ``{delta:+d}`` to
-        # ``{delta}`` — the ``+`` must be present even for a single-
-        # unit overshoot.
-        line = _verdict_line(_meta(verdict="over", expected_jobs=0, total_jobs_found=1))
-        assert line == "Verdict:  over — found 1, expected 0 (+1)"
-
-    def test_zero_over_zero_renders_match(self) -> None:
-        # Case-C boards land here: legitimate zero on both sides. The
-        # verdict is computed upstream, but the line must still render
-        # as a bare ``match`` (no zero-delta suffix).
-        line = _verdict_line(
-            _meta(verdict="match", expected_jobs=0, total_jobs_found=0)
-        )
-        assert line == "Verdict:  match"
-
-    @pytest.mark.parametrize(
-        ("verdict", "expected", "found", "prefix"),
-        [
-            ("match", 5, 5, "Verdict:  match"),
-            ("under", 5, 3, "Verdict:  under — found 3, expected 5 (-2)"),
-            ("over", 5, 8, "Verdict:  over — found 8, expected 5 (+3)"),
-            ("unverified", None, 8, "Verdict:  unverified"),
-        ],
-    )
-    def test_annotation_appended_when_agent_had_errors_is_true(
-        self, verdict: str, expected: int | None, found: int, prefix: str
-    ) -> None:
-        line = _verdict_line(
-            _meta(
-                verdict=verdict,
-                expected_jobs=expected,
-                total_jobs_found=found,
-                agent_had_errors=True,
-            )
-        )
-        assert line == f"{prefix} (agent reported step errors)"
-
-    def test_no_annotation_when_agent_had_errors_is_false(self) -> None:
-        # ``False`` is a successful DOM run — no annotation.
-        line = _verdict_line(
-            _meta(
-                verdict="match",
-                expected_jobs=3,
-                total_jobs_found=3,
-                agent_had_errors=False,
-            )
-        )
-        assert line == "Verdict:  match"
-
-    def test_no_annotation_when_agent_had_errors_is_none(self) -> None:
-        # API strategies emit ``None`` — the annotation is DOM-agent-
-        # specific and must not fire on ``None``. The ``is True``
-        # check in ``_verdict_line`` guarantees this by construction.
-        line = _verdict_line(
-            _meta(
-                verdict="match",
-                expected_jobs=3,
-                total_jobs_found=3,
-                agent_had_errors=None,
-            )
-        )
-        assert line == "Verdict:  match"
-
-
-class TestPrintSummaryVerdictLine:
-    """End-to-end: verdict line appears in ``print_summary`` output."""
-
-    def _full_report(
-        self, verdict: str, expected: int | None, found: int
-    ) -> dict[str, Any]:
-        # Full API-shape report: every agent field is ``None`` so the
-        # ``n/a`` rendering path is exercised. Used to catch any
-        # regression where the verdict line's presence depends on
-        # agent-field truthiness.
-        return {
-            "company": "Zscaler",
-            "url": "https://job-boards.greenhouse.io/zscaler",
-            "jobs": ["https://job-boards.greenhouse.io/zscaler/jobs/1"] * found,
-            "metadata": {
-                "strategy": "greenhouse",
-                "model": None,
-                "total_jobs_found": found,
-                "extraction_time_seconds": 0.5,
-                "agent_steps": None,
-                "agent_completed": None,
-                "agent_had_errors": None,
-                "error": None,
-                "expected_jobs": expected,
-                "verdict": verdict,
-            },
-        }
-
-    def test_prints_verdict_line_for_api_unverified_report(
+class TestPrintSummary:
+    def test_prints_remaining_summary_fields(
         self, capsys: pytest.CaptureFixture[str]
     ) -> None:
-        print_summary(self._full_report("unverified", None, 2))
+        url = "https://job-boards.greenhouse.io/zscaler/jobs/1"
+        print_summary(_report(jobs=[url]))
         out = capsys.readouterr().out
-        assert "Verdict:  unverified" in out
-        # ``n/a`` rendering for agent-only fields must be preserved.
+
+        assert "Company:  Zscaler" in out
+        assert "Strategy: greenhouse" in out
+        assert "Jobs:     1" in out
         assert "Steps:    n/a" in out
         assert "Done:     n/a" in out
         assert "Errors:   n/a" in out
+        assert url in out
+        assert "Verdict:" not in out
+        assert "expected" not in out.lower()
 
-    def test_prints_signed_over_delta_for_api_report(
+    def test_prints_error_without_jobs(
         self, capsys: pytest.CaptureFixture[str]
     ) -> None:
-        print_summary(self._full_report("over", 3, 5))
+        print_summary(_report(error="HTTP 503"))
         out = capsys.readouterr().out
-        assert "Verdict:  over — found 5, expected 3 (+2)" in out
 
-    def test_verdict_line_precedes_error_when_error_present(
+        assert "Jobs:     0" in out
+        assert "Error:    HTTP 503" in out
+        assert "Job URLs" not in out
+
+    def test_prints_states_when_present(
         self, capsys: pytest.CaptureFixture[str]
     ) -> None:
-        # Ordering matters: plan puts the verdict line between
-        # ``Errors:`` and the ``Error:`` string block. Lock it here
-        # so a future refactor doesn't accidentally swap them.
-        report = self._full_report("under", 5, 0)
-        report["metadata"]["error"] = "HTTP 503"
+        report = _report()
+        report["metadata"]["states_visited"] = 3
         print_summary(report)
-        out = capsys.readouterr().out
-        verdict_idx = out.index("Verdict:  under")
-        error_idx = out.index("Error:    HTTP 503")
-        assert verdict_idx < error_idx
+
+        assert "States:   3" in capsys.readouterr().out
+
+
+class TestSaveResult:
+    def test_writes_the_remaining_report_shape(self, tmp_path: Path) -> None:
+        report = _report(jobs=["https://example.test/jobs/1"])
+        path = save_result(report, tmp_path)
+
+        assert path.parent == tmp_path
+        assert path.name.startswith("zscaler_")
+        assert json.loads(path.read_text()) == report

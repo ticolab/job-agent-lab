@@ -414,187 +414,17 @@ class TestPaginateField:
         )
 
 
-class TestExpectedJobsField:
-    """addition to ``Company``: the human-counted ``expected_jobs`` target.
-
-    Locks the schema-level contract for the new field. The verdict
-    computation itself (and the way ``expected_jobs=None`` maps to
-    ``verdict="unverified"``) lives on ``build_report`` and is covered
-    in ``tests/unit/test_strategy_port.py``; here we only pin the
-    Company-schema surface — default, storage, immutability, non-
-    negativity — so an accidental type change to the field (or a stray
-    ``None``-becomes-``0`` coercion) fails loudly at import time
-    instead of silently flipping every ``unverified`` report to a
-    ``match``/``over``.
-    """
-
-    def test_default_expected_jobs_is_none(self) -> None:
-        # Backwards compatibility: every pre-verdict catalog entry must
-        # still parse to ``expected_jobs=None`` without touching the
-        # entry — the plan explicitly forbids backfilling the 57
-        # existing rows.
-        c = Company(
-            name="Example",
-            job_board_url="https://example.com/careers",
-            sample_job_url="https://example.com/jobs/1",
-        )
-        assert c.expected_jobs is None
-
-    def test_positive_expected_jobs_is_stored(self) -> None:
-        c = Company(
-            name="Example",
-            job_board_url="https://example.com/careers",
-            sample_job_url="https://example.com/jobs/1",
-            expected_jobs=7,
-        )
-        assert c.expected_jobs == 7
-
-    def test_zero_expected_jobs_is_valid(self) -> None:
-        # A Case-C board (filter exists, no options match the region)
-        # has a well-defined expectation of zero. This is *not* the
-        # same as ``None`` (never counted) — a 0/0 pairing is a
-        # ``match`` verdict, and the schema must accept it.
-        c = Company(
-            name="Case C",
-            job_board_url="https://example.com/careers",
-            sample_job_url="https://example.com/jobs/1",
-            expected_jobs=0,
-        )
-        assert c.expected_jobs == 0
-
-    def test_negative_expected_jobs_is_rejected(self) -> None:
-        # ``ge=0`` — a negative count is nonsense and would break the
-        # verdict arithmetic (delta signs). Validated at construction
-        # time so an accidental sign flip in ``new-companies.json``
-        # fails loudly at catalog import, not at report render time.
-        with pytest.raises(ValidationError):
-            Company(
-                name="Example",
-                job_board_url="https://example.com/careers",
-                sample_job_url="https://example.com/jobs/1",
-                expected_jobs=-1,
+class TestRemovedExpectedJobsField:
+    def test_expected_jobs_is_rejected_as_extra(self) -> None:
+        with pytest.raises(ValidationError, match="expected_jobs"):
+            Company.model_validate(
+                {
+                    "name": "Example",
+                    "job_board_url": "https://example.com/careers",
+                    "sample_job_url": "https://example.com/jobs/1",
+                    "expected_jobs": 7,
+                }
             )
-
-    def test_expected_jobs_frozen(self) -> None:
-        c = Company(
-            name="Example",
-            job_board_url="https://example.com/careers",
-            sample_job_url="https://example.com/jobs/1",
-            expected_jobs=3,
-        )
-        with pytest.raises(ValidationError):
-            c.expected_jobs = 4  # type: ignore[misc]
-
-    def test_no_corpus_entry_carries_expected_jobs_yet(self) -> None:
-        # landed with strict "no backfill of existing entries";
-        # every one of the pre-verdict corpus rows had to still be ``None``
-        # at merge time. Svitla (integrated 2026-08-05) is the
-        # first corpus entry to flip this to a real integer through the
-        # standard ``integrate-company`` workflow, so the test tightens
-        # to a whitelist mirror of ``TestPaginateField.
-        # test_paginate_true_corpus_entries_are_whitelisted`` from here
-        # on. Every subsequent integration that flips ``expected_jobs``
-        # from ``None`` to an integer MUST add the entry to this
-        # whitelist in the same commit.
-        expected_counted = {
-            "Svitla": 31,
-            "Boston Consulting Group": 13,
-            "Dev.Pro": 25,
-            "Citi": 12,
-            "Ulteig": 10,
-            "SentinelOne": 7,
-            "Find Job Latam": 2,
-            "Varicent": 4,
-            "Babel": 5,
-            "Railway": 16,
-            "Oceans Code Experts": 7,
-            "TOMIA": 1,
-            "Convera": 3,
-            "Cloudbeds": 9,
-            "REAP": 6,
-            "Smarsh": 1,
-            "Jobsity": 6,
-            "Plan A Technologies": 3,
-            "Imprivata": 1,
-            "Movate": 8,
-            "Hire With Near": 214,
-            "Sapphire Labs": 10,
-            "GreenSlate": 10,
-            "CSC Generation": 7,
-            "Cohesity": 2,
-            "Fortinet": 3,
-            "Veeam Software": 11,
-            "Cornelis Networks": 7,
-            "American Express Global Business Travel": 1,
-            "Definity": 10,
-            "AireSpring": 12,
-            "Nextern": 19,
-            "LSEG": 7,
-            "Oliver Healthcare Packaging": 1,
-            "Roche": 12,
-            "Cirtec Medical": 5,
-            "DXC Technology": 3,
-            "Progress": 4,
-            "Vintti": 51,
-            "UST": 20,
-            "Coloplast": 22,
-            "Pythian": 3,
-            "Acuity Analytics": 5,
-            "Terumo Blood and Cell Technologies": 5,
-            "Concentrix": 16,
-            "Medtronic": 14,
-            "Moody's Corporation": 27,
-            "Philips": 1,
-            "Zimmer Biomet": 11,
-            "Boston Scientific": 6,
-            "Viant Medical": 10,
-            "Heraeus": 27,
-            "Auxis": 11,
-            "Emerson": 16,
-            "Johnson & Johnson": 12,
-            "CommandLink": 7,
-            "Speechify": 2,
-            "Align Technology": 10,
-            "Excel Nearshore": 7,
-            "Accenture": 56,
-            "Fujitsu": 2,
-            "Perform": 1,
-            "Baja Nearshore": 17,
-            "ReKluti": 49,
-            "Atomic Invest": 1,
-            "Appnovation": 3,
-            "Tyk": 8,
-            "Sparq": 4,
-            "Power Digital Marketing": 47,
-            "Unisys": 9,
-            "Midland Credit Management": 1,
-            "VML": 7,
-            "Oowlish": 3,
-            "Athenaworks": 11,
-            "Commit": 2,
-            "Cargill": 60,
-            "McKinsey & Company": 24,
-            "TD SYNNEX": 28,
-            "Edwards Lifesciences": 18,
-            "Deloitte": 13,
-            "Hewlett Packard Enterprise": 27,
-            "Cisco": 1,
-        }
-        actual_counted = {
-            c.name: c.expected_jobs for c in COMPANIES if c.expected_jobs is not None
-        }
-        common = set(actual_counted) & set(expected_counted)
-        value_mismatches = {
-            k: (actual_counted.get(k), expected_counted.get(k))
-            for k in common
-            if actual_counted.get(k) != expected_counted.get(k)
-        }
-        assert actual_counted == expected_counted, (
-            f"expected_jobs corpus set drift: "
-            f"unexpected={set(actual_counted) - set(expected_counted)}, "
-            f"missing={set(expected_counted) - set(actual_counted)}, "
-            f"value_mismatches={value_mismatches}"
-        )
 
 
 class TestRuntimeHooksSchema:
@@ -1016,9 +846,7 @@ class TestPreFilterUrlsField:
         # one ``?location_id=<n>`` URL per Costa Rica city. That worked
         # but could only ever be correct on the day it was written: the
         # declared set is frozen while the tenant's location list is
-        # not, so a posting opened in an undeclared city is missed —
-        # and missed *silently*, because the union still equals the
-        # frozen ``expected_jobs`` and the verdict stays ``match``.
+        # not, so a posting opened in an undeclared city is missed.
         # It now runs on ``strategy="peopleforce"``, which discovers
         # the region's locations from the board on every run.
         #
@@ -1056,9 +884,7 @@ class TestPreFilterUrlsField:
         # preferred shape — ``paginate=True`` would be — but the walker's
         # pager discovery is scoped to the light DOM of the top document
         # by design, and every iCIMS pager lives inside
-        # ``#icims_content_iframe``. The exposure is bounded :
-        # a page-count change makes the union short, the verdict flips to
-        # ``under``, and the next live run says so.
+        # ``#icims_content_iframe``.
         expected_states: set[str] = {
             "doola",
             "REAP",

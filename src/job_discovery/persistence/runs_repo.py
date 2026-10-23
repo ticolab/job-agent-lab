@@ -79,21 +79,13 @@ async def start_run(session: AsyncSession, *, company_slug: str, batch_id: str) 
     return run_id
 
 
-async def finish_run(
-    session: AsyncSession, *, run_id: int, url_count: int, verdict: str
-) -> None:
+async def finish_run(session: AsyncSession, *, run_id: int, url_count: int) -> None:
     """Mark a run successful.
 
-    *verdict* is stored verbatim from
-    :func:`job_discovery.extraction.base.compute_verdict`, so drift between
-    an extraction's count and its human-counted ``expected_jobs`` is a
-    direct query rather than something to recompute later.
-
-    A successful run with ``url_count=0`` and an unhappy verdict is a
-    normal outcome, not a failure: the board was reached and honestly
-    reported nothing open. Only an exception routes to
-    :func:`fail_run`, which keeps retries aimed at genuine breakage
-    rather than at empty boards.
+    A successful run with ``url_count=0`` is a normal outcome, not a
+    failure: the board was reached and honestly reported nothing open.
+    Only an exception routes to :func:`fail_run`, which keeps retries
+    aimed at genuine breakage rather than at empty boards.
     """
     async with session.begin():
         await session.execute(
@@ -103,7 +95,6 @@ async def finish_run(
                 status="success",
                 finished_at=utc_now(),
                 url_count=url_count,
-                verdict=verdict,
             )
         )
 
@@ -111,8 +102,8 @@ async def finish_run(
 async def fail_run(session: AsyncSession, *, run_id: int, error: str) -> None:
     """Mark a run failed, recording *error* for an operator to read.
 
-    ``url_count`` and ``verdict`` are deliberately left null: a failed
-    run observed no count, and writing 0 would be indistinguishable
+    ``url_count`` is deliberately left null: a failed run observed no
+    count, and writing 0 would be indistinguishable
     from a board that was successfully found to be empty.
     """
     async with session.begin():

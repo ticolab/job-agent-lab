@@ -123,7 +123,6 @@ class _FakeStrategy:
             agent_completed=None,
             agent_had_errors=None,
             error=None,
-            expected_jobs=company.expected_jobs,
         )
 
 
@@ -161,6 +160,11 @@ async def _count(factory: Any, model: Any) -> int:
 
 class TestCommandRegistration:
     """The dispatcher exposes only the public scan command."""
+
+    def test_integrate_rejects_removed_strict_flag(self) -> None:
+        with pytest.raises(SystemExit) as exc:
+            build_parser().parse_args(["integrate", "--strict"])
+        assert exc.value.code == 2
 
     def test_scan_is_registered_and_batch_is_rejected(self) -> None:
         parser = build_parser()
@@ -461,7 +465,6 @@ class TestDryRun:
                         name=ALPHA.name,
                         job_board_url=ALPHA.job_board_url,
                         strategy=ALPHA.strategy,
-                        expected_jobs=None,
                         synced_at=now,
                     )
                 )
@@ -610,7 +613,6 @@ class TestRun:
                         name=ALPHA.name,
                         job_board_url=ALPHA.job_board_url,
                         strategy=ALPHA.strategy,
-                        expected_jobs=None,
                         synced_at=now,
                     )
                 )

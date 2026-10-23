@@ -66,9 +66,9 @@ uv run job-discovery integrate -c akurey
 ```
 
 Results are written as timestamped JSON to `./output/` and a summary is printed
-to the console reporting jobs found, elapsed time, agent steps, and errors. The
-`--strict` flag exits non-zero if any run's verdict is not `match`, which makes
-the command usable as a gate.
+to the console reporting jobs found, elapsed time, agent steps, completion, and
+errors. There is no verdict field or `--strict` mode. Onboarding compares the
+saved report with queue evidence externally.
 
 ### Running a scan
 
@@ -113,7 +113,7 @@ to look when a count seems wrong:
 
 ```bash
 sqlite3 data/job-discovery.db 'select company_slug, url from job_urls order by company_slug'
-sqlite3 data/job-discovery.db 'select company_slug, status, url_count, verdict from company_runs'
+sqlite3 data/job-discovery.db 'select company_slug, status, url_count, error_message, started_at, finished_at from company_runs'
 ```
 
 ### Operating it
@@ -127,23 +127,19 @@ Expect the board count in `job_urls` to be lower than the number of companies in
 the corpus. A board that stores no rows disappears from that table while still
 having run successfully: the first full run covered 116 companies and 9 of them
 stored nothing, leaving 1504 URLs across 107 boards. An empty result is a
-successful run with an unhappy verdict, not a failure, and `company_runs` is
-where to confirm which reading applies.
+successful run, not a failure, and `company_runs` is where to confirm which
+reading applies.
 
-The verdict distribution is the health query after a scan:
+Runtime health is observed state, not a comparison with onboarding evidence.
+Inspect status, stored URL count, errors, and timestamps for the latest batch:
 
 ```bash
-sqlite3 data/job-discovery.db 'select verdict, count(*) from company_runs where batch_id = (select max(batch_id) from company_runs) group by verdict'
+sqlite3 data/job-discovery.db 'select company_slug, status, url_count, error_message, started_at, finished_at from company_runs where batch_id = (select max(batch_id) from company_runs)'
 ```
 
-Read it knowing two things. Most of the corpus has no human count yet, so
-`unverified` dominates, and the counts that exist go stale as boards change, so a
-non-match is usually the board having moved rather than the extraction having
-broken: every deterministic mismatch in the first full run reproduced exactly when
-its board was re-run alone through `integrate`. The line worth acting on is an
-agent-driven board reporting `under` with zero URLs stored, which is either a
-board that emptied or an agent that never reached extraction, and only a look at
-the site tells which.
+A successful run with zero stored URLs is the line worth investigating. It may
+mean the board emptied or that navigation never reached extraction; only a look
+at the site tells which.
 
 A full run of the current 116-company corpus takes about 16 minutes and peaks
 around 8 GB of Chromium residency at the default ceiling of 4 concurrent
@@ -165,17 +161,18 @@ extraction, so a full re-run rebuilds everything the file held.
 
 ### Adding a new company
 
-Companies are integrated through a queue file plus an agent skill, not by editing
-the catalog directly. The queue file is your personal, untracked backlog. The
-skill reads from it, runs the deterministic extractor, captures a regression
-snapshot, runs the full agent end-to-end, gates the quality checks, and commits
-the result.
+Companies are integrated through the tracked `new-companies.json` queue plus an
+agent skill, not by editing the catalog directly. The skill reads from the queue,
+measures unfiltered ground truth, runs the live integration, captures the exact
+saved report path, machine-checks that report, captures a regression snapshot,
+gates the quality checks, and commits the result.
 
-On first use, copy the committed schema example into a real queue file. The
-example is tracked, the queue itself is gitignored:
+`new-companies.json` is tracked in this repository;
+`new-companies.example.json` documents its schema. If the queue file is missing,
+restore it from git rather than creating an untracked personal copy:
 
 ```bash
-cp new-companies.example.json new-companies.json
+git restore new-companies.json
 ```
 
 Append one entry per company you want to integrate. Each entry has five fields.
@@ -192,16 +189,20 @@ skill refuses to start until they are all real. A blank entry looks like this:
 }
 ```
 
-The `expected_jobs` value is the count you see on the board when you open it in a
-browser and count by hand. It is the target the integration must hit, and the
-skill will not adjust it to match observed reality. The `aliases` list may stay
-empty unless the auto-derived handle is awkward to type as `-c <handle>`.
+The `expected_jobs` value is onboarding-only queue evidence: a nonnegative JSON
+integer counted by a human. The skill keeps it in working context and compares
+it externally with the saved live report, but never copies it into `Company`,
+runtime reports, or the database. It is never adjusted to match observed
+reality. The `aliases` list may stay empty unless the auto-derived handle is
+awkward to type as `-c <handle>`.
 
 Once at least one entry is filled in, invoke the `integrate-company` skill with
 the company name or any alias. The skill handles ground-truth verification,
 snapshot capture, the live agent run, the quality gates, and a single `feat:`
 commit covering `catalog/companies.py` plus the new snapshot directory. On
-success, it removes the entry from your `new-companies.json` for you.
+success, it removes the entry from `new-companies.json`. That removal is a
+tracked workflow change and should be staged with the integration when removing
+the completed entry is the intended workflow.
 
 ## Development
 

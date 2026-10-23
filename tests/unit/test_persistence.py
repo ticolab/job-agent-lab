@@ -29,7 +29,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from sqlalchemy import select, text
+from sqlalchemy import inspect, select, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -77,7 +77,6 @@ async def _seed_company(
                 name=slug.title(),
                 job_board_url=f"https://{slug}.example/careers",
                 strategy="dom",
-                expected_jobs=3,
                 synced_at=utc_now(),
             )
         )
@@ -90,7 +89,6 @@ def _company(name: str = "Acme Corp", **overrides: Any) -> Company:
         "name": name,
         "job_board_url": "https://acme.example/careers",
         "sample_job_url": "https://acme.example/careers/jobs/1",
-        "expected_jobs": 3,
     }
     fields.update(overrides)
     return Company(**fields)
@@ -312,9 +310,7 @@ class TestRunLifecycle:
                 run_id = await runs_repo.start_run(
                     session, company_slug=slug, batch_id="batch-1"
                 )
-                await runs_repo.finish_run(
-                    session, run_id=run_id, url_count=7, verdict="match"
-                )
+                await runs_repo.finish_run(session, run_id=run_id, url_count=7)
                 result = await session.execute(
                     select(models.CompanyRun).where(models.CompanyRun.id == run_id)
                 )
@@ -323,7 +319,6 @@ class TestRunLifecycle:
         run = _run(scenario())
         assert run.status == "success"
         assert run.url_count == 7
-        assert run.verdict == "match"
         assert run.finished_at is not None
         assert run.error_message is None
 
@@ -358,7 +353,7 @@ class TestRunLifecycle:
 
         assert isinstance(_run(scenario()), int)
 
-    def test_fail_run_leaves_count_and_verdict_null(self, tmp_path: Path) -> None:
+    def test_fail_run_leaves_count_null(self, tmp_path: Path) -> None:
         """A failed run observed no count, so it must not claim one.
 
         Writing 0 would be indistinguishable from a board that was
@@ -384,7 +379,6 @@ class TestRunLifecycle:
         run = _run(scenario())
         assert run.status == "failed"
         assert run.url_count is None
-        assert run.verdict is None
         assert run.error_message == "TimeoutError('board hung')"
 
     def test_status_check_constraint_rejects_an_unknown_value(
@@ -420,9 +414,7 @@ class TestFreshness:
                 run_id = await runs_repo.start_run(
                     session, company_slug=slug, batch_id="batch-1"
                 )
-                await runs_repo.finish_run(
-                    session, run_id=run_id, url_count=1, verdict="match"
-                )
+                await runs_repo.finish_run(session, run_id=run_id, url_count=1)
                 return await runs_repo.has_fresh_success(
                     session,
                     company_slug=slug,
@@ -481,9 +473,7 @@ class TestFreshness:
                 run_id = await runs_repo.start_run(
                     session, company_slug=slug, batch_id="batch-1"
                 )
-                await runs_repo.finish_run(
-                    session, run_id=run_id, url_count=1, verdict="match"
-                )
+                await runs_repo.finish_run(session, run_id=run_id, url_count=1)
                 # A cutoff in the future: nothing can satisfy it.
                 return await runs_repo.has_fresh_success(
                     session,
@@ -502,9 +492,7 @@ class TestFreshness:
                 run_id = await runs_repo.start_run(
                     session, company_slug="acme", batch_id="batch-1"
                 )
-                await runs_repo.finish_run(
-                    session, run_id=run_id, url_count=1, verdict="match"
-                )
+                await runs_repo.finish_run(session, run_id=run_id, url_count=1)
                 return await runs_repo.has_fresh_success(
                     session,
                     company_slug="globex",
@@ -529,9 +517,7 @@ class TestFreshness:
                 run_id = await runs_repo.start_run(
                     session, company_slug=slug, batch_id="batch-1"
                 )
-                await runs_repo.finish_run(
-                    session, run_id=run_id, url_count=1, verdict="match"
-                )
+                await runs_repo.finish_run(session, run_id=run_id, url_count=1)
                 return await runs_repo.has_fresh_success(
                     session,
                     company_slug=slug,
@@ -612,9 +598,7 @@ class TestReaper:
                 ok_id = await runs_repo.start_run(
                     session, company_slug="acme", batch_id="batch-1"
                 )
-                await runs_repo.finish_run(
-                    session, run_id=ok_id, url_count=2, verdict="match"
-                )
+                await runs_repo.finish_run(session, run_id=ok_id, url_count=2)
                 bad_id = await runs_repo.start_run(
                     session, company_slug="globex", batch_id="batch-1"
                 )
@@ -649,7 +633,6 @@ class TestCatalogProjection:
         assert row.slug == "acme_corp"
         assert row.name == "Acme Corp"
         assert row.strategy == "dom"
-        assert row.expected_jobs == 3
 
     def test_resync_updates_in_place_without_duplicating(self, tmp_path: Path) -> None:
         """The sync runs at the start of every scan, so it must upsert.
@@ -659,16 +642,18 @@ class TestCatalogProjection:
         silently discard the dataset.
         """
 
-        async def scenario() -> tuple[int, int | None]:
+        async def scenario() -> tuple[int, str]:
             factory = await _fresh_database(tmp_path / "resync.db")
             async with factory() as session:
                 await catalog_repo.sync_catalog(session, [_company()])
-                await catalog_repo.sync_catalog(session, [_company(expected_jobs=11)])
+                await catalog_repo.sync_catalog(
+                    session, [_company(job_board_url="https://acme.example/jobs")]
+                )
                 rows = await session.execute(select(models.Company))
                 projected = list(rows.scalars().all())
-                return len(projected), projected[0].expected_jobs
+                return len(projected), projected[0].job_board_url
 
-        assert _run(scenario()) == (1, 11)
+        assert _run(scenario()) == (1, "https://acme.example/jobs")
 
     def test_resync_preserves_existing_job_urls(self, tmp_path: Path) -> None:
         """A routine catalog sync must not disturb the dataset.
@@ -792,3 +777,142 @@ class TestMigrationParity:
         # Alembic's async env.py calls asyncio.run internally, so this
         # runs on its own thread for the same reason the async tests do.
         assert run_in_thread(apply_and_diff) == []
+
+    def test_removed_columns_round_trip_one_revision(self, tmp_path: Path) -> None:
+        from alembic import command
+        from alembic.config import Config
+        from sqlalchemy import create_engine as create_sync_engine
+
+        previous = "069dc393ff35"
+        removal = "adc90cfcd42b"
+        database_file = tmp_path / "round-trip.db"
+
+        def assert_rows_and_children_preserved(connection: Any) -> None:
+            assert connection.execute(
+                text("SELECT slug, name FROM companies ORDER BY slug")
+            ).all() == [("acme", "Acme"), ("globex", "Globex")]
+            assert connection.execute(
+                text(
+                    "SELECT id, company_slug, batch_id, status, url_count "
+                    "FROM company_runs ORDER BY id"
+                )
+            ).all() == [
+                (1, "acme", "batch-1", "success", 2),
+                (2, "globex", "batch-1", "failed", None),
+            ]
+            assert connection.execute(
+                text("SELECT id, company_slug, url FROM job_urls ORDER BY id")
+            ).all() == [
+                (1, "acme", "https://acme.test/jobs/1"),
+                (2, "acme", "https://acme.test/jobs/2"),
+                (3, "globex", "https://globex.test/jobs/1"),
+            ]
+            assert connection.execute(text("PRAGMA foreign_key_check")).all() == []
+
+        def round_trip() -> None:
+            config = Config(str(REPO_ROOT / "alembic.ini"))
+            config.set_main_option("script_location", str(REPO_ROOT / "migrations"))
+            config.set_main_option("sqlalchemy.url", database_url(database_file))
+
+            command.upgrade(config, previous)
+            engine = create_sync_engine(f"sqlite:///{database_file}")
+            try:
+                with engine.begin() as connection:
+                    connection.execute(
+                        text(
+                            "INSERT INTO companies "
+                            "(slug, name, job_board_url, strategy, expected_jobs, "
+                            "synced_at) VALUES "
+                            "('acme', 'Acme', 'https://acme.test', 'dom', 2, "
+                            "'2026-10-22 00:00:00'), "
+                            "('globex', 'Globex', 'https://globex.test', 'dom', 1, "
+                            "'2026-10-22 00:00:00')"
+                        )
+                    )
+                    connection.execute(
+                        text(
+                            "INSERT INTO company_runs "
+                            "(id, company_slug, batch_id, status, started_at, "
+                            "finished_at, url_count, verdict, error_message) VALUES "
+                            "(1, 'acme', 'batch-1', 'success', "
+                            "'2026-10-22 00:00:00', '2026-10-22 00:00:01', 2, "
+                            "'match', NULL), "
+                            "(2, 'globex', 'batch-1', 'failed', "
+                            "'2026-10-22 00:00:00', '2026-10-22 00:00:01', NULL, "
+                            "'error', 'board failed')"
+                        )
+                    )
+                    connection.execute(
+                        text(
+                            "INSERT INTO job_urls "
+                            "(id, company_slug, url, captured_at) VALUES "
+                            "(1, 'acme', 'https://acme.test/jobs/1', "
+                            "'2026-10-22 00:00:01'), "
+                            "(2, 'acme', 'https://acme.test/jobs/2', "
+                            "'2026-10-22 00:00:01'), "
+                            "(3, 'globex', 'https://globex.test/jobs/1', "
+                            "'2026-10-22 00:00:01')"
+                        )
+                    )
+            finally:
+                engine.dispose()
+
+            command.upgrade(config, removal)
+            engine = create_sync_engine(f"sqlite:///{database_file}")
+            try:
+                with engine.connect() as connection:
+                    assert "expected_jobs" not in {
+                        column["name"]
+                        for column in inspect(connection).get_columns("companies")
+                    }
+                    assert "verdict" not in {
+                        column["name"]
+                        for column in inspect(connection).get_columns("company_runs")
+                    }
+                    assert_rows_and_children_preserved(connection)
+            finally:
+                engine.dispose()
+
+            command.downgrade(config, previous)
+            engine = create_sync_engine(f"sqlite:///{database_file}")
+            try:
+                with engine.connect() as connection:
+                    company_columns = inspect(connection).get_columns("companies")
+                    run_columns = inspect(connection).get_columns("company_runs")
+                    expected_jobs = next(
+                        column
+                        for column in company_columns
+                        if column["name"] == "expected_jobs"
+                    )
+                    verdict = next(
+                        column for column in run_columns if column["name"] == "verdict"
+                    )
+                    assert expected_jobs["nullable"] is True
+                    assert verdict["nullable"] is True
+                    assert connection.execute(
+                        text("SELECT expected_jobs FROM companies ORDER BY slug")
+                    ).all() == [(None,), (None,)]
+                    assert connection.execute(
+                        text("SELECT verdict FROM company_runs ORDER BY id")
+                    ).all() == [(None,), (None,)]
+                    assert_rows_and_children_preserved(connection)
+            finally:
+                engine.dispose()
+
+            command.upgrade(config, removal)
+            engine = create_sync_engine(f"sqlite:///{database_file}")
+            try:
+                with engine.connect() as connection:
+                    assert "expected_jobs" not in {
+                        column["name"]
+                        for column in inspect(connection).get_columns("companies")
+                    }
+                    assert "verdict" not in {
+                        column["name"]
+                        for column in inspect(connection).get_columns("company_runs")
+                    }
+                    assert_rows_and_children_preserved(connection)
+            finally:
+                engine.dispose()
+
+        run_in_thread(round_trip)

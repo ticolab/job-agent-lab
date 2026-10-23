@@ -36,7 +36,7 @@ uv run job-agent-lab -c gap --headed --model gpt-4o --max-steps 25
 uv run job-discovery integrate -c akurey                         # identical, via the dispatcher
 ```
 
-Results are written as timestamped JSON to `./output/` (gitignored) and a summary is printed to the console. The `--strict` flag exits non-zero if any run's `metadata.verdict` is not `"match"`.
+Results are written as timestamped JSON to `./output/` (gitignored) and a summary is printed to the console. Runtime reports observations and has no verdict field or `--strict` mode.
 
 The `OPENAI_API_KEY` environment variable is required only for live `strategy="dom"` agent runs. Unit tests, snapshot tests, all API strategies (`greenhouse`, `phenom`, `talentbrew`, `coveo`, `peopleforce`, `bamboohr`), and `pre_filter_urls` companies all run without it.
 
@@ -151,7 +151,7 @@ Concurrency is classified by **cost**, not by strategy name, which is why `concu
 
 The two semaphores are independent on purpose. A browser run holds a Chromium context and, for `dom`, an LLM agent bounded by provider rate limits; an HTTP run is a JSON call bounded only by politeness. One shared ceiling would make the cheap bucket queue behind the expensive one.
 
-`worker.py` is the isolation boundary, and the broad `except Exception` there is correct rather than lazy: failure modes across 250 third-party sites are open-ended, and the contract is that no single board aborts the batch. `KeyboardInterrupt`, `SystemExit`, and `CancelledError` derive from `BaseException` and still propagate. An extraction returning zero jobs is a **successful run with an unhappy verdict**, never a failure — marking it failed would put honestly-empty boards in the retry path forever and hide real breakage among them.
+`worker.py` is the isolation boundary, and the broad `except Exception` there is correct rather than lazy: failure modes across 250 third-party sites are open-ended, and the contract is that no single board aborts the batch. `KeyboardInterrupt`, `SystemExit`, and `CancelledError` derive from `BaseException` and still propagate. An extraction returning zero jobs is a **successful observed run**, never a failure — marking it failed would put honestly-empty boards in the retry path forever and hide real breakage among them.
 
 The per-company timeout lives on `BatchPolicy`, not on `RunContext`. `RunContext` is the shared port both entry points pass through, and a batch-only concern has no business widening it.
 
@@ -161,7 +161,7 @@ Crash recovery needs no checkpoint file. A killed scan leaves `in_progress` batc
 
 Two consequences of that design are worth knowing before debugging a scan, both observed live rather than reasoned about. **Resumption does not depend on reaping**: an `in_progress` row is not a success, so the company is eligible again immediately, and the reap is only the bookkeeping that closes the abandoned batch row once the staleness bound has passed. **A killed scan does not invalidate an earlier success**, either — so a company whose previous run succeeded inside the freshness window is correctly *skipped* right after a kill, because nothing is owed. And because the staleness bound *is* `--timeout-seconds`, lowering it to reap sooner also shortens every run's ceiling; the flag's help says so.
 
-Concurrency at the default ceiling changes no board's count. After the first full scan, every deterministic verdict mismatch and every empty agent board was re-run alone through `integrate` and reproduced the scan's number exactly, so a non-match after a scan is drift against a stale `expected_jobs`, not the scheduler degrading extraction. Read the verdict distribution by `batch_id` after each scan as the health signal, and treat an agent-driven board at `under` with zero URLs stored as the line to look at.
+Concurrency at the default ceiling changes no board's count. After the first full scan, every deterministic count mismatch against then-current onboarding evidence and every empty agent board was re-run alone through `integrate` and reproduced the scan's number exactly. This shows the scheduler did not degrade extraction. Runtime health comes from observed `status`, `url_count`, errors, and timestamps; investigate successful runs with zero URLs stored.
 
 `cli/scan.py` preflights the schema before doing anything, because connecting to a SQLite path that does not exist creates an empty file quite happily. Without the check, the first ever `job-discovery scan` on a fresh checkout would die with an `OperationalError` from inside a repository instead of naming the `alembic upgrade head` the operator actually owes. `persistence/engine.missing_tables` answers that question, and it lives there rather than in the CLI because nothing outside `persistence/` may build a query.
 
@@ -189,7 +189,7 @@ DOM-strategy companies contribute frozen page copies under `tests/fixtures/snaps
 
 API-strategy companies contribute recorded payloads under `tests/fixtures/api/<ats>/` with respx-mocked tests in `tests/unit/`. For Greenhouse, filenames are the board *token*, not the company slug.
 
-Fixtures freeze the **unfiltered** listing. The region-filtered target lives on the `Company.expected_jobs` field and is validated by the live run against the report layer's verdict. Conflating them would produce failures that localize to neither.
+Fixtures freeze the **unfiltered** listing. `expected_jobs` stays in the onboarding queue and is compared externally with the saved live report; it never enters `Company`, runtime reports, or the database. Conflating queue evidence with fixture counts would produce failures that localize to neither.
 
 `tests/snapshots/test_linkrule_parity.py` pins the Talentbrew Python URL-bucketing mirror to the shipped JS matcher — matcher edits must keep both in sync.
 
@@ -205,9 +205,9 @@ Captures are produced by `scripts/capture_snapshot.py -c <handle> --expected N` 
 
 ## Adding a company
 
-The canonical workflow is the `integrate-company` skill, driven by the untracked `new-companies.json` queue whose schema is `new-companies.example.json`. First step is always `scripts/probe_board.py` — read-only reconnaissance that produces an anchor census, frame/shadow map, pagination affordances, platform fingerprint, and a suggested `Company(...)` snippet. Then follow the fixed pipeline: ground-truth verification, live agent run, snapshot capture, quality gates, and one `feat:` commit covering `catalog/companies.py` plus the new snapshot directory.
+The canonical workflow is the `integrate-company` skill, driven by the tracked `new-companies.json` queue whose schema is documented by `new-companies.example.json`. First step is always `scripts/probe_board.py` — read-only reconnaissance that produces an anchor census, frame/shadow map, pagination affordances, platform fingerprint, and a suggested `Company(...)` snippet. Then follow the fixed pipeline: unfiltered ground-truth measurement, live integration, exact `Output:` report capture, machine validation, snapshot capture, quality gates, and one `feat:` commit covering `catalog/companies.py`, the new snapshot directory, and the queue-entry removal when that tracked workflow change is intended.
 
-The `expected_jobs` value is a human-counted target and is **never** adjusted to match observed output. Failure at any stage is reported as a blocker with evidence in `blockers/INTEGRATION_BLOCKERS.md` rather than worked around by loosening the target.
+The `expected_jobs` value is immutable onboarding-only queue evidence. Validate it as a nonnegative JSON integer, keep it in working context, and never copy it into `Company`, runtime reports, or the database. Failure at any stage is reported as a blocker with evidence in `blockers/INTEGRATION_BLOCKERS.md` rather than worked around by loosening the queue evidence.
 
 ## Development Conventions
 
@@ -227,7 +227,7 @@ When a task involves researching, investigating, exploring, or searching code in
 
 ### Skills
 
-The `integrate-company` skill lives at `.tabnine/agent/skills/integrate-company/SKILL.md`. Activate it when the user names a company they want integrated into the corpus, when debugging why an already-configured company returns the wrong job count, or when troubleshooting zero/short/over-count extraction at integration time. The full entry (name, aliases, job_board_url, sample_job_url, expected_jobs) is read from `new-companies.json` at the repo root, which the user populates from the committed `new-companies.example.json` template.
+The `integrate-company` skill lives at `.tabnine/agent/skills/integrate-company/SKILL.md`. Activate it when the user names a company they want integrated into the corpus, when debugging why an already-configured company returns the wrong job count, or when troubleshooting zero/short/over-count extraction at integration time. The full entry (name, aliases, job_board_url, sample_job_url, expected_jobs) is read from `new-companies.json` at the repo root. Only the first four fields inform `Company`; `expected_jobs` remains external onboarding evidence.
 
 The skill is maintained in two copies, `.claude/skills/integrate-company/` and `.tabnine/agent/skills/integrate-company/`. They are identical except for two deliberate per-assistant adaptations: the Playwright MCP tool prefix (`mcp_playwright_` here, `mcp__playwright__` for Claude Code) and the guidance file each cites for the commit convention. Keep every other change in sync across both copies.
 
