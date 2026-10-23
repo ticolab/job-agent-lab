@@ -229,12 +229,12 @@ async def plausible_headless_ua() -> str:
     if _PLAUSIBLE_UA is not None:
         return _PLAUSIBLE_UA
 
-    # Local import: ``playwright`` is a heavy transitive of
-    # ``browser-use`` and importing it at module top would make
-    # ``job_discovery.settings`` (a leaf module imported by the schema,
-    # the catalog, the CLI, and the reporting layer) unnecessarily
-    # expensive to load. The resolver is only ever called from the
-    # launch sites, which have already paid the Playwright import cost.
+    # Local import: ``playwright`` is a heavy dependency, and importing
+    # it at module top would make ``job_discovery.settings`` (a leaf
+    # module imported by the schema, the catalog, the CLI, and the
+    # reporting layer) unnecessarily expensive to load. The resolver is
+    # only ever called from the launch sites, which have already paid
+    # the Playwright import cost.
     from playwright.async_api import async_playwright
 
     async with async_playwright() as p:
