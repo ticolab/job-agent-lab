@@ -1,0 +1,38 @@
+# Dependabot opens pull requests that bump dependencies; they go through CI
+# like any other pull request.
+#
+# Python packages get security fixes only. A limit of zero turns off the
+# routine "new version available" pull requests while the security ones,
+# opened when an advisory affects a locked package, still arrive with the
+# settings below. Routine bumps stay manual because CI cannot exercise the
+# live agent: a green run on a browser-use or litellm bump proves little,
+# so those deserve a spot-check through `integrate` before merging.
+#
+# Workflow actions are pinned to commit SHAs, which nothing else moves
+# forward, so they get one grouped update pull request a month. CI does
+# exercise every action it uses, so a green run there is real evidence.
+#
+# Titles are prefixed so they pass the pr-title check, which enforces the
+# commit convention on the squash-merge subject.
+
+version: 2
+updates:
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    commit-message:
+      prefix: chore
+      include: scope
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: chore
+      include: scope

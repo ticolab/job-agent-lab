@@ -443,8 +443,9 @@ would guarantee a flaky count.
 Where a URL rule is mirrored outside the JavaScript matcher — an API adapter
 that must filter anchors the same way — a parity test runs both engines over
 the same input and asserts identical output, so the mirror cannot silently
-diverge. Pre-commit gates the whole suite on any change under the extraction or
-domain packages, or anywhere under `tests/`.
+diverge. Pre-commit gates the whole suite on any change under
+`src/job_discovery/`, `migrations/`, or `tests/`, and CI runs it on every pull
+request before anything reaches `main`.
 
 ## Integrating a board
 
