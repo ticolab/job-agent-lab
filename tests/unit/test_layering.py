@@ -1,34 +1,4 @@
-"""Enforce the package layering rule by parsing the real import graph.
-
-``ARCHITECTURE.md`` states that dependencies point inward and never
-cycle. Until this test existed, nothing enforced it — the graph was
-clean by review discipline alone, which is exactly the kind of property
-that decays silently as packages are added.
-
-Why it is load-bearing rather than tidy: two entry points share one
-extraction core. The integration CLI drives one board at a time and
-produces the JSON artifact a human reviews before a catalog entry is
-committed; a batch scheduler runs the corpus concurrently and persists
-the result. Both call the same ``extract`` coroutine. That makes the
-integration workflow a correctness signal for scheduled runs — but only
-while a strategy cannot tell which caller invoked it. A strategy able to
-reach the database, or to detect that a batch is in progress, could
-behave differently under the scheduler than under the CLI, and the
-onboarding evidence would stop meaning anything.
-
-Three properties are asserted:
-
-- Every cross-package import is in :data:`ALLOWED_IMPORTS`.
-- Every top-level unit under ``src/job_discovery/`` has an entry in
-  :data:`ALLOWED_IMPORTS`, so adding a package forces an explicit
-  layering decision instead of defaulting to unconstrained.
-- No module uses a relative import, which would otherwise bypass the
-  absolute-path matching this test relies on.
-
-:data:`ALLOWED_IMPORTS` is written from the **actual** graph, not from
-intent, and may only ever shrink. An entry that is wider than reality
-would silently license the very edge the rule exists to forbid.
-"""
+"""Enforce unit and package dependency direction across every source package."""
 
 from __future__ import annotations
 
@@ -37,208 +7,219 @@ from pathlib import Path
 
 import pytest
 
-PACKAGE_NAME = "job_discovery"
-SRC_ROOT = Path(__file__).resolve().parents[2] / "src" / PACKAGE_NAME
-
-# Sentinel for ``src/job_discovery/__init__.py``, which belongs to no
-# subpackage and must stay free of intra-project imports so that
-# importing the distribution costs nothing.
+SRC = Path(__file__).resolve().parents[2] / "src"
+PACKAGE_ROOTS = {
+    name: SRC / name
+    for name in (
+        "job_discovery",
+        "job_eligibility",
+        "job_extractor",
+        "job_pipeline",
+    )
+}
 ROOT_UNIT = "<root>"
 
-# Cross-package edges only. A unit importing itself is an intra-package
-# concern, not a layering one, so self-edges are always permitted and
-# deliberately absent here — which lets this table be read directly
-# against the dependency graph in ``ARCHITECTURE.md``.
-ALLOWED_IMPORTS: dict[str, frozenset[str]] = {
-    ROOT_UNIT: frozenset(),
-    "settings": frozenset(),
-    "domain": frozenset(),
-    "catalog": frozenset({"domain"}),
-    "extraction": frozenset({"domain", "settings"}),
-    "reporting": frozenset({"catalog"}),
-    # Notably absent: ``catalog``. The persistence layer projects the
-    # corpus but never owns it, so ``sync_catalog`` receives the
-    # companies as an argument instead of importing ``COMPANIES``. That
-    # is also what keeps this row to two entries.
-    "persistence": frozenset({"domain", "settings"}),
-    # Narrower than the restructuring plan anticipated, for the same reason
-    # as the row above: the scheduler is handed the companies to run and
-    # the session factory to use, so it reaches for neither ``catalog``
-    # nor a global engine. ``settings`` is absent too — the ceilings and
-    # windows are policy and live in ``batch/policy.py``. ``reporting``
-    # belongs to the CLI that renders a batch, not to the batch itself.
-    "batch": frozenset({"domain", "extraction", "persistence"}),
-    # `batch` was anticipated by the restructuring plan; `persistence` was
-    # not. The CLI is the composition root: it decides where the
-    # database lives, opens the engine, and hands the session factory
-    # down to the scheduler. That is the reason `batch` itself needs no
-    # route to `settings` and never imports a global engine — wiring
-    # concrete dependencies belongs to the outermost layer, so this edge
-    # is the inversion working rather than leaking.
-    "cli": frozenset(
-        {
-            "batch",
-            "catalog",
-            "domain",
-            "extraction",
-            "persistence",
-            "reporting",
-            "settings",
-        }
-    ),
+ALLOWED_IMPORTS: dict[str, dict[str, frozenset[str]]] = {
+    "job_discovery": {
+        ROOT_UNIT: frozenset(),
+        "settings": frozenset(),
+        "domain": frozenset(),
+        "catalog": frozenset({"domain"}),
+        "extraction": frozenset({"domain", "settings"}),
+        "reporting": frozenset({"catalog"}),
+        "persistence": frozenset({"domain", "settings"}),
+        "batch": frozenset({"domain", "extraction", "persistence"}),
+        "cli": frozenset(
+            {
+                "batch",
+                "catalog",
+                "domain",
+                "extraction",
+                "persistence",
+                "reporting",
+                "settings",
+            }
+        ),
+    },
+    "job_eligibility": {
+        ROOT_UNIT: frozenset({"prompt", "schema", "validate", "version"}),
+        "prompt": frozenset(),
+        "schema": frozenset(),
+        "validate": frozenset({"schema", "version"}),
+        "version": frozenset({"prompt", "schema"}),
+    },
+    "job_extractor": {
+        ROOT_UNIT: frozenset({"normalize", "prompt", "schema", "validate", "version"}),
+        "data": frozenset(),
+        "normalize": frozenset({"schema"}),
+        "prompt": frozenset(),
+        "schema": frozenset(),
+        "validate": frozenset({"normalize", "schema", "version"}),
+        "version": frozenset({"prompt", "schema"}),
+    },
+    "job_pipeline": {
+        ROOT_UNIT: frozenset(),
+        "cli": frozenset(
+            {
+                ROOT_UNIT,
+                "identity",
+                "llm",
+                "persistence",
+                "policy",
+                "reporting",
+                "runner",
+                "settings",
+            }
+        ),
+        "content": frozenset({"identity", "settings"}),
+        "identity": frozenset({"settings"}),
+        "llm": frozenset(),
+        "persistence": frozenset(),
+        "policy": frozenset({"content", "llm", "settings"}),
+        "reporting": frozenset({"persistence", "runner"}),
+        "runner": frozenset({"content", "identity", "llm", "persistence", "policy"}),
+        "settings": frozenset(),
+    },
 }
 
-# The invariant that matters most, asserted by name as well as by the
-# table above so it survives a careless allowlist edit: a strategy can
-# reach neither the database nor the scheduler. Deliberately not tied to
-# which packages have landed — ``persistence`` exists now and is still
-# listed, because the rule is about direction, not about readiness.
+ALLOWED_PACKAGE_IMPORTS: dict[str, frozenset[str]] = {
+    "job_discovery": frozenset(),
+    "job_eligibility": frozenset(),
+    "job_extractor": frozenset(),
+    "job_pipeline": frozenset({"job_discovery", "job_eligibility", "job_extractor"}),
+}
+
+ALLOWED_DISCOVERY_IMPORTS_FOR_PIPELINE = frozenset(
+    {"domain", "catalog", "persistence", "settings"}
+)
 FORBIDDEN_FOR_EXTRACTION = frozenset({"persistence", "batch"})
+LEAF_PACKAGES = frozenset({"job_eligibility", "job_extractor"})
 
 
-def _source_files() -> list[Path]:
-    """Return every Python module shipped under ``src/job_discovery/``."""
-    return sorted(SRC_ROOT.rglob("*.py"))
+def _source_files(package: str) -> list[Path]:
+    return sorted(PACKAGE_ROOTS[package].rglob("*.py"))
 
 
-def _unit_of(path: Path) -> str:
-    """Return the top-level layering unit that owns *path*.
-
-    ``settings.py`` is a top-level module rather than a package, so it
-    is its own unit; ``__init__.py`` at the root maps to
-    :data:`ROOT_UNIT`. Everything else is attributed to its first path
-    component, which is the granularity the dependency rule is stated
-    at.
-    """
-    relative = path.relative_to(SRC_ROOT)
+def _unit_of(package: str, path: Path) -> str:
+    relative = path.relative_to(PACKAGE_ROOTS[package])
     if len(relative.parts) == 1:
         return ROOT_UNIT if relative.name == "__init__.py" else relative.stem
     return relative.parts[0]
 
 
-def _imported_modules(tree: ast.Module) -> set[str]:
-    """Return the dotted names *tree* imports from this package.
+def _parse(path: Path) -> ast.Module:
+    return ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
 
-    Covers both ``import job_discovery.x.y`` and ``from job_discovery.x import y``.
-    Relative imports are ignored here and rejected outright by
-    :class:`TestNoRelativeImports`, so they cannot slip past.
-    """
+
+def _absolute_imports(tree: ast.Module) -> set[str]:
     modules: set[str] = set()
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
-            modules.update(
-                alias.name
-                for alias in node.names
-                if alias.name.split(".")[0] == PACKAGE_NAME
-            )
+            modules.update(alias.name for alias in node.names)
         elif (
             isinstance(node, ast.ImportFrom)
             and node.level == 0
             and node.module is not None
-            and node.module.split(".")[0] == PACKAGE_NAME
         ):
             modules.add(node.module)
     return modules
 
 
-def _imported_units(tree: ast.Module) -> set[str]:
-    """Return the layering units *tree* imports, excluding self-edges."""
-    units: set[str] = set()
-    for module in _imported_modules(tree):
-        parts = module.split(".")
-        if len(parts) < 2:
-            # A bare ``import job_discovery`` targets the root unit.
-            units.add(ROOT_UNIT)
-        else:
-            units.add(parts[1])
-    return units
+def _repo_imports(tree: ast.Module) -> set[str]:
+    return {
+        module
+        for module in _absolute_imports(tree)
+        if module.split(".")[0] in PACKAGE_ROOTS
+    }
 
 
-def _parse(path: Path) -> ast.Module:
-    """Parse *path* into an AST, naming the file on syntax errors."""
-    return ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+def _unit_from_import(module: str) -> str:
+    parts = module.split(".")
+    return parts[1] if len(parts) > 1 else ROOT_UNIT
 
 
-class TestAllowlistCoverage:
-    """The table must describe the tree, not a subset of it."""
-
-    def test_source_tree_is_discoverable(self) -> None:
-        """Guard against a silently-empty scan after a layout change."""
-        assert SRC_ROOT.is_dir(), f"package root not found: {SRC_ROOT}"
-        assert _source_files(), f"no modules found under {SRC_ROOT}"
-
-    def test_every_unit_has_an_allowlist_entry(self) -> None:
-        """A new package must make an explicit layering decision.
-
-        Without this, adding ``src/job_discovery/persistence/`` would ship
-        with no constraints at all and the rule would quietly stop
-        covering the newest code — the moment it matters most.
-        """
-        discovered = {_unit_of(path) for path in _source_files()}
-        assert discovered == set(ALLOWED_IMPORTS), (
-            "ALLOWED_IMPORTS is out of sync with the tree: "
-            f"missing entries for {sorted(discovered - set(ALLOWED_IMPORTS))}, "
-            f"stale entries for {sorted(set(ALLOWED_IMPORTS) - discovered)}"
-        )
+@pytest.mark.parametrize("package", sorted(PACKAGE_ROOTS))
+def test_source_tree_is_discoverable(package: str) -> None:
+    assert PACKAGE_ROOTS[package].is_dir()
+    assert _source_files(package)
 
 
-class TestNoRelativeImports:
-    """Relative imports would bypass this test's matching entirely."""
+@pytest.mark.parametrize("package", sorted(PACKAGE_ROOTS))
+def test_every_unit_has_an_allowlist_entry(package: str) -> None:
+    discovered = {_unit_of(package, path) for path in _source_files(package)}
+    assert discovered == set(ALLOWED_IMPORTS[package])
 
-    def test_no_module_uses_a_relative_import(self) -> None:
-        offenders: list[str] = []
-        for path in _source_files():
+
+def test_no_module_uses_a_relative_import() -> None:
+    offenders: list[str] = []
+    for package in PACKAGE_ROOTS:
+        for path in _source_files(package):
             for node in ast.walk(_parse(path)):
                 if isinstance(node, ast.ImportFrom) and node.level > 0:
-                    offenders.append(f"{path.relative_to(SRC_ROOT)}:{node.lineno}")
-        assert not offenders, (
-            "relative imports are not allowed because they cannot be "
-            f"attributed to a layering unit: {offenders}"
-        )
+                    offenders.append(f"{path.relative_to(SRC)}:{node.lineno}")
+    assert not offenders
 
 
-class TestDependencyDirection:
-    """Every cross-package edge must appear in the allowlist."""
-
-    def test_imports_stay_within_the_allowlist(self) -> None:
-        violations: list[str] = []
-        for path in _source_files():
-            unit = _unit_of(path)
-            # A unit absent from the table is allowed nothing rather than
-            # everything. ``TestAllowlistCoverage`` reports the missing
-            # entry itself; defaulting here keeps this test explaining
-            # the edge instead of raising ``KeyError``.
-            allowed = ALLOWED_IMPORTS.get(unit, frozenset())
-            for imported in sorted(_imported_units(_parse(path)) - {unit}):
+def test_internal_imports_stay_within_the_allowlist() -> None:
+    violations: list[str] = []
+    for package in PACKAGE_ROOTS:
+        for path in _source_files(package):
+            unit = _unit_of(package, path)
+            allowed = ALLOWED_IMPORTS[package].get(unit, frozenset())
+            imported_units = {
+                _unit_from_import(module)
+                for module in _repo_imports(_parse(path))
+                if module.split(".")[0] == package
+            }
+            for imported in sorted(imported_units - {unit}):
                 if imported not in allowed:
+                    violations.append(f"{path.relative_to(SRC)}: {unit} -> {imported}")
+    assert not violations, "layering violations:\n  " + "\n  ".join(violations)
+
+
+def test_cross_package_imports_stay_within_the_allowlist() -> None:
+    violations: list[str] = []
+    for package in PACKAGE_ROOTS:
+        for path in _source_files(package):
+            for module in sorted(_repo_imports(_parse(path))):
+                imported_package = module.split(".")[0]
+                if (
+                    imported_package != package
+                    and imported_package not in ALLOWED_PACKAGE_IMPORTS[package]
+                ):
                     violations.append(
-                        f"{path.relative_to(SRC_ROOT)}: "
-                        f"{unit} -> {imported} (allowed: {sorted(allowed) or 'none'})"
+                        f"{path.relative_to(SRC)}: {package} -> {imported_package}"
                     )
-        report = "\n  ".join(violations)
-        assert not violations, f"layering violations:\n  {report}"
+    assert not violations, "package violations:\n  " + "\n  ".join(violations)
 
-    @pytest.mark.parametrize("forbidden", sorted(FORBIDDEN_FOR_EXTRACTION))
-    def test_extraction_never_reaches_persistence_or_batch(
-        self, forbidden: str
-    ) -> None:
-        """The invariant that keeps onboarding evidence meaningful.
 
-        A strategy that could reach the database, or detect that a batch
-        is in progress, could behave differently under the scheduler than
-        under the integration CLI — and the JSON artifact a human reviews
-        before committing a catalog entry would stop predicting what the
-        scheduled run does.
+def test_pipeline_uses_only_approved_discovery_units() -> None:
+    violations: list[str] = []
+    for path in _source_files("job_pipeline"):
+        for module in _repo_imports(_parse(path)):
+            if module.split(".")[0] != "job_discovery":
+                continue
+            unit = _unit_from_import(module)
+            if unit not in ALLOWED_DISCOVERY_IMPORTS_FOR_PIPELINE:
+                violations.append(f"{path.relative_to(SRC)}: job_discovery.{unit}")
+    assert not violations
 
-        Asserted by name as well as by table so the intent survives a
-        careless edit to :data:`ALLOWED_IMPORTS`.
-        """
-        assert forbidden not in ALLOWED_IMPORTS["extraction"]
 
-    def test_domain_is_a_leaf(self) -> None:
-        """The kernel's innermost ring imports nothing from the package.
+@pytest.mark.parametrize("package", sorted(LEAF_PACKAGES))
+def test_leaf_packages_import_nothing_from_repo(package: str) -> None:
+    assert ALLOWED_PACKAGE_IMPORTS[package] == frozenset()
+    assert not {
+        module
+        for path in _source_files(package)
+        for module in _repo_imports(_parse(path))
+        if module.split(".")[0] != package
+    }
 
-        This is what lets the same types cross every boundary without
-        dragging a browser or a database session along with them.
-        """
-        assert ALLOWED_IMPORTS["domain"] == frozenset()
+
+def test_discovery_imports_no_new_package() -> None:
+    assert ALLOWED_PACKAGE_IMPORTS["job_discovery"] == frozenset()
+
+
+@pytest.mark.parametrize("forbidden", sorted(FORBIDDEN_FOR_EXTRACTION))
+def test_discovery_extraction_never_reaches_forbidden_units(forbidden: str) -> None:
+    assert forbidden not in ALLOWED_IMPORTS["job_discovery"]["extraction"]
