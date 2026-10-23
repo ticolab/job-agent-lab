@@ -395,7 +395,7 @@ whether a filter the browser-use agent is applying shrinks the count below
 7. **Run quality gates.** All must pass:
    ```bash
    uv run ruff format . && uv run ruff check .
-   uv run mypy src scripts tests
+   uv run mypy
    uv run --group test pytest tests/
    ```
    `pytest` exercises the entire snapshot corpus — the one you just added and
@@ -569,7 +569,7 @@ All of the following hold:
    (`page.html` + `metadata.json`), and
    `uv run --group test pytest tests/` passes against the whole corpus.
 5. If any code was changed: `ruff format`, `ruff check`, and
-   `mypy src scripts tests` all pass, and the change is generic (no
+   `mypy` all pass, and the change is generic (no
    site-specific hacks).
 6. The integrated company's entry has been removed from the tracked
    `new-companies.json` queue file at the repo root.

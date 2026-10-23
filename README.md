@@ -209,7 +209,7 @@ the completed entry is the intended workflow.
 ```bash
 uv run ruff format .                       # format
 uv run ruff check . --fix                  # lint
-uv run mypy src scripts tests              # type-check
+uv run mypy                                # type-check
 uv run --group test pytest tests/          # full suite
 uv run --group test pytest tests/unit/     # browser-free subset
 uv run pre-commit install                  # optional: git hooks

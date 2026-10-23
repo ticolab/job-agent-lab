@@ -89,6 +89,11 @@ known-first-party = ["job_discovery"]
 
 # ===== MYPY (Type Checking) =====
 [tool.mypy]
+# A bare ``mypy`` checks this set, and it is what the pre-commit hook and CI
+# run, so the local command, the hook, and the merge gate cannot disagree
+# about which files are type-checked. The skill copies' ground-truth script
+# stays outside it, as it always has.
+files = ["src", "scripts", "tests", "migrations"]
 python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true

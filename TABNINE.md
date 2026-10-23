@@ -44,13 +44,13 @@ Format, lint, type-check, and test:
 
 ```bash
 uv run ruff format . && uv run ruff check . --fix
-uv run mypy src scripts tests
+uv run mypy                                      # src, scripts, tests, migrations
 uv run --group test pytest tests/                # full suite
 uv run --group test pytest tests/unit/           # browser-free
 uv run --group test pytest tests/snapshots/      # needs Chromium
 ```
 
-Pre-commit gates ruff, mypy, and the full test suite on any change under `src/job_discovery/`, `migrations/`, or `tests/`. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The mypy hook type-checks only the *staged* files and is stricter than the repo-wide run, so a green `uv run mypy src scripts tests` is not a guarantee that the commit passes.
+Pre-commit gates ruff, mypy, and the full test suite on any change under `src/job_discovery/`, `migrations/`, or `tests/`. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The ruff and mypy hooks run through `uv run`, so they use the versions pinned in `uv.lock` — the same ones the commands above use — and the mypy hook checks the whole `files` set in `pyproject.toml` rather than only the staged files, so a green `uv run mypy` means the hook passes too.
 
 Alembic owns the schema. The database lives at `data/job-discovery.db` by default, which is gitignored because the dataset answers "what is open right now" and is regenerable by re-running a scan:
 
