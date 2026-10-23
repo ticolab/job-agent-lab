@@ -41,10 +41,12 @@ from job_discovery.persistence.engine import (
     database_url,
 )
 from job_discovery.persistence.timestamps import as_naive_utc, utc_now
+from job_pipeline.persistence import models as pipeline_models
 from tests.unit.asyncio_harness import run_async as _run
 from tests.unit.asyncio_harness import run_in_thread, track_engine
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+assert pipeline_models.Job.__tablename__ in models.Base.metadata.tables
 
 
 async def _fresh_database(path: Path) -> async_sessionmaker[AsyncSession]:

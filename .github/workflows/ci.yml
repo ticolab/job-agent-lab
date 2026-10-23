@@ -154,7 +154,10 @@ jobs:
 
           assert "site-packages" in dom.__file__, dom.__file__
           assert dom.EXTRACT_JOB_LINKS_JS.strip(), "collect_links.js is empty"
+          from importlib.resources import files
+
           assert dom.FIND_NEXT_CONTROL_JS.strip(), "find_next_control.js is empty"
+          assert files("job_extractor.data").joinpath("technologies.json").is_file()
           print("matcher assets load from", dom.__file__)
           EOF
       # Importing the package only runs module-level imports, so this walks
@@ -172,8 +175,19 @@ jobs:
           import sys
 
           import job_discovery
+          import job_eligibility
+          import job_extractor
+          import job_pipeline
 
-          root = pathlib.Path(job_discovery.__file__).parent
+          roots = {
+              package.__name__: pathlib.Path(package.__file__).parent
+              for package in (
+                  job_discovery,
+                  job_eligibility,
+                  job_extractor,
+                  job_pipeline,
+              )
+          }
 
 
           def imported(node, found):
@@ -190,21 +204,25 @@ jobs:
 
 
           missing = {}
-          for path in sorted(root.rglob("*.py")):
-              found = set()
-              imported(ast.parse(path.read_text(encoding="utf-8")), found)
-              for name in sorted(found - set(sys.stdlib_module_names) - {"job_discovery"}):
-                  if importlib.util.find_spec(name) is None:
-                      missing.setdefault(name, []).append(str(path.relative_to(root)))
+          package_names = set(roots)
+          for package_name, root in roots.items():
+              for path in sorted(root.rglob("*.py")):
+                  found = set()
+                  imported(ast.parse(path.read_text(encoding="utf-8")), found)
+                  for name in sorted(found - set(sys.stdlib_module_names) - package_names):
+                      if importlib.util.find_spec(name) is None:
+                          location = f"{package_name}/{path.relative_to(root)}"
+                          missing.setdefault(name, []).append(location)
           assert not missing, f"imported but not installed with the wheel: {missing}"
           print("every imported module is installed")
           EOF
-      - name: Run both console scripts
+      - name: Run all three console scripts
         run: |
           job-discovery --help
           job-discovery integrate --help
           job-discovery scan --help
           job-agent-lab --help
+          job-pipeline --help
       - name: Migrate a fresh database up, down, and up again
         env:
           JOB_DISCOVERY_DB: ${{ runner.temp }}/smoke.db
@@ -212,6 +230,7 @@ jobs:
           alembic upgrade head
           alembic downgrade base
           alembic upgrade head
+          job-pipeline preview --all --database "$RUNNER_TEMP/smoke.db"
       # Two pull requests that each add a migration off the same parent pass
       # on their own and leave main with two heads once both merge.
       - name: Require a single migration head
