@@ -10,6 +10,9 @@ from job_discovery.persistence.engine import database_url
 from job_discovery.persistence.models import Base
 from job_discovery.settings import DATABASE_PATH
 
+# Register pipeline models on the shared Base before Alembic reads its metadata.
+from job_pipeline.persistence import models as pipeline_models
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -28,6 +31,7 @@ if config.config_file_name is not None:
 # Autogenerate target. Every model must be reachable from this
 # metadata or it is invisible to `alembic revision --autogenerate`.
 target_metadata = Base.metadata
+assert pipeline_models.Job.__tablename__ in target_metadata.tables
 
 # The database location comes from `job_discovery.settings` rather than from
 # `sqlalchemy.url` in alembic.ini: two sources for one path is how a

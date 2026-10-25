@@ -13,9 +13,14 @@ listings; a single JavaScript matcher decides what counts as a job link. That
 keeps every count auditable, and it means matcher behaviour can be frozen and
 regression-tested offline across the whole corpus in seconds.
 
-Only one of the seven extraction strategies drives an agent. The other six talk
-plain HTTP to the ATS or search platform backing the board, for cases where the
-rendered page cannot be reached or cannot yield an honest regression artifact.
+Only one of the seven discovery strategies drives an agent. The other six talk
+plain HTTP to the ATS or search platform backing the board.
+
+Three sibling packages process discovered postings. `job_eligibility` makes a
+grounded Costa Rica eligibility decision, `job_extractor` validates structured
+job facts, and `job_pipeline` owns content acquisition, model calls, durable
+history, and orchestration. The leaves are pure and the pipeline calls extraction
+only after an eligible decision.
 
 > Origin: extracted from the `tw-data` pipeline's `tools/agent_poc/` PoC (HNT-5).
 
@@ -42,14 +47,16 @@ uv run playwright install chromium   # browser for browser-use and snapshot test
 cp .env.example .env                 # then add your OPENAI_API_KEY
 ```
 
-`OPENAI_API_KEY` is required only for live agent runs. The test suite, every API
-strategy, and companies configured with `pre_filter_urls` all run without it.
+`OPENAI_API_KEY` is required for live discovery agent runs and for pipeline
+`run` or `reprocess` commands that select an OpenAI model. Anthropic pipeline
+models require `ANTHROPIC_API_KEY`. `preview`, `show`, tests, replay callers,
+API discovery strategies, and `pre_filter_urls` companies need no provider key.
 
 ## Usage
 
-Two console scripts are installed. `job-discovery` is the dispatcher; `job-agent-lab`
-is a permanent alias for the integrate workflow, kept because every doc and skill
-is built around it. The two are equivalent.
+Three console scripts are installed. `job-discovery` is the discovery dispatcher,
+`job-agent-lab` is its permanent integrate alias, and `job-pipeline` is the
+posting-processing dispatcher.
 
 ```bash
 # Run every company in src/job_discovery/catalog/companies.py
@@ -116,7 +123,53 @@ sqlite3 data/job-discovery.db 'select company_slug, url from job_urls order by c
 sqlite3 data/job-discovery.db 'select company_slug, status, url_count, error_message, started_at, finished_at from company_runs'
 ```
 
-### Operating it
+### Daily processing workflow
+
+The approved daily workflow is five commands:
+
+```bash
+uv run alembic upgrade head
+uv run job-discovery scan --all
+uv run job-pipeline preview --all --by-company
+uv run job-pipeline run --all
+uv run python scripts/verify_grounding.py
+```
+
+`job-pipeline` observes the discovery snapshot, skips completed logical jobs,
+retries only due work, decides eligibility, and extracts eligible postings.
+All four commands are implemented. `preview` reports dispositions and
+would-process counts without constructing HTTP, browser, or model clients. It
+observes by default; `--no-observe` is read-only, and `run --dry-run` uses the
+same preview path.
+
+`run` reaps stale attempts, observes selected companies, and processes
+current-snapshot `new` and due `retry` jobs under independent concurrency
+limits. `--timeout-seconds` bounds each fetch or model call once it holds a
+slot, not the time a job waits for one, so a large run never times out jobs
+that are merely queued. Individual job failures are recorded and do not make
+the command fail. Ctrl-C cancels the run cleanly and exits 130; the next run
+releases whatever was in progress.
+`reprocess` requires a reason and restarts explicit jobs, or one company's
+`unknown` jobs, from `fetch`, `eligibility`, or `extraction` while preserving
+history. `show` prints one job's sources, content metadata, attempts, decisions,
+and current accepted result without printing stored posting bodies.
+
+The runner uses each job's active attempt as an ownership lease. Content,
+accepted eligibility, and accepted extraction are durable phase checkpoints;
+retries resume from `next_phase`, and stale workers cannot overwrite a newer
+owner. Startup reaps stale unfinished attempts to due retry work, so recovery
+uses the database rather than an external checkpoint file.
+
+`run` and `reprocess` load `.env` and check recognized OpenAI or Anthropic
+credentials before observing, preparing, or claiming work. A missing key exits
+with code 2 without consuming work. Audit queries live in
+`scripts/pipeline_queries.sql`.
+
+The live posting corpus, operator review of drafted expectations, live model
+comparison, and production model rollout remain deferred. The configured model
+default and implemented workflow do not claim those rollout steps have occurred.
+
+### Operating discovery
 
 The dataset answers what is open *right now*, so it is worth refreshing two or
 three times a week rather than continuously. The default freshness window is 20
@@ -148,16 +201,16 @@ returning measurable throughput at this corpus size, so leave it alone unless
 the corpus grows enough that boards genuinely queue for a slot. `ARCHITECTURE.md`
 records the measurements behind both ceilings.
 
-Back up the dataset by copying the file. There is no export step, because the
-database is a single SQLite file and nothing else holds state:
+Back up the database by copying the file. There is no export step because the
+discovery snapshot and pipeline audit history share one SQLite file:
 
 ```bash
 cp data/job-discovery.db "data/job-discovery-$(date +%Y%m%d).db"
 ```
 
-Losing it is recoverable in any case. The catalog is the source of truth for
-the corpus and the database is a projection of it plus the most recent
-extraction, so a full re-run rebuilds everything the file held.
+A scan can rebuild the current discovery URL snapshot. It cannot recreate prior
+pipeline content checkpoints, attempts, decisions, accepted results, or their
+audit timestamps, so preserve backups when that history matters.
 
 ### Adding a new company
 
@@ -226,4 +279,4 @@ Design documents are kept close to the code. `ARCHITECTURE.md` holds the
 big-picture map and the invariants. `CLAUDE.md` and `TABNINE.md` are guidance
 files for the two AI assistants used on this repo and carry the same project
 facts. `blockers/INTEGRATION_BLOCKERS.md` catalogues the site behaviours that
-resist extraction, referenced as C1–C22 throughout the codebase.
+resist extraction, referenced as C1–C24 throughout the codebase.

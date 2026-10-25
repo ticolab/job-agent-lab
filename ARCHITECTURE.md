@@ -30,16 +30,156 @@ apart means a wrong count is always attributable to one side. Collapsing them �
 letting the model report the links it believes it saw — would make every count
 unauditable, which is the failure this project exists to avoid.
 
-## Components and layering
+## Posting processing architecture
 
-The second structural decision is where code is allowed to point. Three
-components sit over one shared kernel: `extraction/` owns the port and every
-strategy, `persistence/` owns the database, and `batch/` owns concurrency and
-the definition of one company's unit of work. The kernel — `domain/`,
-`catalog/`, `settings.py` — is the vocabulary all three speak. All three
-exist today, alongside `cli/` and `reporting/`, and both entry points are
-wired: one command onboards a single board, the other drives the corpus
-and is the only thing in the system that writes to the database.
+Job processing adds three sibling packages to the existing discovery package.
+Together they form four package roots with one-way dependencies.
+
+| Package | Responsibility | Repository dependencies |
+|---|---|---|
+| `job_discovery` | Discover current posting URLs. | None of the three new packages. |
+| `job_eligibility` | Render and validate eligibility decisions. | None. |
+| `job_extractor` | Render and validate structured job facts. | None. |
+| `job_pipeline` | Own identity, content acquisition, model calls, persistence, lifecycle, and the CLI. | The two leaves and approved discovery units. |
+
+The enforced root graph is:
+
+```
+job_pipeline    → job_eligibility, job_extractor,
+                  job_discovery.domain, job_discovery.catalog,
+                  job_discovery.persistence, job_discovery.settings
+job_eligibility → nothing in this repository
+job_extractor   → nothing in this repository
+job_discovery   → neither leaf nor job_pipeline
+```
+
+The leaves are pure because prompts, schemas, and deterministic validation must
+be testable without network, browser, model, or database access. The pipeline
+makes the model calls and supplies posting text. It uses two calls for a new
+job: a smaller eligibility call, followed by extraction only for an eligible
+posting. Both calls use the same stored content.
+
+All pipeline tables share `job_discovery.persistence.models.Base`. One metadata
+graph lets Alembic maintain one migration chain, resolves the foreign key to
+`companies`, and keeps schema parity checks complete. Pipeline jobs reference
+companies with `ON DELETE RESTRICT`, not cascade, because processing history
+must survive catalog changes.
+
+Logical identity starts with a company slug and a canonical URL key. The key
+lowercases scheme and host, removes fragments, strips one trailing path slash,
+drops the 17 measured non-identifying query names and every `utm_*` parameter,
+and sorts the remainder. On the 2026-10-23 snapshot this produced 1,503 keys
+from 1,504 URLs with one correct collapse. A path-only rule would have merged
+ten groups of distinct jobs. After fetch, same-company requisition identifiers
+and then content fingerprints provide conservative fallback merges.
+
+Conservative because a merge cannot be undone from the CLI. A requisition id
+is the JSON-LD `PropertyValue` `value` and never its `name`, which is
+conventionally the organization; it merges only when exactly one other live
+job of the company carries it and the two titles agree, so a board that stamps
+every posting with one identifier stays many jobs. A fingerprint is a hash of
+the whole normalized text plus title, not a prefix, so two roles behind a long
+shared preamble stay distinct; it too merges only on a single match. The lower
+id is always canonical, and a duplicate another worker is processing is left
+for that worker rather than flipped under it.
+
+| Status | Meaning | Ordinary run |
+|---|---|---|
+| `new` | Observed and never attempted. | Process. |
+| `in_progress` | Claimed by a pipeline run. | Leave alone. |
+| `retry` | Retryable failure with an optional due time. | Process when due and present in the current snapshot. |
+| `completed_eligible` | Eligibility passed and extraction was accepted. | Skip. |
+| `completed_ineligible` | Eligibility definitively failed. | Skip. |
+| `unknown` | Evidence could not support a definitive decision. | Skip. |
+| `unavailable` | The posting is not obtainable as active work. | Skip. |
+| `failed` | Retry policy was exhausted or failure is permanent. | Skip. |
+| `merged` | Proven same-company duplicate of another logical job. | Skip. |
+
+Unknown is terminal in v1. Repeating an ambiguous model call without new source
+content or policy would add cost without adding evidence. An operator can use
+explicit reprocessing after a policy change, while ordinary runs remain
+idempotent. Every repository call uses its own short-lived session, and no
+session is held across network, browser, or model awaits.
+
+Each leaf exports a human-readable version and a hash over its prompt and
+response schema. A prompt or schema change requires the corresponding
+`POLICY_VERSION` or `EXTRACTOR_VERSION` bump and prompt-hash golden update. A
+model change alone does not bump either version. Version changes never trigger
+automatic reprocessing. The production runner defaults to `gpt-4.1-mini`, but
+that default is implementation configuration rather than evidence of a reviewed
+model rollout.
+
+V1 deliberately omits URL-reuse detection and cross-company duplicate
+reconciliation. Structured compensation, a dashboard read model, slow
+completed-job rechecks, and version-selected bulk reprocessing are future work.
+
+The Phase 5 runner and all four `job-pipeline` commands are implemented.
+`preview` observes the selected discovery snapshot by default and reports
+current dispositions without constructing HTTP, browser, or model clients;
+`--no-observe` makes it read-only. `run` reaps stale work, observes, plans, and
+processes current-snapshot `new` and due `retry` jobs. `reprocess` runs explicit
+jobs, or one company's `unknown` jobs, from a requested checkpoint with a
+required audit reason. `show` prints one job's metadata, sources, versions,
+attempts, decisions, and accepted result without exposing stored posting bodies.
+Implementation and offline tests do not imply that the deferred live posting
+corpus has been reviewed or that a production model rollout has occurred.
+
+The runner treats `jobs.current_attempt_id` as an ownership lease. Claiming a
+job and creating its attempt happen atomically; every phase advance, checkpoint,
+merge, and release verifies that attempt before mutating accepted state. A stale
+worker that lost ownership resolves as skipped rather than overwriting newer
+work. Content is a durable fetch checkpoint, an accepted eligibility decision
+is the eligibility checkpoint, and an accepted extraction result completes the
+job. Retries resume from `next_phase`; explicit reprocessing can restart at
+`fetch`, `eligibility`, or `extraction`, invalidating only downstream current
+records. At startup, the scheduler closes stale unfinished attempts as
+`interrupted` and makes their jobs immediately due. Recovery therefore uses
+database leases and checkpoints, not an external checkpoint file.
+
+The per-job timeout bounds each network or model step once that step holds
+its concurrency slot, and never the time a job spends waiting for one. The
+alternative, one ceiling around the whole lifecycle, was tried and is the
+wrong shape for a corpus: every job of a 1,500-job first run is claimed at
+once, ten fetch slots and four model slots drain the queue over an hour, and
+a 180-second ceiling that starts at claim time would record most of the corpus
+as `timeout`, consume one of three attempts, and repeat the next day until
+the jobs were terminal without a model ever seeing them. Two consequences
+follow. The scheduler admits at most `http + model` concurrency jobs at a
+time, so an attempt's age tracks its active time rather than its queue time.
+And the reaper's staleness bound is four timeouts, one per timed step an
+attempt can hold, since the timeout itself no longer bounds an attempt.
+
+Ctrl-C cancels the run's task and waits for it to unwind, so the run row is
+closed, the engine disposed, and the browser shut before the process exits
+130; jobs left `in_progress` are released by the next run's reaper. The loop
+runs on a worker thread, and completion is tracked with an event rather than
+`Thread.join`, because on Python 3.12 a join interrupted by `KeyboardInterrupt`
+marks the still-running thread as stopped.
+
+Two acquisition rules err toward keeping a posting alive. A redirect may land
+on the same host, a sibling under the same registrable domain, or a known ATS
+host; only a different domain is off-site and terminal. A past JSON-LD
+`validThrough` closes a posting only when the page corroborates it, with a
+closure phrase or a body too short to be open, because some ATSs leave a stale
+date on a posting discovery still lists.
+
+The CLI loads `.env` only for commands that call the model. `run` and
+`reprocess` validate recognized OpenAI and Anthropic credentials before they
+observe, prepare, or claim work, so a missing key exits with code 2 without
+consuming the queue. `preview`, `show`, tests, and replay callers need no
+provider credential. Unknown LiteLLM provider prefixes are left to LiteLLM
+instead of guessing a credential name.
+
+## Discovery components and layering
+
+Within `job_discovery`, the second structural decision is where code is allowed
+to point. Three components sit over one shared kernel: `extraction/` owns the
+port and every strategy, `persistence/` owns the database, and `batch/` owns
+concurrency and the definition of one company's unit of work. The kernel —
+`domain/`, `catalog/`, `settings.py` — is the vocabulary all three speak. All
+three exist today, alongside `cli/` and `reporting/`, and both discovery entry
+points are wired: one command onboards a single board, the other drives the
+corpus and is the only discovery component that writes to the database.
 
 Dependencies point inward and never cycle:
 
@@ -96,9 +236,9 @@ under the scan's scheduler than under the integration CLI, and the onboarding
 evidence would stop
 meaning anything.
 
-`tests/unit/test_layering.py` parses the imports of every module under
-`src/job_discovery/` and asserts each package imports only from its allowed set,
-which makes the constraint structural rather than a matter of review
+`tests/unit/test_layering.py` parses the imports of every module under all four
+package roots in `src/` and asserts each package imports only from its allowed
+set, which makes the constraint structural rather than a matter of review
 discipline. The allowlist is written from the real import graph rather than
 from intent, and it may only ever shrink. Widening a row — say
 `extraction → catalog` — is therefore a deliberate allowlist edit that
