@@ -23,8 +23,11 @@ env/
 output/
 
 # SQLite database (regenerable by re-running a scan; never committed).
-# The -wal and -shm sidecars are created by WAL journal mode.
-data/
+# The -wal and -shm sidecars are created by WAL journal mode. Anchored to
+# the repository root: an unanchored ``data/`` also swallowed package data
+# directories such as ``src/job_extractor/data/``, whose technology table
+# must ship in the wheel.
+/data/
 
 # Editor / OS
 .vscode/

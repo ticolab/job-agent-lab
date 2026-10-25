@@ -49,3 +49,23 @@ def test_past_valid_through_is_closed_and_malformed_date_is_not() -> None:
 
 def test_page_without_jsonld_has_no_postings() -> None:
     assert extract_job_postings("<html><body>No structured data</body></html>") == ()
+
+
+def test_identifier_never_falls_back_to_the_organization_name() -> None:
+    def posting_with(identifier: str) -> str:
+        return (
+            '<script type="application/ld+json">'
+            f'{{"@type":"JobPosting","identifier":{identifier}}}'
+            "</script>"
+        )
+
+    property_value = extract_job_postings(
+        posting_with('{"@type":"PropertyValue","name":"Acme","value":"R-42"}')
+    )[0]
+    name_only = extract_job_postings(
+        posting_with('{"@type":"PropertyValue","name":"Acme"}')
+    )[0]
+    plain = extract_job_postings(posting_with('"R-43"'))[0]
+    assert property_value.identifier == "R-42"
+    assert name_only.identifier is None
+    assert plain.identifier == "R-43"

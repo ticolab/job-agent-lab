@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from collections.abc import Mapping
+from collections.abc import Awaitable, Mapping
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Literal, cast
@@ -148,6 +148,18 @@ async def _host_semaphore(deps: WorkerDeps, host: str) -> asyncio.Semaphore:
         return semaphore
 
 
+async def _timed[T](deps: WorkerDeps, step: Awaitable[T]) -> T:
+    """Bound one network or model step by the policy's job timeout.
+
+    Called only once the step holds its concurrency slot. Wrapping the whole
+    lifecycle instead would charge queue time against the attempt: with
+    every job of a corpus-sized run claimed at once and a handful of slots,
+    most jobs would time out while waiting, burn an attempt, and repeat the
+    next day until terminal.
+    """
+    return await asyncio.wait_for(step, timeout=deps.policy.job_timeout)
+
+
 async def _acquire_content(
     deps: WorkerDeps,
     company: Company,
@@ -159,20 +171,26 @@ async def _acquire_content(
     host_semaphore = await _host_semaphore(deps, host)
     if force_rendered and deps.browser is not None:
         async with deps.http_semaphore, host_semaphore, deps.browser_semaphore:
-            return await acquire(
+            return await _timed(
+                deps,
+                acquire(
+                    url,
+                    company=company,
+                    http=deps.http_client,
+                    browser=deps.browser,
+                    force_rendered=True,
+                ),
+            )
+    async with deps.http_semaphore, host_semaphore:
+        acquired = await _timed(
+            deps,
+            acquire(
                 url,
                 company=company,
                 http=deps.http_client,
-                browser=deps.browser,
-                force_rendered=True,
-            )
-    async with deps.http_semaphore, host_semaphore:
-        acquired = await acquire(
-            url,
-            company=company,
-            http=deps.http_client,
-            browser=None,
-            force_rendered=False,
+                browser=None,
+                force_rendered=False,
+            ),
         )
     if (
         isinstance(acquired, AcquisitionFailure)
@@ -180,12 +198,15 @@ async def _acquire_content(
         and deps.browser is not None
     ):
         async with deps.http_semaphore, host_semaphore, deps.browser_semaphore:
-            return await acquire(
-                url,
-                company=company,
-                http=deps.http_client,
-                browser=deps.browser,
-                force_rendered=True,
+            return await _timed(
+                deps,
+                acquire(
+                    url,
+                    company=company,
+                    http=deps.http_client,
+                    browser=deps.browser,
+                    force_rendered=True,
+                ),
             )
     return acquired
 
@@ -303,10 +324,11 @@ async def _run_phases(
             last_error = await attempts_repo.last_error_category(session, job.id)
         if not sources:
             raise RuntimeError("job has no source URL")
-        source_url = next(
-            (source.url for source in reversed(sources) if source.url == job.url_key),
-            sources[-1].url,
-        )
+        # The variant discovery saw most recently is the one most likely to
+        # still resolve; an older alias may have left the board.
+        source_url = max(
+            sources, key=lambda source: (source.last_seen_at, source.id)
+        ).url
         acquired = await _acquire_content(
             deps,
             company,
@@ -460,8 +482,12 @@ async def _run_phases(
                 )
         if progress.decision is None:
             async with deps.model_semaphore:
-                eligibility_completion = await deps.caller.complete(
-                    build_eligibility_messages(content.text), EligibilityResponse
+                eligibility_completion = await _timed(
+                    deps,
+                    deps.caller.complete(
+                        build_eligibility_messages(content.text),
+                        EligibilityResponse,
+                    ),
                 )
             progress.add_tokens(
                 eligibility_completion.prompt_tokens,
@@ -534,8 +560,11 @@ async def _run_phases(
             raise RuntimeError("extraction phase has no eligible decision")
         progress.decision = current_decision.decision
     async with deps.model_semaphore:
-        extraction_completion = await deps.caller.complete(
-            build_extraction_messages(content.text), ExtractionResponse
+        extraction_completion = await _timed(
+            deps,
+            deps.caller.complete(
+                build_extraction_messages(content.text), ExtractionResponse
+            ),
         )
     progress.add_tokens(
         extraction_completion.prompt_tokens,
@@ -611,10 +640,10 @@ async def process_job(job_id: int, *, deps: WorkerDeps) -> JobOutcome:
         )
     progress = _Progress(claimed_job.next_phase)
     try:
-        outcome = await asyncio.wait_for(
-            _run_phases(claimed_job, company, attempt_id, deps, progress),
-            timeout=deps.policy.job_timeout,
-        )
+        # No ceiling on the lifecycle as a whole: each network and model
+        # step is bounded by ``_timed`` once it holds its slot, and the
+        # database calls between them are bounded by ``busy_timeout``.
+        outcome = await _run_phases(claimed_job, company, attempt_id, deps, progress)
     except Exception as exc:
         try:
             outcome = await _fail(deps, claimed_job, attempt_id, progress, exc)

@@ -98,8 +98,15 @@ def _text(value: Any) -> str | None:
 
 
 def _identifier(value: Any) -> str | None:
+    """Return the requisition value, never the ``PropertyValue`` name.
+
+    In schema.org's ``PropertyValue`` the ``name`` is conventionally the
+    organization and ``value`` the requisition. Falling back to ``name``
+    would give every posting on such a board one shared identifier, and the
+    duplicate merge would fold the whole company into one job.
+    """
     if isinstance(value, dict):
-        return _text(value.get("value")) or _text(value.get("name"))
+        return _text(value.get("value"))
     return _text(value)
 
 

@@ -125,9 +125,32 @@ async def validate_public_target(
     return host
 
 
+# Second-level labels under which a two-letter country code hosts another
+# level of registrations, so ``acme.co.cr`` is the registrable name rather
+# than ``co.cr``. A heuristic, not the public-suffix list: wide enough for
+# the corpus, and an error here only keeps a redirect on the strict side.
+_SECOND_LEVEL_LABELS = frozenset({"ac", "co", "com", "edu", "gov", "net", "org"})
+
+
+def registrable_domain(host: str) -> str:
+    """Return the part of *host* an organization registers, lowercase."""
+    labels = host.lower().rstrip(".").split(".")
+    if len(labels) >= 3 and len(labels[-1]) == 2 and labels[-2] in _SECOND_LEVEL_LABELS:
+        return ".".join(labels[-3:])
+    return ".".join(labels[-2:])
+
+
 def redirect_host_allowed(original_host: str, final_host: str) -> bool:
-    return original_host == final_host or any(
-        _host_matches(final_host, ats_host) for ats_host in KNOWN_ATS_HOSTS
+    """Whether a redirect from *original_host* may land on *final_host*.
+
+    Allowed: the same host, a sibling under the same registrable domain
+    (``careers.acme.com`` to ``www.acme.com`` is a board move, not a
+    hijack), or a known ATS host. Anything else is off-site and terminal.
+    """
+    return (
+        original_host == final_host
+        or registrable_domain(original_host) == registrable_domain(final_host)
+        or any(_host_matches(final_host, ats_host) for ats_host in KNOWN_ATS_HOSTS)
     )
 
 

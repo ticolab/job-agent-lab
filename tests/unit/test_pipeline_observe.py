@@ -179,3 +179,42 @@ def test_observed_merged_alias_keeps_canonical_snapshot_eligible(
         "https://acme.example/jobs/1",
         "https://acme.example/jobs/2",
     ]
+
+
+def test_unkeyable_url_is_skipped_without_aborting_observation(
+    tmp_path: Path,
+) -> None:
+    async def scenario() -> tuple[int, int, int, frozenset[tuple[str, str]]]:
+        factory = await _fresh_database(tmp_path / "malformed.db")
+        company = Company(
+            name="Acme",
+            job_board_url="https://acme.example/jobs",
+            sample_job_url="https://acme.example/jobs/1",
+        )
+        async with factory() as session, session.begin():
+            session.add(
+                discovery_models.Company(
+                    slug=company.slug,
+                    name=company.name,
+                    job_board_url=company.job_board_url,
+                    strategy=company.strategy,
+                    synced_at=datetime(2026, 1, 1),
+                )
+            )
+        async with factory() as session:
+            await discovery_jobs_repo.replace_company_urls(
+                session,
+                company_slug=company.slug,
+                urls=["https://acme.example/jobs/1", "javascript:void(0)"],
+                captured_at=datetime(2026, 1, 1),
+            )
+        summary = await observe(factory, [company])
+        report = summary.companies[0]
+        return report.new, report.malformed, report.collapsed, summary.snapshot_keys
+
+    assert run_async(scenario()) == (
+        1,
+        1,
+        0,
+        frozenset({("acme", "https://acme.example/jobs/1")}),
+    )

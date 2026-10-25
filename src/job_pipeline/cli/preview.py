@@ -17,9 +17,8 @@ from job_pipeline.cli.common import (
     run_async,
     select_companies,
 )
-from job_pipeline.identity import url_key
 from job_pipeline.persistence import jobs_repo
-from job_pipeline.runner.observe import observe
+from job_pipeline.runner.observe import keyed_urls, observe
 
 PREVIEW_SUMMARY = "Preview pipeline work without processing it."
 PREVIEW_DESCRIPTION = "Observe selected snapshots and print current dispositions."
@@ -54,7 +53,8 @@ async def _snapshot_keys(
             urls = await discovery_jobs_repo.list_company_urls(
                 session, company_slug=company.slug
             )
-        keys.update((company.slug, url_key(url)) for url in urls)
+        pairs, _ = keyed_urls(company.slug, urls)
+        keys.update((company.slug, key) for key, _ in pairs)
     return frozenset(keys)
 
 

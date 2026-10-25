@@ -788,6 +788,201 @@ def test_duplicate_merge_always_uses_lower_canonical(
     assert run_async(scenario()) == (1, "merged", 1)
 
 
+async def _store_content(
+    factory: async_sessionmaker[AsyncSession],
+    job_id: int,
+    *,
+    title: str,
+    fingerprint: str,
+    requisition_id: str | None,
+) -> None:
+    async with factory() as session:
+        await contents_repo.store(
+            session,
+            job_id,
+            contents_repo.AcquiredContent(
+                content_hash=f"hash-{job_id}",
+                fingerprint=fingerprint,
+                requisition_id=requisition_id,
+                resolved_url=f"https://acme.example/jobs/{job_id}",
+                http_status=200,
+                method="main_content",
+                title=title,
+                text=f"Posting text {job_id}",
+                jsonld_json=None,
+                retrieved_at=datetime(2026, 1, 1),
+            ),
+        )
+
+
+async def _three_jobs(factory: async_sessionmaker[AsyncSession]) -> None:
+    await _seed_company(factory)
+    async with factory() as session:
+        await jobs_repo.observe(
+            session,
+            "acme",
+            [
+                (f"key-{index}", f"https://acme.example/jobs/{index}")
+                for index in (1, 2, 3)
+            ],
+            datetime(2026, 1, 1),
+        )
+
+
+def test_shared_requisition_with_different_titles_never_merges(
+    tmp_path: Path,
+) -> None:
+    """A board stamping every posting with one identifier must stay many jobs."""
+
+    async def scenario() -> tuple[int | None, list[str]]:
+        factory = await _fresh_database(tmp_path / "constant-identifier.db")
+        await _three_jobs(factory)
+        for job_id, title in ((1, "Engineer"), (2, "Analyst"), (3, "Designer")):
+            await _store_content(
+                factory,
+                job_id,
+                title=title,
+                fingerprint=f"fingerprint-{job_id}",
+                requisition_id="ACME",
+            )
+        async with factory() as session:
+            canonical = await jobs_repo.merge_duplicate(
+                session,
+                job_id=3,
+                company_slug="acme",
+                requisition_id="ACME",
+                fingerprint="fingerprint-3",
+            )
+        async with factory() as session:
+            jobs = await jobs_repo.list_by_ids(session, [1, 2, 3])
+        return canonical, [job.status for job in jobs]
+
+    assert run_async(scenario()) == (3, ["new", "new", "new"])
+
+
+def test_requisition_shared_by_several_jobs_is_not_identifying(
+    tmp_path: Path,
+) -> None:
+    async def scenario() -> tuple[int | None, list[str]]:
+        factory = await _fresh_database(tmp_path / "ambiguous-identifier.db")
+        await _three_jobs(factory)
+        for job_id in (1, 2, 3):
+            await _store_content(
+                factory,
+                job_id,
+                title="Engineer",
+                fingerprint=f"fingerprint-{job_id}",
+                requisition_id="ACME",
+            )
+        async with factory() as session:
+            canonical = await jobs_repo.merge_duplicate(
+                session,
+                job_id=3,
+                company_slug="acme",
+                requisition_id="ACME",
+                fingerprint="fingerprint-3",
+            )
+        async with factory() as session:
+            jobs = await jobs_repo.list_by_ids(session, [1, 2, 3])
+        return canonical, [job.status for job in jobs]
+
+    assert run_async(scenario()) == (3, ["new", "new", "new"])
+
+
+def test_matching_requisition_and_title_merges_into_the_lower_id(
+    tmp_path: Path,
+) -> None:
+    async def scenario() -> tuple[int | None, str, int | None, list[str]]:
+        factory = await _fresh_database(tmp_path / "requisition-merge.db")
+        await _three_jobs(factory)
+        await _store_content(
+            factory, 1, title="Engineer", fingerprint="fp-1", requisition_id="R-1"
+        )
+        await _store_content(
+            factory, 3, title="engineer ", fingerprint="fp-3", requisition_id="R-1"
+        )
+        async with factory() as session:
+            canonical = await jobs_repo.merge_duplicate(
+                session,
+                job_id=3,
+                company_slug="acme",
+                requisition_id="R-1",
+                fingerprint="fp-3",
+            )
+        async with factory() as session:
+            merged = await jobs_repo.get(session, 3)
+            sources = await jobs_repo.list_sources(session, 1)
+        assert merged is not None
+        return (
+            canonical,
+            merged.status,
+            merged.merged_into_id,
+            [source.url for source in sources],
+        )
+
+    assert run_async(scenario()) == (
+        1,
+        "merged",
+        1,
+        ["https://acme.example/jobs/1", "https://acme.example/jobs/3"],
+    )
+
+
+def test_duplicate_owned_by_another_worker_is_left_alone(tmp_path: Path) -> None:
+    async def scenario() -> tuple[int | None, str, int | None, list[str]]:
+        factory = await _fresh_database(tmp_path / "in-progress-duplicate.db")
+        await _three_jobs(factory)
+        async with factory() as session:
+            await runs_repo.start_run(
+                session,
+                run_id="run-1",
+                selection="acme",
+                model="test",
+                started_at=datetime(2026, 1, 1),
+            )
+        async with factory() as session:
+            claimed = await attempts_repo.claim_and_start(
+                session,
+                job_id=2,
+                run_id="run-1",
+                trigger="scheduled",
+                reason=None,
+                model="test",
+                policy_version="policy",
+                extractor_version="extractor",
+                started_at=datetime(2026, 1, 1),
+            )
+        assert claimed is not None
+        for job_id in (1, 2):
+            await _store_content(
+                factory,
+                job_id,
+                title="Engineer",
+                fingerprint="same",
+                requisition_id=None,
+            )
+        async with factory() as session:
+            canonical = await jobs_repo.merge_duplicate(
+                session,
+                job_id=1,
+                company_slug="acme",
+                requisition_id=None,
+                fingerprint="same",
+            )
+        async with factory() as session:
+            other = await jobs_repo.get(session, 2)
+            sources = await jobs_repo.list_sources(session, 1)
+        assert other is not None
+        return canonical, other.status, other.merged_into_id, [s.url for s in sources]
+
+    assert run_async(scenario()) == (
+        1,
+        "in_progress",
+        None,
+        ["https://acme.example/jobs/1"],
+    )
+
+
 def test_restrict_blocks_deleting_company_with_jobs(tmp_path: Path) -> None:
     async def scenario() -> None:
         factory = await _fresh_database(tmp_path / "restrict.db")

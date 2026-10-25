@@ -192,3 +192,30 @@ def test_empty_content_without_browser_is_classified() -> None:
     assert isinstance(result, AcquisitionFailure)
     assert result.category == "empty_content"
     assert str(MIN_CONTENT_CHARS) in result.message
+
+
+EXPIRED = '"validThrough":"2020-01-01"'
+
+
+def test_past_valid_through_alone_does_not_close_an_open_posting() -> None:
+    payload = f'{{"@type":"JobPosting",{EXPIRED},"description":"{LONG}"}}'
+    result, _ = _run(_html(body=LONG, jsonld=payload))
+    assert isinstance(result, AcquiredContent)
+    assert result.method == "jsonld"
+
+
+def test_past_valid_through_with_short_body_is_closed_not_empty() -> None:
+    payload = f'{{"@type":"JobPosting",{EXPIRED},"description":"Gone."}}'
+    result, _ = _run(_html(body="short", jsonld=payload))
+    assert isinstance(result, AcquisitionFailure)
+    assert result.category == "closed"
+    assert "validThrough" in result.message
+
+
+def test_past_valid_through_with_closure_phrase_is_closed() -> None:
+    payload = f'{{"@type":"JobPosting",{EXPIRED},"description":"{LONG}"}}'
+    result, _ = _run(
+        _html(body=f"{LONG} This position has been filled.", jsonld=payload)
+    )
+    assert isinstance(result, AcquisitionFailure)
+    assert result.category == "closed"

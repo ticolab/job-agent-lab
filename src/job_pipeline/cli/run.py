@@ -88,10 +88,12 @@ def print_summary(result: PipelineResult, elapsed: float) -> None:
         print(
             "Observation: "
             f"{observation.new} new, {observation.reseen} re-seen, "
-            f"{observation.collapsed} collapsed"
+            f"{observation.collapsed} collapsed, "
+            f"{observation.malformed} unkeyable"
         )
     for label, count in (
-        ("skipped", result.skipped),
+        ("skipped (completed)", result.skipped_completed),
+        ("skipped (claim lost)", result.skipped),
         ("attempted", result.attempted),
         ("eligible", result.eligible),
         ("ineligible", result.ineligible),
@@ -102,12 +104,12 @@ def print_summary(result: PipelineResult, elapsed: float) -> None:
         ("merged", result.merged),
         ("interrupted", result.interrupted),
     ):
-        print(f"{label:<14} {count}")
+        print(f"{label:<22} {count}")
     print(
-        f"tokens         {result.tokens} "
+        f"{'tokens':<22} {result.tokens} "
         f"({result.prompt_tokens} prompt, {result.completion_tokens} completion)"
     )
-    print(f"elapsed        {elapsed:.2f}s")
+    print(f"{'elapsed':<22} {elapsed:.2f}s")
     failures = [outcome for outcome in result.outcomes if outcome.error is not None]
     if failures:
         print("Failures:")

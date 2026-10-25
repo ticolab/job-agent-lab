@@ -248,8 +248,38 @@ async def release(
 
 
 async def _merge_into(
-    session: AsyncSession, job_id: int, into_id: int, moment: datetime
-) -> None:
+    session: AsyncSession,
+    job_id: int,
+    into_id: int,
+    moment: datetime,
+    *,
+    allow_in_progress: bool,
+) -> bool:
+    """Fold *job_id* into *into_id*; return whether the job row was claimed.
+
+    The job row is flipped first and the sources move only when that flip
+    touched a row, so a job another worker owns right now is left alone
+    rather than having its sources taken and its status changed under it.
+    A caller merging the job it owns passes ``allow_in_progress=True`` after
+    verifying its own lease.
+    """
+    conditions = [Job.id == job_id, Job.id > into_id]
+    if not allow_in_progress:
+        conditions.append(Job.status != "in_progress")
+    flipped = await session.execute(
+        update(Job)
+        .where(*conditions)
+        .values(
+            status="merged",
+            merged_into_id=into_id,
+            next_attempt_after=None,
+            current_attempt_id=None,
+            updated_at=moment,
+        )
+        .returning(Job.id)
+    )
+    if flipped.scalar_one_or_none() is None:
+        return False
     existing_sources = select(JobSource.url).where(JobSource.job_id == into_id)
     await session.execute(
         delete(JobSource).where(
@@ -260,17 +290,7 @@ async def _merge_into(
     await session.execute(
         update(JobSource).where(JobSource.job_id == job_id).values(job_id=into_id)
     )
-    await session.execute(
-        update(Job)
-        .where(Job.id == job_id, Job.id > into_id)
-        .values(
-            status="merged",
-            merged_into_id=into_id,
-            next_attempt_after=None,
-            current_attempt_id=None,
-            updated_at=moment,
-        )
-    )
+    return True
 
 
 async def mark_merged(session: AsyncSession, job_id: int, into_id: int) -> None:
@@ -289,7 +309,28 @@ async def mark_merged(session: AsyncSession, job_id: int, into_id: int) -> None:
             raise ValueError("duplicates must belong to the same company")
         if rows[into_id].status == "merged":
             raise ValueError("merge target must be canonical")
-        await _merge_into(session, job_id, into_id, utc_now())
+        merged = await _merge_into(
+            session, job_id, into_id, utc_now(), allow_in_progress=False
+        )
+        if not merged:
+            raise ValueError("merge source is being processed")
+
+
+def _comparable_title(title: str | None) -> str | None:
+    if title is None:
+        return None
+    folded = " ".join(title.casefold().split())
+    return folded or None
+
+
+async def _latest_title(session: AsyncSession, job_id: int) -> str | None:
+    result = await session.execute(
+        select(JobContent.title)
+        .where(JobContent.job_id == job_id)
+        .order_by(JobContent.id.desc())
+        .limit(1)
+    )
+    return _comparable_title(result.scalar_one_or_none())
 
 
 async def merge_duplicate(
@@ -301,6 +342,16 @@ async def merge_duplicate(
     fingerprint: str,
     attempt_id: int | None = None,
 ) -> int | None:
+    """Merge *job_id* with its one proven duplicate, if any; return the canonical.
+
+    Conservative by design, because a merge cannot be undone through the
+    CLI. A requisition id counts only when exactly one other live job carries
+    it and the two titles agree, so a board that stamps every posting with
+    the same identifier never collapses into one job. A fingerprint counts
+    only when exactly one other live job shares it. The lower id is always
+    the canonical, and a duplicate that another worker is processing right
+    now is left for that worker.
+    """
     async with session.begin():
         if attempt_id is not None:
             owner = await session.execute(
@@ -313,11 +364,12 @@ async def merge_duplicate(
             if owner.scalar_one_or_none() is None:
                 return None
 
-        async def candidates_for(predicate: ColumnElement[bool]) -> tuple[int, ...]:
+        async def others_matching(predicate: ColumnElement[bool]) -> tuple[int, ...]:
             result = await session.execute(
                 select(Job.id)
                 .join(JobContent, JobContent.job_id == Job.id)
                 .where(
+                    Job.id != job_id,
                     Job.company_slug == company_slug,
                     Job.status != "merged",
                     Job.merged_into_id.is_(None),
@@ -328,20 +380,33 @@ async def merge_duplicate(
             )
             return tuple(result.scalars())
 
-        candidates = (
-            await candidates_for(JobContent.requisition_id == requisition_id)
-            if requisition_id is not None
-            else ()
-        )
-        if len(candidates) <= 1:
-            candidates = await candidates_for(JobContent.fingerprint == fingerprint)
-        if job_id not in candidates or len(candidates) == 1:
+        match: int | None = None
+        if requisition_id is not None:
+            by_requisition = await others_matching(
+                JobContent.requisition_id == requisition_id
+            )
+            if len(by_requisition) == 1:
+                own_title = await _latest_title(session, job_id)
+                other_title = await _latest_title(session, by_requisition[0])
+                if own_title is not None and own_title == other_title:
+                    match = by_requisition[0]
+        if match is None:
+            by_fingerprint = await others_matching(
+                JobContent.fingerprint == fingerprint
+            )
+            if len(by_fingerprint) == 1:
+                match = by_fingerprint[0]
+        if match is None:
             return job_id
-        canonical_id = candidates[0]
+
         moment = utc_now()
-        for duplicate_id in candidates[1:]:
-            await _merge_into(session, duplicate_id, canonical_id, moment)
-        return canonical_id
+        if match < job_id:
+            merged = await _merge_into(
+                session, job_id, match, moment, allow_in_progress=True
+            )
+            return match if merged else job_id
+        await _merge_into(session, match, job_id, moment, allow_in_progress=False)
+        return job_id
 
 
 def _snapshot_chunks(

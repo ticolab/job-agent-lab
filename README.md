@@ -144,7 +144,11 @@ same preview path.
 
 `run` reaps stale attempts, observes selected companies, and processes
 current-snapshot `new` and due `retry` jobs under independent concurrency
-limits. Individual job failures are recorded and do not make the command fail.
+limits. `--timeout-seconds` bounds each fetch or model call once it holds a
+slot, not the time a job waits for one, so a large run never times out jobs
+that are merely queued. Individual job failures are recorded and do not make
+the command fail. Ctrl-C cancels the run cleanly and exits 130; the next run
+releases whatever was in progress.
 `reprocess` requires a reason and restarts explicit jobs, or one company's
 `unknown` jobs, from `fetch`, `eligibility`, or `extraction` while preserving
 history. `show` prints one job's sources, content metadata, attempts, decisions,

@@ -58,10 +58,13 @@ def test_malformed_or_unsupported_urls_are_rejected(url: str) -> None:
         url_key(url)
 
 
-def test_fingerprint_is_case_and_whitespace_stable_and_prefix_bounded() -> None:
+def test_fingerprint_is_case_and_whitespace_stable_over_the_whole_text() -> None:
     baseline = fingerprint(" Senior Engineer ", "Build APIs\nwith Python")
     assert baseline == fingerprint("SENIOR engineer", "Build   APIs with python")
-    assert fingerprint("Role", "a" * 2000 + "x") == fingerprint(
-        "role", "a" * 2000 + "y"
-    )
     assert baseline != fingerprint("Different", "Build APIs with Python")
+    # Two roles with the same title and a long shared preamble must not
+    # collide: the whole text participates, not a prefix of it.
+    preamble = "About Acme. " * 400
+    assert fingerprint("Software Engineer", preamble + "Build APIs.") != fingerprint(
+        "Software Engineer", preamble + "Maintain data pipelines."
+    )

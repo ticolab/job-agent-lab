@@ -25,6 +25,7 @@ from job_pipeline.settings import (
     DEFAULT_PER_HOST_CONCURRENCY,
     RETRY_BACKOFF,
     RETRY_LIMIT,
+    STALE_ATTEMPT_PHASES,
 )
 
 ErrorCategory = Literal[
@@ -63,6 +64,15 @@ class WorkItem(Protocol):
 
 @dataclass(frozen=True, slots=True)
 class PipelinePolicy:
+    """The tunables one pipeline run executes under.
+
+    ``job_timeout`` bounds each network or model step of a job once that
+    step holds its concurrency slot; queue time is never charged against it.
+    ``in_flight`` is how many jobs may be claimed at once, so an attempt's
+    age stays close to its active time and the reaper's bound,
+    :attr:`stale_after`, means what it says.
+    """
+
     http_concurrency: int = DEFAULT_HTTP_CONCURRENCY
     browser_concurrency: int = DEFAULT_BROWSER_CONCURRENCY
     model_concurrency: int = DEFAULT_MODEL_CONCURRENCY
@@ -72,6 +82,16 @@ class PipelinePolicy:
     retry_backoff: timedelta = RETRY_BACKOFF
     limit: int | None = None
     model: str = DEFAULT_MODEL
+
+    @property
+    def in_flight(self) -> int:
+        """Jobs claimed at once: enough to keep every slot busy, no more."""
+        return self.http_concurrency + self.model_concurrency
+
+    @property
+    def stale_after(self) -> timedelta:
+        """Age past which an unfinished attempt cannot be live."""
+        return timedelta(seconds=self.job_timeout * STALE_ATTEMPT_PHASES)
 
 
 def classify_failure(

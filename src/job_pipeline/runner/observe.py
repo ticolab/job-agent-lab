@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Sequence
 from dataclasses import dataclass
 
@@ -13,6 +14,8 @@ from job_discovery.persistence.timestamps import utc_now
 from job_pipeline.identity import url_key
 from job_pipeline.persistence import jobs_repo
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass(frozen=True, slots=True)
 class CompanyObservation:
@@ -21,10 +24,11 @@ class CompanyObservation:
     snapshot_jobs: int
     new: int
     reseen: int
+    malformed: int = 0
 
     @property
     def collapsed(self) -> int:
-        return self.raw_urls - self.snapshot_jobs
+        return self.raw_urls - self.malformed - self.snapshot_jobs
 
 
 @dataclass(frozen=True, slots=True)
@@ -44,6 +48,33 @@ class ObservationSummary:
     def collapsed(self) -> int:
         return sum(company.collapsed for company in self.companies)
 
+    @property
+    def malformed(self) -> int:
+        return sum(company.malformed for company in self.companies)
+
+
+def keyed_urls(
+    company_slug: str, urls: Sequence[str]
+) -> tuple[tuple[tuple[str, str], ...], int]:
+    """Pair each URL with its identity key, skipping ones that have none.
+
+    Discovery's matcher only stores absolute same-origin links, so a URL
+    that :func:`url_key` rejects is a defect in one board's data. It is
+    logged and skipped rather than allowed to abort the observation of
+    every other company before any job is processed.
+    """
+    pairs: list[tuple[str, str]] = []
+    malformed = 0
+    for url in urls:
+        try:
+            pairs.append((url_key(url), url))
+        except ValueError as exc:
+            malformed += 1
+            logger.warning(
+                "skipping unkeyable url for %s: %s (%s)", company_slug, url, exc
+            )
+    return tuple(pairs), malformed
+
 
 async def observe(
     session_factory: async_sessionmaker[AsyncSession],
@@ -56,7 +87,7 @@ async def observe(
             urls = await discovery_jobs_repo.list_company_urls(
                 session, company_slug=company.slug
             )
-        observations = tuple((url_key(url), url) for url in urls)
+        observations, malformed = keyed_urls(company.slug, urls)
         async with session_factory() as session:
             summary = await jobs_repo.observe(
                 session,
@@ -74,9 +105,10 @@ async def observe(
                 snapshot_jobs=len(summary.snapshot_keys),
                 new=summary.new,
                 reseen=summary.reseen,
+                malformed=malformed,
             )
         )
     return ObservationSummary(tuple(summaries), frozenset(snapshot_keys))
 
 
-__all__ = ["CompanyObservation", "ObservationSummary", "observe"]
+__all__ = ["CompanyObservation", "ObservationSummary", "keyed_urls", "observe"]

@@ -89,6 +89,38 @@ def test_redirect_chain_records_final_url_and_user_agent() -> None:
     assert result.final_url == final
 
 
+def test_sibling_subdomain_redirect_is_allowed() -> None:
+    final = "https://www.example.com/careers/posting/1"
+
+    async def scenario() -> Any:
+        with respx.mock(assert_all_called=True) as mock:
+            mock.get(URL).mock(
+                return_value=httpx.Response(301, headers={"location": final})
+            )
+            mock.get(final).mock(return_value=httpx.Response(200, text="posting"))
+            async with httpx.AsyncClient() as client:
+                return await fetch(URL, client=client, resolver=_public_dns)
+
+    result = run_async(scenario())
+    assert isinstance(result, FetchResult)
+    assert result.final_url == final
+
+
+@pytest.mark.parametrize(
+    ("host", "expected"),
+    [
+        ("www.acme.com", "acme.com"),
+        ("acme.com", "acme.com"),
+        ("careers.acme.co.cr", "acme.co.cr"),
+        ("jobs.acme.com.mx", "acme.com.mx"),
+        ("a.b.c.example.org", "example.org"),
+        ("EXAMPLE.ORG.", "example.org"),
+    ],
+)
+def test_registrable_domain(host: str, expected: str) -> None:
+    assert fetch_module.registrable_domain(host) == expected
+
+
 def test_off_site_redirect_is_rejected_before_it_is_requested() -> None:
     async def scenario() -> Any:
         with respx.mock(assert_all_called=True) as mock:

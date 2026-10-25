@@ -485,3 +485,81 @@ def test_timeout_retries_then_exhausts_budget(tmp_path: Path) -> None:
         "failed",
         2,
     )
+
+
+def test_queue_wait_is_not_charged_against_the_job_timeout(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Two jobs sharing one HTTP slot both finish when each step fits the budget.
+
+    The second job waits for the first's fetch before it can start its own,
+    so its wall time exceeds the timeout. Only the fetch it actually runs is
+    timed, so neither job may be recorded as a timeout.
+    """
+
+    async def scenario() -> tuple[list[str], list[str | None], float]:
+        factory = await _database(tmp_path / "queue.db")
+        async with factory() as session:
+            await jobs_repo.observe(
+                session,
+                COMPANY.slug,
+                [("key-2", "https://acme.example/jobs/2")],
+                datetime(2026, 1, 1, tzinfo=UTC),
+            )
+        real_acquire = ladder.acquire
+        step_seconds = 0.3
+
+        async def slow_acquire(*args: object, **kwargs: object) -> object:
+            await asyncio.sleep(step_seconds)
+            return await real_acquire(*args, **kwargs)  # type: ignore[arg-type]
+
+        monkeypatch.setattr("job_pipeline.runner.worker.acquire", slow_acquire)
+        policy = PipelinePolicy(model="test", job_timeout=step_seconds + 0.3)
+        first_html = (
+            "<html><main><h1>Engineer</h1><p>" + "Canada " * 100 + "</p></main></html>"
+        )
+        second_html = (
+            "<html><main><h1>Analyst</h1><p>"
+            + "Canada Toronto " * 100
+            + "</p></main></html>"
+        )
+        with respx.mock(assert_all_called=True) as router:
+            router.get("https://acme.example/jobs/1").mock(
+                return_value=httpx.Response(200, text=first_html)
+            )
+            router.get("https://acme.example/jobs/2").mock(
+                return_value=httpx.Response(200, text=second_html)
+            )
+            async with httpx.AsyncClient() as client:
+                deps = WorkerDeps(
+                    session_factory=factory,
+                    http_client=client,
+                    browser=None,
+                    caller=IneligibleCaller(),
+                    policy=policy,
+                    run_id="run-1",
+                    trigger="scheduled",
+                    reason=None,
+                    companies={COMPANY.slug: COMPANY},
+                    http_semaphore=asyncio.Semaphore(1),
+                )
+                started = asyncio.get_running_loop().time()
+                outcomes = await asyncio.gather(
+                    process_job(1, deps=deps), process_job(2, deps=deps)
+                )
+                elapsed = asyncio.get_running_loop().time() - started
+        return (
+            [outcome.status for outcome in outcomes],
+            [
+                outcome.error.category if outcome.error is not None else None
+                for outcome in outcomes
+            ],
+            elapsed,
+        )
+
+    statuses, categories, elapsed = run_async(scenario())
+    assert statuses == ["completed_ineligible", "completed_ineligible"]
+    assert categories == [None, None]
+    # The second fetch could only start after the first released the slot,
+    # so the run as a whole outlived one job's timeout budget.
+    assert elapsed > 0.6

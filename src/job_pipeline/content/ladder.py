@@ -62,10 +62,18 @@ def _extract(
 ) -> AcquiredContent | AcquisitionFailure | None:
     postings = extract_job_postings(html)
     posting = _best_posting(postings)
-    if posting is not None and posting.is_closed():
+    main, page_title = main_text(html, fetched.final_url)
+    # A past validThrough alone is not proof: some ATSs leave a stale or
+    # placeholder date on a posting that discovery still lists. It counts
+    # only when the page corroborates it, with a closure phrase or a body
+    # too short to be an open posting.
+    if (
+        posting is not None
+        and posting.is_closed()
+        and (looks_closed(main) or len(main) < MIN_CONTENT_CHARS)
+    ):
         return _closed_failure("JSON-LD validThrough is in the past", fetched)
 
-    main, page_title = main_text(html, fetched.final_url)
     if posting is not None and len(posting.description_text) >= MIN_CONTENT_CHARS:
         text = _deduplicate_paragraphs(posting.description_text, main)
         method: AcquisitionMethod = "rendered_jsonld" if method_prefix else "jsonld"

@@ -73,6 +73,16 @@ from 1,504 URLs with one correct collapse. A path-only rule would have merged
 ten groups of distinct jobs. After fetch, same-company requisition identifiers
 and then content fingerprints provide conservative fallback merges.
 
+Conservative because a merge cannot be undone from the CLI. A requisition id
+is the JSON-LD `PropertyValue` `value` and never its `name`, which is
+conventionally the organization; it merges only when exactly one other live
+job of the company carries it and the two titles agree, so a board that stamps
+every posting with one identifier stays many jobs. A fingerprint is a hash of
+the whole normalized text plus title, not a prefix, so two roles behind a long
+shared preamble stay distinct; it too merges only on a single match. The lower
+id is always canonical, and a duplicate another worker is processing is left
+for that worker rather than flipped under it.
+
 | Status | Meaning | Ordinary run |
 |---|---|---|
 | `new` | Observed and never attempted. | Process. |
@@ -125,6 +135,33 @@ job. Retries resume from `next_phase`; explicit reprocessing can restart at
 records. At startup, the scheduler closes stale unfinished attempts as
 `interrupted` and makes their jobs immediately due. Recovery therefore uses
 database leases and checkpoints, not an external checkpoint file.
+
+The per-job timeout bounds each network or model step once that step holds
+its concurrency slot, and never the time a job spends waiting for one. The
+alternative, one ceiling around the whole lifecycle, was tried and is the
+wrong shape for a corpus: every job of a 1,500-job first run is claimed at
+once, ten fetch slots and four model slots drain the queue over an hour, and
+a 180-second ceiling that starts at claim time would record most of the corpus
+as `timeout`, consume one of three attempts, and repeat the next day until
+the jobs were terminal without a model ever seeing them. Two consequences
+follow. The scheduler admits at most `http + model` concurrency jobs at a
+time, so an attempt's age tracks its active time rather than its queue time.
+And the reaper's staleness bound is four timeouts, one per timed step an
+attempt can hold, since the timeout itself no longer bounds an attempt.
+
+Ctrl-C cancels the run's task and waits for it to unwind, so the run row is
+closed, the engine disposed, and the browser shut before the process exits
+130; jobs left `in_progress` are released by the next run's reaper. The loop
+runs on a worker thread, and completion is tracked with an event rather than
+`Thread.join`, because on Python 3.12 a join interrupted by `KeyboardInterrupt`
+marks the still-running thread as stopped.
+
+Two acquisition rules err toward keeping a posting alive. A redirect may land
+on the same host, a sibling under the same registrable domain, or a known ATS
+host; only a different domain is off-site and terminal. A past JSON-LD
+`validThrough` closes a posting only when the page corroborates it, with a
+closure phrase or a body too short to be open, because some ATSs leave a stale
+date on a posting discovery still lists.
 
 The CLI loads `.env` only for commands that call the model. `run` and
 `reprocess` validate recognized OpenAI and Anthropic credentials before they

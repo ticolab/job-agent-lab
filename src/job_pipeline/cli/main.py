@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
@@ -69,7 +70,16 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> None:
     args = build_parser().parse_args(argv)
-    _BY_NAME[args.command].execute(args)
+    try:
+        _BY_NAME[args.command].execute(args)
+    except KeyboardInterrupt:
+        # The run was cancelled and unwound; jobs left in progress are
+        # released to retry by the next run's reaper.
+        print(
+            "Interrupted. In-progress jobs will be reaped by the next run.",
+            file=sys.stderr,
+        )
+        raise SystemExit(130) from None
 
 
 if __name__ == "__main__":

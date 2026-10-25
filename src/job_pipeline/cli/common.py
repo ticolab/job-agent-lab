@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import contextlib
 import os
 import sys
 import threading
@@ -59,17 +60,53 @@ def require_provider_credential(model: str) -> None:
 
 
 def run_async[T](coroutine: Coroutine[Any, Any, T]) -> T:
+    """Drive *coroutine* on its own loop in a worker thread, interruptibly.
+
+    The loop lives on a thread because the process may already hold a
+    main-thread loop registration (Playwright's sync API leaves one behind
+    in the test suite). A plain ``thread.join()`` would make Ctrl-C useless:
+    the interrupt lands in the main thread, the loop keeps running, and the
+    interpreter waits for the non-daemon thread at exit. So the main thread
+    polls for completion, and on ``KeyboardInterrupt`` cancels the task,
+    which unwinds the pipeline through its own ``finally`` blocks (run row
+    closed, engine disposed, browser shut) before the interrupt is re-raised.
+
+    Completion is tracked with an :class:`threading.Event` rather than
+    ``Thread.join``: on Python 3.12 a ``join(timeout)`` that is interrupted
+    by ``KeyboardInterrupt`` marks the still-running thread as stopped, so a
+    later ``join()`` returns at once and the cancellation would never be
+    waited for.
+    """
+    loop = asyncio.new_event_loop()
+    task = loop.create_task(coroutine)
     result: dict[str, Any] = {}
+    finished = threading.Event()
 
     def invoke() -> None:
+        asyncio.set_event_loop(loop)
         try:
-            result["value"] = asyncio.run(coroutine)
+            result["value"] = loop.run_until_complete(task)
         except BaseException as exc:
             result["error"] = exc
+        finally:
+            try:
+                loop.run_until_complete(loop.shutdown_asyncgens())
+            finally:
+                asyncio.set_event_loop(None)
+                loop.close()
+                finished.set()
 
-    thread = threading.Thread(target=invoke)
-    thread.start()
-    thread.join()
+    threading.Thread(target=invoke, daemon=True).start()
+    try:
+        while not finished.wait(0.2):
+            pass
+    except KeyboardInterrupt:
+        if not finished.is_set():
+            # RuntimeError: the loop closed between the check and the call.
+            with contextlib.suppress(RuntimeError):
+                loop.call_soon_threadsafe(task.cancel)
+        finished.wait()
+        raise
     if "error" in result:
         raise result["error"]
     return cast(T, result["value"])

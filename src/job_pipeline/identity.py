@@ -6,8 +6,6 @@ import hashlib
 import re
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
-from job_pipeline.settings import FINGERPRINT_CHARS
-
 NON_IDENTIFYING_PARAMS = frozenset(
     {
         "title",  # Accenture
@@ -69,9 +67,14 @@ def url_key(url: str) -> str:
 
 
 def fingerprint(title: str, text: str) -> str:
-    """Hash normalized title and the bounded normalized posting prefix."""
+    """Hash the normalized title and the whole normalized posting text.
+
+    The whole text, not a prefix: a merge is irreversible, and boards whose
+    main text opens with a long shared preamble would otherwise give two
+    different roles with the same title one fingerprint. Case and whitespace
+    are folded so a re-rendered copy of the same posting still matches.
+    """
     normalized = (
-        f"{_normalized_identity_text(title)}\n"
-        f"{_normalized_identity_text(text)[:FINGERPRINT_CHARS]}"
+        f"{_normalized_identity_text(title)}\n{_normalized_identity_text(text)}"
     )
     return hashlib.sha256(normalized.encode()).hexdigest()

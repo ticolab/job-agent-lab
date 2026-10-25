@@ -173,9 +173,12 @@ def test_pipeline_result_counts_dispositions_and_tokens() -> None:
         ObservationSummary((), frozenset()),
         outcomes,
         reaped=2,
+        dispositions={"completed_eligible": 3, "unknown": 1, "new": 2},
     )
     assert result.attempted == 2
-    assert result.skipped_completed == 1
+    assert result.skipped == 1
+    assert result.skipped_completed == 4
+    assert result.counts["skipped_completed"] == 4
     assert result.eligible == 1
     assert result.retry == 1
     assert result.interrupted == 2
@@ -331,6 +334,72 @@ def test_run_pipeline_enforces_browser_and_model_ceilings(
         return high_water, len(result.outcomes)
 
     assert run_async(scenario()) == (2, 3)
+
+
+def test_run_pipeline_bounds_jobs_claimed_at_once(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    async def scenario() -> tuple[int, int, dict[str, int] | None]:
+        factory = await _database(tmp_path / "in-flight.db")
+        await _seed_snapshots(
+            factory,
+            {
+                COMPANIES[0]: [
+                    f"https://acme.example/jobs/{index}" for index in range(4)
+                ]
+            },
+        )
+        active = 0
+        high_water = 0
+        target_reached = asyncio.Event()
+
+        async def fake_process(job_id: int, *, deps: WorkerDeps) -> JobOutcome:
+            nonlocal active, high_water
+            active += 1
+            high_water = max(high_water, active)
+            if active == 2:
+                target_reached.set()
+            await asyncio.wait_for(target_reached.wait(), timeout=1)
+            await asyncio.sleep(0)
+            active -= 1
+            async with deps.session_factory() as session:
+                job = await jobs_repo.get(session, job_id)
+            assert job is not None
+            return JobOutcome(
+                job.id,
+                job.company_slug,
+                job.url_key,
+                "completed_eligible",
+                "extraction",
+                "eligible",
+                None,
+                TokenUsage(),
+            )
+
+        monkeypatch.setattr(scheduler, "process_job", fake_process)
+        policy = PipelinePolicy(model="test", http_concurrency=1, model_concurrency=1)
+        assert policy.in_flight == 2
+        deps_factory, client = _deps_factory(factory, policy)
+        try:
+            result = await scheduler.run_pipeline(
+                [COMPANIES[0]],
+                session_factory=factory,
+                deps_factory=deps_factory,
+                policy=policy,
+            )
+        finally:
+            await client.aclose()
+        return high_water, len(result.outcomes), dict(result.dispositions or {})
+
+    high_water, outcome_count, dispositions = run_async(scenario())
+    assert high_water == 2
+    assert outcome_count == 4
+    assert dispositions == {"new": 4}
+
+
+def test_stale_bound_covers_every_timed_step() -> None:
+    policy = PipelinePolicy(model="test", job_timeout=30)
+    assert policy.stale_after.total_seconds() == 120
 
 
 def test_run_pipeline_honors_limit_and_current_snapshot_filter(

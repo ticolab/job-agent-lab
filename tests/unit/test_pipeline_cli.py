@@ -1,9 +1,14 @@
 from __future__ import annotations
 
+import _thread
 import argparse
+import asyncio
 import json
+import threading
+import traceback
 from collections.abc import AsyncIterator, Mapping, Sequence
 from contextlib import asynccontextmanager
+from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 from typing import Any, TypeVar
@@ -22,6 +27,7 @@ from job_discovery.persistence.engine import create_engine, create_session_facto
 from job_eligibility import EligibilityResponse
 from job_extractor import ExtractionResponse
 from job_pipeline.cli import common, reprocess, run
+from job_pipeline.cli import main as main_module
 from job_pipeline.cli.main import build_parser, main
 from job_pipeline.llm import Completion, StructuredCaller
 from job_pipeline.persistence import (
@@ -226,6 +232,44 @@ def test_provider_credential_is_conservative(
     model: str, credential: tuple[str, str] | None
 ) -> None:
     assert common.provider_credential(model) == credential
+
+
+def test_run_async_cancels_the_task_on_keyboard_interrupt() -> None:
+    cancelled = threading.Event()
+
+    async def hang() -> None:
+        try:
+            await asyncio.Event().wait()
+        except asyncio.CancelledError:
+            cancelled.set()
+            raise
+
+    # Deliver the interrupt to the main thread while it waits on the worker,
+    # exactly as a terminal Ctrl-C would.
+    timer = threading.Timer(0.3, _thread.interrupt_main)
+    timer.start()
+    try:
+        with pytest.raises(KeyboardInterrupt) as info:
+            common.run_async(hang())
+    finally:
+        timer.cancel()
+    assert cancelled.is_set(), "".join(traceback.format_tb(info.tb))
+
+
+def test_main_turns_keyboard_interrupt_into_exit_130(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    def interrupted(_args: argparse.Namespace) -> None:
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(
+        "job_pipeline.cli.main._BY_NAME",
+        {"show": replace(main_module._BY_NAME["show"], execute=interrupted)},
+    )
+    with pytest.raises(SystemExit) as exc:
+        main(["show", "--job", "1"])
+    assert exc.value.code == 130
+    assert "reaped by the next run" in capsys.readouterr().err
 
 
 def test_preview_observes_and_never_constructs_cost_dependencies(
@@ -895,7 +939,7 @@ def test_run_injects_factories_and_keeps_job_failure_exit_zero(
         router.get(URL).mock(return_value=httpx.Response(404))
         main(["run", "-c", "acme", "--limit", "1", "--database", str(path)])
     assert constructed == {"caller": 1, "http": 1, "browser": 1}
-    assert "unavailable    1" in capsys.readouterr().out
+    assert f"{'unavailable':<22} 1" in capsys.readouterr().out
 
     async def status() -> str:
         async with factory() as session:

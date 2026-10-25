@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from datetime import timedelta
 from typing import Literal, Protocol
 from uuid import uuid4
 
@@ -40,12 +39,33 @@ def new_run_id() -> str:
     return f"{utc_now():%Y%m%d_%H%M%S}_{uuid4().hex[:8]}"
 
 
+# Statuses an ordinary run never plans, so a snapshot job in one of them is
+# "skipped as completed" in the sense the run summary reports.
+COMPLETED_DISPOSITIONS: tuple[str, ...] = (
+    "completed_eligible",
+    "completed_ineligible",
+    "unknown",
+    "unavailable",
+    "failed",
+    "merged",
+)
+
+
 @dataclass(frozen=True, slots=True)
 class PipelineResult:
+    """What one run did.
+
+    ``skipped`` counts outcomes whose claim was lost to another worker;
+    ``skipped_completed`` counts snapshot jobs the planner never selected
+    because they already carry a terminal status. The two are different
+    questions and the summary prints both.
+    """
+
     run_id: str
     observation: ObservationSummary | None
     outcomes: tuple[JobOutcome, ...]
     reaped: int
+    dispositions: Mapping[str, int] | None = None
 
     def _count(self, status: str) -> int:
         return sum(outcome.status == status for outcome in self.outcomes)
@@ -56,7 +76,11 @@ class PipelineResult:
 
     @property
     def skipped_completed(self) -> int:
-        return self.skipped
+        if self.dispositions is None:
+            return 0
+        return sum(
+            self.dispositions.get(status, 0) for status in COMPLETED_DISPOSITIONS
+        )
 
     @property
     def attempted(self) -> int:
@@ -110,6 +134,7 @@ class PipelineResult:
     def counts(self) -> dict[str, int]:
         return {
             "skipped": self.skipped,
+            "skipped_completed": self.skipped_completed,
             "attempted": self.attempted,
             "eligible": self.eligible,
             "ineligible": self.ineligible,
@@ -153,7 +178,7 @@ async def run_pipeline(
     async with session_factory() as session:
         reaped = await runs_repo.reap_stale(
             session,
-            older_than=now - timedelta(seconds=policy.job_timeout),
+            older_than=now - policy.stale_after,
             finished_at=now,
         )
     selection = ",".join(company.slug for company in companies)
@@ -166,9 +191,13 @@ async def run_pipeline(
             started_at=now,
         )
     observation: ObservationSummary | None = None
+    dispositions: dict[str, int] | None = None
     if reprocess is None:
         observation = await observe(session_factory, companies)
         async with session_factory() as session:
+            dispositions = await jobs_repo.disposition_counts(
+                session, observation.snapshot_keys, now
+            )
             jobs = await jobs_repo.list_work(
                 session,
                 observation.snapshot_keys,
@@ -199,10 +228,18 @@ async def run_pipeline(
         per_host_semaphores,
         per_host_lock,
     )
+    # Bound how many jobs are claimed at once. The per-step timeout inside
+    # the worker never counts queue time, but a job claimed an hour before
+    # it reaches a slot would still carry an attempt old enough for an
+    # overlapping run's reaper to mistake for abandoned.
+    in_flight = asyncio.Semaphore(policy.in_flight)
+
+    async def _guarded(job_id: int) -> JobOutcome:
+        async with in_flight:
+            return await process_job(job_id, deps=deps)
+
     try:
-        outcomes = tuple(
-            await asyncio.gather(*(process_job(job.id, deps=deps) for job in jobs))
-        )
+        outcomes = tuple(await asyncio.gather(*(_guarded(job.id) for job in jobs)))
     except BaseException:
         async with session_factory() as session:
             await runs_repo.finish_run(
@@ -212,7 +249,7 @@ async def run_pipeline(
                 finished_at=utc_now(),
             )
         raise
-    result = PipelineResult(run_id, observation, outcomes, reaped)
+    result = PipelineResult(run_id, observation, outcomes, reaped, dispositions)
     async with session_factory() as session:
         await runs_repo.finish_run(
             session,
@@ -224,6 +261,7 @@ async def run_pipeline(
 
 
 __all__ = [
+    "COMPLETED_DISPOSITIONS",
     "DepsFactory",
     "PipelineResult",
     "SessionFactory",
