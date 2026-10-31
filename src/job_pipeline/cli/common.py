@@ -127,8 +127,11 @@ def add_database_argument(parser: argparse.ArgumentParser) -> None:
 
 
 def add_policy_arguments(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("-m", "--model", default=settings.DEFAULT_MODEL)
-    parser.add_argument("--limit", type=positive_int, default=None, metavar="N")
+    add_model_policy_arguments(parser)
+    add_fetch_policy_arguments(parser)
+
+
+def add_fetch_policy_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--http-concurrency",
         type=positive_int,
@@ -141,6 +144,11 @@ def add_policy_arguments(parser: argparse.ArgumentParser) -> None:
         default=settings.DEFAULT_BROWSER_CONCURRENCY,
         metavar="N",
     )
+
+
+def add_model_policy_arguments(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("-m", "--model", default=settings.DEFAULT_MODEL)
+    parser.add_argument("--limit", type=positive_int, default=None, metavar="N")
     parser.add_argument(
         "--model-concurrency",
         type=positive_int,
@@ -157,8 +165,12 @@ def add_policy_arguments(parser: argparse.ArgumentParser) -> None:
 
 def build_policy(args: argparse.Namespace) -> PipelinePolicy:
     return PipelinePolicy(
-        http_concurrency=args.http_concurrency,
-        browser_concurrency=args.browser_concurrency,
+        http_concurrency=getattr(
+            args, "http_concurrency", settings.DEFAULT_HTTP_CONCURRENCY
+        ),
+        browser_concurrency=getattr(
+            args, "browser_concurrency", settings.DEFAULT_BROWSER_CONCURRENCY
+        ),
         model_concurrency=args.model_concurrency,
         job_timeout=float(args.timeout_seconds),
         limit=args.limit,

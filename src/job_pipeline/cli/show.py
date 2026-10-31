@@ -19,6 +19,7 @@ from job_pipeline.persistence import (
     decisions_repo,
     jobs_repo,
     results_repo,
+    runs_repo,
 )
 
 SHOW_SUMMARY = "Show the complete audit history for one job."
@@ -71,9 +72,15 @@ async def _run(args: argparse.Namespace) -> None:
             attempts = await attempts_repo.history(session, job.id)
             decisions = await decisions_repo.history(session, job.id)
             current_result = await results_repo.current(session, job.id)
+            runs = await runs_repo.runs_by_id(
+                session, {attempt.run_id for attempt in attempts}
+            )
 
     print("Job")
-    _print_record(job)
+    _print_record(job, omit=frozenset({"attempt_count"}))
+    print(f"  attempts in current stage: {job.attempt_count}")
+    if job.status == "ready_for_extraction":
+        print("  state: eligible; waiting for `job-pipeline extraction`")
     print("Sources")
     for source in sources:
         _print_record(source)
@@ -85,6 +92,9 @@ async def _run(args: argparse.Namespace) -> None:
     print("Attempts")
     for attempt in attempts:
         _print_record(attempt)
+        run = runs.get(attempt.run_id)
+        print(f"  run_stage: {run.stage if run else 'unknown'}")
+        print(f"  run_trigger: {run.trigger if run else 'unknown'}")
     print("Decisions")
     for decision in decisions:
         _print_record(decision, omit=frozenset({"evidence_json"}))

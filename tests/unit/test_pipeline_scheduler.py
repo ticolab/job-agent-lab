@@ -13,9 +13,10 @@ from urllib.parse import urlsplit
 import httpx
 import pytest
 from pydantic import BaseModel
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-import job_pipeline.cli.run as run_command
+import job_pipeline.cli.stages as run_command
 import job_pipeline.persistence.attempts_repo as attempts_repo
 import job_pipeline.persistence.jobs_repo as jobs_repo
 import job_pipeline.persistence.models as models
@@ -26,6 +27,7 @@ from job_discovery.persistence import jobs_repo as discovery_jobs_repo
 from job_discovery.persistence.engine import create_engine, create_session_factory
 from job_discovery.settings import CaptureBrowser
 from job_pipeline.llm import Completion
+from job_pipeline.persistence.models import Stage
 from job_pipeline.policy import PipelinePolicy
 from job_pipeline.runner import scheduler
 from job_pipeline.runner.observe import ObservationSummary
@@ -89,6 +91,7 @@ def _deps_factory(
 
     def build(
         run_id: str,
+        stage: Stage,
         trigger: Literal["scheduled", "reprocess"],
         reason: str | None,
         http_semaphore: asyncio.Semaphore,
@@ -99,6 +102,7 @@ def _deps_factory(
     ) -> WorkerDeps:
         return WorkerDeps(
             session_factory=factory,
+            stage=stage,
             http_client=client,
             browser=None,
             caller=UnusedCaller(),
@@ -170,6 +174,7 @@ def test_pipeline_result_counts_dispositions_and_tokens() -> None:
     )
     result = PipelineResult(
         "run-1",
+        "extraction",
         ObservationSummary((), frozenset()),
         outcomes,
         reaped=2,
@@ -177,9 +182,9 @@ def test_pipeline_result_counts_dispositions_and_tokens() -> None:
     )
     assert result.attempted == 2
     assert result.skipped == 1
-    assert result.skipped_completed == 4
-    assert result.counts["skipped_completed"] == 4
-    assert result.eligible == 1
+    assert result.skipped_completed == 6
+    assert result.counts["skipped_completed"] == 6
+    assert result.extracted == 1
     assert result.retry == 1
     assert result.interrupted == 2
     assert result.prompt_tokens == 10
@@ -256,6 +261,7 @@ def test_run_pipeline_enforces_global_and_per_host_ceilings(
         try:
             result = await scheduler.run_pipeline(
                 COMPANIES,
+                stage="eligibility",
                 session_factory=factory,
                 deps_factory=deps_factory,
                 policy=policy,
@@ -325,6 +331,7 @@ def test_run_pipeline_enforces_browser_and_model_ceilings(
         try:
             result = await scheduler.run_pipeline(
                 [COMPANIES[0]],
+                stage="eligibility",
                 session_factory=factory,
                 deps_factory=deps_factory,
                 policy=policy,
@@ -336,8 +343,11 @@ def test_run_pipeline_enforces_browser_and_model_ceilings(
     assert run_async(scenario()) == (2, 3)
 
 
+@pytest.mark.parametrize("stage", ["eligibility", "extraction"])
 def test_run_pipeline_bounds_jobs_claimed_at_once(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    stage: Stage,
 ) -> None:
     async def scenario() -> tuple[int, int, dict[str, int] | None]:
         factory = await _database(tmp_path / "in-flight.db")
@@ -349,21 +359,66 @@ def test_run_pipeline_bounds_jobs_claimed_at_once(
                 ]
             },
         )
+        from sqlalchemy import update
+
+        from job_pipeline.runner.observe import observe
+
+        await observe(factory, [COMPANIES[0]])
+        if stage == "extraction":
+            async with factory() as session, session.begin():
+                await session.execute(
+                    update(models.Job).values(
+                        status="ready_for_extraction", next_phase="extraction"
+                    )
+                )
         active = 0
         high_water = 0
         target_reached = asyncio.Event()
+        target = 3 if stage == "eligibility" else 2
 
         async def fake_process(job_id: int, *, deps: WorkerDeps) -> JobOutcome:
             nonlocal active, high_water
+            async with deps.session_factory() as session:
+                attempt_id = await attempts_repo.claim_and_start(
+                    session,
+                    job_id=job_id,
+                    stage=deps.stage,
+                    run_id=deps.run_id,
+                    trigger=deps.trigger,
+                    reason=None,
+                    model="test",
+                    policy_version="test",
+                    extractor_version="test",
+                    started_at=datetime.now(),
+                )
+            assert attempt_id is not None
             active += 1
             high_water = max(high_water, active)
-            if active == 2:
+            if active == target:
                 target_reached.set()
-            await asyncio.wait_for(target_reached.wait(), timeout=1)
-            await asyncio.sleep(0)
-            active -= 1
+            await asyncio.wait_for(target_reached.wait(), timeout=5)
             async with deps.session_factory() as session:
                 job = await jobs_repo.get(session, job_id)
+                live = (
+                    (
+                        await session.execute(
+                            select(models.Job).where(models.Job.status == "in_progress")
+                        )
+                    )
+                    .scalars()
+                    .all()
+                )
+                assert len(live) <= target
+            async with deps.session_factory() as session:
+                await jobs_repo.release(
+                    session,
+                    job_id,
+                    status="failed",
+                    next_phase=job.next_phase if job else "fetch",
+                    next_attempt_after=None,
+                    attempt_id=attempt_id,
+                )
+            active -= 1
             assert job is not None
             return JobOutcome(
                 job.id,
@@ -377,12 +432,13 @@ def test_run_pipeline_bounds_jobs_claimed_at_once(
             )
 
         monkeypatch.setattr(scheduler, "process_job", fake_process)
-        policy = PipelinePolicy(model="test", http_concurrency=1, model_concurrency=1)
-        assert policy.in_flight == 2
+        policy = PipelinePolicy(model="test", http_concurrency=1, model_concurrency=2)
+        assert policy.claim_ceiling(stage) == target
         deps_factory, client = _deps_factory(factory, policy)
         try:
             result = await scheduler.run_pipeline(
                 [COMPANIES[0]],
+                stage=stage,
                 session_factory=factory,
                 deps_factory=deps_factory,
                 policy=policy,
@@ -392,9 +448,11 @@ def test_run_pipeline_bounds_jobs_claimed_at_once(
         return high_water, len(result.outcomes), dict(result.dispositions or {})
 
     high_water, outcome_count, dispositions = run_async(scenario())
-    assert high_water == 2
+    assert high_water == (3 if stage == "eligibility" else 2)
     assert outcome_count == 4
-    assert dispositions == {"new": 4}
+    assert dispositions == {
+        "new" if stage == "eligibility" else "ready_for_extraction": 4
+    }
 
 
 def test_stale_bound_covers_every_timed_step() -> None:
@@ -442,6 +500,7 @@ def test_run_pipeline_honors_limit_and_current_snapshot_filter(
         try:
             result = await scheduler.run_pipeline(
                 [COMPANIES[0]],
+                stage="eligibility",
                 session_factory=factory,
                 deps_factory=deps_factory,
                 policy=policy,
@@ -493,6 +552,7 @@ def test_run_pipeline_reprocesses_exact_ids_outside_snapshot(
         try:
             result = await scheduler.run_pipeline(
                 [COMPANIES[0]],
+                stage="eligibility",
                 session_factory=factory,
                 deps_factory=deps_factory,
                 policy=policy,
@@ -523,6 +583,8 @@ def test_run_pipeline_reaps_stale_attempt_before_planning(
             await runs_repo.start_run(
                 session,
                 run_id="abandoned",
+                stage="eligibility",
+                trigger="scheduled",
                 selection=COMPANIES[0].slug,
                 model="test",
                 started_at=datetime(2025, 1, 1),
@@ -531,6 +593,7 @@ def test_run_pipeline_reaps_stale_attempt_before_planning(
             attempt_id = await attempts_repo.claim_and_start(
                 session,
                 job_id=1,
+                stage="eligibility",
                 run_id="abandoned",
                 trigger="scheduled",
                 reason=None,
@@ -550,6 +613,7 @@ def test_run_pipeline_reaps_stale_attempt_before_planning(
         try:
             result = await scheduler.run_pipeline(
                 [COMPANIES[0]],
+                stage="eligibility",
                 session_factory=factory,
                 deps_factory=deps_factory,
                 policy=policy,

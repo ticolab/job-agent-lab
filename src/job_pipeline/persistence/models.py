@@ -10,6 +10,7 @@ portably render the SQLite partial indexes that could enforce that condition.
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Literal
 
 from sqlalchemy import (
     Boolean,
@@ -30,6 +31,7 @@ JOB_STATUSES = (
     "new",
     "in_progress",
     "retry",
+    "ready_for_extraction",
     "completed_eligible",
     "completed_ineligible",
     "unknown",
@@ -37,8 +39,15 @@ JOB_STATUSES = (
     "failed",
     "merged",
 )
+Stage = Literal["eligibility", "extraction"]
+STAGE_PHASES: dict[Stage, tuple[str, ...]] = {
+    "eligibility": ("fetch", "eligibility"),
+    "extraction": ("extraction",),
+}
+RUN_STAGES = ("combined", "eligibility", "extraction")
 PHASES = ("fetch", "eligibility", "extraction")
 ATTEMPT_OUTCOMES = (
+    "ready_for_extraction",
     "completed_eligible",
     "completed_ineligible",
     "unknown",
@@ -64,6 +73,7 @@ ERROR_CATEGORIES = (
     "model_call",
     "validation_failed",
     "ungrounded_evidence",
+    "missing_checkpoint",
     "internal",
     "interrupted",
 )
@@ -86,6 +96,11 @@ class Job(Base):
         CheckConstraint(
             "merged_into_id IS NULL OR merged_into_id != id",
             name="ck_jobs_not_self_merged",
+        ),
+        CheckConstraint(
+            "status != 'ready_for_extraction' OR "
+            "(next_phase = 'extraction' AND current_attempt_id IS NULL)",
+            name="ck_jobs_ready_released",
         ),
         UniqueConstraint("company_slug", "url_key", name="uq_jobs_company_url_key"),
         Index("ix_jobs_status_next_attempt", "status", "next_attempt_after"),
@@ -160,6 +175,13 @@ class JobContent(Base):
 
 class PipelineRun(Base):
     __tablename__ = "pipeline_runs"
+    __table_args__ = (
+        CheckConstraint(_allowed("stage", RUN_STAGES), name="ck_pipeline_runs_stage"),
+        CheckConstraint(_allowed("trigger", TRIGGERS), name="ck_pipeline_runs_trigger"),
+    )
+
+    stage: Mapped[str] = mapped_column(String, nullable=False)
+    trigger: Mapped[str] = mapped_column(String, nullable=False)
 
     id: Mapped[str] = mapped_column(String, primary_key=True)
     started_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)

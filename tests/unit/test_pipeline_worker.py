@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 from collections.abc import Mapping, Sequence
+from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import TypeVar, cast
@@ -13,9 +14,10 @@ import httpx
 import pytest
 import respx
 from pydantic import BaseModel
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
+import job_pipeline.persistence.attempts_repo as attempts_repo
 import job_pipeline.persistence.decisions_repo as decisions_repo
 import job_pipeline.persistence.jobs_repo as jobs_repo
 import job_pipeline.persistence.models as models
@@ -29,10 +31,11 @@ from job_extractor import ExtractionResponse
 from job_pipeline.content import ladder
 from job_pipeline.content.fetch import AddressResolver, FetchResult, fetch
 from job_pipeline.content.model import AcquisitionFailure
-from job_pipeline.llm import Completion
+from job_pipeline.llm import Completion, ModelCallError
 from job_pipeline.policy import PipelinePolicy
 from job_pipeline.runner.worker import WorkerDeps, process_job
 from tests.unit.asyncio_harness import run_async, track_engine
+from tests.unit.test_pipeline_cli import _seed_audit
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -199,6 +202,8 @@ async def _database(path: Path) -> async_sessionmaker[AsyncSession]:
         await runs_repo.start_run(
             session,
             run_id="run-1",
+            stage="eligibility",
+            trigger="scheduled",
             selection=COMPANY.slug,
             model="test",
             started_at=datetime(2026, 1, 1, tzinfo=UTC),
@@ -245,6 +250,7 @@ def test_ineligible_stops_before_extraction_and_accounts_tokens(tmp_path: Path) 
                     1,
                     deps=WorkerDeps(
                         session_factory=factory,
+                        stage="eligibility",
                         http_client=client,
                         browser=None,
                         caller=caller,
@@ -278,6 +284,56 @@ def test_ineligible_stops_before_extraction_and_accounts_tokens(tmp_path: Path) 
     )
 
 
+def test_hand_off_checkpoint_error_is_terminal(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    async def reject_hand_off(*args: object, **kwargs: object) -> int | None:
+        raise decisions_repo.CheckpointError("eligible checkpoint disappeared")
+
+    monkeypatch.setattr(decisions_repo, "hand_off_to_extraction", reject_hand_off)
+
+    async def scenario() -> None:
+        factory = await _database(tmp_path / "handoff-error.db")
+        caller = EligibleCaller()
+        with respx.mock:
+            respx.get("https://acme.example/jobs/1").mock(
+                return_value=httpx.Response(200, text=POSTING_HTML)
+            )
+            async with httpx.AsyncClient() as client:
+                outcome = await process_job(
+                    1,
+                    deps=WorkerDeps(
+                        session_factory=factory,
+                        stage="eligibility",
+                        http_client=client,
+                        browser=None,
+                        caller=caller,
+                        policy=PipelinePolicy(model="test"),
+                        run_id="run-1",
+                        trigger="scheduled",
+                        reason=None,
+                        companies={COMPANY.slug: COMPANY},
+                    ),
+                )
+        assert outcome.status == "failed"
+        assert outcome.error is not None
+        assert outcome.error.category == "missing_checkpoint"
+        assert outcome.error.message == "eligible checkpoint disappeared"
+        assert caller.extraction_calls == 0
+        async with factory() as session:
+            job = await jobs_repo.get(session, 1)
+            attempt = (await session.execute(select(models.JobAttempt))).scalar_one()
+        assert job is not None
+        assert job.status == "failed"
+        assert job.current_attempt_id is None
+        assert job.next_attempt_after is None
+        assert attempt.outcome == "failed"
+        assert attempt.error_category == "missing_checkpoint"
+        assert attempt.finished_at is not None
+
+    run_async(scenario())
+
+
 def test_cancellation_is_left_open_for_reaper(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -291,6 +347,7 @@ def test_cancellation_is_left_open_for_reaper(
         async with httpx.AsyncClient() as client:
             deps = WorkerDeps(
                 session_factory=factory,
+                stage="eligibility",
                 http_client=client,
                 browser=None,
                 caller=IneligibleCaller(),
@@ -323,6 +380,7 @@ def test_not_found_is_unavailable_and_lost_claim_is_skipped(tmp_path: Path) -> N
             async with httpx.AsyncClient() as client:
                 deps = WorkerDeps(
                     session_factory=factory,
+                    stage="eligibility",
                     http_client=client,
                     browser=None,
                     caller=caller,
@@ -352,6 +410,7 @@ def test_eligible_extraction_success_persists_result(tmp_path: Path) -> None:
                     1,
                     deps=WorkerDeps(
                         session_factory=factory,
+                        stage="eligibility",
                         http_client=client,
                         browser=None,
                         caller=caller,
@@ -378,13 +437,13 @@ def test_eligible_extraction_success_persists_result(tmp_path: Path) -> None:
         )
 
     assert run_async(scenario()) == (
-        "completed_eligible",
-        "completed_eligible",
+        "ready_for_extraction",
+        "ready_for_extraction",
         "eligible",
-        True,
-        10,
+        False,
+        5,
         1,
-        1,
+        0,
     )
 
 
@@ -402,6 +461,7 @@ def test_extraction_failure_retries_from_checkpoint_without_eligibility_call(
             async with httpx.AsyncClient() as client:
                 deps = WorkerDeps(
                     session_factory=factory,
+                    stage="eligibility",
                     http_client=client,
                     browser=None,
                     caller=caller,
@@ -411,6 +471,9 @@ def test_extraction_failure_retries_from_checkpoint_without_eligibility_call(
                     reason=None,
                     companies={COMPANY.slug: COMPANY},
                 )
+                ready = await process_job(1, deps=deps)
+                assert ready.status == "ready_for_extraction"
+                deps = replace(deps, stage="extraction", http_client=None)
                 first = await process_job(1, deps=deps)
                 second = await process_job(1, deps=deps)
         async with factory() as session:
@@ -436,7 +499,7 @@ def test_extraction_failure_retries_from_checkpoint_without_eligibility_call(
         1,
         2,
         1,
-        3,
+        4,
     )
 
 
@@ -456,6 +519,7 @@ def test_timeout_retries_then_exhausts_budget(tmp_path: Path) -> None:
             async with httpx.AsyncClient() as client:
                 deps = WorkerDeps(
                     session_factory=factory,
+                    stage="eligibility",
                     http_client=client,
                     browser=None,
                     caller=HangingCaller(),
@@ -533,6 +597,7 @@ def test_queue_wait_is_not_charged_against_the_job_timeout(
             async with httpx.AsyncClient() as client:
                 deps = WorkerDeps(
                     session_factory=factory,
+                    stage="eligibility",
                     http_client=client,
                     browser=None,
                     caller=IneligibleCaller(),
@@ -563,3 +628,213 @@ def test_queue_wait_is_not_charged_against_the_job_timeout(
     # The second fetch could only start after the first released the slot,
     # so the run as a whole outlived one job's timeout budget.
     assert elapsed > 0.6
+
+
+@pytest.mark.parametrize(
+    "missing", ["content", "decision", "ineligible", "old_content"]
+)
+def test_missing_extraction_checkpoint_is_terminal_without_model_calls(
+    tmp_path: Path,
+    missing: str,
+) -> None:
+    async def scenario() -> None:
+        factory, job_id = await _seed_audit(tmp_path / "missing.db")
+        async with factory() as session, session.begin():
+            job = await session.get(models.Job, job_id)
+            assert job is not None
+            job.status = "ready_for_extraction"
+            job.next_phase = "extraction"
+            if missing == "content":
+                job.current_content_id = None
+            if missing in {"decision", "ineligible"}:
+                await session.execute(
+                    update(models.JobDecision).values(
+                        is_current=missing != "decision", decision="ineligible"
+                    )
+                )
+            if missing == "old_content":
+                old = await session.get(models.JobContent, job.current_content_id)
+                assert old is not None
+                new = models.JobContent(
+                    job_id=job_id,
+                    content_hash="new",
+                    fingerprint="new",
+                    resolved_url=old.resolved_url,
+                    http_status=200,
+                    method="main_content",
+                    text=old.text,
+                    retrieved_at=datetime(2026, 1, 2),
+                )
+                session.add(new)
+                await session.flush()
+                job.current_content_id = new.id
+        caller = EligibleCaller()
+        from tests.unit.test_pipeline_cli import COMPANY as AUDIT_COMPANY
+
+        outcome = await process_job(
+            job_id,
+            deps=WorkerDeps(
+                session_factory=factory,
+                stage="extraction",
+                http_client=None,
+                browser=None,
+                caller=caller,
+                policy=PipelinePolicy(model="test"),
+                run_id="seed",
+                trigger="scheduled",
+                reason=None,
+                companies={AUDIT_COMPANY.slug: AUDIT_COMPANY},
+            ),
+        )
+        assert outcome.status == "failed"
+        assert (
+            outcome.error is not None and outcome.error.category == "missing_checkpoint"
+        )
+        assert caller.eligibility_calls == caller.extraction_calls == 0
+        async with factory() as session:
+            attempts = await attempts_repo.history(session, job_id)
+            current_job = await jobs_repo.get(session, job_id)
+        assert current_job is not None and current_job.attempt_count == 1
+        assert attempts[-1].error_category == "missing_checkpoint"
+        assert attempts[-1].finished_at is not None
+
+    run_async(scenario())
+
+
+@pytest.mark.parametrize("internal", [False, True])
+def test_retry_budgets_and_backoff_restart_at_stage_boundary(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    internal: bool,
+) -> None:
+    async def scenario() -> None:
+        factory = await _database(tmp_path / "budget.db")
+        moment = datetime(2026, 10, 1)
+        monkeypatch.setattr("job_pipeline.policy.utc_now", lambda: moment)
+        monkeypatch.setattr("job_pipeline.runner.worker.utc_now", lambda: moment)
+
+        class FailingCaller(EligibleCaller):
+            async def complete(
+                self,
+                messages: Sequence[Mapping[str, str]],
+                schema: type[T],
+            ) -> Completion[T]:
+                if schema is ExtractionResponse:
+                    self.extraction_calls += 1
+                    if internal:
+                        raise RuntimeError("internal extraction failure")
+                    raise ModelCallError("test", "retryable extraction failure")
+                return await super().complete(messages, schema)
+
+        caller = FailingCaller()
+        fetch_calls = 0
+        from job_pipeline.content.model import AcquiredContent
+
+        async def acquire(
+            *args: object, **kwargs: object
+        ) -> AcquiredContent | AcquisitionFailure:
+            nonlocal fetch_calls
+            fetch_calls += 1
+            if fetch_calls <= 2:
+                return AcquisitionFailure("transport", "retryable fetch failure")
+            return AcquiredContent(
+                POSTING_TEXT,
+                "Software Engineer",
+                COMPANY.sample_job_url,
+                200,
+                "main_content",
+                None,
+                None,
+                moment,
+                "hash",
+            )
+
+        monkeypatch.setattr("job_pipeline.runner.worker.acquire", acquire)
+        async with httpx.AsyncClient() as client:
+            deps = WorkerDeps(
+                session_factory=factory,
+                stage="eligibility",
+                http_client=client,
+                browser=None,
+                caller=caller,
+                policy=PipelinePolicy(model="test"),
+                run_id="run-1",
+                trigger="scheduled",
+                reason=None,
+                companies={COMPANY.slug: COMPANY},
+            )
+            for number in (1, 2):
+                outcome = await process_job(1, deps=deps)
+                assert outcome.status == "retry"
+                async with factory() as session:
+                    job = await jobs_repo.get(session, 1)
+                assert job is not None and job.next_attempt_after == moment + timedelta(
+                    days=number
+                )
+                moment += timedelta(days=number)
+            outcome = await process_job(1, deps=deps)
+            assert outcome.status == "ready_for_extraction"
+            assert caller.extraction_calls == 0
+            async with factory() as session:
+                job = await jobs_repo.get(session, 1)
+                attempts = await attempts_repo.history(session, 1)
+            assert (
+                job is not None
+                and job.attempt_count == 0
+                and job.current_attempt_id is None
+            )
+            assert attempts[-1].outcome == "ready_for_extraction"
+            assert attempts[-1].finished_at is not None
+            deps = replace(deps, stage="extraction", http_client=None)
+            budget = 2 if internal else 3
+            for number in range(1, budget + 1):
+                outcome = await process_job(1, deps=deps)
+                assert outcome.status == ("failed" if number == budget else "retry")
+                async with factory() as session:
+                    job = await jobs_repo.get(session, 1)
+                assert job is not None and job.attempt_count == number
+                if number != budget:
+                    assert job.next_attempt_after == moment + timedelta(days=number)
+                    moment += timedelta(days=number)
+            assert fetch_calls == 3
+            assert caller.eligibility_calls == 1
+            assert caller.extraction_calls == budget
+
+    run_async(scenario())
+
+
+@pytest.mark.parametrize("stage", ["eligibility", "extraction"])
+def test_internal_failure_cap_is_two_in_each_stage(
+    tmp_path: Path, stage: models.Stage
+) -> None:
+    async def scenario() -> None:
+        factory, job_id = await _seed_audit(tmp_path / "internal.db")
+        async with factory() as session:
+            await jobs_repo.prepare_reprocess(session, [job_id], from_phase=stage)
+
+        class InternalCaller(EligibleCaller):
+            async def complete(
+                self, messages: Sequence[Mapping[str, str]], schema: type[T]
+            ) -> Completion[T]:
+                raise RuntimeError("internal")
+
+        from tests.unit.test_pipeline_cli import COMPANY as AUDIT_COMPANY
+
+        async with httpx.AsyncClient() as client:
+            deps = WorkerDeps(
+                session_factory=factory,
+                stage=stage,
+                http_client=client if stage == "eligibility" else None,
+                browser=None,
+                caller=InternalCaller(),
+                policy=PipelinePolicy(model="test", retry_backoff=timedelta(0)),
+                run_id="seed",
+                trigger="reprocess",
+                reason="test",
+                companies={AUDIT_COMPANY.slug: AUDIT_COMPANY},
+            )
+            first = await process_job(job_id, deps=deps)
+            second = await process_job(job_id, deps=replace(deps, trigger="scheduled"))
+        assert [first.status, second.status] == ["retry", "failed"]
+
+    run_async(scenario())

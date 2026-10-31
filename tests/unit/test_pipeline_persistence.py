@@ -67,6 +67,8 @@ async def _seed_attempt_and_content(
     async with factory() as session:
         await runs_repo.start_run(
             session,
+            stage="eligibility",
+            trigger="scheduled",
             run_id="run-1",
             selection="all",
             model="gpt-4.1-mini",
@@ -145,7 +147,9 @@ def test_claim_has_one_winner_under_concurrency(tmp_path: Path) -> None:
 
         async def claimant() -> bool:
             async with factory() as session:
-                return cast(bool, await jobs_repo.claim(session, job_id))
+                return cast(
+                    bool, await jobs_repo.claim(session, job_id, stage="eligibility")
+                )
 
         first, second = await asyncio.gather(claimant(), claimant())
         return first, second
@@ -158,7 +162,7 @@ def test_claim_rechecks_retry_due_time(tmp_path: Path) -> None:
         factory = await _fresh_database(tmp_path / "retry-due-claim.db")
         job_id = await _seed_job(factory)
         async with factory() as session:
-            await jobs_repo.claim(session, job_id)
+            await jobs_repo.claim(session, job_id, stage="eligibility")
         async with factory() as session:
             await jobs_repo.release(
                 session,
@@ -168,7 +172,9 @@ def test_claim_rechecks_retry_due_time(tmp_path: Path) -> None:
                 next_attempt_after=datetime(2099, 1, 1),
             )
         async with factory() as session:
-            return cast(bool, await jobs_repo.claim(session, job_id))
+            return cast(
+                bool, await jobs_repo.claim(session, job_id, stage="eligibility")
+            )
 
     assert not run_async(scenario())
 
@@ -184,7 +190,7 @@ def test_release_enforces_retry_due_invariant(
         factory = await _fresh_database(tmp_path / f"invalid-{status}.db")
         job_id = await _seed_job(factory)
         async with factory() as session:
-            await jobs_repo.claim(session, job_id)
+            await jobs_repo.claim(session, job_id, stage="eligibility")
         async with factory() as session:
             await jobs_repo.release(
                 session,
@@ -332,9 +338,11 @@ def test_reap_releases_only_attempts_older_than_bound(tmp_path: Path) -> None:
         factory = await _fresh_database(tmp_path / "reap.db")
         job_id = await _seed_job(factory)
         async with factory() as session:
-            await jobs_repo.claim(session, job_id)
+            await jobs_repo.claim(session, job_id, stage="eligibility")
             await runs_repo.start_run(
                 session,
+                stage="eligibility",
+                trigger="scheduled",
                 run_id="run-1",
                 selection="all",
                 model="gpt-4.1-mini",
@@ -370,6 +378,7 @@ def test_reap_releases_only_attempts_older_than_bound(tmp_path: Path) -> None:
             )
             reaped = await runs_repo.reap_stale(
                 session,
+                stage="eligibility",
                 older_than=datetime(2026, 1, 2, tzinfo=UTC),
                 finished_at=datetime(2026, 1, 4, tzinfo=UTC),
             )
@@ -395,10 +404,11 @@ def test_observation_planning_reprocess_and_show_reads(tmp_path: Path) -> None:
                 {("acme", "https://acme.example/jobs/1")},
                 datetime(2026, 1, 2),
                 None,
+                stage="eligibility",
             )
             assert [job.id for job in due] == [job_id]
         async with factory() as session:
-            await jobs_repo.claim(session, job_id)
+            await jobs_repo.claim(session, job_id, stage="eligibility")
         async with factory() as session:
             await jobs_repo.release(
                 session,
@@ -414,6 +424,7 @@ def test_observation_planning_reprocess_and_show_reads(tmp_path: Path) -> None:
                 {("acme", "https://acme.example/jobs/1")},
                 datetime(2026, 1, 2),
                 None,
+                stage="eligibility",
             )
             selected = await jobs_repo.list_by_ids(session, [job_id])
             by_status = await jobs_repo.list_by_status(session, "acme", "retry")
@@ -461,9 +472,15 @@ def test_large_snapshot_plans_without_expression_depth_failure(
         snapshot = {("acme", key) for key, _ in observations}
         async with factory() as session:
             work = await jobs_repo.list_work(
-                session, snapshot, datetime(2026, 1, 2, tzinfo=UTC), None
+                session,
+                snapshot,
+                datetime(2026, 1, 2, tzinfo=UTC),
+                None,
+                stage="eligibility",
             )
-            counts = await jobs_repo.disposition_counts(session, snapshot)
+            counts = await jobs_repo.stage_dispositions(
+                session, snapshot, datetime(2026, 1, 2)
+            )
         return len(work), counts
 
     assert run_async(scenario()) == (1504, {"new": 1504})
@@ -474,10 +491,12 @@ def test_reaped_job_is_immediately_due(tmp_path: Path) -> None:
         factory = await _fresh_database(tmp_path / "reap-due.db")
         job_id = await _seed_job(factory)
         async with factory() as session:
-            await jobs_repo.claim(session, job_id)
+            await jobs_repo.claim(session, job_id, stage="eligibility")
         async with factory() as session:
             await runs_repo.start_run(
                 session,
+                stage="eligibility",
+                trigger="scheduled",
                 run_id="run-1",
                 selection="all",
                 model="gpt-4.1-mini",
@@ -506,6 +525,7 @@ def test_reaped_job_is_immediately_due(tmp_path: Path) -> None:
         async with factory() as session:
             reaped = await runs_repo.reap_stale(
                 session,
+                stage="eligibility",
                 older_than=datetime(2026, 1, 2, tzinfo=UTC),
                 finished_at=reaped_at,
             )
@@ -515,6 +535,7 @@ def test_reaped_job_is_immediately_due(tmp_path: Path) -> None:
                 {("acme", "https://acme.example/jobs/1")},
                 reaped_at,
                 None,
+                stage="eligibility",
             )
         return reaped, [job.id for job in work]
 
@@ -585,6 +606,8 @@ def test_stale_attempt_cannot_release_new_owner(tmp_path: Path) -> None:
         async with factory() as session:
             await runs_repo.start_run(
                 session,
+                stage="eligibility",
+                trigger="scheduled",
                 run_id="run-1",
                 selection="all",
                 model="test",
@@ -592,6 +615,7 @@ def test_stale_attempt_cannot_release_new_owner(tmp_path: Path) -> None:
             )
             first = await attempts_repo.claim_and_start(
                 session,
+                stage="eligibility",
                 job_id=job_id,
                 run_id="run-1",
                 trigger="scheduled",
@@ -605,12 +629,14 @@ def test_stale_attempt_cannot_release_new_owner(tmp_path: Path) -> None:
         async with factory() as session:
             await runs_repo.reap_stale(
                 session,
+                stage="eligibility",
                 older_than=datetime(2026, 1, 2),
                 finished_at=datetime(2026, 1, 3),
             )
         async with factory() as session:
             second = await attempts_repo.claim_and_start(
                 session,
+                stage="eligibility",
                 job_id=job_id,
                 run_id="run-1",
                 trigger="scheduled",
@@ -695,7 +721,7 @@ def test_reprocess_is_atomic_due_and_resets_retry_budget(tmp_path: Path) -> None
         assert untouched is not None
         assert untouched.status == "new"
         async with factory() as session:
-            await jobs_repo.claim(session, job_id)
+            await jobs_repo.claim(session, job_id, stage="eligibility")
         async with factory() as session:
             with pytest.raises(ValueError, match="active job IDs"):
                 await jobs_repo.prepare_reprocess(session, [job_id], from_phase="fetch")
@@ -935,6 +961,8 @@ def test_duplicate_owned_by_another_worker_is_left_alone(tmp_path: Path) -> None
         async with factory() as session:
             await runs_repo.start_run(
                 session,
+                stage="eligibility",
+                trigger="scheduled",
                 run_id="run-1",
                 selection="acme",
                 model="test",
@@ -943,6 +971,7 @@ def test_duplicate_owned_by_another_worker_is_left_alone(tmp_path: Path) -> None
         async with factory() as session:
             claimed = await attempts_repo.claim_and_start(
                 session,
+                stage="eligibility",
                 job_id=2,
                 run_id="run-1",
                 trigger="scheduled",
@@ -981,6 +1010,438 @@ def test_duplicate_owned_by_another_worker_is_left_alone(tmp_path: Path) -> None
         None,
         ["https://acme.example/jobs/1"],
     )
+
+
+@pytest.mark.parametrize("stage", ["eligibility", "extraction"])
+@pytest.mark.parametrize("trigger", ["scheduled", "reprocess"])
+def test_stage_selection_matrix(
+    tmp_path: Path, stage: models.Stage, trigger: str
+) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "matrix.db")
+        await _seed_company(factory)
+        now = datetime(2026, 1, 2)
+        expected: set[int] = set()
+        async with factory() as session, session.begin():
+            for status in models.JOB_STATUSES:
+                for phase in models.PHASES:
+                    if status == "ready_for_extraction" and phase != "extraction":
+                        continue
+                    for due in (False, True):
+                        for requested in (False, True):
+                            job = models.Job(
+                                company_slug="acme",
+                                url_key=str(len(session.new)),
+                                status=status,
+                                next_phase=phase,
+                                attempt_count=2,
+                                next_attempt_after=(
+                                    now + timedelta(days=-1 if due else 1)
+                                    if status == "retry"
+                                    else None
+                                ),
+                                reprocess_requested=requested,
+                                first_seen_at=now,
+                                last_seen_at=now,
+                                updated_at=now,
+                            )
+                            job.url_key = f"{status}-{phase}-{due}-{requested}"
+                            session.add(job)
+                            await session.flush()
+                            retry = (
+                                status == "retry"
+                                and due
+                                and phase in models.STAGE_PHASES[stage]
+                            )
+                            waiting = status == (
+                                "new"
+                                if stage == "eligibility"
+                                else "ready_for_extraction"
+                            )
+                            selected = (
+                                requested and retry
+                                if trigger == "reprocess"
+                                else not requested and (waiting or retry)
+                            )
+                            if selected:
+                                expected.add(job.id)
+            session.add(
+                models.PipelineRun(
+                    id="matrix",
+                    stage=stage,
+                    trigger=trigger,
+                    selection="all",
+                    model="test",
+                    started_at=now,
+                )
+            )
+        async with factory() as session:
+            rows = await jobs_repo.list_by_companies(session, ["acme"])
+            snapshot = {(row.company_slug, row.url_key) for row in rows}
+            planned = await jobs_repo.list_work(
+                session,
+                snapshot,
+                now,
+                None,
+                stage=stage,
+                reprocess=trigger == "reprocess",
+            )
+            assert {row.id for row in planned} == expected
+        claimed: set[int] = set()
+        for row in rows:
+            async with factory() as session:
+                attempt = await attempts_repo.claim_and_start(
+                    session,
+                    stage=stage,
+                    job_id=row.id,
+                    run_id="matrix",
+                    trigger=trigger,
+                    reason=None,
+                    model="test",
+                    policy_version="p",
+                    extractor_version="e",
+                    started_at=now,
+                )
+                if attempt is not None:
+                    claimed.add(row.id)
+        assert claimed == expected
+
+    run_async(scenario())
+
+
+def test_reap_is_scoped_by_stage(tmp_path: Path) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "stage-reap.db")
+        await _three_jobs(factory)
+        now = datetime(2026, 1, 1)
+        async with factory() as session, session.begin():
+            session.add(
+                models.PipelineRun(
+                    id="old",
+                    stage="combined",
+                    trigger="scheduled",
+                    selection="all",
+                    model="test",
+                    started_at=now,
+                )
+            )
+            await session.flush()
+            for job_id, phase in ((1, "fetch"), (2, "extraction")):
+                attempt = models.JobAttempt(
+                    job_id=job_id,
+                    run_id="old",
+                    trigger="scheduled",
+                    model="test",
+                    policy_version="p",
+                    extractor_version="e",
+                    started_at=now,
+                )
+                session.add(attempt)
+                await session.flush()
+                await session.execute(
+                    update(models.Job)
+                    .where(models.Job.id == job_id)
+                    .values(
+                        status="in_progress",
+                        next_phase=phase,
+                        current_attempt_id=attempt.id,
+                    )
+                )
+        for stage, reaped_id, untouched_id in (
+            ("eligibility", 1, 2),
+            ("extraction", 2, 3),
+        ):
+            async with factory() as session:
+                assert (
+                    await runs_repo.reap_stale(
+                        session,
+                        stage=cast(models.Stage, stage),
+                        older_than=now + timedelta(days=1),
+                        finished_at=now + timedelta(days=2),
+                    )
+                    == 1
+                )
+            async with factory() as session:
+                job = await jobs_repo.get(session, reaped_id)
+                untouched = await jobs_repo.get(session, untouched_id)
+                assert job is not None and job.status == "retry"
+                assert untouched is not None
+                assert untouched.status == (
+                    "in_progress" if untouched_id == 2 else "new"
+                )
+
+    run_async(scenario())
+
+
+@pytest.mark.parametrize(
+    "variant", ["new", "checkpoint", "mismatch", "lost", "finished", "wrong_content"]
+)
+def test_atomic_hand_off(tmp_path: Path, variant: str) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "handoff.db")
+        job_id = await _seed_job(factory)
+        attempt_id, content_id = await _seed_attempt_and_content(factory, job_id)
+        decision = decisions_repo.DecisionInput("eligible", "location", "[]", "p")
+        async with factory() as session, session.begin():
+            await session.execute(
+                update(models.Job)
+                .where(models.Job.id == job_id)
+                .values(
+                    status="in_progress",
+                    next_phase="eligibility",
+                    attempt_count=3,
+                    current_attempt_id=attempt_id,
+                    current_content_id=content_id,
+                )
+            )
+        if variant in {"checkpoint", "mismatch", "new"}:
+            async with factory() as session:
+                await decisions_repo.accept(
+                    session,
+                    job_id=job_id,
+                    attempt_id=attempt_id,
+                    content_id=content_id,
+                    decision=decision
+                    if variant == "checkpoint"
+                    else decisions_repo.DecisionInput("unknown", "old", "[]", "p"),
+                    decided_at=datetime(2026, 1, 1),
+                )
+        if variant == "finished":
+            async with factory() as session, session.begin():
+                await session.execute(
+                    update(models.JobAttempt).values(
+                        finished_at=datetime(2026, 1, 1), outcome="failed"
+                    )
+                )
+
+        async def hand_off() -> int | None:
+            async with factory() as session:
+                return await decisions_repo.hand_off_to_extraction(
+                    session,
+                    job_id=job_id,
+                    attempt_id=attempt_id + 1 if variant == "lost" else attempt_id,
+                    content_id=content_id + 1
+                    if variant == "wrong_content"
+                    else content_id,
+                    decision=None
+                    if variant in {"checkpoint", "mismatch"}
+                    else decision,
+                    decided_at=datetime(2026, 1, 2, tzinfo=UTC),
+                    prompt_tokens=11,
+                    completion_tokens=7,
+                )
+
+        if variant in {"mismatch", "finished"}:
+            with pytest.raises(decisions_repo.CheckpointError):
+                await hand_off()
+        else:
+            result = await hand_off()
+            assert (result is None) == (variant in {"lost", "wrong_content"})
+        success = variant in {"new", "checkpoint"}
+        async with factory() as session:
+            job = await session.get(models.Job, job_id)
+            attempt = await session.get(models.JobAttempt, attempt_id)
+            decisions = tuple(
+                (await session.execute(select(models.JobDecision))).scalars()
+            )
+            assert job is not None and attempt is not None
+            assert job.status == ("ready_for_extraction" if success else "in_progress")
+            assert job.attempt_count == (0 if success else 3)
+            assert job.current_attempt_id == (None if success else attempt_id)
+            assert job.next_phase == ("extraction" if success else "eligibility")
+            assert job.next_attempt_after is None
+            if success:
+                assert attempt.outcome == "ready_for_extraction"
+                assert attempt.phase_reached == "eligibility"
+                assert attempt.finished_at == datetime(2026, 1, 2)
+                assert (attempt.prompt_tokens, attempt.completion_tokens) == (11, 7)
+                assert sum(row.is_current for row in decisions) == 1
+                assert len(decisions) == (2 if variant == "new" else 1)
+            else:
+                assert attempt.outcome == ("failed" if variant == "finished" else None)
+                assert len(decisions) == (1 if variant == "mismatch" else 0)
+
+    run_async(scenario())
+
+
+def test_canonical_keys_are_read_only_and_merge_aware(tmp_path: Path) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "canonical.db")
+        await _three_jobs(factory)
+        async with factory() as session, session.begin():
+            await session.execute(
+                update(models.Job)
+                .where(models.Job.id == 3)
+                .values(status="merged", merged_into_id=2)
+            )
+            await session.execute(
+                update(models.Job)
+                .where(models.Job.id == 2)
+                .values(status="merged", merged_into_id=1)
+            )
+        async with factory() as session:
+            before = {
+                table.name: (await session.execute(select(table))).all()
+                for table in models.Base.metadata.sorted_tables
+            }
+            assert await jobs_repo.canonical_keys(
+                session, "acme", {"key-3", "missing"}
+            ) == frozenset({"key-1"})
+            assert (
+                await jobs_repo.canonical_keys(session, "other", {"key-3"})
+                == frozenset()
+            )
+            summary = await jobs_repo.stage_dispositions(
+                session, {("acme", "key-1")}, datetime(2026, 1, 1)
+            )
+            assert summary == {"new": 1}
+            for table in models.Base.metadata.sorted_tables:
+                assert (await session.execute(select(table))).all() == before[
+                    table.name
+                ]
+        async with factory() as session:
+            observed = await jobs_repo.observe(
+                session, "acme", [("key-3", "alias")], datetime(2026, 1, 2)
+            )
+            assert observed.snapshot_keys == frozenset({"key-1"})
+
+    run_async(scenario())
+
+
+@pytest.mark.parametrize("broken", ["cycle", "missing"])
+def test_canonical_keys_match_observation_errors(tmp_path: Path, broken: str) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "broken-merge.db")
+        await _three_jobs(factory)
+        await _seed_company(factory, "other")
+        async with factory() as session:
+            await jobs_repo.observe(
+                session,
+                "other",
+                [("other-key", "https://other.example/1")],
+                datetime(2026, 1, 1),
+            )
+        async with factory() as session, session.begin():
+            await session.execute(
+                update(models.Job)
+                .where(models.Job.id == 2)
+                .values(status="merged", merged_into_id=3 if broken == "cycle" else 4)
+            )
+            if broken == "cycle":
+                await session.execute(
+                    update(models.Job)
+                    .where(models.Job.id == 3)
+                    .values(status="merged", merged_into_id=2)
+                )
+        message = (
+            "merge cycle detected at job 2"
+            if broken == "cycle"
+            else "merged job 2 has missing canonical job"
+        )
+        async with factory() as session:
+            with pytest.raises(RuntimeError, match=message):
+                await jobs_repo.canonical_keys(session, "acme", {"key-2"})
+        async with factory() as session:
+            with pytest.raises(RuntimeError, match=message):
+                await jobs_repo.observe(
+                    session, "acme", [("key-2", "alias")], datetime(2026, 1, 2)
+                )
+
+    run_async(scenario())
+
+
+def test_atomic_claim_has_one_winner(tmp_path: Path) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "atomic-claim.db")
+        job_id = await _seed_job(factory)
+        async with factory() as session:
+            await runs_repo.start_run(
+                session,
+                run_id="race",
+                stage="eligibility",
+                trigger="scheduled",
+                selection="all",
+                model="test",
+                started_at=datetime(2026, 1, 1),
+            )
+
+        async def claimant() -> int | None:
+            async with factory() as session:
+                return await attempts_repo.claim_and_start(
+                    session,
+                    stage="eligibility",
+                    job_id=job_id,
+                    run_id="race",
+                    trigger="scheduled",
+                    reason=None,
+                    model="test",
+                    policy_version="p",
+                    extractor_version="e",
+                    started_at=datetime(2026, 1, 1),
+                )
+
+        winners = await asyncio.gather(claimant(), claimant())
+        assert sum(result is not None for result in winners) == 1
+        async with factory() as session:
+            attempts = await attempts_repo.history(session, job_id)
+            job = await jobs_repo.get(session, job_id)
+            assert len(attempts) == 1
+            assert job is not None and job.current_attempt_id == attempts[0].id
+            assert job.attempt_count == 1
+
+    run_async(scenario())
+
+
+def test_stage_dispositions(tmp_path: Path) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "dispositions.db")
+        await _seed_company(factory)
+        now = datetime(2026, 1, 2)
+        expected = {status: 1 for status in models.JOB_STATUSES if status != "retry"}
+        async with factory() as session, session.begin():
+            for status in expected:
+                session.add(
+                    models.Job(
+                        company_slug="acme",
+                        url_key=status,
+                        status=status,
+                        next_phase="extraction"
+                        if status == "ready_for_extraction"
+                        else "fetch",
+                        first_seen_at=now,
+                        last_seen_at=now,
+                        updated_at=now,
+                    )
+                )
+            for phase in models.PHASES:
+                for due in (False, True):
+                    key = f"{phase}-{due}"
+                    session.add(
+                        models.Job(
+                            company_slug="acme",
+                            url_key=key,
+                            status="retry",
+                            next_phase=phase,
+                            next_attempt_after=now + timedelta(days=-1 if due else 1),
+                            first_seen_at=now,
+                            last_seen_at=now,
+                            updated_at=now,
+                        )
+                    )
+                    stage = "extraction" if phase == "extraction" else "eligibility"
+                    timing = "due" if due else "waiting"
+                    name = f"{stage}_retry_{timing}"
+                    expected[name] = expected.get(name, 0) + 1
+        async with factory() as session:
+            jobs = await jobs_repo.list_by_companies(session, ["acme"])
+            assert (
+                await jobs_repo.stage_dispositions(
+                    session, {("acme", job.url_key) for job in jobs}, now
+                )
+                == expected
+            )
+
+    run_async(scenario())
 
 
 def test_restrict_blocks_deleting_company_with_jobs(tmp_path: Path) -> None:

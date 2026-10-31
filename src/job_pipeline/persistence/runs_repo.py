@@ -3,14 +3,38 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Mapping
+from collections.abc import Collection, Mapping
+from dataclasses import dataclass
 from datetime import datetime
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from job_discovery.persistence.timestamps import as_naive_utc
-from job_pipeline.persistence.models import Job, JobAttempt, PipelineRun
+from job_pipeline.persistence.models import (
+    STAGE_PHASES,
+    Job,
+    JobAttempt,
+    PipelineRun,
+    Stage,
+)
+
+
+@dataclass(frozen=True, slots=True)
+class RunIdentity:
+    stage: str
+    trigger: str
+
+
+async def runs_by_id(
+    session: AsyncSession, run_ids: Collection[str]
+) -> dict[str, RunIdentity]:
+    if not run_ids:
+        return {}
+    result = await session.execute(
+        select(PipelineRun).where(PipelineRun.id.in_(run_ids))
+    )
+    return {row.id: RunIdentity(row.stage, row.trigger) for row in result.scalars()}
 
 
 async def start_run(
@@ -20,11 +44,15 @@ async def start_run(
     selection: str,
     model: str,
     started_at: datetime,
+    stage: Stage,
+    trigger: str,
 ) -> None:
     async with session.begin():
         session.add(
             PipelineRun(
                 id=run_id,
+                stage=stage,
+                trigger=trigger,
                 selection=selection,
                 model=model,
                 started_at=as_naive_utc(started_at),
@@ -55,6 +83,7 @@ async def reap_stale(
     *,
     older_than: datetime,
     finished_at: datetime,
+    stage: Stage,
 ) -> int:
     cutoff = as_naive_utc(older_than)
     ended = as_naive_utc(finished_at)
@@ -67,6 +96,8 @@ async def reap_stale(
                 & (Job.current_attempt_id == JobAttempt.id),
             )
             .where(
+                Job.next_phase.in_(STAGE_PHASES[stage]),
+                Job.status == "in_progress",
                 JobAttempt.finished_at.is_(None),
                 JobAttempt.started_at < cutoff,
             )
