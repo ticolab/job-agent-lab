@@ -1,0 +1,640 @@
+{
+  "$defs": {
+    "EmploymentType": {
+      "enum": [
+        "full_time",
+        "part_time",
+        "contract",
+        "freelance",
+        "temporary",
+        "internship"
+      ],
+      "title": "EmploymentType",
+      "type": "string"
+    },
+    "ExperienceLevel": {
+      "enum": [
+        "entry",
+        "junior",
+        "mid",
+        "senior",
+        "lead",
+        "principal",
+        "executive"
+      ],
+      "title": "ExperienceLevel",
+      "type": "string"
+    },
+    "JobFunction": {
+      "enum": [
+        "technology_and_engineering",
+        "sales_and_business_development",
+        "marketing_and_communications",
+        "operations_and_logistics",
+        "finance_and_accounting",
+        "human_resources",
+        "customer_success_and_support",
+        "product_management",
+        "data_and_analytics",
+        "healthcare_and_medical",
+        "legal_and_compliance",
+        "design_and_creative",
+        "administrative_and_office",
+        "consulting_and_strategy",
+        "general_management",
+        "other"
+      ],
+      "title": "JobFunction",
+      "type": "string"
+    },
+    "Location": {
+      "additionalProperties": false,
+      "properties": {
+        "city": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "City"
+        },
+        "country": {
+          "title": "Country",
+          "type": "string"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region"
+        }
+      },
+      "required": [
+        "country"
+      ],
+      "title": "Location",
+      "type": "object"
+    },
+    "ModelFact_EmploymentType_": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "extracted",
+            "not_stated",
+            "uncertain"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EmploymentType"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "value",
+        "evidence",
+        "state"
+      ],
+      "title": "ModelFact[EmploymentType]",
+      "type": "object"
+    },
+    "ModelFact_ExperienceLevel_": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "extracted",
+            "not_stated",
+            "uncertain"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExperienceLevel"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "value",
+        "evidence",
+        "state"
+      ],
+      "title": "ModelFact[ExperienceLevel]",
+      "type": "object"
+    },
+    "ModelFact_Location_": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "extracted",
+            "not_stated",
+            "uncertain"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Location"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "value",
+        "evidence",
+        "state"
+      ],
+      "title": "ModelFact[Location]",
+      "type": "object"
+    },
+    "ModelFact_WorkMode_": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "extracted",
+            "not_stated",
+            "uncertain"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WorkMode"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "value",
+        "evidence",
+        "state"
+      ],
+      "title": "ModelFact[WorkMode]",
+      "type": "object"
+    },
+    "ModelFact_date_": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "extracted",
+            "not_stated",
+            "uncertain"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value",
+        "evidence",
+        "state"
+      ],
+      "title": "ModelFact[date]",
+      "type": "object"
+    },
+    "ModelFact_list_JobFunction__": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "extracted",
+            "not_stated",
+            "uncertain"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/JobFunction"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value",
+        "evidence",
+        "state"
+      ],
+      "title": "ModelFact[list[JobFunction]]",
+      "type": "object"
+    },
+    "ModelFact_list_Qualification__": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "extracted",
+            "not_stated",
+            "uncertain"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Qualification"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value",
+        "evidence",
+        "state"
+      ],
+      "title": "ModelFact[list[Qualification]]",
+      "type": "object"
+    },
+    "ModelFact_list_TechnologyMention__": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "extracted",
+            "not_stated",
+            "uncertain"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/TechnologyMention"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value",
+        "evidence",
+        "state"
+      ],
+      "title": "ModelFact[list[TechnologyMention]]",
+      "type": "object"
+    },
+    "ModelFact_list_str__": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "extracted",
+            "not_stated",
+            "uncertain"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value",
+        "evidence",
+        "state"
+      ],
+      "title": "ModelFact[list[str]]",
+      "type": "object"
+    },
+    "ModelFact_str_": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "state": {
+          "enum": [
+            "extracted",
+            "not_stated",
+            "uncertain"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value",
+        "evidence",
+        "state"
+      ],
+      "title": "ModelFact[str]",
+      "type": "object"
+    },
+    "Qualification": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "skill",
+            "experience",
+            "education",
+            "certification",
+            "language",
+            "behavioral",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "kind",
+        "evidence"
+      ],
+      "title": "Qualification",
+      "type": "object"
+    },
+    "TechnologyMention": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "mention": {
+          "title": "Mention",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "required",
+            "preferred",
+            "mentioned"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mention",
+        "status",
+        "evidence"
+      ],
+      "title": "TechnologyMention",
+      "type": "object"
+    },
+    "WorkMode": {
+      "enum": [
+        "remote",
+        "hybrid",
+        "onsite"
+      ],
+      "title": "WorkMode",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "benefits": {
+      "$ref": "#/$defs/ModelFact_list_str__"
+    },
+    "compensation_text": {
+      "$ref": "#/$defs/ModelFact_str_"
+    },
+    "employment_type": {
+      "$ref": "#/$defs/ModelFact_EmploymentType_"
+    },
+    "experience_level": {
+      "$ref": "#/$defs/ModelFact_ExperienceLevel_"
+    },
+    "job_functions": {
+      "$ref": "#/$defs/ModelFact_list_JobFunction__"
+    },
+    "location": {
+      "$ref": "#/$defs/ModelFact_Location_"
+    },
+    "location_text": {
+      "$ref": "#/$defs/ModelFact_str_"
+    },
+    "posting_date": {
+      "$ref": "#/$defs/ModelFact_date_"
+    },
+    "preferred_qualifications": {
+      "$ref": "#/$defs/ModelFact_list_Qualification__"
+    },
+    "required_qualifications": {
+      "$ref": "#/$defs/ModelFact_list_Qualification__"
+    },
+    "requisition_id": {
+      "$ref": "#/$defs/ModelFact_str_"
+    },
+    "responsibilities": {
+      "$ref": "#/$defs/ModelFact_list_str__"
+    },
+    "source_language": {
+      "$ref": "#/$defs/ModelFact_str_"
+    },
+    "summary": {
+      "$ref": "#/$defs/ModelFact_str_"
+    },
+    "technologies": {
+      "$ref": "#/$defs/ModelFact_list_TechnologyMention__"
+    },
+    "title": {
+      "$ref": "#/$defs/ModelFact_str_"
+    },
+    "work_mode": {
+      "$ref": "#/$defs/ModelFact_WorkMode_"
+    }
+  },
+  "required": [
+    "title",
+    "location_text",
+    "location",
+    "work_mode",
+    "employment_type",
+    "experience_level",
+    "job_functions",
+    "summary",
+    "source_language",
+    "responsibilities",
+    "required_qualifications",
+    "preferred_qualifications",
+    "benefits",
+    "compensation_text",
+    "technologies",
+    "posting_date",
+    "requisition_id"
+  ],
+  "title": "ExtractionResponse",
+  "type": "object"
+}

@@ -53,4 +53,4 @@ repos:
         # the only thing that notices an edit landing in just one of them.
         # scripts/ is loaded by path from its unit tests, and pyproject.toml
         # and uv.lock decide which dependency versions everything runs on.
-        files: '^(src/job_discovery/.*|migrations/.*|scripts/.*|tests/.*|\.claude/skills/.*|\.tabnine/agent/skills/.*|pyproject\.toml|uv\.lock)$'
+        files: '^(src/.*|migrations/.*|scripts/.*|tests/.*|\.claude/skills/.*|\.tabnine/agent/skills/.*|pyproject\.toml|uv\.lock)$'

@@ -10,7 +10,9 @@ For each configured company, a `browser-use` agent (OpenAI model routed via Lite
 
 Only one of the seven registered strategies drives an agent at all; the other six are plain HTTP against the ATS or search platform backing the board. "Agent" therefore names a mechanism inside `extraction/dom/`, not the system.
 
-Read `ARCHITECTURE.md` for the design rationale and invariants. Read `blockers/INTEGRATION_BLOCKERS.md` for the catalogue of site behaviours that resist extraction (referenced as C1–C22 throughout the codebase). Read `CLAUDE.md` for the equivalent guidance surface aimed at Claude Code.
+Read `ARCHITECTURE.md` for the design rationale and invariants. Read `blockers/INTEGRATION_BLOCKERS.md` for the catalogue of site behaviours that resist extraction (referenced as C1–C24 throughout the codebase). Read `CLAUDE.md` for the equivalent guidance surface aimed at Claude Code.
+
+Job processing adds three sibling packages. The dependency-free `job_eligibility` and `job_extractor` leaves render prompts and validate grounded responses. `job_pipeline` owns identity, content acquisition, model calls, persistence, lifecycle, the runner, and the implemented `preview`, `eligibility`, `extraction`, `reprocess`, and `show` commands. The live posting corpus, operator-reviewed expectations, and production model rollout remain deferred; implemented code and offline tests are not evidence that those rollout steps occurred.
 
 ## Building and Running
 
@@ -25,7 +27,13 @@ uv run playwright install chromium
 cp .env.example .env                 # add OPENAI_API_KEY for live DOM runs
 ```
 
-Two console scripts are registered. `job-discovery` is the dispatcher, with `integrate` and `scan` subcommands. `job-agent-lab` is a frozen alias pointing straight at the integrate entry point rather than through the dispatcher, so its argument surface is the pre-rename CLI's by construction. Both populate their parser from the same `add_integrate_arguments` function, so the two surfaces cannot drift. Keep the alias working — every doc, skill, and habit is built on it.
+Three console scripts are registered. `job-discovery` dispatches `integrate` and `scan`; `job-agent-lab` is the frozen integrate alias. `job-pipeline` implements `preview`, `eligibility`, `extraction`, `reprocess`, and `show`. `job-pipeline run` is retired: any arguments exit 2 with a migration message, without opening a database.
+
+`preview` reports eligibility work, extraction backlog, in-progress jobs, and terminal dispositions. Each stage's would-process count is capped by `--limit`; `--by-company` repeats the sections. It syncs the catalog and observes by default; `--no-observe` uses read-only, merge-aware snapshot membership.
+
+Both stage dry runs reuse preview without HTTP, browser, or model clients or provider credentials. `eligibility --dry-run` observes and may create jobs or update sources and last-seen timestamps. `extraction --dry-run` does not observe or write rows. Neither reaps attempts or creates pipeline runs.
+
+`reprocess` requires an audit reason and restarts explicit jobs, or one company's unknown jobs, from `fetch`, `eligibility`, or `extraction`, preserving history and invalidating downstream current records. From `fetch` or `eligibility` it stops ready; from `extraction` it only extracts. Explicit jobs may be outside the snapshot; completing their second stage then requires `reprocess --from-phase extraction`, not ordinary extraction. `--json-output DIR` is accepted by `extraction` and `reprocess`, not `eligibility`; extraction rejects HTTP/browser concurrency flags. `show` prints audit metadata and accepted results, labels attempts in the current stage, and shows each attempt's `run_stage` and `run_trigger`, never stored posting bodies.
 
 Run the extractor end-to-end. The `-c` flag matches by alias, then acronym, then substring against `catalog.COMPANIES`:
 
@@ -34,11 +42,21 @@ uv run job-agent-lab                                        # every company
 uv run job-agent-lab -c akurey                              # one company
 uv run job-agent-lab -c gap --headed --model gpt-4o --max-steps 25
 uv run job-discovery integrate -c akurey                         # identical, via the dispatcher
+
+uv run job-pipeline --help
+uv run job-pipeline preview --all --by-company
+uv run job-pipeline eligibility --all
+uv run job-pipeline preview --all --by-company
+uv run job-pipeline extraction --all
+uv run job-pipeline reprocess --job 42 --reason "policy review"
+uv run job-pipeline show --job 42
+uv run python scripts/verify_grounding.py
+sqlite3 data/job-discovery.db < scripts/pipeline_queries.sql
 ```
 
 Results are written as timestamped JSON to `./output/` (gitignored) and a summary is printed to the console. Runtime reports observations and has no verdict field or `--strict` mode.
 
-The `OPENAI_API_KEY` environment variable is required only for live `strategy="dom"` agent runs. Unit tests, snapshot tests, all API strategies (`greenhouse`, `phenom`, `talentbrew`, `coveo`, `peopleforce`, `bamboohr`), and `pre_filter_urls` companies all run without it.
+`OPENAI_API_KEY` in `.env` is required for live `strategy="dom"` discovery runs and for live pipeline `eligibility`, `extraction`, or `reprocess` with an OpenAI model. Anthropic models require `ANTHROPIC_API_KEY`. Pipeline model commands load `.env` and preflight recognized credentials before observing, preparing, or claiming work; missing credentials exit 2 without consuming work. Both stage dry runs, `preview`, `show`, unit tests, snapshot tests, replay callers, API discovery strategies, and `pre_filter_urls` companies need no provider credential.
 
 Format, lint, type-check, and test:
 
@@ -50,11 +68,11 @@ uv run --group test pytest tests/unit/           # browser-free
 uv run --group test pytest tests/snapshots/      # needs Chromium
 ```
 
-Pre-commit gates ruff, mypy, and the full test suite on any change under `src/job_discovery/`, `migrations/`, `scripts/`, `tests/`, or either `integrate-company` skill copy, and on any change to `pyproject.toml` or `uv.lock`. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The ruff and mypy hooks run through `uv run`, so they use the versions pinned in `uv.lock` — the same ones the commands above and CI use — and the mypy hook checks the whole `files` set in `pyproject.toml` rather than only the staged files, so a green `uv run mypy` means the hook passes too.
+Pre-commit gates ruff, mypy, and the full test suite on any change under `src/`, `migrations/`, `scripts/`, `tests/`, or either `integrate-company` skill copy, and on any change to `pyproject.toml` or `uv.lock`. The trigger covers the whole package rather than a couple of subpackages because anything narrower silently exempts the rest: while it named only `extraction` and `domain`, a code-only change to `cli/`, `batch/`, or `persistence/` ran no tests at all. The ruff and mypy hooks run through `uv run`, so they use the versions pinned in `uv.lock` — the same ones the commands above and CI use — and the mypy hook checks the whole `files` set in `pyproject.toml` rather than only the staged files, so a green `uv run mypy` means the hook passes too.
 
-CI (`.github/workflows/ci.yml`) runs on every pull request and on `main`: `static` (the pre-commit hooks other than the test hook, plus a `uv.lock` freshness check), `unit`, `snapshots` (Chromium on Linux), and `package`. That last job exists because every test imports the package from an editable install with the test group present: it installs the built wheel into a clean environment on Linux and macOS, loads both JS assets, checks that every module the package imports — including imports inside functions — is installed, runs both console scripts, migrates a fresh database up, down, and up again, requires a single Alembic head, and plans a `scan --dry-run --all`. CI holds no secrets and must stay that way — the suite is designed to pass without `OPENAI_API_KEY`, and a live agent run is never a merge gate. The ruleset on `main` requires only the `ci-ok` aggregate (plus `pr-title`), so a job can be added or renamed without touching it. Never put `paths:` filters on that workflow: a required check whose workflow is skipped never reports, and the pull request waits forever. uv is pinned in the workflow to the version used locally; bump it there when upgrading uv.
+CI (`.github/workflows/ci.yml`) runs on every pull request and on `main`: `static` (the pre-commit hooks other than the test hook, plus a `uv.lock` freshness check), `unit`, `snapshots` (Chromium on Linux), and `package`. That last job exists because every test imports the package from an editable install with the test group present: it installs the built wheel into a clean environment on Linux and macOS, loads both JS assets, checks that every module the package imports — including imports inside functions — is installed, runs all three console scripts, migrates a fresh database up, down, and up again, requires a single Alembic head, plans a `scan --dry-run --all`, and exercises `preview` plus both pipeline stage dry runs against the migrated database. CI holds no secrets and must stay that way — the suite is designed to pass without `OPENAI_API_KEY`, and a live agent run is never a merge gate. The ruleset on `main` requires only the `ci-ok` aggregate (plus `pr-title`), so a job can be added or renamed without touching it. Never put `paths:` filters on that workflow: a required check whose workflow is skipped never reports, and the pull request waits forever. uv is pinned in the workflow to the version used locally; bump it there when upgrading uv.
 
-Alembic owns the schema. The database lives at `data/job-discovery.db` by default, which is gitignored because the dataset answers "what is open right now" and is regenerable by re-running a scan:
+Alembic owns the schema. The gitignored database defaults to `data/job-discovery.db`. Discovery's current URL snapshot is regenerable by scanning again, but pipeline jobs, content checkpoints, attempts, decisions, and accepted results are durable audit history; back up the file if that history matters:
 
 ```bash
 uv run alembic upgrade head                        # create or migrate the database
@@ -64,7 +82,7 @@ sqlite3 data/job-discovery.db 'select * from job_urls'  # query it directly
 
 The connection URL is built by `migrations/env.py` from `settings.DATABASE_PATH`; `sqlalchemy.url` in `alembic.ini` is deliberately empty so the path has one source of truth. The path defaults to `data/job-discovery.db` and is overridden by the `JOB_DISCOVERY_DB` shell variable (not a `.env` key: Alembic never loads `.env`). `job-discovery scan --database PATH` points one scan elsewhere, but Alembic has no such flag, so a non-default database is migrated with `JOB_DISCOVERY_DB=PATH uv run alembic upgrade head`; the schema preflight prints that exact command when it applies.
 
-`job-discovery scan` is the only writer. A selection is mandatory — there is no bare invocation that means "the whole corpus" — because a full scan drives hundreds of boards, many of them paying for a browser and an LLM:
+`job-discovery scan` is the only writer of the discovery URL snapshot; `job-pipeline` writes the processing and audit tables. Both preflight the migrated schema. A scan selection is mandatory — there is no bare invocation that means "the whole corpus" — because a full scan drives hundreds of boards, many of them paying for a browser and an LLM:
 
 ```bash
 uv run job-discovery scan --dry-run --all                  # plan only, writes nothing
@@ -77,13 +95,52 @@ Handles resolve exactly as `integrate -c` resolves them, and unknown ones abort 
 
 ## Architecture
 
-### Components and the shared kernel
+### Four package roots
+
+The root dependency table is enforced by `tests/unit/test_layering.py`:
+
+```
+job_pipeline    → job_eligibility, job_extractor,
+                  job_discovery.domain, job_discovery.catalog,
+                  job_discovery.persistence, job_discovery.settings
+job_eligibility → nothing in the repository
+job_extractor   → nothing in the repository
+job_discovery   → neither leaf nor job_pipeline
+```
+
+The leaves are pure: text in, prompt/schema/validation out. They never call a model, open a browser, or touch persistence. `job_pipeline` owns every side effect and makes a small eligibility call before extraction, so ineligible and unknown jobs never pay for full extraction. Both calls use the same stored text.
+
+Pipeline models share discovery's `Base` and one Alembic chain. Their company foreign key uses `RESTRICT` so durable processing history cannot disappear with a catalog edit. Statuses are `new`, `ready_for_extraction`, `in_progress`, `retry`, `completed_eligible`, `completed_ineligible`, `unknown`, `unavailable`, `failed`, and `merged`. Ordinary commands skip terminal statuses; unknown stays terminal unless explicitly reprocessed.
+
+Eligibility syncs the catalog, observes discovery URLs into logical jobs, and claims current-snapshot `new` jobs or due retries at `fetch`/`eligibility`. Its atomic hand-off stores or re-verifies the eligible decision, finishes the attempt as `ready_for_extraction`, releases the lease, and resets `attempt_count` to 0. Extraction claims current-snapshot ready jobs or due retries at `extraction`; it never fetches, decides eligibility, observes, syncs the catalog, or constructs HTTP/browser resources.
+
+Extraction reads snapshot membership without writing it, resolving merged aliases through their canonical chains and omitting unobserved URLs. Out-of-snapshot ready jobs remain ready. Missing current content, a missing or non-eligible current decision, or a decision on different content immediately makes extraction `failed` with `missing_checkpoint`, without a model call or retry.
+
+`attempt_count` counts attempts in the current stage, not lifetime history. Each stage defaults to three attempts (`internal` failures at most two), with one-day then two-day retry delays, resuming from `next_phase`. Hand-off gives extraction a fresh budget; migration preserves existing extraction retry counts. Every new `pipeline_runs` row requires stage `eligibility` or `extraction` and trigger `scheduled` or `reprocess`; both columns are CHECK-constrained. Migrated legacy runs use `combined`, with trigger `reprocess` if any attempt had that trigger, otherwise `scheduled`. No new run writes `combined`.
+
+`current_attempt_id` is the ownership lease: phase advances, checkpoints, merges, and releases verify the active attempt so stale workers cannot overwrite newer state. Every production stage-ending transition commits the job change, lease release, and attempt finish together, so every unfinished attempt is the current lease of an `in_progress` job. Content, accepted eligibility, and accepted extraction are durable checkpoints; recovery needs no external file. Startup reaping closes only stale unfinished attempts still leasing `in_progress` jobs, marks them `interrupted`, and makes the jobs due for retry. Reaping is scoped by `next_phase`, not selection or the original run stage: eligibility owns `fetch`/`eligibility`, extraction owns `extraction`.
+
+`--timeout-seconds` bounds each active network or model step after acquiring its slot, never slot wait time. Eligibility claims at most `http_concurrency + model_concurrency` jobs; extraction at most `model_concurrency`. Both stages reap after four timeouts (`STALE_ATTEMPT_PHASES`); eligibility holds at most three timed steps and extraction one. Ctrl-C unwinds resources and exits 130; a later invocation of the owning stage recovers stale work. Individual job failures exit 0.
+
+Different stages can overlap, but snapshot reads and observation are not one cross-company transaction, so concurrent scans or observation can change a planner's view. Claims guard against duplicate ownership. Ceilings are per invocation, not global; avoid same-stage overlap with different timeouts because a shorter stale bound can reap a live attempt.
+
+Duplicate merging is conservative because a merge cannot be undone from the CLI. A JSON-LD requisition id counts only when it is the `PropertyValue` `value` (never the organization `name`), exactly one other live job carries it, and the two titles agree, so a board that stamps every posting with one identifier never collapses into one job. The content fingerprint hashes the whole normalized text, not a prefix, so two roles behind a long shared preamble stay distinct. A duplicate another worker is processing is left for that worker. A redirect may land on a sibling subdomain or a known ATS host; anything else is off-site. A past JSON-LD `validThrough` closes a posting only when the page corroborates it with a closure phrase or a body too short to be open.
+
+Each pipeline repository call gets its own short-lived session. Never hold a session across network, browser, or model awaits, and do not reuse a session between repositories that own their transactions.
+
+The live posting corpus and reviewed expectations remain rollout work. When populated, the golden workflow uses frozen posting text, `scripts/draft_expectations.py`, operator review, and `scripts/evaluate_leaf.py`. Unreviewed drafts are not truth. Live model comparison and model rollout are manual operations and never secret-bearing CI gates.
+
+Prompt or response-schema changes require the matching `POLICY_VERSION` or `EXTRACTOR_VERSION` bump and prompt-hash golden update. A model-only change does not bump either version. Versions do not trigger automatic reprocessing. The configured `gpt-4.1-mini` default does not mean that model has passed corpus review or been rolled out.
+
+Technology normalization belongs in `job_extractor/normalize.py` and its packaged alias table, never in the prompt. Preserve source mentions and evidence.
+
+### Discovery components and the shared kernel
 
 Three components sit over one shared kernel. `extraction/` owns the port and every strategy. `persistence/` owns the database. `batch/` owns concurrency and the per-company unit of work. The kernel — `domain/`, `catalog/`, `settings.py` — is the vocabulary all three speak.
 
 All three components exist today, alongside `cli/` and `reporting/`, and both subcommands are wired: `job-discovery integrate` drives one board at a time and `job-discovery scan` drives the corpus.
 
-Every SQL statement in the system lives in one of `persistence/`'s three repository modules (`catalog_repo`, `jobs_repo`, `runs_repo`), so transaction boundaries and error translation have exactly one home. `engine.py` owns the connection URL and the four SQLite pragmas; `models.py` owns the three tables.
+Discovery's SQL statements live in `persistence/`'s three repository modules (`catalog_repo`, `jobs_repo`, `runs_repo`) and `engine.py`, so transaction boundaries and error translation have exactly one home. `engine.py` owns the connection URL and the four SQLite pragmas; `models.py` owns the three tables.
 
 Dependencies point inward and never cycle:
 
@@ -157,7 +214,7 @@ The two semaphores are independent on purpose. A browser run holds a Chromium co
 
 The per-company timeout lives on `BatchPolicy`, not on `RunContext`. `RunContext` is the shared port both entry points pass through, and a batch-only concern has no business widening it.
 
-Each repository call gets its **own short-lived session**. Phase 1's repositories each open their own transaction, so a session that has already autobegun one for a read cannot begin another — sharing a session across two repository calls raises `InvalidRequestError`. The same rule keeps a session from being held across the minutes-long `extract` await, where it would pin a pool connection and potentially a write lock.
+Each repository call gets its **own short-lived session**. Pipeline repositories each open their own transaction, so a session that has already autobegun one for a read cannot begin another — sharing a session across two repository calls raises `InvalidRequestError`. The same rule keeps a session from being held across network, browser, or model awaits, where it would pin a pool connection and potentially a write lock.
 
 Crash recovery needs no checkpoint file. A killed scan leaves `in_progress` batch rows; the next scan reaps them to `failed` at startup, using the per-company timeout as the staleness bound since no run may legitimately exceed it; they are therefore not successes, so the freshness rule re-runs exactly those companies and skips the ones that completed.
 

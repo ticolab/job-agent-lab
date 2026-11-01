@@ -13,9 +13,14 @@ listings; a single JavaScript matcher decides what counts as a job link. That
 keeps every count auditable, and it means matcher behaviour can be frozen and
 regression-tested offline across the whole corpus in seconds.
 
-Only one of the seven extraction strategies drives an agent. The other six talk
-plain HTTP to the ATS or search platform backing the board, for cases where the
-rendered page cannot be reached or cannot yield an honest regression artifact.
+Only one of the seven discovery strategies drives an agent. The other six talk
+plain HTTP to the ATS or search platform backing the board.
+
+Three sibling packages process discovered postings. `job_eligibility` makes a
+grounded Costa Rica eligibility decision, `job_extractor` validates structured
+job facts, and `job_pipeline` owns content acquisition, model calls, durable
+history, and orchestration. The leaves are pure and the pipeline calls extraction
+only after an eligible decision.
 
 > Origin: extracted from the `tw-data` pipeline's `tools/agent_poc/` PoC (HNT-5).
 
@@ -42,14 +47,17 @@ uv run playwright install chromium   # browser for browser-use and snapshot test
 cp .env.example .env                 # then add your OPENAI_API_KEY
 ```
 
-`OPENAI_API_KEY` is required only for live agent runs. The test suite, every API
-strategy, and companies configured with `pre_filter_urls` all run without it.
+`OPENAI_API_KEY` is required for live discovery agent runs and for pipeline
+`eligibility`, `extraction`, or `reprocess` commands that select an OpenAI model.
+Anthropic pipeline models require `ANTHROPIC_API_KEY`. Both stage dry runs,
+`preview`, `show`, tests, replay callers, API discovery strategies, and
+`pre_filter_urls` companies need no provider key.
 
 ## Usage
 
-Two console scripts are installed. `job-discovery` is the dispatcher; `job-agent-lab`
-is a permanent alias for the integrate workflow, kept because every doc and skill
-is built around it. The two are equivalent.
+Three console scripts are installed. `job-discovery` is the discovery dispatcher,
+`job-agent-lab` is its permanent integrate alias, and `job-pipeline` is the
+posting-processing dispatcher.
 
 ```bash
 # Run every company in src/job_discovery/catalog/companies.py
@@ -116,7 +124,98 @@ sqlite3 data/job-discovery.db 'select company_slug, url from job_urls order by c
 sqlite3 data/job-discovery.db 'select company_slug, status, url_count, error_message, started_at, finished_at from company_runs'
 ```
 
-### Operating it
+### Daily processing workflow
+
+Run the stages separately, inspecting the extraction backlog between them:
+
+```bash
+uv run alembic upgrade head
+uv run job-discovery scan --all
+uv run job-pipeline preview --all --by-company
+uv run job-pipeline eligibility --all
+uv run job-pipeline preview --all --by-company
+uv run job-pipeline extraction --all
+uv run python scripts/verify_grounding.py
+```
+
+`job-pipeline run` is retired: any arguments exit 2 with a message naming
+`eligibility` and `extraction`, without opening a database.
+
+`eligibility` observes selected discovery URLs and processes `new` jobs and due
+`retry` jobs at `fetch` or `eligibility`. An eligible decision atomically finishes
+the attempt as `ready_for_extraction`, releases the lease, and resets
+`attempt_count` to 0. It never extracts in the same invocation.
+
+`extraction` processes current-snapshot `ready_for_extraction` jobs and due
+`retry` jobs at `extraction`. Snapshot membership is read-only and follows merged
+aliases to their canonical jobs; it neither observes URLs nor syncs the catalog.
+The command still writes run, attempt, and result history. It constructs no HTTP
+client or browser and rejects their concurrency flags. `--json-output DIR` is
+available on `extraction` and `reprocess`, not `eligibility`.
+
+A ready job outside the snapshot stays ready until it reappears. Unobserved URLs
+are omitted by extraction. Missing current content, a missing or non-eligible
+current decision, or a decision on different content fails immediately with
+`missing_checkpoint`, without a model call or retry.
+
+`preview` reports eligibility work, extraction backlog, in-progress jobs, and
+terminal dispositions, with separate would-process counts capped by `--limit`.
+It observes and syncs the catalog by default; `--no-observe` uses read-only,
+merge-aware membership. Both stage dry runs reuse this preview without HTTP,
+browser, or model clients or provider credentials, but differ in writes:
+
+```bash
+uv run job-pipeline eligibility --dry-run --all
+uv run job-pipeline extraction --dry-run --all
+```
+
+`eligibility --dry-run` observes and may create jobs or update sources and
+last-seen timestamps. `extraction --dry-run` does not observe or write rows.
+Neither dry run reaps attempts or creates pipeline runs.
+
+`attempt_count` counts attempts in the current stage, not lifetime attempts.
+Each stage has three attempts by default; `internal` failures are capped at two.
+Retry delays are one then two days by default, resuming from `next_phase`.
+The eligibility hand-off gives extraction a fresh budget; historical attempts
+remain intact, and migration does not reset existing extraction retries.
+
+The active attempt is an ownership lease, so stale workers cannot overwrite a
+newer owner. Startup reaping closes stale leased attempts as `interrupted` and
+makes their jobs due for retry, scoped by `next_phase`: eligibility reaps only
+`fetch`/`eligibility`, extraction only `extraction`, even outside the selection.
+Both use `4 × --timeout-seconds` as the stale bound. A timeout bounds each active
+network or model step, not waiting for its slot. Claimed jobs are capped at
+`http_concurrency + model_concurrency` for eligibility and `model_concurrency`
+for extraction. These ceilings are per invocation, not shared across processes.
+
+Different stages can overlap, but there is no cross-company snapshot transaction:
+a concurrent scan or eligibility observation can change what a planner sees.
+Claims prevent duplicate ownership; avoid overlapping same-stage runs with
+different timeouts, since the shorter stale bound can reap a live attempt.
+Individual job failures still exit 0. Ctrl-C exits 130; recovery requires a later
+invocation of the owning stage after its stale bound has passed.
+
+`reprocess` requires an audit reason and preserves history. Starting from `fetch`
+or `eligibility` stops at `ready_for_extraction`; then run `extraction`. Starting
+from `extraction` uses stored checkpoints only. Explicit reprocessing can target
+jobs outside the snapshot, but a subsequent ordinary extraction cannot; use
+`reprocess --from-phase extraction` for that case. `show` prints audit metadata
+and accepted results, including attempts in the current stage and each attempt's
+`run_stage`/`run_trigger`, never stored posting bodies.
+
+Live stage commands and `reprocess` load `.env` and preflight recognized provider
+credentials before observing, preparing, or claiming work. Missing credentials
+exit 2 without consuming work. Every new `pipeline_runs` row records required
+`stage` (`eligibility` or `extraction`) and `trigger` (`scheduled` or `reprocess`).
+Migrated legacy runs retain `stage=combined`, with their trigger backfilled from
+attempt history. Audit and per-stage usage queries live in
+`scripts/pipeline_queries.sql`.
+
+The live posting corpus, operator review of drafted expectations, live model
+comparison, and production model rollout remain deferred. The configured model
+default and implemented workflow do not claim those rollout steps have occurred.
+
+### Operating discovery
 
 The dataset answers what is open *right now*, so it is worth refreshing two or
 three times a week rather than continuously. The default freshness window is 20
@@ -148,16 +247,16 @@ returning measurable throughput at this corpus size, so leave it alone unless
 the corpus grows enough that boards genuinely queue for a slot. `ARCHITECTURE.md`
 records the measurements behind both ceilings.
 
-Back up the dataset by copying the file. There is no export step, because the
-database is a single SQLite file and nothing else holds state:
+Back up the database by copying the file. There is no export step because the
+discovery snapshot and pipeline audit history share one SQLite file:
 
 ```bash
 cp data/job-discovery.db "data/job-discovery-$(date +%Y%m%d).db"
 ```
 
-Losing it is recoverable in any case. The catalog is the source of truth for
-the corpus and the database is a projection of it plus the most recent
-extraction, so a full re-run rebuilds everything the file held.
+A scan can rebuild the current discovery URL snapshot. It cannot recreate prior
+pipeline content checkpoints, attempts, decisions, accepted results, or their
+audit timestamps, so preserve backups when that history matters.
 
 ### Adding a new company
 
@@ -226,4 +325,4 @@ Design documents are kept close to the code. `ARCHITECTURE.md` holds the
 big-picture map and the invariants. `CLAUDE.md` and `TABNINE.md` are guidance
 files for the two AI assistants used on this repo and carry the same project
 facts. `blockers/INTEGRATION_BLOCKERS.md` catalogues the site behaviours that
-resist extraction, referenced as C1–C22 throughout the codebase.
+resist extraction, referenced as C1–C24 throughout the codebase.

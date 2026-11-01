@@ -1,0 +1,137 @@
+{
+  "$defs": {
+    "LocationSignals": {
+      "additionalProperties": false,
+      "description": "Location facts extracted from a posting with field-specific evidence.",
+      "properties": {
+        "exhaustive_country_list": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Exhaustive Country List"
+        },
+        "exhaustive_country_list_evidence": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 5,
+          "title": "Exhaustive Country List Evidence",
+          "type": "array"
+        },
+        "locations_named": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Locations Named",
+          "type": "array"
+        },
+        "locations_named_evidence": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 5,
+          "title": "Locations Named Evidence",
+          "type": "array"
+        },
+        "remote_scope": {
+          "enum": [
+            "worldwide",
+            "latam",
+            "americas",
+            "other_region",
+            "none_stated"
+          ],
+          "title": "Remote Scope",
+          "type": "string"
+        },
+        "remote_scope_evidence": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 5,
+          "title": "Remote Scope Evidence",
+          "type": "array"
+        },
+        "work_authorization_evidence": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 5,
+          "title": "Work Authorization Evidence",
+          "type": "array"
+        },
+        "work_authorization_required_in": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Work Authorization Required In",
+          "type": "array"
+        }
+      },
+      "required": [
+        "locations_named",
+        "locations_named_evidence",
+        "remote_scope",
+        "remote_scope_evidence",
+        "exhaustive_country_list",
+        "exhaustive_country_list_evidence",
+        "work_authorization_required_in",
+        "work_authorization_evidence"
+      ],
+      "title": "LocationSignals",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The model response before deterministic grounding and policy checks.",
+  "properties": {
+    "decision": {
+      "enum": [
+        "eligible",
+        "ineligible",
+        "unknown"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "evidence": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 5,
+      "minItems": 1,
+      "title": "Evidence",
+      "type": "array"
+    },
+    "reason": {
+      "minLength": 1,
+      "pattern": "^[^\\n]+[.!?]$",
+      "title": "Reason",
+      "type": "string"
+    },
+    "signals": {
+      "$ref": "#/$defs/LocationSignals"
+    }
+  },
+  "required": [
+    "decision",
+    "reason",
+    "evidence",
+    "signals"
+  ],
+  "title": "EligibilityResponse",
+  "type": "object"
+}
