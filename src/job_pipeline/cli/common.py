@@ -122,6 +122,10 @@ def add_selection_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--exclude", action="append", metavar="HANDLE", default=None)
 
 
+def add_verbosity_argument(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("-v", "--verbose", action="count", default=0)
+
+
 def add_database_argument(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--database", metavar="PATH", default=None)
 
@@ -255,6 +259,7 @@ __all__ = [
     "add_database_argument",
     "add_policy_arguments",
     "add_selection_arguments",
+    "add_verbosity_argument",
     "build_policy",
     "fail",
     "open_database",

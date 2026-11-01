@@ -102,7 +102,7 @@ async def _run(args: argparse.Namespace) -> int:
             finally:
                 await launched.browser.close()
     if isinstance(result, AcquisitionFailure):
-        print(f"capture failed: {result.category}: {result.message}")
+        print(f"capture failed: {result.category}")
         return 1
 
     raw = FetchResult(
@@ -136,12 +136,15 @@ def _write_fixture(
         "requisition_id": result.requisition_id,
         "captured_at": captured_at,
         "content_hash": result.content_hash,
+        "frame": bool(result.frame_html),
     }
     metadata_text = f"{json.dumps(metadata, indent=2, sort_keys=True)}\n"
-    findings = _secret_findings(raw.html, result.text, metadata_text)
+    findings = _secret_findings(raw.html, result.frame_html, result.text, metadata_text)
     if findings:
         raise ValueError("possible secret detected; no fixture was written")
     (output / "page.html").write_text(raw.html, encoding="utf-8")
+    if result.frame_html:
+        (output / "frame.html").write_text(result.frame_html, encoding="utf-8")
     (output / "content.txt").write_text(f"{result.text}\n", encoding="utf-8")
     (output / "meta.json").write_text(metadata_text, encoding="utf-8")
 
