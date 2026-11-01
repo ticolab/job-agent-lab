@@ -9,6 +9,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from job_discovery.persistence.timestamps import as_naive_utc
+from job_pipeline.persistence import finalize
 from job_pipeline.persistence.models import Job, JobResult
 
 
@@ -54,6 +55,8 @@ async def accept_and_complete(
     content_id: int,
     result: ResultInput,
     accepted_at: datetime,
+    prompt_tokens: int | None = None,
+    completion_tokens: int | None = None,
 ) -> int | None:
     moment = as_naive_utc(accepted_at)
     async with session.begin():
@@ -94,6 +97,16 @@ async def accept_and_complete(
         session.add(row)
         await session.flush()
         result_id: int = row.id
+        await finalize.finish_owned_attempt(
+            session,
+            job_id=job_id,
+            attempt_id=attempt_id,
+            outcome="completed_eligible",
+            phase_reached="extraction",
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+            finished_at=moment,
+        )
     return result_id
 
 
