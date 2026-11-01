@@ -216,12 +216,163 @@ runs on a worker thread, and completion is tracked with an event rather than
 `Thread.join`, because on Python 3.12 a join interrupted by `KeyboardInterrupt`
 marks the still-running thread as stopped.
 
-Two acquisition rules err toward keeping a posting alive. A redirect may land
-on the same host, a sibling under the same registrable domain, or a known ATS
-host; only a different domain is off-site and terminal. A past JSON-LD
-`validThrough` closes a posting only when the page corroborates it, with a
-closure phrase or a body too short to be open, because some ATSs leave a stale
-date on a posting discovery still lists.
+### Posting acquisition and frame fallback
+
+HTTP acquisition tries JobPosting JSON-LD, then extracted main text, before
+rendering. `force_rendered=True` still fetches but bypasses HTTP content
+selection. The worker normally tries HTTP without a browser, then retries with
+forced rendering only for `empty_content`; a previous `empty_content` attempt
+also forces rendering when a browser is available. Extraction reuses the stored
+checkpoint and never acquires content again.
+
+`content/render.py:render_page` returns a `RenderedPage` containing top-level
+HTML and captured child documents. `render()` remains a string-returning wrapper.
+Frames are a **content fallback**, not an extra source appended to a successful
+page. The ladder's `capture_frames_if` predicate skips inspection when the rendered
+parent already supplies qualifying content or a decisive closure. It still counts
+frame elements in `frames_found`, with an empty `frames` tuple. A stale parent date
+with short main text and no closure phrase in either main text or its JSON-LD
+description permits capture so an open frame can corroborate the date. Standalone
+`render_page()` captures by default; `render()` only counts frames. HTTP success
+or closure normally avoids rendering entirely.
+
+Capture enumerates `iframe, frame` elements in top-document order, piercing open
+shadow roots but not descending into frame documents or closed shadow roots.
+Only indices 0–9 are inspected (`MAX_CAPTURED_FRAMES = 10`); rejected elements
+consume that budget, and later elements are traced as `over_limit`. Inspection
+requires a readable frame handle, Playwright visibility, and a bounding box of
+at least `MIN_FRAME_WIDTH_PX = 100` by `MIN_FRAME_HEIGHT_PX = 100` CSS pixels.
+A present `sandbox` must contain the `allow-same-origin` token. The frame URL
+must be exactly `about:blank` or `about:srcdoc`, or share the rendered page's
+scheme, hostname, and effective port. A sibling subdomain is cross-origin even
+when the navigation guard allows it. Each `frame.content()` read has a
+`FRAME_READ_TIMEOUT` of five seconds; Playwright errors and read timeouts become
+`unreadable` without preventing other reads. This is not a five-second bound on
+every inspection operation. Serialization is bound to a document handle; changed
+document identity, URL, or sandbox attributes discard the capture. A final
+cross-origin URL or opaque sandbox is excluded. Explicit port zero is distinct
+from the default port. No frame is navigated or separately fetched.
+
+The ladder evaluates each candidate independently. Within a document it chooses
+the JobPosting with the longest description; a description of at least
+`MIN_CONTENT_CHARS = 400` qualifies as JSON-LD content, otherwise at least 400
+characters of extracted main text qualify. Merely having JSON-LD is insufficient,
+and parent chrome cannot bring a short frame over the threshold. Qualifying
+JSON-LD content consists of description first, then that frame's main text,
+with duplicate normalized paragraphs removed. Among open qualifying frames,
+JSON-LD content beats main text, then longer resulting text wins, then the lower
+zero-based element index breaks ties. Exactly one frame is selected; there is
+no semantic description-versus-widget classifier or company allowlist.
+
+Closure precedence is deliberate. A parseable `validThrough` date strictly
+before today's UTC date closes a document when its own main text or its
+corroborating body has a known closure phrase, or the corroborating body is
+shorter than 400 characters. A frame uses its own main text as corroboration.
+The rendered page uses the highest-ranked open frame's qualifying text when
+available, otherwise its own main text. Thus a long open frame can prevent a
+stale page date plus a short page body from falsely closing the posting, but
+cannot override a corroborated closure. Qualifying content containing a closure
+phrase also closes. A short frame with an explicit closure phrase is marked
+closed even if it does not qualify as content.
+
+After frame evaluation, any page content or page closure returned by the normal
+decision rules wins over every frame, including closed frames. If the page has
+neither, an open qualifying frame beats closed siblings. Without a qualifying
+frame, the first closed frame supplies the closure; absent either, acquisition
+remains `empty_content`. A short parent closure phrase alone is not a separate
+page decision without the date rule, but it is caught if included in the final
+composed text, which is checked again for closure.
+
+For frame fallback, stored text is parent **main text first**, then selected
+frame content, with normalized, whitespace-equivalent paragraphs deduplicated
+case-sensitively in first-occurrence order. It is not parent JSON-LD description
+plus every frame. Title precedence is frame JSON-LD title, parent JSON-LD title,
+parent `<title>`, then frame `<title>`. Requisition id and raw JSON-LD come from
+the frame's chosen posting if present, otherwise the parent's chosen posting;
+these are selected as a record, not filled field by field.
+
+Provenance is `rendered_frame_jsonld` or `rendered_frame_main`; the ordinary
+`jsonld`, `main_content`, `rendered_jsonld`, and `rendered_main` paths remain.
+`job_contents.method` is an unconstrained string, so these values require no
+migration and `show` displays them through its existing method field. Stored
+content contains the composed text, not the HTML or acquisition trace.
+`AcquiredContent.acquisition_html` remains the top-level HTML; `frame_html`
+contains only the selected frame's HTML. Traces are attached to successes and
+failures with `compare=False` and do not affect result equality.
+
+`scripts/capture_posting.py` writes `page.html`, `content.txt`, and `meta.json`,
+plus `frame.html` when `frame_html` is non-empty. Metadata always records a
+boolean `frame` flag. The possible-secret scan includes parent HTML, selected
+frame HTML, composed text, and serialized metadata before any fixture files are
+written; the temporary fixture directory is published atomically. This is a
+pattern-based refusal check, not automatic HTML sanitization.
+`scripts/probe_posting.py` prints method/text length on success or failure
+category, then status, redacted resolved/source-key URLs, and available trace
+page characters, found/inspected/qualifying totals, selected index, and per-frame
+index/origin/outcome/characters. It no longer prints the posting body, title,
+requisition id, or raw failure message. The probe does not write fixtures, call
+a model, or write the database; capture writes only the explicitly requested
+fixture directory.
+
+### Pipeline diagnostics and safety boundaries
+
+`eligibility`, `extraction`, and `reprocess` accept `-v`/`--verbose` (repeatable);
+`preview` and `show` do not. Default verbosity adds no logging configuration
+and preserves ordinary stdout/stderr behavior; it does not reset configuration
+left by an earlier invocation in the same process. `-v` enables INFO: a worker
+outcome line and an acquisition line for each completed `acquire()` call.
+HTTP followed by forced render produces two acquisition lines, not one per job;
+checkpoint-only extraction has no acquisition line. Acquisition fields include
+run/job/slug, last step, status, redacted URL, method or failure, content and page
+character counts, frame totals, selected index, elapsed time, and a safe reason.
+`frames=found/inspected/qualifying` counts inspected as all non-`over_limit`
+entries and qualifying as `selected` plus `qualifying` entries.
+
+`-vv` (or more) adds DEBUG lines per HTTP/render step and frame: step status,
+page characters, JSON-LD presence, timing, and frame index/origin/outcome/characters
+with element id/title sanitized and capped at 60 characters. The helper lives
+at **`job_pipeline.runner.diagnostics`**, not a new root component, preserving
+the unchanged dependency graph. Configuration touches only the `job_pipeline`
+logger, replaces only its named `job_pipeline.cli` handler, resolves stderr at
+emit time, and keeps propagation enabled. Root and third-party logger settings
+are untouched. No diagnostic files or extra stdout summaries are created.
+
+Diagnostic URLs retain only HTTP(S) scheme, host, optional port, and path;
+userinfo, query, and fragment are removed, and invalid inputs become
+`<unparseable-url>`. Messages keep only the first line, redact embedded HTTP(S)
+URLs and recognized credential patterns, collapse whitespace, and truncate
+(default 200 characters; handler output 4096). The handler removes exception and
+stack payloads. Acquisition reasons expose only known fixed messages or a
+category-only fallback. Worker diagnostics do not log posting bodies, HTML,
+model input/output, or credentials. Paths and element labels remain visible,
+and pattern redaction is not a guarantee against arbitrary secrets in those
+fields or independently configured propagated handlers.
+
+Frame reads remain inside the existing guarded render; no request interception
+rules are relaxed. Targets still require public HTTPS resolution. A redirect may
+land on the same host, a sibling under the same registrable domain, or a known
+ATS host. The navigation check still applies to **all** navigation requests,
+not just the main frame: an unrelated third-party iframe navigation can reject
+the whole render as terminal `off_site_redirect`. That suspected behavior remains
+unchanged and to be reproduced in capability-map follow-up O4, including iCIMS
+`in_iframe` wrapper handling; excluding cross-origin content does not prevent
+its earlier navigation from being rejected.
+
+The operator-reported five-posting live review returned `rendered_frame_main`
+for all five, with correct posting titles and locations. Visible-text comparison
+found pre-existing trafilatura omissions: Recruiting Coordinator loses one
+sentence and headings; Account Manager loses a 436-character introduction and
+headings. Frame capture success is not a promise of verbatim visible-text parity.
+The text extractor is unchanged; those omissions are a separate limitation.
+
+Residual risk: a long unrelated same-origin frame can win the structural ranking;
+fallback-only selection, one-frame composition, provenance, and diagnostics make
+it inspectable, not semantically verified. O5 tracks talent-pool policy before
+the next full RecruitCRM eligibility run; O6 tracks replacing the placeholder
+with a filed ticket number. Task 10's five-posting live validation and reviewed
+rollout evidence remain separate from offline regression coverage. Dependency
+security findings and compatible-upgrade follow-ups remain recorded in
+`CVE_MITIGATION_LOG.md`; this documentation change does not mitigate them.
 
 Live `eligibility`, `extraction`, and `reprocess` load `.env` and validate
 recognized OpenAI and Anthropic credentials before observing, preparing, or

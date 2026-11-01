@@ -8,7 +8,8 @@ time out jobs that are merely queued. The stale-attempt multiplier turns that
 per-step bound into the ceiling shared by both stages. Eligibility holds at
 most three timed steps and extraction one, so four timeouts safely bound each.
 The retry limit and one-day backoff bound repeated failures. The fetch timeout
-bounds one HTTP request. Minimum content length rejects boilerplate.
+bounds one HTTP request. Minimum content length rejects boilerplate. Frame
+capture bounds top-level candidates, visible dimensions, and each document read.
 """
 
 from datetime import timedelta
@@ -26,6 +27,10 @@ RETRY_LIMIT = 3
 RETRY_BACKOFF = timedelta(days=1)
 FETCH_TIMEOUT = timedelta(seconds=30)
 MIN_CONTENT_CHARS = 400
+MAX_CAPTURED_FRAMES = 10
+MIN_FRAME_WIDTH_PX = 100
+MIN_FRAME_HEIGHT_PX = 100
+FRAME_READ_TIMEOUT = timedelta(seconds=5)
 
 __all__ = [
     "DATABASE_ENV_VAR",
@@ -38,6 +43,10 @@ __all__ = [
     "DEFAULT_PER_HOST_CONCURRENCY",
     "FETCH_TIMEOUT",
     "MIN_CONTENT_CHARS",
+    "MAX_CAPTURED_FRAMES",
+    "MIN_FRAME_WIDTH_PX",
+    "MIN_FRAME_HEIGHT_PX",
+    "FRAME_READ_TIMEOUT",
     "RETRY_BACKOFF",
     "RETRY_LIMIT",
     "STALE_ATTEMPT_PHASES",

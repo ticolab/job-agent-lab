@@ -5,9 +5,11 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import re
 from collections.abc import Awaitable, Mapping
 from dataclasses import dataclass, field
 from datetime import datetime
+from time import monotonic
 from typing import Literal, cast
 from urllib.parse import urlsplit
 
@@ -55,6 +57,7 @@ from job_pipeline.policy import (
     classify_failure,
     next_state,
 )
+from job_pipeline.runner.diagnostics import redact_message, redact_url
 
 SessionFactory = async_sessionmaker[AsyncSession]
 JobStatus = Literal[
@@ -168,56 +171,165 @@ async def _timed[T](deps: WorkerDeps, step: Awaitable[T]) -> T:
     return await asyncio.wait_for(step, timeout=deps.policy.job_timeout)
 
 
+def _acquisition_reason(result: AcquisitionFailure) -> str:
+    reason = redact_message(result.message)
+    known_reasons = {
+        "JSON-LD validThrough is in the past",
+        "posting text indicates the job is closed",
+        "posting redirected to the company listing root",
+        "URL must be an absolute HTTP(S) URL",
+        "URL credentials are not allowed",
+        "URL has an invalid port",
+        "target could not be resolved",
+        "target resolved to an invalid address",
+        "target resolves to a non-public address",
+        "redirect limit exceeded",
+        "no response received",
+        "acquisition timed out",
+    }
+    if reason in known_reasons or re.fullmatch(
+        r"HTTP [1-5]\d{2}|(?:rendered )?content is shorter than \d+ characters",
+        reason,
+    ):
+        return reason
+    host = r"[a-zA-Z0-9.:[\]-]+"
+    if re.fullmatch(
+        rf"redirected from {host} to {host}|browser navigation left {host} for {host}",
+        reason,
+    ):
+        return reason
+    match = re.match(
+        r"(?:Page\.(?:goto|content)|Frame\.content): "
+        r"(net::ERR_[A-Z_]+|Timeout \d+(?:\.\d+)?ms exceeded)",
+        reason,
+    )
+    if match:
+        return match.group()
+    return f"{result.category} acquisition failure"
+
+
+def _log_acquisition(
+    deps: WorkerDeps,
+    job_id: int,
+    company: Company,
+    url: str,
+    result: AcquiredContent | AcquisitionFailure,
+    *,
+    force_rendered: bool,
+    elapsed_s: float | None = None,
+) -> None:
+    trace = result.trace
+    steps = trace.steps if trace else ()
+    last = steps[-1] if steps else None
+    frames = trace.frames if trace else ()
+    reason = (
+        _acquisition_reason(result) if isinstance(result, AcquisitionFailure) else ""
+    )
+    logger.info(
+        "acquire run=%s job=%s slug=%s step=%s status=%s url=%s "
+        "outcome=%s chars=%s page_chars=%s frames=%s/%s/%s selected=%s "
+        "elapsed=%.2fs reason=%s",
+        redact_message(deps.run_id),
+        job_id,
+        redact_message(company.slug),
+        last.step if last else ("render" if force_rendered else "http"),
+        result.http_status,
+        redact_url(result.resolved_url or url),
+        result.method if isinstance(result, AcquiredContent) else result.category,
+        len(result.text) if isinstance(result, AcquiredContent) else 0,
+        last.page_chars if last else 0,
+        trace.frames_found if trace else 0,
+        sum(frame.outcome != "over_limit" for frame in frames),
+        sum(frame.outcome in {"selected", "qualifying"} for frame in frames),
+        trace.selected_frame if trace else None,
+        elapsed_s if elapsed_s is not None else sum(step.elapsed_s for step in steps),
+        json.dumps(redact_message(reason)),
+    )
+    for step in steps:
+        logger.debug(
+            "acquire step run=%s job=%s step=%s status=%s url=%s "
+            "page_chars=%s has_jsonld=%s elapsed=%.2fs",
+            redact_message(deps.run_id),
+            job_id,
+            step.step,
+            step.http_status,
+            redact_url(step.resolved_url or url),
+            step.page_chars,
+            step.has_jsonld,
+            step.elapsed_s,
+        )
+    for frame in frames:
+        logger.debug(
+            "acquire frame run=%s job=%s index=%s origin=%s outcome=%s "
+            "chars=%s element_id=%s title=%s",
+            redact_message(deps.run_id),
+            job_id,
+            frame.index,
+            frame.origin,
+            frame.outcome,
+            frame.chars,
+            json.dumps(redact_message(frame.element_id, limit=60)),
+            json.dumps(redact_message(frame.element_title, limit=60)),
+        )
+
+
 async def _acquire_content(
     deps: WorkerDeps,
     company: Company,
     url: str,
+    job_id: int,
     *,
     force_rendered: bool,
 ) -> AcquiredContent | AcquisitionFailure:
     if deps.http_client is None:
         raise RuntimeError("eligibility requires an HTTP client")
-    host = urlsplit(url).hostname or ""
-    host_semaphore = await _host_semaphore(deps, host)
-    if force_rendered and deps.browser is not None:
-        async with deps.http_semaphore, host_semaphore, deps.browser_semaphore:
-            return await _timed(
+
+    http_client = deps.http_client
+
+    async def acquire_logged(
+        *, browser: CaptureBrowser | None, force_rendered: bool
+    ) -> AcquiredContent | AcquisitionFailure:
+        started = monotonic()
+        try:
+            result = await _timed(
                 deps,
                 acquire(
                     url,
                     company=company,
-                    http=deps.http_client,
-                    browser=deps.browser,
-                    force_rendered=True,
+                    http=http_client,
+                    browser=browser,
+                    force_rendered=force_rendered,
                 ),
             )
-    async with deps.http_semaphore, host_semaphore:
-        acquired = await _timed(
+        except TimeoutError:
+            result = AcquisitionFailure(
+                "timeout", "acquisition timed out", resolved_url=url
+            )
+        _log_acquisition(
             deps,
-            acquire(
-                url,
-                company=company,
-                http=deps.http_client,
-                browser=None,
-                force_rendered=False,
-            ),
+            job_id,
+            company,
+            url,
+            result,
+            force_rendered=force_rendered,
+            elapsed_s=monotonic() - started,
         )
+        return result
+
+    host = urlsplit(url).hostname or ""
+    host_semaphore = await _host_semaphore(deps, host)
+    if force_rendered and deps.browser is not None:
+        async with deps.http_semaphore, host_semaphore, deps.browser_semaphore:
+            return await acquire_logged(browser=deps.browser, force_rendered=True)
+    async with deps.http_semaphore, host_semaphore:
+        acquired = await acquire_logged(browser=None, force_rendered=False)
     if (
         isinstance(acquired, AcquisitionFailure)
         and acquired.category == "empty_content"
         and deps.browser is not None
     ):
         async with deps.http_semaphore, host_semaphore, deps.browser_semaphore:
-            return await _timed(
-                deps,
-                acquire(
-                    url,
-                    company=company,
-                    http=deps.http_client,
-                    browser=deps.browser,
-                    force_rendered=True,
-                ),
-            )
+            return await acquire_logged(browser=deps.browser, force_rendered=True)
     return acquired
 
 
@@ -308,7 +420,7 @@ async def _fail(
     message = (
         failure.message if isinstance(failure, AcquisitionFailure) else str(failure)
     )
-    error = JobError(category, message or repr(failure))
+    error = JobError(category, redact_message(message or type(failure).__name__))
     released = await _release(
         deps,
         job.id,
@@ -354,6 +466,7 @@ async def _run_eligibility(
             deps,
             company,
             source_url,
+            job.id,
             force_rendered=last_error == "empty_content",
         )
         if isinstance(acquired, AcquisitionFailure):
@@ -676,7 +789,6 @@ async def process_job(job_id: int, *, deps: WorkerDeps) -> JobOutcome:
             logger.warning(
                 "could not record failure for job %s; the reaper will recover it",
                 job_id,
-                exc_info=True,
             )
             outcome = JobOutcome(
                 job_id,
@@ -685,13 +797,15 @@ async def process_job(job_id: int, *, deps: WorkerDeps) -> JobOutcome:
                 "failed",
                 progress.phase,
                 progress.decision,
-                JobError("internal", repr(exc)),
+                JobError("internal", redact_message(str(exc))),
                 progress.tokens,
             )
     logger.info(
-        "job slug=%s key=%s phase=%s outcome=%s",
-        claimed_job.company_slug,
-        claimed_job.url_key,
+        "job run=%s job=%s slug=%s key=%s phase=%s outcome=%s",
+        redact_message(deps.run_id),
+        job_id,
+        redact_message(claimed_job.company_slug),
+        redact_url(claimed_job.url_key),
         outcome.phase_reached,
         outcome.status,
     )

@@ -4,6 +4,8 @@ import _thread
 import argparse
 import asyncio
 import json
+import logging
+import re
 import threading
 import traceback
 from collections.abc import AsyncIterator, Mapping, Sequence
@@ -41,6 +43,7 @@ from job_pipeline.persistence import (
     runs_repo,
 )
 from tests.unit.asyncio_harness import run_async, track_engine
+from tests.unit.test_pipeline_diagnostics import pipeline_logger as pipeline_logger
 
 COMPANY = Company(
     name="Acme",
@@ -169,6 +172,23 @@ def catalog(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(reprocess, "find_company", find)
     monkeypatch.setattr(common, "find_company", find)
     monkeypatch.setattr("job_discovery.catalog.find_company", find)
+
+
+@pytest.mark.parametrize("command", ["eligibility", "extraction", "reprocess"])
+@pytest.mark.parametrize("flag,count", [("-v", 1), ("-vv", 2), ("--verbose", 1)])
+def test_stage_verbosity_parser(command: str, flag: str, count: int) -> None:
+    selection = (
+        ["--job", "1", "--reason", "test"] if command == "reprocess" else ["--all"]
+    )
+    assert _args(command, *selection, flag).verbose == count
+    assert _args(command, *selection).verbose == 0
+
+
+@pytest.mark.parametrize("command", ["preview", "show"])
+def test_nonstage_commands_reject_verbosity(command: str) -> None:
+    selection = ["--job", "1"] if command == "show" else ["--all"]
+    with pytest.raises(SystemExit):
+        _args(command, *selection, "-v")
 
 
 def test_dispatcher_and_policy_flags_use_real_parser() -> None:
@@ -956,6 +976,150 @@ def test_run_injects_factories_and_keeps_job_failure_exit_zero(
             return job.status
 
     assert run_async(status()) == "unavailable"
+
+
+@pytest.mark.parametrize("empty", [False, True])
+def test_cli_diagnostics_preserve_stdout_and_exclude_payloads(
+    catalog: None,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    pipeline_logger: logging.Logger,
+    empty: bool,
+) -> None:
+    from job_pipeline.content import ladder
+    from tests.unit.test_pipeline_worker import _fetch_with_public_dns
+
+    monkeypatch.setattr(ladder, "fetch", _fetch_with_public_dns)
+    monkeypatch.setattr(eligibility, "load_dotenv", lambda: False)
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test-SECRETVALUE")
+    monkeypatch.setattr(run, "caller_factory", lambda *args: AcceptedCaller())
+    monkeypatch.setattr(run, "browser_factory", _null_browser)
+    source = URL + "?token=abc123#private-fragment"
+    posting = (
+        "<html><main><p>tiny</p></main></html>"
+        if empty
+        else (
+            "<html><main><p>BODY-MARKER-7f3a Costa Rica software engineer. "
+            + "Build reliable systems. " * 40
+            + "</p></main></html>"
+        )
+    )
+    outputs: list[str] = []
+    for verbosity in ([], ["-v"], ["-vv"]):
+        path = tmp_path / f"diagnostic-{len(outputs)}.db"
+        factory = run_async(_seed_snapshot(path))
+
+        async def source_snapshot(
+            factory: async_sessionmaker[AsyncSession] = factory,
+        ) -> None:
+            async with factory() as session:
+                await discovery_jobs_repo.replace_company_urls(
+                    session,
+                    company_slug=COMPANY.slug,
+                    urls=[source],
+                    captured_at=datetime(2026, 1, 1),
+                )
+
+        run_async(source_snapshot())
+        with respx.mock(assert_all_called=True) as router:
+            router.get(source).mock(return_value=httpx.Response(200, text=posting))
+            main(["eligibility", "-c", "acme", "--database", str(path), *verbosity])
+        captured = capsys.readouterr()
+        outputs.append(
+            re.sub(r"\d{8}_\d{6}_[a-f0-9]+|\d+\.\d+s", "VARIABLE", captured.out)
+        )
+        assert "acquire run=" not in captured.out
+        if not verbosity:
+            assert captured.err == ""
+        else:
+            assert "acquire run=" in captured.err
+            assert "job=1" in captured.err
+            assert "page_chars=" in captured.err and "frames=0/0/0" in captured.err
+            assert ("acquire step " in captured.err) == (verbosity == ["-vv"])
+        for forbidden in (
+            "SECRETVALUE",
+            "BODY-MARKER-7f3a",
+            "abc123",
+            "private-fragment",
+            "Authorization",
+            "HTTP Request:",
+        ):
+            assert forbidden not in captured.err
+    assert outputs[0] == outputs[1] == outputs[2]
+
+
+def test_verbose_cli_framed_acquisition_logs_each_call_and_frame(
+    catalog: None,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    pipeline_logger: logging.Logger,
+) -> None:
+    from typing import cast
+
+    from job_discovery.settings import CaptureBrowser
+    from job_pipeline.content import ladder
+    from job_pipeline.content.render import FrameCapture, RenderedPage
+    from tests.unit.test_pipeline_worker import _fetch_with_public_dns
+
+    path = tmp_path / "framed-cli.db"
+    run_async(_seed_snapshot(path))
+    dom = COMPANY.model_copy(update={"strategy": "dom"})
+    monkeypatch.setattr(common, "find_company", lambda handle: dom)
+    monkeypatch.setattr(ladder, "fetch", _fetch_with_public_dns)
+    monkeypatch.setattr(eligibility, "load_dotenv", lambda: False)
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test-SECRETVALUE")
+    monkeypatch.setattr(run, "caller_factory", lambda *args: AcceptedCaller())
+    page = "<html><title>software engineer</title><main>Mexicali</main></html>"
+    frame = (
+        "<html><main><p>BODY-MARKER-7f3a Costa Rica software engineer. "
+        + "Build reliable systems. " * 40
+        + "</p></main></html>"
+    )
+
+    async def render_page(*args: object, **kwargs: object) -> RenderedPage:
+        return RenderedPage(
+            page,
+            URL,
+            1,
+            (
+                FrameCapture(
+                    0,
+                    "about:blank",
+                    "about",
+                    "candidate",
+                    "view_html_iframe",
+                    "Job Description",
+                    frame,
+                ),
+            ),
+        )
+
+    @asynccontextmanager
+    async def browser_factory(enabled: bool) -> AsyncIterator[CaptureBrowser]:
+        assert enabled
+        yield cast(CaptureBrowser, object())
+
+    monkeypatch.setattr(run, "browser_factory", browser_factory)
+    monkeypatch.setattr(ladder, "render_page", render_page)
+    with respx.mock(assert_all_called=True) as router:
+        router.get(URL).mock(return_value=httpx.Response(200, text=page))
+        main(["eligibility", "-c", "acme", "--database", str(path), "-vv"])
+    captured = capsys.readouterr()
+    lines = captured.err.splitlines()
+    assert sum("acquire run=" in line for line in lines) == 2
+    assert "outcome=rendered_frame_main" in captured.err
+    assert "frames=1/1/1 selected=0" in captured.err
+    assert 'element_id="view_html_iframe" title="Job Description"' in captured.err
+    assert "acquire run=" not in captured.out
+    for forbidden in (
+        "BODY-MARKER-7f3a",
+        "SECRETVALUE",
+        "Authorization",
+        "HTTP Request:",
+    ):
+        assert forbidden not in captured.err
 
 
 def test_run_accepts_result_and_writes_json(

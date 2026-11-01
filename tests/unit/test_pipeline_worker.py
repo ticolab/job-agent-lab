@@ -234,6 +234,357 @@ async def _fetch_with_public_dns(
     )
 
 
+class RecordingEligibleCaller(EligibleCaller):
+    def __init__(self) -> None:
+        super().__init__()
+        self.messages: list[tuple[type[BaseModel], list[dict[str, str]]]] = []
+
+    async def complete(
+        self, messages: Sequence[Mapping[str, str]], schema: type[T]
+    ) -> Completion[T]:
+        self.messages.append((schema, [dict(message) for message in messages]))
+        return await super().complete(messages, schema)
+
+
+@pytest.mark.parametrize("retry", [False, True])
+def test_framed_content_checkpoint_stage_separation_and_provenance(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    caplog: pytest.LogCaptureFixture,
+    retry: bool,
+) -> None:
+    import logging
+
+    from job_discovery.settings import CaptureBrowser
+    from job_eligibility import build_messages as eligibility_messages
+    from job_extractor import build_messages as extraction_messages
+    from job_pipeline.cli.main import main
+    from job_pipeline.content.render import FrameCapture, RenderedPage
+    from job_pipeline.persistence import contents_repo
+    from job_pipeline.runner import worker
+
+    path = tmp_path / "framed.db"
+    page_html = "<html><title>Software Engineer</title><main>Mexicali</main></html>"
+    description = POSTING_TEXT + " Location: Mexicali, Mexico. FRAME-DESCRIPTION"
+    frame_html = f"<html><main><p>{description}</p></main></html>"
+    browser = cast(CaptureBrowser, object())
+    forces: list[bool] = []
+    real_acquire = ladder.acquire
+
+    async def render_page(*args: object, **kwargs: object) -> RenderedPage:
+        return RenderedPage(
+            page_html,
+            COMPANY.sample_job_url,
+            1,
+            (
+                FrameCapture(
+                    0,
+                    "about:blank",
+                    "about",
+                    "candidate",
+                    "view_html_iframe",
+                    "Job Description",
+                    frame_html,
+                ),
+            ),
+        )
+
+    async def acquire(
+        url: str,
+        *,
+        company: Company,
+        http: httpx.AsyncClient,
+        browser: CaptureBrowser | None,
+        force_rendered: bool,
+    ) -> object:
+        forces.append(force_rendered)
+        return await real_acquire(
+            url,
+            company=company,
+            http=http,
+            browser=browser,
+            force_rendered=force_rendered,
+        )
+
+    monkeypatch.setattr(ladder, "render_page", render_page)
+    monkeypatch.setattr(worker, "acquire", acquire)
+    caplog.set_level(logging.DEBUG, logger="job_pipeline")
+
+    async def scenario() -> None:
+        factory = await _database(path)
+        caller = RecordingEligibleCaller()
+        async with httpx.AsyncClient() as client:
+            deps = WorkerDeps(
+                session_factory=factory,
+                stage="eligibility",
+                http_client=client,
+                browser=browser,
+                caller=caller,
+                policy=PipelinePolicy(model="test", retry_backoff=timedelta(0)),
+                run_id="run-1",
+                trigger="scheduled",
+                reason=None,
+                companies={COMPANY.slug: COMPANY},
+            )
+            if retry:
+
+                async def empty(*args: object, **kwargs: object) -> AcquisitionFailure:
+                    return AcquisitionFailure("empty_content", "too short")
+
+                monkeypatch.setattr(worker, "acquire", empty)
+                assert (
+                    await process_job(1, deps=replace(deps, browser=None))
+                ).status == "retry"
+                monkeypatch.setattr(worker, "acquire", acquire)
+            with respx.mock(assert_all_called=True) as router:
+                router.get(COMPANY.sample_job_url).mock(
+                    return_value=httpx.Response(200, text=page_html)
+                )
+                outcome = await process_job(1, deps=deps)
+            assert outcome.status == "ready_for_extraction"
+            assert forces == ([True] if retry else [False, True])
+            async with factory() as session:
+                stored = await contents_repo.current(session, 1)
+            assert stored is not None and stored.method == "rendered_frame_main"
+            assert "FRAME-DESCRIPTION" in stored.text and "Mexicali" in stored.text
+            assert caller.messages[0] == (
+                EligibilityResponse,
+                eligibility_messages(stored.text),
+            )
+
+            async def forbidden(*args: object, **kwargs: object) -> object:
+                pytest.fail("extraction acquired content")
+
+            monkeypatch.setattr(worker, "acquire", forbidden)
+            completed = await process_job(
+                1,
+                deps=replace(
+                    deps,
+                    stage="extraction",
+                    http_client=None,
+                    browser=None,
+                ),
+            )
+            assert completed.status == "completed_eligible"
+            assert caller.messages[1] == (
+                ExtractionResponse,
+                extraction_messages(stored.text),
+            )
+
+    run_async(scenario())
+    main(["show", "--job", "1", "--database", str(path)])
+    assert "method: rendered_frame_main" in capsys.readouterr().out
+    assert "frames=1/1/1 selected=0" in caplog.text
+    assert 'element_id="view_html_iframe" title="Job Description"' in caplog.text
+    assert "FRAME-DESCRIPTION" not in caplog.text
+
+
+@pytest.mark.parametrize("force_rendered", [False, True])
+def test_acquisition_timeout_logs_once_after_slot_wait(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+    force_rendered: bool,
+) -> None:
+    import logging
+
+    from job_discovery.settings import CaptureBrowser
+    from job_pipeline.runner import worker
+
+    caplog.set_level(logging.INFO, logger="job_pipeline")
+
+    async def hang(*args: object, **kwargs: object) -> object:
+        await asyncio.Event().wait()
+        raise AssertionError("unreachable")
+
+    monkeypatch.setattr(worker, "acquire", hang)
+
+    async def scenario() -> None:
+        factory = await _database(tmp_path / "acquisition-timeout.db")
+        async with httpx.AsyncClient() as client:
+            deps = WorkerDeps(
+                session_factory=factory,
+                stage="eligibility",
+                http_client=client,
+                browser=cast(CaptureBrowser, object()),
+                caller=EligibleCaller(),
+                policy=PipelinePolicy(model="test", job_timeout=0.02),
+                run_id="run-1",
+                trigger="scheduled",
+                reason=None,
+                companies={COMPANY.slug: COMPANY},
+            )
+            await deps.http_semaphore.acquire()
+            task = asyncio.create_task(
+                worker._acquire_content(
+                    deps,
+                    COMPANY,
+                    COMPANY.sample_job_url + "?token=QUERY-VALUE",
+                    1,
+                    force_rendered=force_rendered,
+                )
+            )
+            await asyncio.sleep(0.06)
+            assert not task.done()
+            assert not any(
+                "acquire run=" in record.getMessage() for record in caplog.records
+            )
+            deps.http_semaphore.release()
+            result = await task
+            assert (
+                isinstance(result, AcquisitionFailure) and result.category == "timeout"
+            )
+
+    run_async(scenario())
+    lines = [r.getMessage() for r in caplog.records if "acquire run=" in r.getMessage()]
+    assert len(lines) == 1
+    assert "run=run-1 job=1" in lines[0]
+    assert f"step={'render' if force_rendered else 'http'} status=None" in lines[0]
+    assert "outcome=timeout" in lines[0] and "elapsed=0.0" in lines[0]
+    assert 'reason="acquisition timed out"' in lines[0]
+    assert "QUERY-VALUE" not in lines[0]
+
+
+@pytest.mark.parametrize(
+    "category,message,expected",
+    [
+        ("transport", "target could not be resolved", "target could not be resolved"),
+        ("transport", "redirect limit exceeded", "redirect limit exceeded"),
+        (
+            "malformed",
+            "target resolves to a non-public address",
+            "target resolves to a non-public address",
+        ),
+        ("blocked", "HTTP 429", "HTTP 429"),
+        (
+            "off_site_redirect",
+            "redirected from acme.example to other.example",
+            "redirected from acme.example to other.example",
+        ),
+        (
+            "transport",
+            "Page.goto: net::ERR_CONNECTION_RESET at https://h/p?token=SECRET",
+            "Page.goto: net::ERR_CONNECTION_RESET",
+        ),
+        (
+            "timeout",
+            "Page.goto: Timeout 30000ms exceeded. BODY-MARKER",
+            "Page.goto: Timeout 30000ms exceeded",
+        ),
+        (
+            "transport",
+            '{"token": "SECRET", "body": "BODY-MARKER"}',
+            "transport acquisition failure",
+        ),
+        ("transport", "BODY-MARKER MODEL-RESPONSE", "transport acquisition failure"),
+    ],
+)
+def test_acquisition_reasons_preserve_safe_operational_details(
+    category: str,
+    message: str,
+    expected: str,
+) -> None:
+    from job_pipeline.content.model import FailureCategory
+    from job_pipeline.runner.worker import _acquisition_reason
+
+    assert (
+        _acquisition_reason(
+            AcquisitionFailure(
+                cast(FailureCategory, category),
+                message,
+            )
+        )
+        == expected
+    )
+
+
+@pytest.mark.parametrize("record_failure", [True, False])
+def test_worker_errors_and_recovery_warning_never_emit_exception_payload(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+    capsys: pytest.CaptureFixture[str],
+    record_failure: bool,
+) -> None:
+    import logging
+
+    from job_pipeline.runner import worker
+    from job_pipeline.runner.diagnostics import configure_logging
+
+    logger = logging.getLogger("job_pipeline")
+    level, handlers, propagate = logger.level, logger.handlers[:], logger.propagate
+    caplog.set_level(logging.INFO, logger="job_pipeline")
+    payload = (
+        "failure https://user:password@acme.example/jobs/1?token=abc123#fragment"
+        "\nBODY-MARKER Authorization: Bearer sk-test-SECRETVALUE"
+    )
+
+    async def broken_acquire(*args: object, **kwargs: object) -> object:
+        raise RuntimeError(payload)
+
+    async def broken_release(*args: object, **kwargs: object) -> object:
+        raise RuntimeError(payload)
+
+    monkeypatch.setattr(worker, "acquire", broken_acquire)
+    if not record_failure:
+        monkeypatch.setattr(worker, "_release", broken_release)
+
+    async def scenario() -> None:
+        factory = await _database(tmp_path / "safe-errors.db")
+        async with httpx.AsyncClient() as client:
+            outcome = await process_job(
+                1,
+                deps=WorkerDeps(
+                    session_factory=factory,
+                    stage="eligibility",
+                    http_client=client,
+                    browser=None,
+                    caller=EligibleCaller(),
+                    policy=PipelinePolicy(model="test"),
+                    run_id="run-1",
+                    trigger="scheduled",
+                    reason=None,
+                    companies={COMPANY.slug: COMPANY},
+                ),
+            )
+        assert outcome.error is not None
+        assert outcome.error.message == "failure https://acme.example/jobs/1"
+        if record_failure:
+            async with factory() as session:
+                attempts = await attempts_repo.history(session, 1)
+            assert attempts[-1].error_message == outcome.error.message
+
+    try:
+        configure_logging(2)
+        run_async(scenario())
+        error = capsys.readouterr().err
+        assert ("reaper will recover" in error) == (not record_failure)
+        for forbidden in (
+            "password",
+            "abc123",
+            "fragment",
+            "BODY-MARKER",
+            "SECRETVALUE",
+            "Traceback",
+        ):
+            assert forbidden not in error
+            assert forbidden not in caplog.text
+        assert all(
+            record.exc_info is None
+            for record in caplog.records
+            if record.name == worker.__name__
+        )
+    finally:
+        for handler in logger.handlers[:]:
+            if handler not in handlers:
+                logger.removeHandler(handler)
+                handler.close()
+        logger.handlers = handlers
+        logger.setLevel(level)
+        logger.propagate = propagate
+
+
 def test_ineligible_stops_before_extraction_and_accounts_tokens(tmp_path: Path) -> None:
     async def scenario() -> tuple[str, str, int, int, int]:
         factory = await _database(tmp_path / "worker.db")

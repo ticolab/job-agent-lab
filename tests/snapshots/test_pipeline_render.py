@@ -21,6 +21,9 @@ class _OfflinePage:
         self.body = body
         self.url = "https://jobs.example.com/posting/1"
 
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self.page, name)
+
     async def goto(self, _url: str, **_kwargs: Any) -> None:
         await self.page.set_content(self.body)
 
@@ -56,6 +59,24 @@ class _OfflineBrowser:
 
     async def new_context(self, **kwargs: Any) -> _OfflineContext:
         context = await self.browser.new_context(**kwargs)
+
+        async def serve(route: Any) -> None:
+            if route.request.url == "https://jobs.example.com/posting/1":
+                await route.fulfill(
+                    status=200, content_type="text/html", body="<html></html>"
+                )
+            elif route.request.url == "https://jobs.example.com/frame":
+                await route.fulfill(
+                    status=200, content_type="text/html", body="<p>Same origin</p>"
+                )
+            elif route.request.url.startswith("https://media.jobs.example.com/"):
+                await route.fulfill(
+                    status=200, content_type="text/html", body="<p>Sibling frame</p>"
+                )
+            else:
+                await route.fulfill(status=204)
+
+        await context.route("**/*", serve)
         return _OfflineContext(context, self.body)
 
 
