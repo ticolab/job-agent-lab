@@ -37,6 +37,7 @@ uv run job-pipeline extraction --all
 uv run job-pipeline reprocess --job 42 --reason "policy review"
 uv run job-pipeline show --job 42
 uv run python scripts/verify_grounding.py
+uv run python scripts/replay_eligibility.py run --run RUN_ID --label BASELINE
 sqlite3 data/job-discovery.db < scripts/pipeline_queries.sql
 
 uv run ruff format . && uv run ruff check . --fix
@@ -125,7 +126,7 @@ Duplicate merging is conservative because a merge cannot be undone from the CLI.
 
 Each pipeline repository call gets its own short-lived session. Never hold a session across content acquisition or model calls, and never share one session between repository calls that own their transactions.
 
-The live posting corpus and its reviewed expectations remain rollout work. When that corpus is populated, draft with `scripts/draft_expectations.py`, require operator review, record or replay with `scripts/evaluate_leaf.py`, and never treat an unreviewed draft as truth. Live model comparison and model rollout are manual and must not become secret-bearing CI gates.
+The live posting corpus and its reviewed expectations remain rollout work. When that corpus is populated, draft with `scripts/draft_expectations.py`, require operator review, record or replay with `scripts/evaluate_leaf.py`, and never treat an unreviewed draft as truth. Live model comparison and model rollout are manual and must not become secret-bearing CI gates. `scripts/replay_eligibility.py` is manual, needs a provider credential for `run`, and never runs in CI.
 
 A prompt or response-schema change requires a `POLICY_VERSION` or `EXTRACTOR_VERSION` bump plus the matching prompt-hash golden update. Changing only the selected model does not bump a leaf version, and no version change automatically reprocesses completed jobs. The configured `gpt-4.1-mini` default does not mean that model has passed corpus review or been rolled out.
 

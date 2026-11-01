@@ -173,3 +173,23 @@ def test_costa_rica_names_match_discovery_unambiguous_vocabulary() -> None:
         assert COSTA_RICA_LATAM.matches(name)
     for ambiguous in ("San Jose", "Liberia", "Santa Ana", "Limon"):
         assert not COSTA_RICA_LATAM.matches(ambiguous)
+
+
+def test_explanatory_sentence_containing_source_phrase_is_ungrounded() -> None:
+    quote = "The posting states 'Latin America' as the location."
+    with pytest.raises(UngroundedEvidenceError) as exc_info:
+        validate(_response("unknown", quote), "Latin America")
+    assert exc_info.value.quote == quote
+
+
+def test_quote_wrapped_source_line_is_ungrounded() -> None:
+    line = "Contractor · Remote in Argentina or Mexico · Full-time · 9-month project"
+    quote = f"'{line}'"
+    with pytest.raises(UngroundedEvidenceError) as exc_info:
+        validate(_response("unknown", quote), line)
+    assert exc_info.value.quote == quote
+
+
+def test_unwrapped_source_line_grounds() -> None:
+    line = "Contractor · Remote in Argentina or Mexico · Full-time · 9-month project"
+    assert validate(_response("unknown", line), line).grounded

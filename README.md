@@ -136,6 +136,7 @@ uv run job-pipeline eligibility --all
 uv run job-pipeline preview --all --by-company
 uv run job-pipeline extraction --all
 uv run python scripts/verify_grounding.py
+uv run python scripts/replay_eligibility.py run --run RUN_ID --label BASELINE
 ```
 
 `job-pipeline run` is retired: any arguments exit 2 with a message naming
