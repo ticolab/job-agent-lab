@@ -84,6 +84,19 @@ LEFT JOIN pipeline_model_prices AS p ON p.model = u.model
 ORDER BY u.cost_scope, u.scope_value, u.model;
 
 SELECT
+    'usage_per_stage' AS report,
+    r.stage,
+    r.trigger,
+    a.model,
+    COUNT(*) AS attempts,
+    SUM(COALESCE(a.prompt_tokens, 0)) AS prompt_tokens,
+    SUM(COALESCE(a.completion_tokens, 0)) AS completion_tokens
+FROM job_attempts AS a
+JOIN pipeline_runs AS r ON r.id = a.run_id
+GROUP BY r.stage, r.trigger, a.model
+ORDER BY r.stage, r.trigger, a.model;
+
+SELECT
     'unknown_decisions_for_policy_review' AS report,
     j.id AS job_id,
     j.company_slug,

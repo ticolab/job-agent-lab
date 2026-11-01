@@ -7,17 +7,20 @@ from collections.abc import Collection, Iterable, Sequence
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from sqlalchemy import Select, and_, delete, or_, select, update
+from sqlalchemy import Select, and_, delete, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 
 from job_discovery.persistence.timestamps import as_naive_utc, utc_now
+from job_pipeline.persistence import finalize
 from job_pipeline.persistence.models import (
+    STAGE_PHASES,
     Job,
     JobContent,
     JobDecision,
     JobResult,
     JobSource,
+    Stage,
 )
 
 
@@ -163,17 +166,29 @@ async def observe(
     )
 
 
-async def claim(session: AsyncSession, job_id: int, *, reprocess: bool = False) -> bool:
-    moment = utc_now()
-    eligible = (
-        (Job.status == "retry")
-        & Job.reprocess_requested.is_(True)
-        & (Job.next_attempt_after <= moment)
-        if reprocess
-        else Job.status.in_(("new", "retry"))
-        & Job.reprocess_requested.is_(False)
-        & ((Job.status == "new") | (Job.next_attempt_after <= moment))
+def claimable(
+    stage: Stage, moment: datetime, *, reprocess: bool
+) -> ColumnElement[bool]:
+    phases = STAGE_PHASES[stage]
+    due_retry = and_(
+        Job.status == "retry",
+        Job.next_phase.in_(phases),
+        Job.next_attempt_after <= as_naive_utc(moment),
     )
+    if reprocess:
+        return and_(due_retry, Job.reprocess_requested.is_(True))
+    waiting_status = "new" if stage == "eligibility" else "ready_for_extraction"
+    return and_(
+        Job.reprocess_requested.is_(False),
+        or_(Job.status == waiting_status, due_retry),
+    )
+
+
+async def claim(
+    session: AsyncSession, job_id: int, *, stage: Stage, reprocess: bool = False
+) -> bool:
+    moment = utc_now()
+    eligible = claimable(stage, moment, reprocess=reprocess)
     async with session.begin():
         result = await session.execute(
             update(Job)
@@ -220,7 +235,13 @@ async def release(
     next_phase: str,
     next_attempt_after: datetime | None,
     attempt_id: int | None = None,
+    error_category: str | None = None,
+    error_message: str | None = None,
+    prompt_tokens: int | None = None,
+    completion_tokens: int | None = None,
 ) -> bool:
+    """Release a job; releasing a held lease also ends its attempt atomically."""
+    moment = utc_now()
     if (status == "retry") != (next_attempt_after is not None):
         raise ValueError("next_attempt_after must be set exactly for retry jobs")
     retry_at = (
@@ -240,11 +261,25 @@ async def release(
                 next_phase=next_phase,
                 next_attempt_after=retry_at,
                 current_attempt_id=None,
-                updated_at=utc_now(),
+                updated_at=moment,
             )
             .returning(Job.id)
         )
-    return result.scalar_one_or_none() is not None
+        released = result.scalar_one_or_none() is not None
+        if released and attempt_id is not None:
+            await finalize.finish_owned_attempt(
+                session,
+                job_id=job_id,
+                attempt_id=attempt_id,
+                outcome=status,
+                phase_reached=next_phase,
+                error_category=error_category,
+                error_message=error_message,
+                prompt_tokens=prompt_tokens,
+                completion_tokens=completion_tokens,
+                finished_at=moment,
+            )
+    return released
 
 
 async def _merge_into(
@@ -350,7 +385,9 @@ async def merge_duplicate(
     the same identifier never collapses into one job. A fingerprint counts
     only when exactly one other live job shares it. The lower id is always
     the canonical, and a duplicate that another worker is processing right
-    now is left for that worker.
+    now is left for that worker. Merging the caller's leased job also finishes
+    its attempt atomically; folding a younger job into it does not. Without
+    an attempt_id, this test-only helper does not finish any attempt.
     """
     async with session.begin():
         if attempt_id is not None:
@@ -404,6 +441,15 @@ async def merge_duplicate(
             merged = await _merge_into(
                 session, job_id, match, moment, allow_in_progress=True
             )
+            if merged and attempt_id is not None:
+                await finalize.finish_owned_attempt(
+                    session,
+                    job_id=job_id,
+                    attempt_id=attempt_id,
+                    outcome="merged",
+                    phase_reached="fetch",
+                    finished_at=moment,
+                )
             return match if merged else job_id
         await _merge_into(session, match, job_id, moment, allow_in_progress=False)
         return job_id
@@ -426,6 +472,9 @@ async def list_work(
     snapshot_keys: Collection[tuple[str, str]],
     now: datetime,
     limit: int | None,
+    *,
+    stage: Stage,
+    reprocess: bool = False,
 ) -> tuple[JobRecord, ...]:
     if not snapshot_keys or limit == 0:
         return ()
@@ -437,14 +486,7 @@ async def list_work(
             .where(
                 Job.company_slug == company_slug,
                 Job.url_key.in_(keys),
-                or_(
-                    Job.status == "new",
-                    and_(
-                        Job.status == "retry",
-                        Job.reprocess_requested.is_(False),
-                        Job.next_attempt_after <= moment,
-                    ),
-                ),
+                claimable(stage, moment, reprocess=reprocess),
             )
             .order_by(Job.id)
         )
@@ -683,28 +725,74 @@ async def find_by_fingerprint(
     )
 
 
-async def disposition_counts(
+async def canonical_keys(
+    session: AsyncSession, company_slug: str, keys: Collection[str]
+) -> frozenset[str]:
+    if not keys:
+        return frozenset()
+    result = await session.execute(select(Job).where(Job.company_slug == company_slug))
+    jobs = {job.id: job for job in result.scalars()}
+    by_key = {job.url_key: job for job in jobs.values()}
+    canonical: set[str] = set()
+    for key in keys:
+        target = by_key.get(key)
+        if target is None:
+            continue
+        seen: set[int] = set()
+        while target.merged_into_id is not None:
+            if target.id in seen:
+                raise RuntimeError(f"merge cycle detected at job {target.id}")
+            seen.add(target.id)
+            parent = jobs.get(target.merged_into_id)
+            if parent is None:
+                raise RuntimeError(f"merged job {target.id} has missing canonical job")
+            target = parent
+        canonical.add(target.url_key)
+    return frozenset(canonical)
+
+
+async def count_work(
     session: AsyncSession,
     snapshot_keys: Collection[tuple[str, str]],
-    now: datetime | None = None,
+    now: datetime,
+    *,
+    stage: Stage,
+) -> int:
+    total = 0
+    for company_slug, keys in _snapshot_chunks(snapshot_keys):
+        result = await session.execute(
+            select(func.count())
+            .select_from(Job)
+            .where(
+                Job.company_slug == company_slug,
+                Job.url_key.in_(keys),
+                claimable(stage, now, reprocess=False),
+            )
+        )
+        total += result.scalar_one()
+    return total
+
+
+async def stage_dispositions(
+    session: AsyncSession,
+    snapshot_keys: Collection[tuple[str, str]],
+    now: datetime,
 ) -> dict[str, int]:
-    moment = as_naive_utc(now or utc_now())
+    moment = as_naive_utc(now)
     counts: Counter[str] = Counter()
     for company_slug, keys in _snapshot_chunks(snapshot_keys):
         result = await session.execute(
-            select(Job.status, Job.next_attempt_after).where(
-                Job.company_slug == company_slug,
-                Job.url_key.in_(keys),
+            select(Job.status, Job.next_phase, Job.next_attempt_after).where(
+                Job.company_slug == company_slug, Job.url_key.in_(keys)
             )
         )
-        for status, next_attempt_after in result:
+        for status, phase, retry_at in result:
             if status == "retry":
-                disposition = (
-                    "retry_due"
-                    if next_attempt_after is not None and next_attempt_after <= moment
-                    else "retry_waiting"
+                stage = "extraction" if phase == "extraction" else "eligibility"
+                due = (
+                    "due" if retry_at is not None and retry_at <= moment else "waiting"
                 )
-                counts[disposition] += 1
+                counts[f"{stage}_retry_{due}"] += 1
             else:
                 counts[status] += 1
     return dict(counts)

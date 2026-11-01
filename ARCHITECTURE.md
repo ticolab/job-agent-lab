@@ -83,17 +83,18 @@ shared preamble stay distinct; it too merges only on a single match. The lower
 id is always canonical, and a duplicate another worker is processing is left
 for that worker rather than flipped under it.
 
-| Status | Meaning | Ordinary run |
-|---|---|---|
-| `new` | Observed and never attempted. | Process. |
-| `in_progress` | Claimed by a pipeline run. | Leave alone. |
-| `retry` | Retryable failure with an optional due time. | Process when due and present in the current snapshot. |
-| `completed_eligible` | Eligibility passed and extraction was accepted. | Skip. |
-| `completed_ineligible` | Eligibility definitively failed. | Skip. |
-| `unknown` | Evidence could not support a definitive decision. | Skip. |
-| `unavailable` | The posting is not obtainable as active work. | Skip. |
-| `failed` | Retry policy was exhausted or failure is permanent. | Skip. |
-| `merged` | Proven same-company duplicate of another logical job. | Skip. |
+| Status | Meaning | `eligibility` | `extraction` |
+|---|---|---|---|
+| `new` | Observed and never attempted. | Process in snapshot. | Skip. |
+| `ready_for_extraction` | Eligible checkpoint; no active lease. | Skip. | Process in snapshot. |
+| `in_progress` | Claimed by an active attempt. | Leave alone unless stale in own stage. | Leave alone unless stale in own stage. |
+| `retry` | Retryable failure with a required due time. | Process due snapshot work at `fetch`/`eligibility`. | Process due snapshot work at `extraction`. |
+| `completed_eligible` | Eligibility passed and extraction was accepted. | Skip. | Skip. |
+| `completed_ineligible` | Eligibility definitively failed. | Skip. | Skip. |
+| `unknown` | Evidence could not support a definitive decision. | Skip. | Skip. |
+| `unavailable` | The posting is not obtainable as active work. | Skip. | Skip. |
+| `failed` | Retry policy was exhausted or failure is permanent. | Skip. | Skip. |
+| `merged` | Proven same-company duplicate of another logical job. | Skip. | Skip. |
 
 Unknown is terminal in v1. Repeating an ambiguous model call without new source
 content or policy would add cost without adding evidence. An operator can use
@@ -113,14 +114,44 @@ V1 deliberately omits URL-reuse detection and cross-company duplicate
 reconciliation. Structured compensation, a dashboard read model, slow
 completed-job rechecks, and version-selected bulk reprocessing are future work.
 
-The Phase 5 runner and all four `job-pipeline` commands are implemented.
-`preview` observes the selected discovery snapshot by default and reports
-current dispositions without constructing HTTP, browser, or model clients;
-`--no-observe` makes it read-only. `run` reaps stale work, observes, plans, and
-processes current-snapshot `new` and due `retry` jobs. `reprocess` runs explicit
-jobs, or one company's `unknown` jobs, from a requested checkpoint with a
-required audit reason. `show` prints one job's metadata, sources, versions,
-attempts, decisions, and accepted result without exposing stored posting bodies.
+`job-pipeline` implements `preview`, `eligibility`, `extraction`, `reprocess`,
+and `show`. `job-pipeline run` is permanently retired: any arguments exit 2
+with a message naming both stage commands, without opening a database.
+
+`preview` syncs the catalog and observes selected discovery URLs by default.
+It reports eligibility work, extraction backlog, in-progress jobs, and terminal
+dispositions, plus separate would-process counts capped by `--limit`.
+`--by-company` repeats the sections. `--no-observe` uses read-only, merge-aware
+membership. No preview constructs HTTP, browser, or model clients.
+
+`eligibility` observes and processes only its stage, stopping at the durable
+extraction boundary. `extraction` reads snapshot membership without changing it:
+it applies the same URL keys, follows `merged_into_id` chains, and omits URLs
+without existing jobs. It never observes, syncs the catalog, fetches, decides
+eligibility, or constructs HTTP/browser resources. Run, attempt, and result
+writes still occur. Ready jobs outside the snapshot stay ready until reappearing;
+merged aliases select the canonical job, not the merged row.
+
+Both stage dry runs reuse preview without credentials or variable-cost clients.
+`eligibility --dry-run` observes and may create jobs or update source/last-seen
+records; `extraction --dry-run` writes no rows. Neither reaps or creates run rows.
+Extraction rejects HTTP/browser concurrency flags. `--json-output DIR` belongs
+to `extraction` and `reprocess`, not `eligibility`.
+
+`reprocess` requires an audit reason and preserves history. From `fetch` or
+`eligibility` it stops ready; from `extraction` it only extracts. Explicit jobs
+can be outside the snapshot; completing that second stage then requires another
+explicit `reprocess --from-phase extraction`, since ordinary extraction is
+snapshot-scoped. `show` prints metadata and accepted results without posting
+bodies, labels attempts in the current stage, and adds `run_stage`/`run_trigger`
+to each attempt.
+
+Every new `pipeline_runs` row requires stage `eligibility` or `extraction` and
+trigger `scheduled` or `reprocess`. Both columns are CHECK-constrained; legacy
+runs migrate to `combined`, with trigger `reprocess` if any attempt had that
+trigger, otherwise `scheduled`. New runs never write `combined`. Per-stage
+usage joins attempts to runs by stage, trigger, and model.
+
 Implementation and offline tests do not imply that the deferred live posting
 corpus has been reviewed or that a production model rollout has occurred.
 
@@ -128,30 +159,59 @@ The runner treats `jobs.current_attempt_id` as an ownership lease. Claiming a
 job and creating its attempt happen atomically; every phase advance, checkpoint,
 merge, and release verifies that attempt before mutating accepted state. A stale
 worker that lost ownership resolves as skipped rather than overwriting newer
-work. Content is a durable fetch checkpoint, an accepted eligibility decision
-is the eligibility checkpoint, and an accepted extraction result completes the
-job. Retries resume from `next_phase`; explicit reprocessing can restart at
-`fetch`, `eligibility`, or `extraction`, invalidating only downstream current
-records. At startup, the scheduler closes stale unfinished attempts as
-`interrupted` and makes their jobs immediately due. Recovery therefore uses
-database leases and checkpoints, not an external checkpoint file.
+work. Content is a durable fetch checkpoint. The eligibility hand-off stores
+or re-verifies the eligible decision, sets `ready_for_extraction` at `extraction`,
+releases the lease, resets `attempt_count` to 0, and finishes the attempt with
+outcome `ready_for_extraction`, all in one transaction. A CHECK forbids a ready
+job with a lease or a different next phase.
 
-The per-job timeout bounds each network or model step once that step holds
-its concurrency slot, and never the time a job spends waiting for one. The
-alternative, one ceiling around the whole lifecycle, was tried and is the
-wrong shape for a corpus: every job of a 1,500-job first run is claimed at
-once, ten fetch slots and four model slots drain the queue over an hour, and
-a 180-second ceiling that starts at claim time would record most of the corpus
-as `timeout`, consume one of three attempts, and repeat the next day until
-the jobs were terminal without a model ever seeing them. Two consequences
-follow. The scheduler admits at most `http + model` concurrency jobs at a
-time, so an attempt's age tracks its active time rather than its queue time.
-And the reaper's staleness bound is four timeouts, one per timed step an
-attempt can hold, since the timeout itself no longer bounds an attempt.
+Every production stage-ending transition commits the job change, lease release,
+and attempt finish in one transaction: the hand-off, an ineligible or unknown
+decision, an accepted extraction, a failure release, and a merge. Consequently,
+every unfinished attempt is the current lease of an `in_progress` job. A failed
+finalization rolls back completely; failure handling follows the existing retry
+policy, and uncommitted model work may be repeated. Token spend lost before a
+commit is not reconstructed. Historical inconsistencies are not repaired.
+
+Extraction requires current content and a current eligible decision on that
+same content. A missing or mismatched prerequisite fails immediately with
+`missing_checkpoint`, without a model call or retry. An accepted extraction
+result completes the job. Retries resume from `next_phase`; explicit reprocessing
+invalidates downstream current records without deleting history.
+
+`attempt_count` measures attempts in the current stage. Each stage defaults to
+three attempts, capped at two for `internal` failures. Backoff is the current
+stage attempt count times one day, giving one-day then two-day delays. Hand-off
+starts a fresh extraction budget; migration leaves existing extraction retries
+and counts unchanged. Historical attempt rows remain the lifetime audit trail.
+
+At startup, each stage reaps only stale unfinished attempts still leasing
+`in_progress` jobs whose `next_phase` it owns: `fetch`/`eligibility` versus
+`extraction`. This is not limited by company selection or the original run's
+stage, so legacy extraction work is recovered by extraction. Reaping records
+`interrupted`, releases the lease, and makes retry work immediately due.
+The stage-ending invariant keeps every abandoned production attempt visible to
+the owning stage's reaper. Recovery uses database state, not an external
+checkpoint file.
+
+`--timeout-seconds` bounds each network or model step after it acquires its
+slot; waiting for a slot does not consume that timeout. The scheduler caps
+claimed jobs at `http_concurrency + model_concurrency` for eligibility and
+`model_concurrency` for extraction. Both stages use four timeouts as the stale
+bound (`STALE_ATTEMPT_PHASES`), although eligibility holds at most three timed
+steps and extraction one. These ceilings are per invocation, not process-global.
+
+Stages can overlap, but snapshot membership is not frozen across companies or
+across observation and planning. A concurrent scan or eligibility observation
+can change the planner's view. Atomic claims prevent duplicate ownership;
+same-stage runs still multiply resource ceilings, and a shorter timeout can
+reap another same-stage run's live attempt. Avoid such overlap with different
+timeouts; leases prevent stale writes, not wasted work.
 
 Ctrl-C cancels the run's task and waits for it to unwind, so the run row is
 closed, the engine disposed, and the browser shut before the process exits
-130; jobs left `in_progress` are released by the next run's reaper. The loop
+130; jobs left `in_progress` are released by a later invocation of the owning
+stage after the stale bound passes. Individual job failures still exit 0. The loop
 runs on a worker thread, and completion is tracked with an event rather than
 `Thread.join`, because on Python 3.12 a join interrupted by `KeyboardInterrupt`
 marks the still-running thread as stopped.
@@ -163,12 +223,12 @@ host; only a different domain is off-site and terminal. A past JSON-LD
 closure phrase or a body too short to be open, because some ATSs leave a stale
 date on a posting discovery still lists.
 
-The CLI loads `.env` only for commands that call the model. `run` and
-`reprocess` validate recognized OpenAI and Anthropic credentials before they
-observe, prepare, or claim work, so a missing key exits with code 2 without
-consuming the queue. `preview`, `show`, tests, and replay callers need no
-provider credential. Unknown LiteLLM provider prefixes are left to LiteLLM
-instead of guessing a credential name.
+Live `eligibility`, `extraction`, and `reprocess` load `.env` and validate
+recognized OpenAI and Anthropic credentials before observing, preparing, or
+claiming work. A missing key exits 2 without consuming the queue. Both stage
+dry runs, `preview`, `show`, tests, and replay callers need no provider
+credential. Unknown LiteLLM provider prefixes are left to LiteLLM instead of
+guessing a credential name.
 
 ## Discovery components and layering
 

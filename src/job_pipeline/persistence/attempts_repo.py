@@ -9,7 +9,8 @@ from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from job_discovery.persistence.timestamps import as_naive_utc
-from job_pipeline.persistence.models import Job, JobAttempt
+from job_pipeline.persistence.jobs_repo import claimable
+from job_pipeline.persistence.models import Job, JobAttempt, Stage
 
 
 @dataclass(frozen=True, slots=True)
@@ -64,16 +65,9 @@ async def claim_and_start(
     policy_version: str,
     extractor_version: str,
     started_at: datetime,
+    stage: Stage,
 ) -> int | None:
-    eligible = (
-        (Job.status == "retry")
-        & Job.reprocess_requested.is_(True)
-        & (Job.next_attempt_after <= as_naive_utc(started_at))
-        if trigger == "reprocess"
-        else Job.status.in_(("new", "retry"))
-        & Job.reprocess_requested.is_(False)
-        & ((Job.status == "new") | (Job.next_attempt_after <= as_naive_utc(started_at)))
-    )
+    eligible = claimable(stage, started_at, reprocess=trigger == "reprocess")
 
     moment = as_naive_utc(started_at)
     async with session.begin():

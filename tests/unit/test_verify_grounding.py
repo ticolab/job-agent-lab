@@ -145,6 +145,12 @@ def test_pipeline_queries_execute_against_pipeline_shape() -> None:
             is_current INTEGER NOT NULL,
             decided_at TEXT NOT NULL
         );
+        CREATE TABLE pipeline_runs (
+            id TEXT PRIMARY KEY,
+            stage TEXT NOT NULL,
+            trigger TEXT NOT NULL
+        );
+        INSERT INTO pipeline_runs VALUES ('run-1', 'eligibility', 'scheduled');
         INSERT INTO jobs VALUES (1, 'example', 'unknown');
         INSERT INTO job_attempts VALUES (1, 1, 'run-1', 'unknown', 'model', 10, 5);
         INSERT INTO job_results VALUES (

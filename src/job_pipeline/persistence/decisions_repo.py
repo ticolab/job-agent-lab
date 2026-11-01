@@ -9,6 +9,8 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from job_discovery.persistence.timestamps import as_naive_utc
+from job_pipeline.persistence import finalize
+from job_pipeline.persistence.finalize import CheckpointError as CheckpointError
 from job_pipeline.persistence.models import Job, JobDecision
 
 
@@ -49,14 +51,16 @@ def _record(decision: JobDecision) -> DecisionRecord:
     )
 
 
-async def accept_and_advance(
+async def hand_off_to_extraction(
     session: AsyncSession,
     *,
     job_id: int,
     attempt_id: int,
     content_id: int,
-    decision: DecisionInput,
+    decision: DecisionInput | None,
     decided_at: datetime,
+    prompt_tokens: int | None,
+    completion_tokens: int | None,
 ) -> int | None:
     moment = as_naive_utc(decided_at)
     async with session.begin():
@@ -68,30 +72,65 @@ async def accept_and_advance(
                 Job.current_attempt_id == attempt_id,
                 Job.current_content_id == content_id,
             )
-            .values(next_phase="extraction", updated_at=moment)
+            .values(
+                status="ready_for_extraction",
+                next_phase="extraction",
+                next_attempt_after=None,
+                current_attempt_id=None,
+                attempt_count=0,
+                updated_at=moment,
+            )
             .returning(Job.id)
         )
         if owned.scalar_one_or_none() is None:
             return None
-        await session.execute(
-            update(JobDecision)
-            .where(JobDecision.job_id == job_id, JobDecision.is_current.is_(True))
-            .values(is_current=False)
-        )
-        row = JobDecision(
+        if decision is None:
+            checkpoint = await session.execute(
+                select(JobDecision.id).where(
+                    JobDecision.job_id == job_id,
+                    JobDecision.content_id == content_id,
+                    JobDecision.is_current.is_(True),
+                    JobDecision.decision == "eligible",
+                )
+            )
+            decision_id = checkpoint.scalar_one_or_none()
+            if decision_id is None:
+                raise CheckpointError(
+                    f"job {job_id} has no current eligible decision "
+                    f"on content {content_id}"
+                )
+        else:
+            if decision.decision != "eligible":
+                raise CheckpointError("hand-off requires an eligible decision")
+            await session.execute(
+                update(JobDecision)
+                .where(JobDecision.job_id == job_id, JobDecision.is_current.is_(True))
+                .values(is_current=False)
+            )
+            row = JobDecision(
+                job_id=job_id,
+                attempt_id=attempt_id,
+                content_id=content_id,
+                decision=decision.decision,
+                reason=decision.reason,
+                evidence_json=decision.evidence_json,
+                policy_version=decision.policy_version,
+                is_current=True,
+                decided_at=moment,
+            )
+            session.add(row)
+            await session.flush()
+            decision_id = row.id
+        await finalize.finish_owned_attempt(
+            session,
             job_id=job_id,
             attempt_id=attempt_id,
-            content_id=content_id,
-            decision=decision.decision,
-            reason=decision.reason,
-            evidence_json=decision.evidence_json,
-            policy_version=decision.policy_version,
-            is_current=True,
-            decided_at=moment,
+            outcome="ready_for_extraction",
+            phase_reached="eligibility",
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+            finished_at=moment,
         )
-        session.add(row)
-        await session.flush()
-        decision_id: int = row.id
     return decision_id
 
 
@@ -104,6 +143,8 @@ async def accept_and_complete(
     decision: DecisionInput,
     status: str,
     decided_at: datetime,
+    prompt_tokens: int | None = None,
+    completion_tokens: int | None = None,
 ) -> int | None:
     moment = as_naive_utc(decided_at)
     async with session.begin():
@@ -145,6 +186,16 @@ async def accept_and_complete(
         session.add(row)
         await session.flush()
         decision_id: int = row.id
+        await finalize.finish_owned_attempt(
+            session,
+            job_id=job_id,
+            attempt_id=attempt_id,
+            outcome=status,
+            phase_reached="eligibility",
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+            finished_at=moment,
+        )
     return decision_id
 
 

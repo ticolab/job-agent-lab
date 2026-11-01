@@ -7,7 +7,7 @@ import argparse
 from dotenv import load_dotenv
 
 from job_discovery.catalog import COMPANIES, find_company
-from job_pipeline.cli import run as run_command
+from job_pipeline.cli import stages
 from job_pipeline.cli.common import (
     add_database_argument,
     add_policy_arguments,
@@ -79,12 +79,18 @@ async def _run(args: argparse.Namespace) -> None:
     companies = list(
         {job.company_slug: catalog[job.company_slug] for job in jobs}.values()
     )
-    await run_command.run_selected(args, companies, reprocess=prepared, reason=reason)
+    await stages.run_stage(
+        args,
+        companies,
+        stage="extraction" if args.from_phase == "extraction" else "eligibility",
+        reprocess=prepared,
+        reason=reason,
+    )
 
 
 def execute(args: argparse.Namespace) -> None:
     load_dotenv()
-    run_command.preflight_provider(args.model)
+    stages.preflight_provider(args.model)
     run_async(_run(args))
 
 
