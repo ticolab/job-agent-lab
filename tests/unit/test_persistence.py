@@ -918,3 +918,295 @@ class TestMigrationParity:
                 engine.dispose()
 
         run_in_thread(round_trip)
+
+    def test_pipeline_stage_seeded_round_trip_and_checks(self, tmp_path: Path) -> None:
+        from alembic import command
+        from alembic.config import Config
+        from alembic.script import ScriptDirectory
+        from sqlalchemy import MetaData
+        from sqlalchemy import create_engine as create_sync_engine
+
+        path = tmp_path / "pipeline-round-trip.db"
+
+        def scenario() -> None:
+            config = Config(str(REPO_ROOT / "alembic.ini"))
+            config.set_main_option("script_location", str(REPO_ROOT / "migrations"))
+            config.set_main_option("sqlalchemy.url", database_url(path))
+            assert ScriptDirectory.from_config(config).get_heads() == ["e7a9b2c4d601"]
+            command.upgrade(config, "c9eded2a94c2")
+            engine = create_sync_engine(f"sqlite:///{path}")
+            now = datetime(2026, 1, 1)
+            metadata = MetaData()
+            metadata.reflect(bind=engine)
+            tables = metadata.tables
+            audit_tables = (
+                "companies",
+                "jobs",
+                "job_sources",
+                "job_contents",
+                "job_attempts",
+                "job_decisions",
+                "job_results",
+                "pipeline_runs",
+            )
+            try:
+                with engine.begin() as connection:
+                    connection.execute(
+                        tables["companies"].insert(),
+                        {
+                            "slug": "acme",
+                            "name": "Acme",
+                            "job_board_url": "https://acme.test",
+                            "strategy": "dom",
+                            "synced_at": now,
+                        },
+                    )
+                    for run_id in ("scheduled", "reprocess", "empty"):
+                        connection.execute(
+                            tables["pipeline_runs"].insert(),
+                            {
+                                "id": run_id,
+                                "started_at": now,
+                                "selection": "all",
+                                "model": "test",
+                            },
+                        )
+                    statuses = [
+                        s
+                        for s in pipeline_models.JOB_STATUSES
+                        if s != "ready_for_extraction"
+                    ]
+                    for job_id, status in enumerate(statuses, 1):
+                        connection.execute(
+                            tables["jobs"].insert(),
+                            {
+                                "id": job_id,
+                                "company_slug": "acme",
+                                "url_key": f"key-{job_id}",
+                                "status": status,
+                                "next_phase": "extraction"
+                                if status in {"retry", "in_progress"}
+                                else "fetch",
+                                "attempt_count": 2,
+                                "next_attempt_after": now
+                                if status == "retry"
+                                else None,
+                                "current_attempt_id": job_id
+                                if status == "in_progress"
+                                else None,
+                                "current_content_id": job_id,
+                                "reprocess_requested": False,
+                                "merged_into_id": 1 if status == "merged" else None,
+                                "first_seen_at": now,
+                                "last_seen_at": now,
+                                "updated_at": now,
+                            },
+                        )
+                        connection.execute(
+                            tables["job_sources"].insert(),
+                            {
+                                "id": job_id,
+                                "job_id": job_id,
+                                "url": f"https://acme.test/{job_id}",
+                                "first_seen_at": now,
+                                "last_seen_at": now,
+                            },
+                        )
+                        connection.execute(
+                            tables["job_contents"].insert(),
+                            {
+                                "id": job_id,
+                                "job_id": job_id,
+                                "content_hash": f"hash-{job_id}",
+                                "fingerprint": f"fp-{job_id}",
+                                "resolved_url": f"https://acme.test/{job_id}",
+                                "method": "http",
+                                "text": "posting",
+                                "retrieved_at": now,
+                            },
+                        )
+                        connection.execute(
+                            tables["job_attempts"].insert(),
+                            {
+                                "id": job_id,
+                                "job_id": job_id,
+                                "run_id": "reprocess" if job_id == 1 else "scheduled",
+                                "trigger": "reprocess" if job_id == 1 else "scheduled",
+                                "model": "test",
+                                "policy_version": "p",
+                                "extractor_version": "e",
+                                "started_at": now,
+                            },
+                        )
+                        connection.execute(
+                            tables["job_decisions"].insert(),
+                            {
+                                "id": job_id,
+                                "job_id": job_id,
+                                "attempt_id": job_id,
+                                "content_id": job_id,
+                                "decision": "eligible",
+                                "reason": "location",
+                                "evidence_json": "[]",
+                                "policy_version": "p",
+                                "is_current": True,
+                                "decided_at": now,
+                            },
+                        )
+                        connection.execute(
+                            tables["job_results"].insert(),
+                            {
+                                "id": job_id,
+                                "job_id": job_id,
+                                "attempt_id": job_id,
+                                "content_id": job_id,
+                                "extractor_version": "e",
+                                "schema_version": 1,
+                                "result_json": "{}",
+                                "is_current": True,
+                                "accepted_at": now,
+                            },
+                        )
+                    before = {
+                        name: connection.execute(select(tables[name])).all()
+                        for name in audit_tables
+                    }
+                command.upgrade(config, "head")
+                with engine.connect() as connection:
+                    for name in audit_tables:
+                        assert (
+                            connection.execute(select(tables[name])).all()
+                            == before[name]
+                        )
+                    assert (
+                        connection.execute(text("PRAGMA foreign_key_check")).all() == []
+                    )
+                    assert connection.execute(
+                        text("SELECT id, stage, trigger FROM pipeline_runs ORDER BY id")
+                    ).all() == [
+                        ("empty", "combined", "scheduled"),
+                        ("reprocess", "combined", "reprocess"),
+                        ("scheduled", "combined", "scheduled"),
+                    ]
+                invalid_updates = [
+                    "UPDATE jobs SET status = 'bogus' WHERE id = 1",
+                    "UPDATE job_attempts SET outcome = 'bogus' WHERE id = 1",
+                    "UPDATE job_attempts SET error_category = 'bogus' WHERE id = 1",
+                    "UPDATE pipeline_runs SET stage = 'bogus'",
+                    "UPDATE pipeline_runs SET trigger = 'bogus'",
+                    "UPDATE pipeline_runs SET stage = NULL",
+                    "UPDATE pipeline_runs SET trigger = NULL",
+                    "UPDATE jobs SET status = 'ready_for_extraction', "
+                    "next_phase = 'fetch' WHERE id = 1",
+                    "UPDATE jobs SET status = 'ready_for_extraction', "
+                    "next_phase = 'extraction', current_attempt_id = 1 WHERE id = 1",
+                ]
+                for statement in invalid_updates:
+                    with pytest.raises(IntegrityError), engine.begin() as connection:
+                        connection.execute(text(statement))
+                metadata = MetaData()
+                metadata.reflect(bind=engine)
+                head_tables = metadata.tables
+                with engine.begin() as connection:
+                    connection.execute(
+                        head_tables["jobs"].insert(),
+                        {
+                            "id": 100,
+                            "company_slug": "acme",
+                            "url_key": "ready",
+                            "status": "ready_for_extraction",
+                            "next_phase": "extraction",
+                            "attempt_count": 0,
+                            "reprocess_requested": False,
+                            "first_seen_at": now,
+                            "last_seen_at": now,
+                            "updated_at": now,
+                        },
+                    )
+                    connection.execute(
+                        text(
+                            "UPDATE job_attempts SET outcome = 'ready_for_extraction' "
+                            "WHERE id = 1"
+                        )
+                    )
+                    connection.execute(
+                        text(
+                            "UPDATE job_attempts "
+                            "SET error_category = 'missing_checkpoint' WHERE id = 2"
+                        )
+                    )
+                    for stage in ("eligibility", "extraction"):
+                        connection.execute(
+                            head_tables["pipeline_runs"].insert(),
+                            {
+                                "id": stage,
+                                "stage": stage,
+                                "trigger": "scheduled",
+                                "model": "test",
+                                "selection": "all",
+                                "started_at": now,
+                            },
+                        )
+                before_downgrade = utc_now()
+                command.downgrade(config, "c9eded2a94c2")
+                after_downgrade = utc_now()
+                with engine.connect() as connection:
+                    row = connection.execute(
+                        text(
+                            "SELECT status, next_phase, next_attempt_after, "
+                            "attempt_count, current_attempt_id FROM jobs WHERE id = 100"
+                        )
+                    ).one()
+                    assert (row[0], row[1], row[3], row[4]) == (
+                        "retry",
+                        "extraction",
+                        0,
+                        None,
+                    )
+                    retry_at = datetime.fromisoformat(row[2])
+                    assert retry_at.tzinfo is None
+                    assert before_downgrade <= retry_at <= after_downgrade
+                    assert len(row[2]) == 26
+                    assert (
+                        connection.execute(
+                            text("SELECT outcome FROM job_attempts WHERE id = 1")
+                        ).scalar_one()
+                        == "retry"
+                    )
+                    assert (
+                        connection.execute(
+                            text("SELECT error_category FROM job_attempts WHERE id = 2")
+                        ).scalar_one()
+                        == "internal"
+                    )
+                    assert not {"stage", "trigger"} & {
+                        column["name"]
+                        for column in inspect(connection).get_columns("pipeline_runs")
+                    }
+                    for name in audit_tables:
+                        if name not in {"jobs", "job_attempts", "pipeline_runs"}:
+                            assert (
+                                connection.execute(select(tables[name])).all()
+                                == before[name]
+                            )
+                    assert (
+                        connection.execute(text("PRAGMA foreign_key_check")).all() == []
+                    )
+                command.upgrade(config, "head")
+                with engine.connect() as connection:
+                    assert (
+                        connection.execute(text("PRAGMA foreign_key_check")).all() == []
+                    )
+                    assert (
+                        connection.execute(
+                            text("SELECT COUNT(*) FROM jobs")
+                        ).scalar_one()
+                        == len(statuses) + 1
+                    )
+                    assert connection.execute(
+                        text("SELECT COUNT(*) FROM job_attempts")
+                    ).scalar_one() == len(statuses)
+            finally:
+                engine.dispose()
+
+        run_in_thread(scenario)

@@ -48,9 +48,10 @@ cp .env.example .env                 # then add your OPENAI_API_KEY
 ```
 
 `OPENAI_API_KEY` is required for live discovery agent runs and for pipeline
-`run` or `reprocess` commands that select an OpenAI model. Anthropic pipeline
-models require `ANTHROPIC_API_KEY`. `preview`, `show`, tests, replay callers,
-API discovery strategies, and `pre_filter_urls` companies need no provider key.
+`eligibility`, `extraction`, or `reprocess` commands that select an OpenAI model.
+Anthropic pipeline models require `ANTHROPIC_API_KEY`. Both stage dry runs,
+`preview`, `show`, tests, replay callers, API discovery strategies, and
+`pre_filter_urls` companies need no provider key.
 
 ## Usage
 
@@ -125,44 +126,89 @@ sqlite3 data/job-discovery.db 'select company_slug, status, url_count, error_mes
 
 ### Daily processing workflow
 
-The approved daily workflow is five commands:
+Run the stages separately, inspecting the extraction backlog between them:
 
 ```bash
 uv run alembic upgrade head
 uv run job-discovery scan --all
 uv run job-pipeline preview --all --by-company
-uv run job-pipeline run --all
+uv run job-pipeline eligibility --all
+uv run job-pipeline preview --all --by-company
+uv run job-pipeline extraction --all
 uv run python scripts/verify_grounding.py
 ```
 
-`job-pipeline` observes the discovery snapshot, skips completed logical jobs,
-retries only due work, decides eligibility, and extracts eligible postings.
-All four commands are implemented. `preview` reports dispositions and
-would-process counts without constructing HTTP, browser, or model clients. It
-observes by default; `--no-observe` is read-only, and `run --dry-run` uses the
-same preview path.
+`job-pipeline run` is retired: any arguments exit 2 with a message naming
+`eligibility` and `extraction`, without opening a database.
 
-`run` reaps stale attempts, observes selected companies, and processes
-current-snapshot `new` and due `retry` jobs under independent concurrency
-limits. `--timeout-seconds` bounds each fetch or model call once it holds a
-slot, not the time a job waits for one, so a large run never times out jobs
-that are merely queued. Individual job failures are recorded and do not make
-the command fail. Ctrl-C cancels the run cleanly and exits 130; the next run
-releases whatever was in progress.
-`reprocess` requires a reason and restarts explicit jobs, or one company's
-`unknown` jobs, from `fetch`, `eligibility`, or `extraction` while preserving
-history. `show` prints one job's sources, content metadata, attempts, decisions,
-and current accepted result without printing stored posting bodies.
+`eligibility` observes selected discovery URLs and processes `new` jobs and due
+`retry` jobs at `fetch` or `eligibility`. An eligible decision atomically finishes
+the attempt as `ready_for_extraction`, releases the lease, and resets
+`attempt_count` to 0. It never extracts in the same invocation.
 
-The runner uses each job's active attempt as an ownership lease. Content,
-accepted eligibility, and accepted extraction are durable phase checkpoints;
-retries resume from `next_phase`, and stale workers cannot overwrite a newer
-owner. Startup reaps stale unfinished attempts to due retry work, so recovery
-uses the database rather than an external checkpoint file.
+`extraction` processes current-snapshot `ready_for_extraction` jobs and due
+`retry` jobs at `extraction`. Snapshot membership is read-only and follows merged
+aliases to their canonical jobs; it neither observes URLs nor syncs the catalog.
+The command still writes run, attempt, and result history. It constructs no HTTP
+client or browser and rejects their concurrency flags. `--json-output DIR` is
+available on `extraction` and `reprocess`, not `eligibility`.
 
-`run` and `reprocess` load `.env` and check recognized OpenAI or Anthropic
-credentials before observing, preparing, or claiming work. A missing key exits
-with code 2 without consuming work. Audit queries live in
+A ready job outside the snapshot stays ready until it reappears. Unobserved URLs
+are omitted by extraction. Missing current content, a missing or non-eligible
+current decision, or a decision on different content fails immediately with
+`missing_checkpoint`, without a model call or retry.
+
+`preview` reports eligibility work, extraction backlog, in-progress jobs, and
+terminal dispositions, with separate would-process counts capped by `--limit`.
+It observes and syncs the catalog by default; `--no-observe` uses read-only,
+merge-aware membership. Both stage dry runs reuse this preview without HTTP,
+browser, or model clients or provider credentials, but differ in writes:
+
+```bash
+uv run job-pipeline eligibility --dry-run --all
+uv run job-pipeline extraction --dry-run --all
+```
+
+`eligibility --dry-run` observes and may create jobs or update sources and
+last-seen timestamps. `extraction --dry-run` does not observe or write rows.
+Neither dry run reaps attempts or creates pipeline runs.
+
+`attempt_count` counts attempts in the current stage, not lifetime attempts.
+Each stage has three attempts by default; `internal` failures are capped at two.
+Retry delays are one then two days by default, resuming from `next_phase`.
+The eligibility hand-off gives extraction a fresh budget; historical attempts
+remain intact, and migration does not reset existing extraction retries.
+
+The active attempt is an ownership lease, so stale workers cannot overwrite a
+newer owner. Startup reaping closes stale leased attempts as `interrupted` and
+makes their jobs due for retry, scoped by `next_phase`: eligibility reaps only
+`fetch`/`eligibility`, extraction only `extraction`, even outside the selection.
+Both use `4 × --timeout-seconds` as the stale bound. A timeout bounds each active
+network or model step, not waiting for its slot. Claimed jobs are capped at
+`http_concurrency + model_concurrency` for eligibility and `model_concurrency`
+for extraction. These ceilings are per invocation, not shared across processes.
+
+Different stages can overlap, but there is no cross-company snapshot transaction:
+a concurrent scan or eligibility observation can change what a planner sees.
+Claims prevent duplicate ownership; avoid overlapping same-stage runs with
+different timeouts, since the shorter stale bound can reap a live attempt.
+Individual job failures still exit 0. Ctrl-C exits 130; recovery requires a later
+invocation of the owning stage after its stale bound has passed.
+
+`reprocess` requires an audit reason and preserves history. Starting from `fetch`
+or `eligibility` stops at `ready_for_extraction`; then run `extraction`. Starting
+from `extraction` uses stored checkpoints only. Explicit reprocessing can target
+jobs outside the snapshot, but a subsequent ordinary extraction cannot; use
+`reprocess --from-phase extraction` for that case. `show` prints audit metadata
+and accepted results, including attempts in the current stage and each attempt's
+`run_stage`/`run_trigger`, never stored posting bodies.
+
+Live stage commands and `reprocess` load `.env` and preflight recognized provider
+credentials before observing, preparing, or claiming work. Missing credentials
+exit 2 without consuming work. Every new `pipeline_runs` row records required
+`stage` (`eligibility` or `extraction`) and `trigger` (`scheduled` or `reprocess`).
+Migrated legacy runs retain `stage=combined`, with their trigger backfilled from
+attempt history. Audit and per-stage usage queries live in
 `scripts/pipeline_queries.sql`.
 
 The live posting corpus, operator review of drafted expectations, live model

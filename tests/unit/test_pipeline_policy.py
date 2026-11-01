@@ -13,10 +13,10 @@ from job_pipeline.content.model import AcquisitionFailure, FailureCategory
 from job_pipeline.llm import ModelCallError, ModelResponseError
 from job_pipeline.policy import (
     ErrorCategory,
+    MissingCheckpointError,
     PipelinePolicy,
     classify_failure,
     next_state,
-    work_filter,
 )
 
 
@@ -110,22 +110,24 @@ def test_retry_limit(category: str, attempt_count: int, expected: str) -> None:
     assert status == expected
 
 
-def test_work_filter_requires_current_snapshot_and_due_retry() -> None:
-    now = datetime(2026, 1, 2)
-    snapshot = frozenset({("acme", "key-1")})
-    assert work_filter(_Job(), snapshot, now)
-    assert work_filter(
-        _Job(status="retry", next_attempt_after=now - timedelta(seconds=1)),
-        snapshot,
-        now,
+@pytest.mark.parametrize("attempt_count", [0, 1, 2, 3, 100])
+@pytest.mark.parametrize("retryable", [False, True])
+def test_missing_checkpoint_fails_immediately(
+    attempt_count: int, retryable: bool
+) -> None:
+    assert classify_failure(MissingCheckpointError("content missing")) == (
+        "missing_checkpoint",
+        False,
     )
-    assert not work_filter(_Job(url_key="gone"), snapshot, now)
-    assert not work_filter(_Job(status="retry", next_attempt_after=None), snapshot, now)
-    assert not work_filter(
-        _Job(status="retry", next_attempt_after=now + timedelta(seconds=1)),
-        snapshot,
-        now,
-    )
-    assert work_filter(
-        _Job(status="failed", url_key="gone"), snapshot, now, reprocess=True
-    )
+    assert next_state(
+        _Job(attempt_count=attempt_count),
+        "missing_checkpoint",
+        retryable,
+        PipelinePolicy(),
+    ) == ("failed", None)
+
+
+def test_claim_ceilings() -> None:
+    policy = PipelinePolicy(http_concurrency=7, model_concurrency=3)
+    assert policy.claim_ceiling("eligibility") == 10
+    assert policy.claim_ceiling("extraction") == 3

@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-from collections.abc import Collection
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Literal, Protocol
 
-from job_discovery.persistence.timestamps import as_naive_utc, utc_now
+from job_discovery.persistence.timestamps import utc_now
 from job_eligibility.validate import UngroundedEvidenceError as EligibilityEvidenceError
 from job_extractor.validate import UngroundedEvidenceError as ExtractionEvidenceError
 from job_pipeline.content.model import (
@@ -41,8 +40,13 @@ ErrorCategory = Literal[
     "model_call",
     "validation_failed",
     "ungrounded_evidence",
+    "missing_checkpoint",
     "internal",
 ]
+
+
+class MissingCheckpointError(RuntimeError):
+    pass
 
 
 class WorkItem(Protocol):
@@ -68,7 +72,7 @@ class PipelinePolicy:
 
     ``job_timeout`` bounds each network or model step of a job once that
     step holds its concurrency slot; queue time is never charged against it.
-    ``in_flight`` is how many jobs may be claimed at once, so an attempt's
+    ``claim_ceiling(stage)`` bounds how many jobs may be claimed, so an attempt's
     age stays close to its active time and the reaper's bound,
     :attr:`stale_after`, means what it says.
     """
@@ -83,10 +87,12 @@ class PipelinePolicy:
     limit: int | None = None
     model: str = DEFAULT_MODEL
 
-    @property
-    def in_flight(self) -> int:
-        """Jobs claimed at once: enough to keep every slot busy, no more."""
-        return self.http_concurrency + self.model_concurrency
+    def claim_ceiling(self, stage: Literal["eligibility", "extraction"]) -> int:
+        return (
+            self.http_concurrency + self.model_concurrency
+            if stage == "eligibility"
+            else self.model_concurrency
+        )
 
     @property
     def stale_after(self) -> timedelta:
@@ -97,6 +103,8 @@ class PipelinePolicy:
 def classify_failure(
     failure: BaseException | AcquisitionFailure,
 ) -> tuple[ErrorCategory, bool]:
+    if isinstance(failure, MissingCheckpointError):
+        return "missing_checkpoint", False
     if isinstance(failure, AcquisitionFailure):
         return failure.category, failure.category in RETRYABLE_CATEGORIES
     if isinstance(failure, ModelCallError):
@@ -116,6 +124,8 @@ def next_state(
     retryable: bool,
     policy: PipelinePolicy,
 ) -> tuple[str, datetime | None]:
+    if category == "missing_checkpoint":
+        return "failed", None
     if category in TERMINAL_CATEGORIES:
         return "unavailable", None
     retry_limit = (
@@ -126,29 +136,11 @@ def next_state(
     return "failed", None
 
 
-def work_filter(
-    job: WorkItem,
-    snapshot_keys: Collection[tuple[str, str]],
-    now: datetime,
-    *,
-    reprocess: bool = False,
-) -> bool:
-    if reprocess:
-        return True
-    if (job.company_slug, job.url_key) not in snapshot_keys:
-        return False
-    if job.status == "new":
-        return True
-    if job.status != "retry" or job.next_attempt_after is None:
-        return False
-    return job.next_attempt_after <= as_naive_utc(now)
-
-
 __all__ = [
     "ErrorCategory",
     "PipelinePolicy",
     "WorkItem",
     "classify_failure",
     "next_state",
-    "work_filter",
+    "MissingCheckpointError",
 ]

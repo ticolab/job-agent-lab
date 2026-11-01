@@ -111,4 +111,28 @@ async def observe(
     return ObservationSummary(tuple(summaries), frozenset(snapshot_keys))
 
 
-__all__ = ["CompanyObservation", "ObservationSummary", "keyed_urls", "observe"]
+async def read_snapshot_keys(
+    session_factory: async_sessionmaker[AsyncSession],
+    companies: Sequence[Company],
+) -> frozenset[tuple[str, str]]:
+    keys: set[tuple[str, str]] = set()
+    for company in companies:
+        async with session_factory() as session:
+            urls = await discovery_jobs_repo.list_company_urls(
+                session, company_slug=company.slug
+            )
+            pairs, _ = keyed_urls(company.slug, urls)
+            canonical = await jobs_repo.canonical_keys(
+                session, company.slug, {key for key, _ in pairs}
+            )
+        keys.update((company.slug, key) for key in canonical)
+    return frozenset(keys)
+
+
+__all__ = [
+    "CompanyObservation",
+    "ObservationSummary",
+    "keyed_urls",
+    "observe",
+    "read_snapshot_keys",
+]

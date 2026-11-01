@@ -164,6 +164,7 @@ def test_observed_merged_alias_keeps_canonical_snapshot_eligible(
                 summary.snapshot_keys,
                 datetime(2026, 1, 2),
                 None,
+                stage="eligibility",
             )
             sources = await jobs_repo.list_sources(session, 1)
         return (

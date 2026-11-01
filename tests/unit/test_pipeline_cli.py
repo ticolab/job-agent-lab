@@ -26,8 +26,9 @@ from job_discovery.persistence import models as discovery_models
 from job_discovery.persistence.engine import create_engine, create_session_factory
 from job_eligibility import EligibilityResponse
 from job_extractor import ExtractionResponse
-from job_pipeline.cli import common, reprocess, run
+from job_pipeline.cli import common, eligibility, extraction, reprocess
 from job_pipeline.cli import main as main_module
+from job_pipeline.cli import stages as run
 from job_pipeline.cli.main import build_parser, main
 from job_pipeline.llm import Completion, StructuredCaller
 from job_pipeline.persistence import (
@@ -177,10 +178,10 @@ def test_dispatcher_and_policy_flags_use_real_parser() -> None:
         for row in __import__(
             "job_pipeline.cli.main", fromlist=["SUBCOMMANDS"]
         ).SUBCOMMANDS
-    } == {"preview", "run", "reprocess", "show"}
+    } == {"preview", "run", "eligibility", "extraction", "reprocess", "show"}
     args = parser.parse_args(
         [
-            "run",
+            "eligibility",
             "--all",
             "--model",
             "test-model",
@@ -299,7 +300,7 @@ def test_preview_observes_and_never_constructs_cost_dependencies(
     main(["preview", "-c", "acme", "--by-company", "--database", str(path)])
     output = capsys.readouterr().out
     assert "new                    1" in output
-    assert "would process          1" in output
+    assert "would process (eligibility) 1" in output
     assert COMPANY.slug in output
 
 
@@ -312,7 +313,8 @@ def test_run_dry_run_reuses_preview_without_factories(
     path = tmp_path / "dry-run.db"
     run_async(_seed_snapshot(path))
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-    monkeypatch.setattr(run, "load_dotenv", lambda: False)
+    monkeypatch.setattr(eligibility, "load_dotenv", lambda: False)
+    monkeypatch.setattr(extraction, "load_dotenv", lambda: False)
     monkeypatch.setattr(
         run,
         "LiteLLMCaller",
@@ -328,8 +330,8 @@ def test_run_dry_run_reuses_preview_without_factories(
         "browser_factory",
         lambda enabled: pytest.fail("dry-run constructed a browser"),
     )
-    main(["run", "-c", "acme", "--dry-run", "--database", str(path)])
-    assert "would process          1" in capsys.readouterr().out
+    main(["eligibility", "-c", "acme", "--dry-run", "--database", str(path)])
+    assert "would process (eligibility) 1" in capsys.readouterr().out
 
 
 def test_run_missing_provider_key_does_not_consume_work(
@@ -341,10 +343,11 @@ def test_run_missing_provider_key_does_not_consume_work(
     path = tmp_path / "missing-key.db"
     factory = run_async(_seed_snapshot(path))
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-    monkeypatch.setattr(run, "load_dotenv", lambda: False)
+    monkeypatch.setattr(eligibility, "load_dotenv", lambda: False)
+    monkeypatch.setattr(extraction, "load_dotenv", lambda: False)
 
     with pytest.raises(SystemExit) as exc:
-        main(["run", "-c", "acme", "--database", str(path)])
+        main(["eligibility", "-c", "acme", "--database", str(path)])
 
     async def state() -> tuple[int, int]:
         async with factory() as session:
@@ -382,7 +385,7 @@ def test_preview_no_observe_does_not_create_pipeline_jobs(
             return len((await session.execute(select(models.Job))).scalars().all())
 
     assert run_async(count()) == 0
-    assert "would process          0" in capsys.readouterr().out
+    assert "would process (eligibility) 0" in capsys.readouterr().out
 
 
 def test_migration_preflight_exits_two(
@@ -410,6 +413,8 @@ async def _seed_audit(path: Path) -> tuple[async_sessionmaker[AsyncSession], int
         await runs_repo.start_run(
             session,
             run_id="seed",
+            stage="eligibility",
+            trigger="scheduled",
             selection=COMPANY.slug,
             model="test",
             started_at=datetime(2026, 1, 1),
@@ -557,6 +562,7 @@ def test_reprocess_validates_all_ids_and_preserves_exact_phase_history(
         args: argparse.Namespace,
         companies: list[Company],
         *,
+        stage: str,
         reprocess: tuple[int, ...],
         reason: str,
     ) -> None:
@@ -567,7 +573,7 @@ def test_reprocess_validates_all_ids_and_preserves_exact_phase_history(
             phase=args.from_phase,
         )
 
-    monkeypatch.setattr(run, "run_selected", fake_run_selected)
+    monkeypatch.setattr(run, "run_stage", fake_run_selected)
     main(
         [
             "reprocess",
@@ -680,12 +686,13 @@ def test_reprocess_status_unknown_is_scoped_to_selected_company(
         args: argparse.Namespace,
         companies: list[Company],
         *,
+        stage: str,
         reprocess: tuple[int, ...],
         reason: str,
     ) -> None:
         captured.update(companies=companies, ids=reprocess, reason=reason)
 
-    monkeypatch.setattr(run, "run_selected", fake_run_selected)
+    monkeypatch.setattr(run, "run_stage", fake_run_selected)
     main(
         [
             "reprocess",
@@ -752,18 +759,20 @@ def test_completed_reprocess_retains_history_and_replaces_current_rows(
         return job, attempts, decisions, results
 
     job, attempts, decisions, results = run_async(state())
-    assert job.status == "completed_eligible"
+    assert job.status == "ready_for_extraction"
     assert job.next_phase == "extraction"
     assert job.current_attempt_id is None
-    assert job.current_content_id == decisions[-1].content_id == results[-1].content_id
-    assert len(attempts) == len(decisions) == len(results) == 2
+    assert job.attempt_count == 0
+    assert job.current_content_id == decisions[-1].content_id
+    assert len(attempts) == len(decisions) == 2
+    assert len(results) == 1
     assert attempts[-1].trigger == "reprocess"
     assert attempts[-1].reason == "policy review"
-    assert attempts[-1].outcome == "completed_eligible"
+    assert attempts[-1].outcome == "ready_for_extraction"
     assert [decision.is_current for decision in decisions] == [False, True]
-    assert [result.is_current for result in results] == [False, True]
+    assert [result.is_current for result in results] == [False]
     assert decisions[0].attempt_id == results[0].attempt_id == attempts[0].id
-    assert decisions[1].attempt_id == results[1].attempt_id == attempts[1].id
+    assert decisions[1].attempt_id == attempts[1].id
 
 
 def test_invalid_reprocess_prerequisites_do_not_mutate_any_selected_job(
@@ -790,7 +799,7 @@ def test_invalid_reprocess_prerequisites_do_not_mutate_any_selected_job(
     missing_id = run_async(seed_without_checkpoint())
     monkeypatch.setattr(
         run,
-        "run_selected",
+        "run_stage",
         lambda *args, **kwargs: pytest.fail("invalid selection was processed"),
     )
 
@@ -937,7 +946,7 @@ def test_run_injects_factories_and_keeps_job_failure_exit_zero(
     monkeypatch.setattr(run, "browser_factory", fake_browser)
     with respx.mock(assert_all_called=True) as router:
         router.get(URL).mock(return_value=httpx.Response(404))
-        main(["run", "-c", "acme", "--limit", "1", "--database", str(path)])
+        main(["eligibility", "-c", "acme", "--limit", "1", "--database", str(path)])
     assert constructed == {"caller": 1, "http": 1, "browser": 1}
     assert f"{'unavailable':<22} 1" in capsys.readouterr().out
 
@@ -970,15 +979,24 @@ def test_run_accepts_result_and_writes_json(
         router.get(URL).mock(return_value=httpx.Response(200, text=posting))
         main(
             [
-                "run",
+                "eligibility",
                 "-c",
                 "acme",
                 "--database",
                 str(path),
-                "--json-output",
-                str(output),
             ]
         )
+    main(
+        [
+            "extraction",
+            "-c",
+            "acme",
+            "--database",
+            str(path),
+            "--json-output",
+            str(output),
+        ]
+    )
     written = list(output.glob("*.json"))
     assert len(written) == 1
     payload = json.loads(written[0].read_text(encoding="utf-8"))
@@ -995,3 +1013,433 @@ def test_reprocess_requires_reason_and_company_for_status() -> None:
         ["reprocess", "--status", "unknown", "--reason", "policy change"]
     )
     assert args.company is None
+
+
+@pytest.mark.parametrize(
+    "extras",
+    [
+        [],
+        ["--all"],
+        ["-c", "acme", "--dry-run"],
+        ["--bogus"],
+        ["--help"],
+        ["--limit", "bad"],
+    ],
+)
+def test_retired_run_accepts_any_arguments_and_opens_nothing(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    extras: list[str],
+) -> None:
+    path = tmp_path / "never-created.db"
+    with pytest.raises(SystemExit) as exc:
+        main(["run", *extras, "--database", str(path)])
+    assert exc.value.code == 2
+    assert not path.exists()
+    error = capsys.readouterr().err
+    assert "job-pipeline eligibility" in error and "job-pipeline extraction" in error
+
+
+@pytest.mark.parametrize(
+    "argv",
+    [
+        ["extraction", "--http-concurrency", "5"],
+        ["extraction", "--browser-concurrency", "1"],
+        ["eligibility", "--json-output", "directory"],
+        ["extraction", "--bogus"],
+        ["eligibility", "--bogus"],
+        ["extraction", "--limit", "0"],
+    ],
+)
+def test_stage_parser_rejects_unsupported_flags(argv: list[str]) -> None:
+    with pytest.raises(SystemExit) as exc:
+        main([*argv, "--all"])
+    assert exc.value.code == 2
+
+
+@pytest.mark.parametrize("stage", ["eligibility", "extraction"])
+def test_stage_dry_runs_construct_nothing_and_extraction_is_read_only(
+    catalog: None,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    stage: str,
+) -> None:
+    path = tmp_path / "dry-stages.db"
+    factory = run_async(_seed_snapshot(path))
+
+    def forbidden(*args: object, **kwargs: object) -> None:
+        raise AssertionError("dry run constructed resources")
+
+    for name in ("caller_factory", "http_client_factory", "browser_factory"):
+        monkeypatch.setattr(run, name, forbidden)
+
+    async def counts() -> dict[str, int]:
+        async with factory() as session:
+            return {
+                table.name: len((await session.execute(select(table))).all())
+                for table in models.Base.metadata.sorted_tables
+            }
+
+    before = run_async(counts())
+    main([stage, "-c", "acme", "--dry-run", "--database", str(path)])
+    after = run_async(counts())
+    if stage == "extraction":
+        assert before == after
+    else:
+        assert after["jobs"] == 1
+        assert after["pipeline_runs"] == after["job_attempts"] == 0
+
+
+@pytest.mark.parametrize("stage", ["eligibility", "extraction"])
+def test_stage_missing_key_writes_no_rows(
+    catalog: None,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    stage: str,
+) -> None:
+    path = tmp_path / "key.db"
+    factory = run_async(_seed_snapshot(path))
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setattr(eligibility, "load_dotenv", lambda: False)
+    monkeypatch.setattr(extraction, "load_dotenv", lambda: False)
+    with pytest.raises(SystemExit) as exc:
+        main([stage, "-c", "acme", "--database", str(path)])
+    assert exc.value.code == 2
+
+    async def counts() -> tuple[int, int, int]:
+        async with factory() as session:
+            counts = [
+                len((await session.execute(select(table))).all())
+                for table in (models.Job, models.JobAttempt, models.PipelineRun)
+            ]
+            return counts[0], counts[1], counts[2]
+
+    assert run_async(counts()) == (0, 0, 0)
+
+
+def test_extraction_dom_selection_never_constructs_fetch_resources(
+    catalog: None,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "dom.db"
+    factory, job_id = run_async(_seed_audit(path))
+    dom = COMPANY.model_copy(update={"strategy": "dom"})
+    monkeypatch.setattr(common, "find_company", lambda handle: dom)
+    monkeypatch.setattr(run, "caller_factory", lambda *args: AcceptedCaller())
+
+    def forbidden(*args: object, **kwargs: object) -> None:
+        raise AssertionError("extraction constructed fetch resources")
+
+    monkeypatch.setattr(run, "http_client_factory", forbidden)
+    monkeypatch.setattr(run, "browser_factory", forbidden)
+
+    async def ready() -> None:
+        async with factory() as session:
+            await jobs_repo.release(
+                session,
+                job_id,
+                status="ready_for_extraction",
+                next_phase="extraction",
+                next_attempt_after=None,
+            )
+        async with factory() as session:
+            await discovery_jobs_repo.replace_company_urls(
+                session,
+                company_slug=COMPANY.slug,
+                urls=[URL],
+                captured_at=datetime(2026, 1, 1),
+            )
+
+    run_async(ready())
+    main(["extraction", "-c", "acme", "--database", str(path)])
+
+    async def state() -> None:
+        async with factory() as session:
+            job = await jobs_repo.get(session, job_id)
+            runs = (
+                (
+                    await session.execute(
+                        select(models.PipelineRun).where(
+                            models.PipelineRun.id != "seed"
+                        )
+                    )
+                )
+                .scalars()
+                .all()
+            )
+        assert job is not None and job.status == "completed_eligible"
+        assert [(row.stage, row.trigger) for row in runs] == [
+            ("extraction", "scheduled")
+        ]
+
+    run_async(state())
+
+
+def test_show_waiting_state_and_run_identity(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    path = tmp_path / "waiting.db"
+    factory, job_id = run_async(_seed_audit(path))
+
+    async def ready() -> None:
+        async with factory() as session:
+            await jobs_repo.release(
+                session,
+                job_id,
+                status="ready_for_extraction",
+                next_phase="extraction",
+                next_attempt_after=None,
+            )
+
+    run_async(ready())
+    main(["show", "--job", str(job_id), "--database", str(path)])
+    output = capsys.readouterr().out
+    assert "eligible; waiting for `job-pipeline extraction`" in output
+    assert "attempts in current stage: 0" in output
+    assert "run_stage: eligibility" in output
+    assert "run_trigger: scheduled" in output
+    assert "SECRET FULL POSTING TEXT" not in output
+
+
+@pytest.mark.parametrize("phase", ["fetch", "eligibility"])
+def test_historical_reprocess_stops_then_requires_explicit_extraction(
+    catalog: None,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    phase: str,
+) -> None:
+    path = tmp_path / "historical.db"
+    factory, job_id = run_async(_seed_audit(path))
+    caller = AcceptedCaller()
+    monkeypatch.setattr(run, "caller_factory", lambda *args: caller)
+    monkeypatch.setattr(run, "http_client_factory", _null_http)
+    monkeypatch.setattr(run, "browser_factory", _null_browser)
+    from job_pipeline.content.model import AcquiredContent
+
+    async def acquire(*args: object, **kwargs: object) -> AcquiredContent:
+        return AcquiredContent(
+            "Costa Rica software engineer. " * 50,
+            "Engineer",
+            URL,
+            200,
+            "main_content",
+            None,
+            None,
+            datetime(2026, 1, 2),
+            "new-hash",
+        )
+
+    monkeypatch.setattr("job_pipeline.runner.worker.acquire", acquire)
+    base = [
+        "reprocess",
+        "--job",
+        str(job_id),
+        "--reason",
+        "review",
+        "--database",
+        str(path),
+    ]
+    main([*base, "--from-phase", phase])
+
+    async def waiting() -> None:
+        async with factory() as session:
+            job = await jobs_repo.get(session, job_id)
+            attempts = await attempts_repo.history(session, job_id)
+            results = await results_repo.history(session, job_id)
+            decisions = await decisions_repo.history(session, job_id)
+        assert job is not None and job.status == "ready_for_extraction"
+        assert len(attempts) == len(decisions) == 2
+        assert len(results) == 1 and not results[0].is_current
+        assert attempts[-1].phase_reached == "eligibility"
+
+    run_async(waiting())
+    main(["extraction", "-c", "acme", "--database", str(path)])
+    run_async(waiting())
+    main([*base, "--from-phase", "extraction"])
+
+    async def completed() -> None:
+        async with factory() as session:
+            job = await jobs_repo.get(session, job_id)
+            decisions = await decisions_repo.history(session, job_id)
+            results = await results_repo.history(session, job_id)
+            runs = (
+                (
+                    await session.execute(
+                        select(models.PipelineRun).where(
+                            models.PipelineRun.trigger == "reprocess"
+                        )
+                    )
+                )
+                .scalars()
+                .all()
+            )
+        assert job is not None and job.status == "completed_eligible"
+        assert len(decisions) == len(results) == 2
+        assert [row.is_current for row in results] == [False, True]
+        assert {row.stage for row in runs} == {"eligibility", "extraction"}
+
+    run_async(completed())
+
+
+@pytest.mark.parametrize("from_phase", ["fetch", "eligibility", "extraction"])
+@pytest.mark.parametrize("no_observe", [False, True])
+def test_preview_excludes_prepared_unclaimed_reprocess(
+    catalog: None,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    from_phase: str,
+    no_observe: bool,
+) -> None:
+    from job_discovery.persistence.timestamps import utc_now
+
+    path = tmp_path / "prepared-reprocess.db"
+    factory, job_id = run_async(_seed_audit(path))
+    stage: models.Stage = "extraction" if from_phase == "extraction" else "eligibility"
+
+    async def prepare() -> None:
+        async with factory() as session:
+            await discovery_jobs_repo.replace_company_urls(
+                session,
+                company_slug=COMPANY.slug,
+                urls=[URL],
+                captured_at=utc_now(),
+            )
+        async with factory() as session:
+            assert await jobs_repo.prepare_reprocess(
+                session, [job_id], from_phase=from_phase
+            ) == (job_id,)
+        keys = {(COMPANY.slug, URL)}
+        for selected_stage in models.STAGE_PHASES:
+            async with factory() as session:
+                assert (
+                    await jobs_repo.list_work(
+                        session, keys, utc_now(), None, stage=selected_stage
+                    )
+                    == ()
+                )
+            async with factory() as session:
+                assert not await jobs_repo.claim(session, job_id, stage=selected_stage)
+        async with factory() as session:
+            work = await jobs_repo.list_work(
+                session, keys, utc_now(), None, stage=stage, reprocess=True
+            )
+            assert [job.id for job in work] == [job_id]
+
+    run_async(prepare())
+    main(
+        [
+            "preview",
+            "-c",
+            "acme",
+            "--by-company",
+            "--database",
+            str(path),
+            *(["--no-observe"] if no_observe else []),
+        ]
+    )
+    output = capsys.readouterr().out
+    assert output.count("would process (eligibility) 0") == 2
+    assert output.count("would process (extraction) 0") == 2
+    assert output.count("retry due              1") == 2
+
+    async def unchanged() -> None:
+        async with factory() as session:
+            job = await jobs_repo.get(session, job_id)
+            assert job is not None
+            assert job.status == "retry"
+            assert job.next_phase == from_phase
+            assert job.reprocess_requested
+            assert job.current_attempt_id is None
+            assert job.attempt_count == 0
+
+    run_async(unchanged())
+
+
+def test_preview_stage_sections_limit_company_and_merged_alias(
+    catalog: None,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    from datetime import timedelta
+
+    from job_discovery.persistence.timestamps import utc_now
+
+    path = tmp_path / "dispositions.db"
+    factory = run_async(_database(path))
+    dispositions = [
+        ("new", "fetch", None),
+        ("retry", "fetch", -1),
+        ("retry", "eligibility", 1),
+        ("ready_for_extraction", "extraction", None),
+        ("retry", "extraction", -1),
+        ("retry", "extraction", 1),
+        ("in_progress", "eligibility", None),
+        *(
+            (status, "eligibility", None)
+            for status in (
+                "completed_eligible",
+                "completed_ineligible",
+                "unknown",
+                "unavailable",
+                "failed",
+            )
+        ),
+    ]
+
+    async def seed() -> None:
+        now = utc_now()
+        urls = [f"{URL}{index}" for index in range(len(dispositions) + 1)]
+        async with factory() as session:
+            await jobs_repo.observe(
+                session, COMPANY.slug, [(url, url) for url in urls], now
+            )
+        async with factory() as session, session.begin():
+            jobs = (
+                (await session.execute(select(models.Job).order_by(models.Job.id)))
+                .scalars()
+                .all()
+            )
+            for job, (status, phase, due) in zip(jobs, dispositions, strict=False):
+                job.status = status
+                job.next_phase = phase
+                job.next_attempt_after = (
+                    now + timedelta(days=due) if due is not None else None
+                )
+            jobs[-1].status = "merged"
+            jobs[-1].merged_into_id = jobs[3].id
+        async with factory() as session:
+            await discovery_jobs_repo.replace_company_urls(
+                session,
+                company_slug=COMPANY.slug,
+                urls=[url for index, url in enumerate(urls) if index != 3],
+                captured_at=now,
+            )
+
+    run_async(seed())
+    main(
+        [
+            "preview",
+            "-c",
+            "acme",
+            "--no-observe",
+            "--by-company",
+            "--limit",
+            "1",
+            "--database",
+            str(path),
+        ]
+    )
+    output = capsys.readouterr().out
+    for title in (
+        "Eligibility work",
+        "Extraction backlog",
+        "In progress",
+        "Terminal dispositions",
+    ):
+        assert output.count(title) == 2
+    assert output.count("would process (eligibility) 1") == 2
+    assert output.count("would process (extraction) 1") == 2
+    assert "ready for extraction   1" in output
+    assert "retry due              1" in output
+    assert "retry waiting          1" in output

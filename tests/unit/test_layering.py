@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+from graphlib import TopologicalSorter
 from pathlib import Path
 
 import pytest
@@ -148,6 +149,29 @@ def test_source_tree_is_discoverable(package: str) -> None:
 def test_every_unit_has_an_allowlist_entry(package: str) -> None:
     discovered = {_unit_of(package, path) for path in _source_files(package)}
     assert discovered == set(ALLOWED_IMPORTS[package])
+
+
+@pytest.mark.parametrize("package", sorted(PACKAGE_ROOTS))
+def test_allowed_component_graph_is_acyclic(package: str) -> None:
+    assert set(TopologicalSorter(ALLOWED_IMPORTS[package]).static_order()) == set(
+        ALLOWED_IMPORTS[package]
+    )
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        "if TYPE_CHECKING:\n    from job_pipeline.persistence.models import Stage",
+        "def load():\n    from job_pipeline.persistence.models import Stage",
+    ],
+)
+def test_import_checker_includes_guarded_and_local_imports(source: str) -> None:
+    assert _absolute_imports(ast.parse(source)) == {"job_pipeline.persistence.models"}
+
+
+def test_pipeline_persistence_and_policy_remain_independent() -> None:
+    assert ALLOWED_IMPORTS["job_pipeline"]["persistence"] == frozenset()
+    assert "persistence" not in ALLOWED_IMPORTS["job_pipeline"]["policy"]
 
 
 def test_no_module_uses_a_relative_import() -> None:

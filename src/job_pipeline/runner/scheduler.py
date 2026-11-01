@@ -14,8 +14,9 @@ from job_discovery.domain.company import Company
 from job_discovery.persistence import catalog_repo
 from job_discovery.persistence.timestamps import utc_now
 from job_pipeline.persistence import attempts_repo, jobs_repo, runs_repo
+from job_pipeline.persistence.models import Stage
 from job_pipeline.policy import PipelinePolicy
-from job_pipeline.runner.observe import ObservationSummary, observe
+from job_pipeline.runner.observe import ObservationSummary, observe, read_snapshot_keys
 from job_pipeline.runner.worker import JobOutcome, WorkerDeps, process_job
 
 SessionFactory = async_sessionmaker[AsyncSession]
@@ -25,6 +26,7 @@ class DepsFactory(Protocol):
     def __call__(
         self,
         run_id: str,
+        stage: Stage,
         trigger: Literal["scheduled", "reprocess"],
         reason: str | None,
         http_semaphore: asyncio.Semaphore,
@@ -39,16 +41,30 @@ def new_run_id() -> str:
     return f"{utc_now():%Y%m%d_%H%M%S}_{uuid4().hex[:8]}"
 
 
-# Statuses an ordinary run never plans, so a snapshot job in one of them is
-# "skipped as completed" in the sense the run summary reports.
-COMPLETED_DISPOSITIONS: tuple[str, ...] = (
-    "completed_eligible",
-    "completed_ineligible",
-    "unknown",
-    "unavailable",
-    "failed",
-    "merged",
-)
+NON_WORK_DISPOSITIONS: dict[Stage, tuple[str, ...]] = {
+    "eligibility": (
+        "completed_eligible",
+        "completed_ineligible",
+        "unknown",
+        "unavailable",
+        "failed",
+        "merged",
+        "ready_for_extraction",
+        "extraction_retry_due",
+        "extraction_retry_waiting",
+    ),
+    "extraction": (
+        "completed_eligible",
+        "completed_ineligible",
+        "unknown",
+        "unavailable",
+        "failed",
+        "merged",
+        "new",
+        "eligibility_retry_due",
+        "eligibility_retry_waiting",
+    ),
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -62,6 +78,7 @@ class PipelineResult:
     """
 
     run_id: str
+    stage: Stage
     observation: ObservationSummary | None
     outcomes: tuple[JobOutcome, ...]
     reaped: int
@@ -79,7 +96,8 @@ class PipelineResult:
         if self.dispositions is None:
             return 0
         return sum(
-            self.dispositions.get(status, 0) for status in COMPLETED_DISPOSITIONS
+            self.dispositions.get(status, 0)
+            for status in NON_WORK_DISPOSITIONS[self.stage]
         )
 
     @property
@@ -87,8 +105,16 @@ class PipelineResult:
         return len(self.outcomes) - self.skipped
 
     @property
-    def eligible(self) -> int:
+    def extracted(self) -> int:
         return self._count("completed_eligible")
+
+    @property
+    def ready(self) -> int:
+        return self._count("ready_for_extraction")
+
+    @property
+    def skipped_not_due(self) -> int:
+        return (self.dispositions or {}).get(f"{self.stage}_retry_waiting", 0)
 
     @property
     def ineligible(self) -> int:
@@ -132,21 +158,28 @@ class PipelineResult:
 
     @property
     def counts(self) -> dict[str, int]:
-        return {
+        counts = {
             "skipped": self.skipped,
             "skipped_completed": self.skipped_completed,
+            "skipped_not_due": self.skipped_not_due,
             "attempted": self.attempted,
-            "eligible": self.eligible,
-            "ineligible": self.ineligible,
-            "unknown": self.unknown,
-            "unavailable": self.unavailable,
             "retry": self.retry,
             "failed": self.failed,
-            "merged": self.merged,
             "interrupted": self.interrupted,
             "prompt_tokens": self.prompt_tokens,
             "completion_tokens": self.completion_tokens,
         }
+        if self.stage == "eligibility":
+            counts.update(
+                ready_for_extraction=self.ready,
+                ineligible=self.ineligible,
+                unknown=self.unknown,
+                unavailable=self.unavailable,
+                merged=self.merged,
+            )
+        else:
+            counts["extracted"] = self.extracted
+        return counts
 
 
 async def browser_required(
@@ -165,6 +198,7 @@ async def browser_required(
 async def run_pipeline(
     companies: Sequence[Company],
     *,
+    stage: Stage,
     session_factory: SessionFactory,
     deps_factory: DepsFactory,
     policy: PipelinePolicy,
@@ -173,13 +207,18 @@ async def run_pipeline(
 ) -> PipelineResult:
     run_id = new_run_id()
     now = utc_now()
-    async with session_factory() as session:
-        await catalog_repo.sync_catalog(session, companies)
+    trigger: Literal["scheduled", "reprocess"] = (
+        "scheduled" if reprocess is None else "reprocess"
+    )
+    if stage == "eligibility":
+        async with session_factory() as session:
+            await catalog_repo.sync_catalog(session, companies)
     async with session_factory() as session:
         reaped = await runs_repo.reap_stale(
             session,
             older_than=now - policy.stale_after,
             finished_at=now,
+            stage=stage,
         )
     selection = ",".join(company.slug for company in companies)
     async with session_factory() as session:
@@ -189,22 +228,28 @@ async def run_pipeline(
             selection=selection,
             model=policy.model,
             started_at=now,
+            stage=stage,
+            trigger=trigger,
         )
     observation: ObservationSummary | None = None
     dispositions: dict[str, int] | None = None
     if reprocess is None:
-        observation = await observe(session_factory, companies)
+        if stage == "eligibility":
+            observation = await observe(session_factory, companies)
+            snapshot_keys = observation.snapshot_keys
+        else:
+            snapshot_keys = await read_snapshot_keys(session_factory, companies)
         async with session_factory() as session:
-            dispositions = await jobs_repo.disposition_counts(
-                session, observation.snapshot_keys, now
+            dispositions = await jobs_repo.stage_dispositions(
+                session, snapshot_keys, now
             )
             jobs = await jobs_repo.list_work(
                 session,
-                observation.snapshot_keys,
+                snapshot_keys,
                 now,
                 policy.limit,
+                stage=stage,
             )
-        trigger: Literal["scheduled", "reprocess"] = "scheduled"
     else:
         exact_ids = tuple(dict.fromkeys(reprocess))
         async with session_factory() as session:
@@ -220,6 +265,7 @@ async def run_pipeline(
     per_host_lock = asyncio.Lock()
     deps = deps_factory(
         run_id,
+        stage,
         trigger,
         reason,
         http_semaphore,
@@ -232,7 +278,7 @@ async def run_pipeline(
     # the worker never counts queue time, but a job claimed an hour before
     # it reaches a slot would still carry an attempt old enough for an
     # overlapping run's reaper to mistake for abandoned.
-    in_flight = asyncio.Semaphore(policy.in_flight)
+    in_flight = asyncio.Semaphore(policy.claim_ceiling(stage))
 
     async def _guarded(job_id: int) -> JobOutcome:
         async with in_flight:
@@ -249,7 +295,7 @@ async def run_pipeline(
                 finished_at=utc_now(),
             )
         raise
-    result = PipelineResult(run_id, observation, outcomes, reaped, dispositions)
+    result = PipelineResult(run_id, stage, observation, outcomes, reaped, dispositions)
     async with session_factory() as session:
         await runs_repo.finish_run(
             session,
@@ -261,7 +307,7 @@ async def run_pipeline(
 
 
 __all__ = [
-    "COMPLETED_DISPOSITIONS",
+    "NON_WORK_DISPOSITIONS",
     "DepsFactory",
     "PipelineResult",
     "SessionFactory",

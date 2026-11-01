@@ -5,10 +5,10 @@ browser, model, and per-host work independently. The job timeout bounds each
 network or model step of one posting once that step holds its slot; time spent
 waiting for a slot is never charged against it, so a corpus-sized run cannot
 time out jobs that are merely queued. The stale-attempt multiplier turns that
-per-step bound into the ceiling on one whole attempt, which is what the reaper
-measures abandoned attempts against. The retry limit and one-day backoff bound
-repeated failures. The fetch timeout bounds one HTTP request. Minimum content
-length rejects boilerplate.
+per-step bound into the ceiling shared by both stages. Eligibility holds at
+most three timed steps and extraction one, so four timeouts safely bound each.
+The retry limit and one-day backoff bound repeated failures. The fetch timeout
+bounds one HTTP request. Minimum content length rejects boilerplate.
 """
 
 from datetime import timedelta
@@ -21,9 +21,6 @@ DEFAULT_BROWSER_CONCURRENCY = 2
 DEFAULT_MODEL_CONCURRENCY = 4
 DEFAULT_PER_HOST_CONCURRENCY = 2
 DEFAULT_JOB_TIMEOUT = 180
-# One attempt holds at most four timed steps: plain fetch, rendered fetch,
-# eligibility call, extraction call. An unfinished attempt older than four
-# timeouts cannot be live and is reaped as interrupted.
 STALE_ATTEMPT_PHASES = 4
 RETRY_LIMIT = 3
 RETRY_BACKOFF = timedelta(days=1)

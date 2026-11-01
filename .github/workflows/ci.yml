@@ -231,6 +231,8 @@ jobs:
           alembic downgrade base
           alembic upgrade head
           job-pipeline preview --all --database "$RUNNER_TEMP/smoke.db"
+          job-pipeline eligibility --dry-run --all --database "$RUNNER_TEMP/smoke.db"
+          job-pipeline extraction --dry-run --all --database "$RUNNER_TEMP/smoke.db"
       # Two pull requests that each add a migration off the same parent pass
       # on their own and leave main with two heads once both merge.
       - name: Require a single migration head
