@@ -9,11 +9,9 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from job_discovery.persistence.timestamps import as_naive_utc
-from job_pipeline.persistence.models import Job, JobAttempt, JobDecision
-
-
-class CheckpointError(RuntimeError):
-    pass
+from job_pipeline.persistence import finalize
+from job_pipeline.persistence.finalize import CheckpointError as CheckpointError
+from job_pipeline.persistence.models import Job, JobDecision
 
 
 @dataclass(frozen=True)
@@ -123,24 +121,16 @@ async def hand_off_to_extraction(
             session.add(row)
             await session.flush()
             decision_id = row.id
-        finished = await session.execute(
-            update(JobAttempt)
-            .where(
-                JobAttempt.id == attempt_id,
-                JobAttempt.job_id == job_id,
-                JobAttempt.finished_at.is_(None),
-            )
-            .values(
-                outcome="ready_for_extraction",
-                phase_reached="eligibility",
-                prompt_tokens=prompt_tokens,
-                completion_tokens=completion_tokens,
-                finished_at=moment,
-            )
-            .returning(JobAttempt.id)
+        await finalize.finish_owned_attempt(
+            session,
+            job_id=job_id,
+            attempt_id=attempt_id,
+            outcome="ready_for_extraction",
+            phase_reached="eligibility",
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+            finished_at=moment,
         )
-        if finished.scalar_one_or_none() is None:
-            raise CheckpointError(f"job {job_id} has no unfinished owned attempt")
     return decision_id
 
 
@@ -153,6 +143,8 @@ async def accept_and_complete(
     decision: DecisionInput,
     status: str,
     decided_at: datetime,
+    prompt_tokens: int | None = None,
+    completion_tokens: int | None = None,
 ) -> int | None:
     moment = as_naive_utc(decided_at)
     async with session.begin():
@@ -194,6 +186,16 @@ async def accept_and_complete(
         session.add(row)
         await session.flush()
         decision_id: int = row.id
+        await finalize.finish_owned_attempt(
+            session,
+            job_id=job_id,
+            attempt_id=attempt_id,
+            outcome=status,
+            phase_reached="eligibility",
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+            finished_at=moment,
+        )
     return decision_id
 
 

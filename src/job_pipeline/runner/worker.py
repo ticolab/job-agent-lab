@@ -221,31 +221,40 @@ async def _acquire_content(
     return acquired
 
 
-async def _outcome(
+async def _skipped(
     deps: WorkerDeps,
     job_id: int,
     company_slug: str,
     url_key: str,
     attempt_id: int,
     progress: _Progress,
-    status: JobStatus,
     *,
     error: JobError | None = None,
-    require_ownership: bool = False,
 ) -> JobOutcome:
     async with deps.session_factory() as session:
         await attempts_repo.finish(
             session,
             attempt_id,
             phase_reached=progress.phase,
-            outcome=status,
+            outcome="skipped",
             error_category=error.category if error is not None else None,
             error_message=error.message if error is not None else None,
             prompt_tokens=progress.prompt_tokens or None,
             completion_tokens=progress.completion_tokens or None,
             finished_at=utc_now(),
-            require_ownership=require_ownership,
         )
+    return _report(job_id, company_slug, url_key, progress, "skipped", error=error)
+
+
+def _report(
+    job_id: int,
+    company_slug: str,
+    url_key: str,
+    progress: _Progress,
+    status: JobStatus,
+    *,
+    error: JobError | None = None,
+) -> JobOutcome:
     return JobOutcome(
         job_id=job_id,
         company_slug=company_slug,
@@ -262,9 +271,10 @@ async def _release(
     deps: WorkerDeps,
     job_id: int,
     attempt_id: int,
+    progress: _Progress,
     *,
     status: str,
-    phase: str,
+    error: JobError | None = None,
     next_attempt_after: datetime | None = None,
 ) -> bool:
     async with deps.session_factory() as session:
@@ -272,9 +282,13 @@ async def _release(
             session,
             job_id,
             status=status,
-            next_phase=phase,
+            next_phase=progress.phase,
             next_attempt_after=next_attempt_after,
             attempt_id=attempt_id,
+            error_category=error.category if error is not None else None,
+            error_message=error.message if error is not None else None,
+            prompt_tokens=progress.prompt_tokens or None,
+            completion_tokens=progress.completion_tokens or None,
         )
 
 
@@ -299,22 +313,17 @@ async def _fail(
         deps,
         job.id,
         attempt_id,
+        progress,
         status=status,
-        phase=progress.phase,
+        error=error,
         next_attempt_after=retry_at,
     )
-    if not released:
-        status = "skipped"
-    return await _outcome(
-        deps,
-        job.id,
-        job.company_slug,
-        job.url_key,
-        attempt_id,
-        progress,
-        status,
-        error=error,
-        require_ownership=False,
+    if released:
+        return _report(
+            job.id, job.company_slug, job.url_key, progress, status, error=error
+        )
+    return await _skipped(
+        deps, job.id, job.company_slug, job.url_key, attempt_id, progress, error=error
     )
 
 
@@ -371,14 +380,13 @@ async def _run_eligibility(
                 session, job.id, attempt_id, stored
             )
         if content_id is None:
-            return await _outcome(
+            return await _skipped(
                 deps,
                 job.id,
                 job.company_slug,
                 job.url_key,
                 attempt_id,
                 progress,
-                "skipped",
             )
         async with deps.session_factory() as session:
             canonical_id = await jobs_repo.merge_duplicate(
@@ -390,38 +398,28 @@ async def _run_eligibility(
                 fingerprint=stored.fingerprint,
             )
         if canonical_id is None:
-            return await _outcome(
+            return await _skipped(
                 deps,
                 job.id,
                 job.company_slug,
                 job.url_key,
                 attempt_id,
                 progress,
-                "skipped",
             )
         if canonical_id != job.id:
-            return await _outcome(
-                deps,
-                job.id,
-                job.company_slug,
-                job.url_key,
-                attempt_id,
-                progress,
-                "merged",
-            )
+            return _report(job.id, job.company_slug, job.url_key, progress, "merged")
         async with deps.session_factory() as session:
             advanced = await jobs_repo.advance_phase(
                 session, job.id, "eligibility", attempt_id=attempt_id
             )
         if not advanced:
-            return await _outcome(
+            return await _skipped(
                 deps,
                 job.id,
                 job.company_slug,
                 job.url_key,
                 attempt_id,
                 progress,
-                "skipped",
             )
         content = contents_repo.ContentRecord(
             id=content_id,
@@ -466,20 +464,19 @@ async def _run_eligibility(
                     deps,
                     job.id,
                     attempt_id,
-                    status=checkpoint_status,
-                    phase="eligibility",
-                )
-                checkpoint_outcome: JobStatus = (
-                    checkpoint_status if released else "skipped"
-                )
-                return await _outcome(
-                    deps,
-                    job.id,
-                    job.company_slug,
-                    job.url_key,
-                    attempt_id,
                     progress,
-                    checkpoint_outcome,
+                    status=checkpoint_status,
+                )
+                if released:
+                    return _report(
+                        job.id,
+                        job.company_slug,
+                        job.url_key,
+                        progress,
+                        checkpoint_status,
+                    )
+                return await _skipped(
+                    deps, job.id, job.company_slug, job.url_key, attempt_id, progress
                 )
         if progress.decision is None:
             async with deps.model_semaphore:
@@ -520,27 +517,21 @@ async def _run_eligibility(
                     decision=decision_input,
                     status=decision_status,
                     decided_at=utc_now(),
+                    prompt_tokens=progress.prompt_tokens or None,
+                    completion_tokens=progress.completion_tokens or None,
                 )
             if checkpoint_id is None:
-                return await _outcome(
+                return await _skipped(
                     deps,
                     job.id,
                     job.company_slug,
                     job.url_key,
                     attempt_id,
                     progress,
-                    "skipped",
                 )
-            if decision.decision != "eligible":
-                return await _outcome(
-                    deps,
-                    job.id,
-                    job.company_slug,
-                    job.url_key,
-                    attempt_id,
-                    progress,
-                    decision_status,
-                )
+            return _report(
+                job.id, job.company_slug, job.url_key, progress, decision_status
+            )
 
     raise RuntimeError("eligibility received an unsupported phase")
 
@@ -568,18 +559,11 @@ async def _hand_off(
     except decisions_repo.CheckpointError as exc:
         raise MissingCheckpointError(str(exc)) from exc
     if accepted is None:
-        return await _outcome(
-            deps, job.id, job.company_slug, job.url_key, attempt_id, progress, "skipped"
+        return await _skipped(
+            deps, job.id, job.company_slug, job.url_key, attempt_id, progress
         )
-    return JobOutcome(
-        job.id,
-        job.company_slug,
-        job.url_key,
-        "ready_for_extraction",
-        progress.phase,
-        progress.decision,
-        None,
-        progress.tokens,
+    return _report(
+        job.id, job.company_slug, job.url_key, progress, "ready_for_extraction"
     )
 
 
@@ -624,18 +608,15 @@ async def _run_extraction(
                 result_json=result.model_dump_json(),
             ),
             accepted_at=utc_now(),
+            prompt_tokens=progress.prompt_tokens or None,
+            completion_tokens=progress.completion_tokens or None,
         )
-    result_status: JobStatus = (
-        "completed_eligible" if result_id is not None else "skipped"
-    )
-    return await _outcome(
-        deps,
-        job.id,
-        job.company_slug,
-        job.url_key,
-        attempt_id,
-        progress,
-        result_status,
+    if result_id is None:
+        return await _skipped(
+            deps, job.id, job.company_slug, job.url_key, attempt_id, progress
+        )
+    return _report(
+        job.id, job.company_slug, job.url_key, progress, "completed_eligible"
     )
 
 

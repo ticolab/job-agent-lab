@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.elements import ColumnElement
 
 from job_discovery.persistence.timestamps import as_naive_utc, utc_now
+from job_pipeline.persistence import finalize
 from job_pipeline.persistence.models import (
     STAGE_PHASES,
     Job,
@@ -234,7 +235,13 @@ async def release(
     next_phase: str,
     next_attempt_after: datetime | None,
     attempt_id: int | None = None,
+    error_category: str | None = None,
+    error_message: str | None = None,
+    prompt_tokens: int | None = None,
+    completion_tokens: int | None = None,
 ) -> bool:
+    """Release a job; releasing a held lease also ends its attempt atomically."""
+    moment = utc_now()
     if (status == "retry") != (next_attempt_after is not None):
         raise ValueError("next_attempt_after must be set exactly for retry jobs")
     retry_at = (
@@ -254,11 +261,25 @@ async def release(
                 next_phase=next_phase,
                 next_attempt_after=retry_at,
                 current_attempt_id=None,
-                updated_at=utc_now(),
+                updated_at=moment,
             )
             .returning(Job.id)
         )
-    return result.scalar_one_or_none() is not None
+        released = result.scalar_one_or_none() is not None
+        if released and attempt_id is not None:
+            await finalize.finish_owned_attempt(
+                session,
+                job_id=job_id,
+                attempt_id=attempt_id,
+                outcome=status,
+                phase_reached=next_phase,
+                error_category=error_category,
+                error_message=error_message,
+                prompt_tokens=prompt_tokens,
+                completion_tokens=completion_tokens,
+                finished_at=moment,
+            )
+    return released
 
 
 async def _merge_into(
@@ -364,7 +385,9 @@ async def merge_duplicate(
     the same identifier never collapses into one job. A fingerprint counts
     only when exactly one other live job shares it. The lower id is always
     the canonical, and a duplicate that another worker is processing right
-    now is left for that worker.
+    now is left for that worker. Merging the caller's leased job also finishes
+    its attempt atomically; folding a younger job into it does not. Without
+    an attempt_id, this test-only helper does not finish any attempt.
     """
     async with session.begin():
         if attempt_id is not None:
@@ -418,6 +441,15 @@ async def merge_duplicate(
             merged = await _merge_into(
                 session, job_id, match, moment, allow_in_progress=True
             )
+            if merged and attempt_id is not None:
+                await finalize.finish_owned_attempt(
+                    session,
+                    job_id=job_id,
+                    attempt_id=attempt_id,
+                    outcome="merged",
+                    phase_reached="fetch",
+                    finished_at=moment,
+                )
             return match if merged else job_id
         await _merge_into(session, match, job_id, moment, allow_in_progress=False)
         return job_id

@@ -8,13 +8,14 @@ from pathlib import Path
 from typing import cast
 
 import pytest
-from sqlalchemy import delete, select, update
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import delete, or_, select, update
+from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 import job_pipeline.persistence.attempts_repo as attempts_repo
 import job_pipeline.persistence.contents_repo as contents_repo
 import job_pipeline.persistence.decisions_repo as decisions_repo
+import job_pipeline.persistence.finalize as finalize
 import job_pipeline.persistence.jobs_repo as jobs_repo
 import job_pipeline.persistence.models as models
 import job_pipeline.persistence.results_repo as results_repo
@@ -1457,3 +1458,440 @@ def test_restrict_blocks_deleting_company_with_jobs(tmp_path: Path) -> None:
 
     with pytest.raises(IntegrityError):
         run_async(scenario())
+
+
+async def _finalization_claim(
+    factory: async_sessionmaker[AsyncSession], job_id: int
+) -> int:
+    async with factory() as session:
+        attempt_id = await attempts_repo.claim_and_start(
+            session,
+            job_id=job_id,
+            stage="eligibility",
+            run_id="finalization",
+            trigger="scheduled",
+            reason=None,
+            model="test",
+            policy_version="p",
+            extractor_version="e",
+            started_at=datetime(2026, 1, 4),
+        )
+    assert attempt_id is not None
+    return attempt_id
+
+
+async def _finalization_setup(
+    factory: async_sessionmaker[AsyncSession],
+) -> tuple[int, int]:
+    await _three_jobs(factory)
+    async with factory() as session:
+        await runs_repo.start_run(
+            session,
+            run_id="finalization",
+            stage="eligibility",
+            trigger="scheduled",
+            selection="all",
+            model="test",
+            started_at=datetime(2026, 1, 1),
+        )
+    await _store_content(
+        factory, 1, title="Engineer", fingerprint="same", requisition_id=None
+    )
+    async with factory() as session:
+        await jobs_repo.observe(
+            session,
+            "acme",
+            [("key-2", "https://acme.example/jobs/1")],
+            datetime(2026, 1, 1),
+        )
+    attempt_id = await _finalization_claim(factory, 2)
+    async with factory() as session:
+        content_id = await contents_repo.store_checkpoint(
+            session,
+            2,
+            attempt_id,
+            contents_repo.AcquiredContent(
+                content_hash="owned-content",
+                fingerprint="same",
+                requisition_id=None,
+                resolved_url="https://acme.example/jobs/2",
+                http_status=200,
+                method="main_content",
+                title="Engineer",
+                text="Posting text",
+                jsonld_json=None,
+                retrieved_at=datetime(2026, 1, 1),
+            ),
+        )
+    assert content_id is not None
+    async with factory() as session:
+        await decisions_repo.accept(
+            session,
+            job_id=2,
+            attempt_id=attempt_id,
+            content_id=content_id,
+            decision=decisions_repo.DecisionInput("unknown", "old", "[]", "old"),
+            decided_at=datetime(2026, 1, 1),
+        )
+    async with factory() as session:
+        await results_repo.accept(
+            session,
+            job_id=2,
+            attempt_id=attempt_id,
+            content_id=content_id,
+            result=results_repo.ResultInput("old", 1, "{}"),
+            accepted_at=datetime(2026, 1, 1),
+        )
+    return attempt_id, content_id
+
+
+async def _finalization_snapshot(
+    factory: async_sessionmaker[AsyncSession],
+) -> dict[str, list[tuple[object, ...]]]:
+    async with factory() as session:
+        return {
+            table.name: [
+                tuple(row)
+                for row in (
+                    await session.execute(select(table).order_by(*table.primary_key))
+                ).all()
+            ]
+            for table in models.Base.metadata.sorted_tables
+        }
+
+
+async def _assert_no_finalization_orphans(
+    factory: async_sessionmaker[AsyncSession],
+) -> None:
+    async with factory() as session:
+        assert not (
+            await session.execute(
+                select(models.JobAttempt.id)
+                .join(models.Job, models.Job.id == models.JobAttempt.job_id)
+                .where(
+                    models.JobAttempt.finished_at.is_(None),
+                    or_(
+                        models.Job.status != "in_progress",
+                        models.Job.current_attempt_id.is_(None),
+                        models.Job.current_attempt_id != models.JobAttempt.id,
+                    ),
+                )
+            )
+        ).all()
+
+
+async def _finalize_repository(
+    session: AsyncSession, operation: str, attempt_id: int, content_id: int
+) -> int | bool | None:
+    moment = datetime(2026, 1, 5, tzinfo=UTC)
+    if operation == "decision":
+        return await decisions_repo.accept_and_complete(
+            session,
+            job_id=2,
+            attempt_id=attempt_id,
+            content_id=content_id,
+            decision=decisions_repo.DecisionInput("ineligible", "new", "[]", "new"),
+            status="completed_ineligible",
+            decided_at=moment,
+            prompt_tokens=11,
+            completion_tokens=7,
+        )
+    if operation == "result":
+        return await results_repo.accept_and_complete(
+            session,
+            job_id=2,
+            attempt_id=attempt_id,
+            content_id=content_id,
+            result=results_repo.ResultInput("new", 1, '{"new":true}'),
+            accepted_at=moment,
+            prompt_tokens=11,
+            completion_tokens=7,
+        )
+    if operation == "release":
+        return await jobs_repo.release(
+            session,
+            2,
+            attempt_id=attempt_id,
+            status="retry",
+            next_phase="eligibility",
+            next_attempt_after=moment + timedelta(days=1),
+            error_category="internal",
+            error_message="failure",
+            prompt_tokens=11,
+            completion_tokens=7,
+        )
+    assert operation == "merge"
+    return await jobs_repo.merge_duplicate(
+        session,
+        job_id=2,
+        attempt_id=attempt_id,
+        company_slug="acme",
+        requisition_id=None,
+        fingerprint="same",
+    )
+
+
+@pytest.mark.parametrize("operation", ["decision", "result", "release", "merge"])
+@pytest.mark.parametrize(
+    "mode",
+    ["held", "lost", "reaped", "reclaimed", "finished", "cancel", "finish_error"],
+)
+def test_repository_finalization_is_atomic_and_owned(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, operation: str, mode: str
+) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "finalization.db")
+        attempt_id, content_id = await _finalization_setup(factory)
+        moment = datetime(2026, 1, 5)
+        monkeypatch.setattr(jobs_repo, "utc_now", lambda: moment)
+        second: int | None = None
+        if mode in {"reaped", "reclaimed"}:
+            async with factory() as session:
+                assert (
+                    await runs_repo.reap_stale(
+                        session,
+                        stage="eligibility",
+                        older_than=datetime(2026, 1, 6),
+                        finished_at=datetime(2026, 1, 3),
+                    )
+                    == 1
+                )
+            if mode == "reclaimed":
+                second = await _finalization_claim(factory, 2)
+        if mode == "finished":
+            async with factory() as session:
+                assert await attempts_repo.finish(
+                    session,
+                    attempt_id,
+                    outcome="failed",
+                    phase_reached="fetch",
+                    finished_at=datetime(2026, 1, 2),
+                )
+        before = await _finalization_snapshot(factory)
+        real_finish = finalize.finish_owned_attempt
+
+        async def injected(
+            session: AsyncSession,
+            *,
+            job_id: int,
+            attempt_id: int,
+            outcome: str,
+            phase_reached: str,
+            finished_at: datetime,
+            error_category: str | None = None,
+            error_message: str | None = None,
+            prompt_tokens: int | None = None,
+            completion_tokens: int | None = None,
+        ) -> None:
+            if mode == "cancel":
+                raise asyncio.CancelledError
+            await real_finish(
+                session,
+                job_id=job_id,
+                attempt_id=attempt_id,
+                outcome=outcome,
+                phase_reached=phase_reached,
+                finished_at=finished_at,
+                error_category=error_category,
+                error_message=error_message,
+                prompt_tokens=prompt_tokens,
+                completion_tokens=completion_tokens,
+            )
+            raise OperationalError("UPDATE job_attempts", {}, RuntimeError("fault"))
+
+        if mode in {"cancel", "finish_error"}:
+            monkeypatch.setattr(finalize, "finish_owned_attempt", injected)
+        async with factory() as session:
+            if mode in {"finished", "cancel", "finish_error"}:
+                expected = (
+                    finalize.CheckpointError
+                    if mode == "finished"
+                    else asyncio.CancelledError
+                    if mode == "cancel"
+                    else OperationalError
+                )
+                with pytest.raises(expected):
+                    await _finalize_repository(
+                        session, operation, attempt_id, content_id
+                    )
+            else:
+                result = await _finalize_repository(
+                    session,
+                    operation,
+                    attempt_id + 100 if mode == "lost" else attempt_id,
+                    content_id,
+                )
+                if mode == "held":
+                    assert result is not None and result is not False
+                else:
+                    assert result is (False if operation == "release" else None)
+        if mode != "held":
+            assert await _finalization_snapshot(factory) == before
+        async with factory() as session:
+            job = await jobs_repo.get(session, 2)
+            attempts = await attempts_repo.history(session, 2)
+            assert job is not None
+            attempt = attempts[0]
+            if mode == "held":
+                status, phase = {
+                    "decision": ("completed_ineligible", "eligibility"),
+                    "result": ("completed_eligible", "extraction"),
+                    "release": ("retry", "eligibility"),
+                    "merge": ("merged", "fetch"),
+                }[operation]
+                assert job.status == attempt.outcome == status
+                assert attempt.phase_reached == phase
+                assert job.current_attempt_id is None
+                assert job.current_content_id == content_id
+                assert job.updated_at == attempt.finished_at == moment
+                assert (attempt.prompt_tokens, attempt.completion_tokens) == (
+                    (None, None) if operation == "merge" else (11, 7)
+                )
+                assert attempt.error_category == (
+                    "internal" if operation == "release" else None
+                )
+                assert attempt.error_message == (
+                    "failure" if operation == "release" else None
+                )
+                assert job.next_attempt_after == (
+                    moment + timedelta(days=1) if operation == "release" else None
+                )
+                assert job.next_phase == ("fetch" if operation == "merge" else phase)
+                decisions = await decisions_repo.history(session, 2)
+                results = await results_repo.history(session, 2)
+                assert len(decisions) == (2 if operation == "decision" else 1)
+                assert len(results) == (2 if operation == "result" else 1)
+                assert [row.is_current for row in decisions] == (
+                    [False, True] if operation == "decision" else [True]
+                )
+                assert [row.is_current for row in results] == (
+                    [False, True] if operation == "result" else [True]
+                )
+                if operation == "merge":
+                    assert job.merged_into_id == 1
+                    assert not await jobs_repo.list_sources(session, 2)
+                    sources = await jobs_repo.list_sources(session, 1)
+                    assert [row.url for row in sources] == [
+                        "https://acme.example/jobs/1",
+                        "https://acme.example/jobs/2",
+                    ]
+                else:
+                    assert await jobs_repo.list_sources(session, 2)
+            if mode in {"reaped", "reclaimed"}:
+                assert attempt.outcome == "interrupted"
+                assert attempt.finished_at == datetime(2026, 1, 3)
+                assert job.current_attempt_id == second
+                assert job.status == ("in_progress" if second is not None else "retry")
+                if second is not None:
+                    assert attempts[1].id == second
+                    assert attempts[1].finished_at is None
+        await _assert_no_finalization_orphans(factory)
+
+    run_async(scenario())
+
+
+@pytest.mark.parametrize("variant", ["unfinished", "finished", "other_job", "missing"])
+def test_finish_owned_attempt_fields_and_outer_rollback(
+    tmp_path: Path, variant: str
+) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "finish-helper.db")
+        attempt_id, _ = await _finalization_setup(factory)
+        if variant == "finished":
+            async with factory() as session:
+                await attempts_repo.finish(
+                    session,
+                    attempt_id,
+                    outcome="failed",
+                    phase_reached="fetch",
+                    finished_at=datetime(2026, 1, 2),
+                )
+        before = await _finalization_snapshot(factory)
+
+        async def finish() -> None:
+            async with factory() as session, session.begin():
+                await session.execute(
+                    update(models.Job)
+                    .where(
+                        models.Job.id == 2,
+                        models.Job.current_attempt_id == attempt_id,
+                    )
+                    .values(status="failed", current_attempt_id=None)
+                )
+                await finalize.finish_owned_attempt(
+                    session,
+                    job_id=1 if variant == "other_job" else 2,
+                    attempt_id=attempt_id + 100 if variant == "missing" else attempt_id,
+                    outcome="failed",
+                    phase_reached="extraction",
+                    finished_at=datetime(2026, 1, 5, tzinfo=UTC),
+                    error_category="internal",
+                    error_message="all fields",
+                    prompt_tokens=0,
+                    completion_tokens=7,
+                )
+
+        if variant == "unfinished":
+            await finish()
+            async with factory() as session:
+                attempt = (await attempts_repo.history(session, 2))[0]
+                assert attempt.outcome == "failed"
+                assert attempt.phase_reached == "extraction"
+                assert attempt.finished_at == datetime(2026, 1, 5)
+                assert attempt.error_category == "internal"
+                assert attempt.error_message == "all fields"
+                assert (attempt.prompt_tokens, attempt.completion_tokens) == (0, 7)
+        else:
+            with pytest.raises(
+                finalize.CheckpointError,
+                match=f"job {1 if variant == 'other_job' else 2} "
+                "has no unfinished owned attempt",
+            ):
+                await finish()
+            assert await _finalization_snapshot(factory) == before
+        await _assert_no_finalization_orphans(factory)
+
+    run_async(scenario())
+
+
+def test_merging_younger_duplicate_preserves_canonical_lease(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "canonical-lease.db")
+        attempt_id, _ = await _finalization_setup(factory)
+        await _store_content(
+            factory, 3, title="Engineer", fingerprint="younger", requisition_id=None
+        )
+        async with factory() as session:
+            before_job = await jobs_repo.get(session, 2)
+            before_attempts = await attempts_repo.history(session, 2)
+
+        async def forbidden(*args: object, **kwargs: object) -> None:
+            pytest.fail("folding a younger duplicate must not finish the caller")
+
+        monkeypatch.setattr(finalize, "finish_owned_attempt", forbidden)
+        async with factory() as session:
+            assert (
+                await jobs_repo.merge_duplicate(
+                    session,
+                    job_id=2,
+                    company_slug="acme",
+                    attempt_id=attempt_id,
+                    requisition_id=None,
+                    fingerprint="younger",
+                )
+                == 2
+            )
+        async with factory() as session:
+            assert await jobs_repo.get(session, 2) == before_job
+            assert await attempts_repo.history(session, 2) == before_attempts
+            younger = await jobs_repo.get(session, 3)
+            assert younger is not None and younger.merged_into_id == 2
+            assert not await jobs_repo.list_sources(session, 3)
+            assert "https://acme.example/jobs/3" in {
+                source.url for source in await jobs_repo.list_sources(session, 2)
+            }
+        await _assert_no_finalization_orphans(factory)
+
+    run_async(scenario())
