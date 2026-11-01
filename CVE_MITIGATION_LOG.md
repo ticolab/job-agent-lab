@@ -1,5 +1,15 @@
 # CVE Mitigation Log
 
+## 2026-11-01 — pyasn1 mitigation and blocked filelock upgrade
+
+PR #8 merged the pyasn1 update from 0.6.4 to 0.6.5 into `main`. This addresses CVE-2026-119194, CVE-2026-119195, CVE-2026-119196, and CVE-2026-119197, covering excessive CPU use in ASN.1 decoding. Existing checkouts and environments must update their lockfile and synchronize dependencies before they receive the mitigation; merging the PR does not update an installed environment automatically.
+
+PR #6 proposes filelock 3.29.4 → 4.2.1, but the upgrade is blocked and is not a mitigation yet. Clean-wheel installation fails on both Linux and macOS because LiteLLM 1.106.2 requires `filelock>=3.16.1,<4.0`, which conflicts with 4.2.1. Unit, snapshot, and static checks passed, but do not establish installability.
+
+The filelock advisories remain unresolved: CVE-2026-112907, CVE-2026-112909, CVE-2026-112910, CVE-2026-112913, CVE-2026-112915, CVE-2026-112935, CVE-2026-112936, CVE-2026-112939, and CVE-2026-112940. The audit recommends 4.2.1 to address the full set. No compatible patched 3.x release or newer compatible LiteLLM release has been verified here.
+
+Keep PR #6 unmerged until a supported dependency graph is available. Prefer a LiteLLM release that officially accepts the patched filelock version, or verify an upstream security backport within the supported 3.x range. Regenerate the lockfile, rerun the vulnerability audit, lint, type checks, full tests, and clean-wheel CI on Linux and macOS. Do not override the dependency constraint or weaken CI to force installation. The browser-use-pinned findings documented below remain separate unresolved work.
+
 ## 2026-10-23 — LiteLLM 1.106.2
 
 The project previously resolved LiteLLM 1.83.0. It now requires and locks 1.106.2, the current compatible PyPI release audited on 2026-10-23.
