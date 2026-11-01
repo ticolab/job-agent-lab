@@ -163,8 +163,15 @@ work. Content is a durable fetch checkpoint. The eligibility hand-off stores
 or re-verifies the eligible decision, sets `ready_for_extraction` at `extraction`,
 releases the lease, resets `attempt_count` to 0, and finishes the attempt with
 outcome `ready_for_extraction`, all in one transaction. A CHECK forbids a ready
-job with a lease or a different next phase. This atomicity does not extend to
-all existing terminal, failure, and merge finalization paths.
+job with a lease or a different next phase.
+
+Every production stage-ending transition commits the job change, lease release,
+and attempt finish in one transaction: the hand-off, an ineligible or unknown
+decision, an accepted extraction, a failure release, and a merge. Consequently,
+every unfinished attempt is the current lease of an `in_progress` job. A failed
+finalization rolls back completely; failure handling follows the existing retry
+policy, and uncommitted model work may be repeated. Token spend lost before a
+commit is not reconstructed. Historical inconsistencies are not repaired.
 
 Extraction requires current content and a current eligible decision on that
 same content. A missing or mismatched prerequisite fails immediately with
@@ -183,8 +190,9 @@ At startup, each stage reaps only stale unfinished attempts still leasing
 `extraction`. This is not limited by company selection or the original run's
 stage, so legacy extraction work is recovered by extraction. Reaping records
 `interrupted`, releases the lease, and makes retry work immediately due.
-It does not finalize orphaned attempts that no longer hold a lease. Recovery
-uses database state, not an external checkpoint file.
+The stage-ending invariant keeps every abandoned production attempt visible to
+the owning stage's reaper. Recovery uses database state, not an external
+checkpoint file.
 
 `--timeout-seconds` bounds each network or model step after it acquires its
 slot; waiting for a slot does not consume that timeout. The scheduler caps
