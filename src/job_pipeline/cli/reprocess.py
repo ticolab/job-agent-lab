@@ -11,11 +11,13 @@ from job_pipeline.cli import stages
 from job_pipeline.cli.common import (
     add_database_argument,
     add_policy_arguments,
+    add_verbosity_argument,
     fail,
     open_database,
     run_async,
 )
 from job_pipeline.persistence import jobs_repo
+from job_pipeline.runner.diagnostics import configure_logging
 
 REPROCESS_SUMMARY = "Reprocess explicit jobs from an exact phase."
 REPROCESS_DESCRIPTION = "Re-run selected jobs while preserving historical audit rows."
@@ -33,6 +35,7 @@ def add_arguments(parser: argparse.ArgumentParser) -> None:
         default="fetch",
     )
     add_database_argument(parser)
+    add_verbosity_argument(parser)
     add_policy_arguments(parser)
     parser.add_argument("--json-output", metavar="DIR", default=None)
 
@@ -89,6 +92,7 @@ async def _run(args: argparse.Namespace) -> None:
 
 
 def execute(args: argparse.Namespace) -> None:
+    configure_logging(args.verbose)
     load_dotenv()
     stages.preflight_provider(args.model)
     run_async(_run(args))

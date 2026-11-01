@@ -1,15 +1,22 @@
 from __future__ import annotations
 
+import json
+from dataclasses import replace
+from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any, cast
 
 import httpx
+import pytest
 import respx
 from playwright.async_api import Browser
 
 from job_discovery.domain.company import Company
 from job_discovery.settings import CaptureBrowser
-from job_pipeline.content.ladder import acquire
+from job_pipeline.content.fetch import FetchResult
+from job_pipeline.content.ladder import _extract, _extract_rendered, acquire
 from job_pipeline.content.model import AcquiredContent, AcquisitionFailure
+from job_pipeline.content.render import FrameCapture, RenderedPage
 from job_pipeline.settings import MIN_CONTENT_CHARS
 from tests.unit.asyncio_harness import run_async
 
@@ -63,6 +70,9 @@ class _FakePage:
 
     async def content(self) -> str:
         return self.html
+
+    async def query_selector_all(self, _selector: str) -> list[Any]:
+        return []
 
 
 class _FakeBrowser:
@@ -195,6 +205,271 @@ def test_empty_content_without_browser_is_classified() -> None:
 
 
 EXPIRED = '"validThrough":"2020-01-01"'
+NOW = datetime(2026, 11, 1, tzinfo=UTC)
+FETCHED = FetchResult("", 200, URL, httpx.Headers())
+
+
+def _frame(index: int, body: str, *, jsonld: str = "") -> FrameCapture:
+    return FrameCapture(
+        index,
+        "about:blank",
+        "about",
+        "candidate",
+        "description",
+        "Job Description",
+        _html(body=body, jsonld=jsonld),
+    )
+
+
+def _selected(
+    page_html: str, *frames: FrameCapture
+) -> AcquiredContent | AcquisitionFailure | None:
+    return _extract_rendered(
+        RenderedPage(page_html, URL, len(frames), frames),
+        fetched=FETCHED,
+        retrieved_at=NOW,
+    )
+
+
+def test_framed_composition_and_title() -> None:
+    page = _html(body="Mexicali")
+    frame = replace(
+        _frame(0, f"{LONG}</p><p>Location: Mexicali, Mexico"),
+        html=_html(body=f"{LONG}</p><p>Location: Mexicali, Mexico").replace(
+            "Senior Engineer", "Job Description"
+        ),
+    )
+    result = _selected(page, frame)
+    assert isinstance(result, AcquiredContent)
+    assert result.method == "rendered_frame_main"
+    assert result.title == "Senior Engineer"
+    assert "Mexicali" in result.text and LONG in result.text
+    assert "Location: Mexicali, Mexico" in result.text
+    assert result.acquisition_html == page and result.frame_html == frame.html
+    assert result == _selected(page, frame)
+
+
+def test_page_chrome_does_not_qualify_short_frame() -> None:
+    assert _selected(_html(body="chrome " * 15), _frame(0, "x" * 350)) is None
+
+
+def test_frame_ranking_longest_jsonld_and_document_order() -> None:
+    widget = _frame(0, "Widget " * 80)
+    description = _frame(1, LONG * 2)
+    result = _selected(_html(body="short"), widget, description)
+    assert isinstance(result, AcquiredContent)
+    assert LONG in result.text and "Widget" not in result.text
+    structured = _frame(
+        2,
+        "short",
+        jsonld=json.dumps(
+            {
+                "@type": "JobPosting",
+                "title": "Frame role",
+                "identifier": {"value": "REQ-F"},
+                "description": LONG,
+            }
+        ),
+    )
+    result = _selected(_html(), description, structured)
+    assert isinstance(result, AcquiredContent)
+    assert result.method == "rendered_frame_jsonld"
+    assert result.title == "Frame role" and result.requisition_id == "REQ-F"
+    first, second = _frame(0, "A" * 500), _frame(1, "B" * 500)
+    result = _selected(_html(), second, first)
+    assert isinstance(result, AcquiredContent)
+    assert "A" * 500 in result.text and "B" * 500 not in result.text
+
+
+@pytest.mark.parametrize(
+    "body", ["This position has been filled.", LONG + " This position has been filled."]
+)
+def test_closed_frame(body: str) -> None:
+    result = _selected(_html(), _frame(0, body))
+    assert isinstance(result, AcquisitionFailure) and result.category == "closed"
+
+
+def test_page_wins_over_frames_including_closed_frames() -> None:
+    page = _html(body=LONG)
+    expected = _extract(
+        page, fetched=FETCHED, method_prefix="rendered", retrieved_at=NOW
+    )
+    assert _selected(page, _frame(0, "This position has been filled.")) == expected
+    assert _selected(page, _frame(0, LONG * 2)) == expected
+    closed = _selected(
+        _html(body=LONG + " This position has been filled."), _frame(0, LONG)
+    )
+    assert isinstance(closed, AcquisitionFailure) and closed.category == "closed"
+
+
+def test_frame_corroborates_stale_page_date_but_not_own_date() -> None:
+    stale = json.dumps(
+        {
+            "@type": "JobPosting",
+            "validThrough": "2020-01-01",
+            "title": "Page role",
+            "identifier": {"value": "PAGE"},
+        }
+    )
+    result = _selected(_html(body="short", jsonld=stale), _frame(0, LONG * 2))
+    assert isinstance(result, AcquiredContent)
+    assert result.title == "Page role" and result.requisition_id == "PAGE"
+    own = _selected(
+        _html(),
+        _frame(
+            0,
+            "short",
+            jsonld=json.dumps(
+                {
+                    "@type": "JobPosting",
+                    "validThrough": "2020-01-01",
+                    "description": LONG,
+                }
+            ),
+        ),
+    )
+    assert isinstance(own, AcquisitionFailure) and "validThrough" in own.message
+    open_own = _selected(_html(), _frame(0, LONG, jsonld=stale))
+    assert isinstance(open_own, AcquiredContent)
+
+
+@pytest.mark.parametrize(
+    "html",
+    [
+        _html(),
+        _html(body=LONG),
+        _html(body=LONG + " This position has been filled."),
+        _html(jsonld=json.dumps({"@type": "JobPosting", "description": LONG})),
+    ],
+)
+def test_nonframe_parity(html: str) -> None:
+    assert _selected(html) == _extract(
+        html, fetched=FETCHED, method_prefix="rendered", retrieved_at=NOW
+    )
+
+
+def test_nonframe_parity_existing_fixture_corpus() -> None:
+    root = Path(__file__).parents[1] / "fixtures" / "snapshots"
+    fixtures = sorted(root.glob("*/page.html"))
+    assert fixtures
+    for fixture in fixtures:
+        html = fixture.read_text()
+        assert _selected(html) == _extract(
+            html, fetched=FETCHED, method_prefix="rendered", retrieved_at=NOW
+        )
+
+
+@pytest.mark.parametrize(
+    "render_error", [None, TimeoutError("frame timeout"), ValueError("bad URL")]
+)
+def test_acquire_render_traces(
+    monkeypatch: pytest.MonkeyPatch, render_error: Exception | None
+) -> None:
+    async def rendered(*_args: Any, **_kwargs: Any) -> RenderedPage:
+        if render_error:
+            raise render_error
+        return RenderedPage(
+            _html(body="short"),
+            URL,
+            2,
+            (
+                _frame(0, "short"),
+                replace(_frame(1, "unused"), outcome="hidden", html=""),
+            ),
+        )
+
+    monkeypatch.setattr("job_pipeline.content.ladder.render_page", rendered)
+    result, _ = _run(_html(body="short"), rendered="unused")
+    assert isinstance(result, AcquisitionFailure)
+    assert result.trace is not None
+    assert [step.step for step in result.trace.steps] == ["http", "render"]
+    assert result.trace.steps[0].page_chars > 0
+    assert all(step.elapsed_s >= 0 for step in result.trace.steps)
+    if render_error is None:
+        assert result.trace.frames_found == 2
+        assert [frame.outcome for frame in result.trace.frames] == ["short", "hidden"]
+        assert result.trace.frames[0].element_id == "description"
+
+
+def test_qualifying_frame_wins_over_closed_sibling() -> None:
+    result = _selected(
+        _html(), _frame(0, "This position has been filled."), _frame(1, LONG)
+    )
+    assert isinstance(result, AcquiredContent)
+    assert result.method == "rendered_frame_main"
+    assert "filled" not in result.text
+
+
+def test_forced_render_trace_and_jsonld_presence(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    page = RenderedPage(
+        _html(),
+        URL,
+        2,
+        (
+            _frame(0, LONG),
+            _frame(
+                1,
+                "short",
+                jsonld=json.dumps(
+                    {
+                        "@type": "JobPosting",
+                        "description": LONG,
+                        "title": "Frame role",
+                    }
+                ),
+            ),
+        ),
+    )
+
+    async def rendered(*_args: Any, **_kwargs: Any) -> RenderedPage:
+        return page
+
+    monkeypatch.setattr("job_pipeline.content.ladder.render_page", rendered)
+
+    async def scenario() -> AcquiredContent | AcquisitionFailure:
+        with respx.mock as mock:
+            mock.get(URL).mock(return_value=httpx.Response(200, text=_html(body=LONG)))
+            async with httpx.AsyncClient() as http:
+                return await acquire(
+                    URL,
+                    company=COMPANY,
+                    http=http,
+                    browser=CaptureBrowser(cast(Browser, object()), "UA"),
+                    force_rendered=True,
+                    resolver=_public_dns,
+                )
+
+    result = run_async(scenario())
+    assert isinstance(result, AcquiredContent)
+    assert result.method == "rendered_frame_jsonld"
+    assert result.trace is not None and result.trace.selected_frame == 1
+    assert [frame.outcome for frame in result.trace.frames] == [
+        "qualifying",
+        "selected",
+    ]
+    assert result.trace.steps[0].page_chars >= MIN_CONTENT_CHARS
+    assert not result.trace.steps[0].has_jsonld
+
+
+def test_fetch_failure_trace() -> None:
+    async def scenario() -> AcquisitionFailure | AcquiredContent:
+        with respx.mock as mock:
+            mock.get(URL).mock(return_value=httpx.Response(404))
+            async with httpx.AsyncClient() as client:
+                return await acquire(
+                    URL,
+                    company=COMPANY,
+                    http=client,
+                    browser=None,
+                    resolver=_public_dns,
+                )
+
+    result = run_async(scenario())
+    assert isinstance(result, AcquisitionFailure)
+    assert result.trace is not None and len(result.trace.steps) == 1
+    assert result.trace.steps[0].http_status == 404
 
 
 def test_past_valid_through_alone_does_not_close_an_open_posting() -> None:

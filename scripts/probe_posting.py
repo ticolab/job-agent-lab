@@ -13,7 +13,8 @@ from job_discovery.catalog import find_company
 from job_discovery.settings import launch_capture_browser
 from job_pipeline.content import AcquisitionFailure
 from job_pipeline.content.ladder import acquire
-from job_pipeline.identity import url_key
+from job_pipeline.content.model import AcquiredContent
+from job_pipeline.runner.diagnostics import redact_url
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -40,22 +41,35 @@ async def _run(args: argparse.Namespace) -> int:
                     )
                 finally:
                     await capture.browser.close()
+    return _report(result, args.url)
+
+
+def _report(result: AcquiredContent | AcquisitionFailure, source_url: str) -> int:
+    failed = isinstance(result, AcquisitionFailure)
     if isinstance(result, AcquisitionFailure):
         print(f"failure: {result.category}")
-        print(f"status: {result.http_status}")
-        print(f"resolved_url: {result.resolved_url}")
-        print(f"message: {result.message}")
-        print(f"url_key: {url_key(args.url)}")
-        return 1
-    print(f"method: {result.method}")
+    else:
+        print(f"method: {result.method}")
+        print(f"text_length: {len(result.text)}")
     print(f"status: {result.http_status}")
-    print(f"title: {result.title or ''}")
-    print(f"requisition_id: {result.requisition_id or ''}")
-    print(f"text_length: {len(result.text)}")
-    print(f"url_key: {url_key(args.url)}")
-    print("text:")
-    print("\n".join(result.text.splitlines()[:40]))
-    return 0
+    print(f"resolved_url: {redact_url(result.resolved_url or '')}")
+    print(f"url_key: {redact_url(source_url)}")
+    trace = result.trace
+    if trace is not None:
+        page_chars = trace.steps[-1].page_chars if trace.steps else 0
+        inspected = sum(frame.outcome != "over_limit" for frame in trace.frames)
+        qualifying = sum(
+            frame.outcome in {"selected", "qualifying"} for frame in trace.frames
+        )
+        print(f"page_chars: {page_chars}")
+        print(f"frames: {trace.frames_found}/{inspected}/{qualifying}")
+        print(f"selected_frame: {trace.selected_frame}")
+        for frame in trace.frames:
+            print(
+                f"frame: {frame.index} origin={frame.origin} "
+                f"outcome={frame.outcome} chars={frame.chars}"
+            )
+    return 1 if failed else 0
 
 
 def main(argv: Sequence[str] | None = None) -> int:

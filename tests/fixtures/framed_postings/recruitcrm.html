@@ -1,0 +1,19 @@
+<!doctype html>
+<html><head><title>Platform Engineer</title></head><body>
+<main><p>More Jobs</p><h1>Platform Engineer</h1><p>Mexicali</p>
+<p>Apply To This Job</p><p>Close</p></main>
+<iframe id="view_html_iframe" title="Job Description" width="700" height="600"></iframe>
+<script>
+setTimeout(() => {
+  const description = `<html><head><title>Job Description</title></head><body><main>
+<h1>Platform Engineer</h1><p>Location: Mexicali, Mexico</p>
+<p>Our invented engineering team builds dependable scheduling services for community workshops. The engineer will design clear interfaces, improve operational visibility, and collaborate with colleagues to deliver useful tools. This synthetic role exists only to exercise offline content acquisition.</p>
+<p>You will investigate service behavior using metrics and reproducible experiments. You will review proposed changes, describe design tradeoffs, and maintain straightforward deployment procedures. Our team values careful communication and welcomes different approaches to solving technical problems.</p>
+<p>The successful candidate enjoys improving reliability without unnecessary complexity. Experience with automated testing, distributed queues, and relational data is helpful. Engineers share ownership of documentation, production readiness, and practical incident follow-up, supported by a predictable working schedule.</p>
+<p>During the first months you will learn the architecture, pair with experienced teammates, and ship a small improvement from design through release. Later projects include reducing redundant processing and making failure recovery easier to understand. We measure progress through useful outcomes rather than the number of tools introduced.</p>
+<p>We offer time for focused learning, collaborative planning, and regular feedback. Applicants may describe projects from employment, study, or independent practice. The hiring process uses an introductory conversation and a small technical discussion; no real applications are collected by this fixture.</p>
+</main></body></html>`;
+  const doc = document.getElementById('view_html_iframe').contentDocument;
+  doc.open(); doc.write(description); doc.close();
+}, 0);
+</script></body></html>
