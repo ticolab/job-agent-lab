@@ -15,7 +15,7 @@ job, so ``cli`` reaching both ``batch`` and ``persistence`` is the
 intended direction rather than a leak.
 
 Three decisions worth stating, because none is forced by the batch
-component itself; ``ARCHITECTURE.md`` ("Running a scan") carries the
+component itself; ``docs/ARCHITECTURE.md`` ("Running a scan") carries the
 reasoning beside them:
 
 **A selection is required.** There is no bare ``job-discovery scan`` that

@@ -374,7 +374,7 @@ A full run of the current 116-company corpus takes about 16 minutes and peaks
 around 8 GB of Chromium residency at the default ceiling of 4 concurrent
 browser runs. Raising that ceiling costs proportionally more memory without
 returning measurable throughput at this corpus size, so leave it alone unless
-the corpus grows enough that boards genuinely queue for a slot. `ARCHITECTURE.md`
+the corpus grows enough that boards genuinely queue for a slot. `docs/ARCHITECTURE.md`
 records the measurements behind both ceilings.
 
 Back up the database by copying the file. There is no export step because the
@@ -451,7 +451,7 @@ same gates as the hooks, plus a check that the built wheel installs and runs,
 and it must pass — along with a check that the PR title follows the commit
 convention — before a pull request can merge.
 
-Design documents are kept close to the code. `ARCHITECTURE.md` holds the
+Design documents live in `docs/`. `docs/ARCHITECTURE.md` holds the
 big-picture map and the invariants. `CLAUDE.md` and `TABNINE.md` are guidance
 files for the two AI assistants used on this repo and carry the same project
 facts. `blockers/INTEGRATION_BLOCKERS.md` catalogues the site behaviours that

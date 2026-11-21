@@ -46,7 +46,7 @@ ConcurrencyClass = Literal["browser", "http"]
 # the first full-corpus run rather than derived from first principles:
 # peak Chromium residency tracked the browser ceiling (about 8.4 GB at
 # 4, 12.6 GB at 8) while wall time did not move, and no provider
-# rate-limit error appeared at 4. ``ARCHITECTURE.md`` carries the
+# rate-limit error appeared at 4. ``docs/ARCHITECTURE.md`` carries the
 # numbers.
 DEFAULT_BROWSER_CONCURRENCY = 4
 DEFAULT_HTTP_CONCURRENCY = 20

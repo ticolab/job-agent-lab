@@ -46,7 +46,7 @@ Reserved test IDs: AKU02, BAJ01, GOL04, JOB04, KAK04, NBS01, OCE03, RAI04 (4 eli
 
 Split rule: sort company names lexicographically; within each company exclude the three overrides from test candidates and rank remaining IDs by ascending SHA-256 of UTF-8 `opportunity-screening-v1:<ID>`. Enumerate the Cartesian product in that order and take the first tuple with test label counts 4 eligible, 2 ineligible, 2 unknown. All remaining cases are development. Stratification used accepted labels, not model outputs. The manifest records immutable source, content, case, split, and cases-file hashes; future changes require a new version, not overwriting v1.
 
-Existing dependency CVE findings are recorded separately in `CVE_MITIGATION_LOG.md`; no dependency remediation or new vulnerability audit is claimed by this documentation-only assembly. Dependencies, code, database, and pipeline state are unchanged.
+Existing dependency CVE findings are recorded separately in `docs/CVE_MITIGATION_LOG.md`; no dependency remediation or new vulnerability audit is claimed by this documentation-only assembly. Dependencies, code, database, and pipeline state are unchanged.
 
 ## Summary
 
