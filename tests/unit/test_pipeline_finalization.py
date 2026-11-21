@@ -24,11 +24,9 @@ from job_discovery.persistence.engine import create_engine, create_session_facto
 from job_discovery.persistence.timestamps import utc_now
 from job_eligibility import (
     ELIGIBILITY_PROMPT_HASH,
-    ELIGIBILITY_VERSION,
     MISSING_INFORMATION_REASON,
     EligibilityResponse,
 )
-from job_extractor import EXTRACTOR_VERSION
 from job_pipeline.content import ladder
 from job_pipeline.content.model import AcquiredContent
 from job_pipeline.llm import Completion, StructuredCaller
@@ -150,10 +148,7 @@ async def _seed_reused(factory: Factory) -> int:
             trigger="scheduled",
             reason=None,
             model="test",
-            policy_version=ELIGIBILITY_VERSION,
-            extractor_version=EXTRACTOR_VERSION,
             started_at=utc_now(),
-            eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
         )
     async with factory() as session:
         content_id = await contents_repo.store(
@@ -182,7 +177,6 @@ async def _seed_reused(factory: Factory) -> int:
                 "ineligible",
                 "The role requires on-site work in Canada.",
                 '["Canada"]',
-                ELIGIBILITY_VERSION,
                 "[]",
                 ELIGIBILITY_PROMPT_HASH,
             ),
@@ -373,7 +367,6 @@ async def _committed_state(
             # and the decision keeps the provenance of the attempt that made it.
             assert decision.id == case.reused_decision_id
             assert decision.attempt_id != attempt.id
-            assert decision.is_current_contract
             async with factory() as session:
                 assert len(await decisions_repo.history(session, case.job_id)) == 1
     else:
@@ -1114,11 +1107,8 @@ def test_stale_caller_cannot_finalize(
                                     trigger="scheduled",
                                     reason=None,
                                     model="test",
-                                    policy_version=ELIGIBILITY_VERSION,
-                                    extractor_version=EXTRACTOR_VERSION,
                                     started_at=utc_now(),
                                     stage=case.deps.stage,
-                                    eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
                                 )
                             assert replacement_id is not None
                         async with factory() as session:
@@ -1319,11 +1309,8 @@ def test_stale_repository_boundary_reports_skipped(
                                 trigger="scheduled",
                                 reason=None,
                                 model="test",
-                                policy_version=ELIGIBILITY_VERSION,
-                                extractor_version=EXTRACTOR_VERSION,
                                 started_at=utc_now(),
                                 stage=case.deps.stage,
-                                eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
                             )
                         assert replacement_id is not None
                     async with factory() as session:

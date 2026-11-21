@@ -14,7 +14,6 @@ from job_extractor.schema import (
     Qualification,
     TechnologyMention,
 )
-from job_extractor.version import EXTRACTOR_VERSION
 
 _FACT_FIELDS = tuple(ExtractionResponse.model_fields)
 _REQUIRED_CUE = re.compile(
@@ -201,7 +200,6 @@ def validate(response: ExtractionResponse, posting_text: str) -> JobResult:
     return JobResult(
         **facts,
         technologies_normalized=normalize(adjusted_mentions),
-        extractor_version=EXTRACTOR_VERSION,
         schema_version=SCHEMA_VERSION,
         validation_notes=notes,
     )

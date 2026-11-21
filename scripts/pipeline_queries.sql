@@ -101,7 +101,7 @@ SELECT
     j.id AS job_id,
     j.company_slug,
     d.reason,
-    d.policy_version,
+    d.prompt_hash,
     d.decided_at
 FROM job_decisions AS d
 JOIN jobs AS j ON j.id = d.job_id

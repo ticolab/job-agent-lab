@@ -1,8 +1,9 @@
-"""Structural validation and normalized-exact grounding of one-shot verdicts.
+"""Structural validation and word-level grounding of one-shot verdicts.
 
-Grounding proves each excerpt occurs in the posting; it does not prove the
-model interpreted the excerpt correctly. Semantic review stays with reviewed
-evidence obligations, replay evaluation, and manual reason review.
+Grounding proves each excerpt's words occur in the posting as one unbroken run;
+it does not prove the model interpreted the excerpt correctly. Semantic review
+stays with reviewed evidence obligations, replay evaluation, and manual reason
+review.
 """
 
 from __future__ import annotations
@@ -12,13 +13,13 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Literal
 
-from job_eligibility.normalize import grounding_text, normalize_text
+from job_eligibility.normalize import locate_words, word_key, word_spans
 from job_eligibility.schema import (
     MISSING_INFORMATION_REASON,
     EligibilityResponse,
     EligibilityVerdict,
 )
-from job_eligibility.version import ELIGIBILITY_PROMPT_HASH, ELIGIBILITY_VERSION
+from job_eligibility.version import ELIGIBILITY_PROMPT_HASH
 
 EvidenceBucket = Literal["supporting_evidence", "conflicting_evidence"]
 
@@ -45,11 +46,6 @@ class EligibilityValidationError(ValueError):
     """Raised when a schema-valid response violates a structural invariant."""
 
 
-def normalize(text: str) -> str:
-    """Normalize text identically on both sides of evidence matching."""
-    return normalize_text(text)
-
-
 def is_missing_information(response: EligibilityResponse) -> bool:
     """Whether the response uses the canonical empty-evidence unknown form."""
     return (
@@ -74,9 +70,9 @@ def structural_errors(response: EligibilityResponse) -> tuple[str, ...]:
     """Return every structural violation; an empty tuple means consistent.
 
     The two accepted shapes are the canonical missing-information unknown and
-    an evidenced response with at least one supporting excerpt. Duplicates and
-    cross-bucket overlap compare grounding-normalized text, so whitespace or
-    layout variants of one excerpt cannot be counted twice.
+    an evidenced response with at least one supporting excerpt. An excerpt cited
+    in both buckets is a violation, compared by its words. A repeat inside one
+    bucket is harmless and is merged by ``validate`` instead of rejected.
     """
     errors: list[str] = []
     no_evidence = not response.supporting_evidence
@@ -91,14 +87,10 @@ def structural_errors(response: EligibilityResponse) -> tuple[str, ...]:
         errors.append("the missing-information reason forbids evidence")
     seen: dict[str, str] = {}
     for path, quote in _evidence(response):
-        key = grounding_text(quote)
+        key = word_key(quote)
         bucket = path.split("[", 1)[0]
-        previous = seen.get(key)
-        if previous is None:
-            seen[key] = bucket
-        elif previous == bucket:
-            errors.append(f"{path} duplicates an earlier excerpt")
-        else:
+        previous = seen.setdefault(key, bucket)
+        if previous != bucket:
             errors.append(f"{path} appears in both evidence buckets")
     return tuple(errors)
 
@@ -116,31 +108,46 @@ def collect_grounding_misses(
     response: EligibilityResponse, posting_text: str
 ) -> list[GroundingMiss]:
     """Return a safe diagnostic for every excerpt absent from the posting."""
-    posting = grounding_text(posting_text)
-    misses: list[GroundingMiss] = []
-    for path, quote in _evidence(response):
-        normalized = grounding_text(quote)
-        if not normalized or normalized not in posting:
-            misses.append(_miss(path, quote))
-    return misses
+    posting = word_spans(posting_text)
+    return [
+        _miss(path, quote)
+        for path, quote in _evidence(response)
+        if locate_words(quote, posting) is None
+    ]
+
+
+def _posting_excerpts(
+    quotes: list[str], posting_text: str, posting: list[tuple[str, int, int]]
+) -> tuple[str, ...]:
+    """Return each quote as the posting's own text, merging repeats in order."""
+    excerpts: dict[tuple[int, int], str] = {}
+    for quote in quotes:
+        span = locate_words(quote, posting)
+        if span is None:
+            raise UngroundedEvidenceError(quote)
+        excerpts.setdefault(span, posting_text[span[0] : span[1]])
+    return tuple(excerpts.values())
 
 
 def validate(response: EligibilityResponse, posting_text: str) -> EligibilityVerdict:
-    """Reject structurally invalid or ungrounded responses; freeze the rest."""
+    """Reject structurally invalid or ungrounded responses; freeze the rest.
+
+    The verdict stores the posting's own characters for each excerpt, not the
+    model's copy, so persisted evidence is always literal posting text.
+    """
     errors = structural_errors(response)
     if errors:
         raise EligibilityValidationError("; ".join(errors))
-    posting = grounding_text(posting_text)
-    for _, quote in _evidence(response):
-        normalized = grounding_text(quote)
-        if not normalized or normalized not in posting:
-            raise UngroundedEvidenceError(quote)
+    posting = word_spans(posting_text)
     return EligibilityVerdict(
         decision=response.decision,
         reason=response.reason,
-        supporting_evidence=tuple(response.supporting_evidence),
-        conflicting_evidence=tuple(response.conflicting_evidence),
-        eligibility_version=ELIGIBILITY_VERSION,
+        supporting_evidence=_posting_excerpts(
+            response.supporting_evidence, posting_text, posting
+        ),
+        conflicting_evidence=_posting_excerpts(
+            response.conflicting_evidence, posting_text, posting
+        ),
         prompt_hash=ELIGIBILITY_PROMPT_HASH,
         grounded=True,
     )

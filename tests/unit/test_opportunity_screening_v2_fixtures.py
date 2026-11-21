@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Any
 
 from job_eligibility import (
-    ELIGIBILITY_VERSION,
     PROMPT_EXAMPLES,
     occurs_in,
 )
@@ -21,7 +20,7 @@ EXPECTED_V1_MANIFEST_HASH = (
     "9ad2acde29eaa5347dfd9f94acc846bf6a4045374451e85787067dcff9998eef"
 )
 EXPECTED_CORPUS_HASH = (
-    "f0395ae928a5a9b9153522593996710771c732b0b072aa980ecd52da2fd1824e"
+    "1cb5db293ea719c00ffa2b5d2de19b011ac1bfcfc759ad69c8df9c65a0051449"
 )
 PRE_REMOVAL_CORPUS_HASH = (
     "e37dd023e41430a667f00b1c385df52d3ec1a364653d05683423855fd46a43c9"
@@ -109,7 +108,6 @@ EXPECTED_EVIDENCE_KEYS = {
     "partition",
     "source_content_sha256",
     "decision",
-    "eligibility_version",
     "prompt_example",
     "missing_information",
     "obligations",
@@ -200,7 +198,6 @@ def test_manifest_records_fact_removal_obligations_and_v1_lineage() -> None:
     assert "facts" not in manifest
     assert "facts_status" not in manifest
     assert manifest["evidence_obligations"] == {
-        "eligibility_version": ELIGIBILITY_VERSION,
         "filename": "expected_evidence.json",
         "status": "operator_reviewed",
         "review_provenance": manifest["evidence_obligations"]["review_provenance"],
@@ -210,7 +207,6 @@ def test_manifest_records_fact_removal_obligations_and_v1_lineage() -> None:
     }
     assert "operator review" in manifest["evidence_obligations"]["derivation"]
     assert manifest["prompt_examples"] == {
-        "eligibility_version": ELIGIBILITY_VERSION,
         "source": "synthetic",
         "authorization": (
             "user decision recorded after the SYS-2028 development evaluation"
@@ -241,8 +237,6 @@ def test_manifest_records_fact_removal_obligations_and_v1_lineage() -> None:
                 "policy; no corpus case backs a prompt example, so all 24 "
                 "development cases return to the primary score."
             ),
-            "eligibility_version_from": "opportunity-oneshot-v1",
-            "eligibility_version_to": ELIGIBILITY_VERSION,
             "previous_example_cases": V1_PROMPT_EXAMPLE_CASES,
             "obligation_content_changed": False,
             "pre_change_corpus_sha256": PRE_SYNTHETIC_CORPUS_HASH,
@@ -364,7 +358,6 @@ def test_development_obligations_are_grounded_and_consistent_with_labels() -> No
         assert review["partition"] == "development"
         assert review["source_content_sha256"] == source_hashes[case_id]
         assert review["decision"] == eligibility["decision"]
-        assert review["eligibility_version"] == ELIGIBILITY_VERSION
         assert review["missing_information"] is False
         # v2 examples are synthetic: no development case backs one.
         assert review["prompt_example"] is None

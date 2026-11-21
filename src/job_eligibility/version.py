@@ -1,15 +1,9 @@
-"""One-shot eligibility contract version and prompt/schema hash.
-
-``ELIGIBILITY_VERSION`` names the semantic contract: the embedded
-operator-approved opportunity-screening-v2 policy, the six synthetic prompt
-examples, the four-field response shape, structural rules, and grounding
-normalization.
-Any semantic change bumps it and requires model-backed reprocessing, because no
-durable facts exist to re-screen without a model call.
+"""Automatic fingerprint of the eligibility prompt and response schema.
 
 ``ELIGIBILITY_PROMPT_HASH`` changes whenever the prompt, input wrapper, or
-response-schema bytes change. Decision reuse, recordings, and evaluator replay
-require both values to match.
+response-schema bytes change. Nothing sets it by hand. Each stored decision
+records it, and evaluation recordings are tied to it, so answers produced by one
+prompt are never scored or reused as if another prompt had produced them.
 """
 
 from __future__ import annotations
@@ -20,7 +14,6 @@ import json
 from job_eligibility.prompt import INPUT_TEMPLATE, SYSTEM_PROMPT
 from job_eligibility.schema import EligibilityResponse
 
-ELIGIBILITY_VERSION = "opportunity-oneshot-v2"
 _SCHEMA_JSON = json.dumps(
     EligibilityResponse.model_json_schema(), sort_keys=True, separators=(",", ":")
 )

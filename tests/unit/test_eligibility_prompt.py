@@ -9,7 +9,6 @@ from pathlib import Path
 
 from job_eligibility import (
     ELIGIBILITY_PROMPT_HASH,
-    ELIGIBILITY_VERSION,
     INPUT_TEMPLATE,
     MISSING_INFORMATION_REASON,
     PROMPT_EXAMPLES,
@@ -68,8 +67,7 @@ def test_prompt_states_the_approved_policy_and_output_contract() -> None:
         assert clause in SYSTEM_PROMPT
 
 
-def test_contract_version_and_hash_cover_prompt_input_and_schema() -> None:
-    assert ELIGIBILITY_VERSION == "opportunity-oneshot-v2"
+def test_prompt_hash_covers_prompt_input_and_schema() -> None:
     schema_json = json.dumps(
         EligibilityResponse.model_json_schema(),
         sort_keys=True,

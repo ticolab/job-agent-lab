@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from job_discovery.persistence import jobs_repo as discovery_jobs
 from job_discovery.persistence.engine import database
 from job_discovery.persistence.timestamps import utc_now
-from job_eligibility import ELIGIBILITY_PROMPT_HASH, ELIGIBILITY_VERSION
+from job_eligibility import ELIGIBILITY_PROMPT_HASH
 from job_pipeline.content.model import AcquiredContent
 from job_pipeline.llm import Completion
 from job_pipeline.persistence import (
@@ -23,12 +23,10 @@ from job_pipeline.persistence import (
     contents_repo,
     decisions_repo,
     jobs_repo,
-    runs_repo,
 )
 from job_pipeline.persistence.models import (
     Job,
     JobAttempt,
-    JobDecision,
     PipelineRun,
     Stage,
 )
@@ -64,8 +62,6 @@ async def _ready(factory: Factory, url: str) -> int:
             trigger="scheduled",
             reason=None,
             model="test",
-            policy_version="test",
-            extractor_version="test",
             started_at=utc_now(),
         )
     async with factory() as session:
@@ -95,7 +91,6 @@ async def _ready(factory: Factory, url: str) -> int:
                 "eligible",
                 "The role is located in Costa Rica.",
                 '["Costa Rica"]',
-                ELIGIBILITY_VERSION,
                 "[]",
                 ELIGIBILITY_PROMPT_HASH,
             ),
@@ -291,8 +286,6 @@ def test_cross_stage_reaping_and_legacy_recovery(
                 trigger="scheduled",
                 reason=None,
                 model="test",
-                policy_version="test",
-                extractor_version="test",
                 started_at=utc_now() - timedelta(seconds=10),
             )
         assert attempt_id is not None
@@ -327,65 +320,6 @@ def test_cross_stage_reaping_and_legacy_recovery(
             async with factory() as session:
                 attempt = await session.get(JobAttempt, attempt_id)
                 assert attempt is not None and attempt.outcome == "interrupted"
-
-    run_async(scenario())
-
-
-def test_extraction_attempt_records_consumed_decision_identity(
-    tmp_path: Path,
-) -> None:
-    async def scenario() -> None:
-        path = tmp_path / "attempt-policy.db"
-        factory, job_id = await _seed_audit(path)
-        legacy_policy = "cr-2026.10.1"
-        async with factory() as session, session.begin():
-            decision = (
-                await session.execute(
-                    select(JobDecision).where(
-                        JobDecision.job_id == job_id,
-                        JobDecision.is_current.is_(True),
-                    )
-                )
-            ).scalar_one()
-            decision.policy_version = legacy_policy
-            decision.prompt_hash = None
-            decision.conflicting_evidence_json = None
-            job = await session.get(Job, job_id)
-            assert job is not None
-            job.status = "ready_for_extraction"
-            job.next_phase = "extraction"
-            job.attempt_count = 0
-        async with factory() as session:
-            await runs_repo.start_run(
-                session,
-                run_id="extract-policy",
-                stage="extraction",
-                trigger="scheduled",
-                selection=COMPANY.slug,
-                model="test",
-                started_at=utc_now(),
-            )
-            attempt_id = await attempts_repo.claim_and_start(
-                session,
-                job_id=job_id,
-                run_id="extract-policy",
-                trigger="scheduled",
-                reason=None,
-                model="test",
-                policy_version=ELIGIBILITY_VERSION,
-                extractor_version="test",
-                started_at=utc_now(),
-                stage="extraction",
-                eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
-            )
-        assert attempt_id is not None
-        async with factory() as session:
-            attempt = await session.get(JobAttempt, attempt_id)
-        assert attempt is not None
-        # The audit row names the contract that admitted the job, so a stale
-        # decision is visible on the attempt that refuses it.
-        assert attempt.policy_version == legacy_policy
-        assert attempt.eligibility_prompt_hash is None
 
     run_async(scenario())
 

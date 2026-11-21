@@ -387,8 +387,6 @@ def test_run_pipeline_bounds_jobs_claimed_at_once(
                     trigger=deps.trigger,
                     reason=None,
                     model="test",
-                    policy_version="test",
-                    extractor_version="test",
                     started_at=datetime.now(),
                 )
             assert attempt_id is not None
@@ -598,8 +596,6 @@ def test_run_pipeline_reaps_stale_attempt_before_planning(
                 trigger="scheduled",
                 reason=None,
                 model="test",
-                policy_version="policy",
-                extractor_version="extractor",
                 started_at=datetime(2025, 1, 1),
             )
         assert attempt_id is not None

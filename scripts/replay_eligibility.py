@@ -34,7 +34,6 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_valida
 from job_discovery.settings import DATABASE_PATH
 from job_eligibility import (
     ELIGIBILITY_PROMPT_HASH,
-    ELIGIBILITY_VERSION,
     Decision,
     EligibilityResponse,
     UngroundedEvidenceError,
@@ -64,7 +63,7 @@ class Posting:
     content_hash: str
     text: str
     accepted_decision: Decision | None
-    accepted_contract: str | None
+    accepted_prompt_hash: str | None
 
 
 class ReplayModel(BaseModel):
@@ -76,7 +75,7 @@ class PostingRecord(ReplayModel):
     content_id: int
     content_hash: str
     accepted_decision: Decision | None
-    accepted_contract: str | None
+    accepted_prompt_hash: str | None
 
 
 class GroundingMiss(ReplayModel):
@@ -132,7 +131,6 @@ class CallRecord(ReplayModel):
 
 class Recording(ReplayModel):
     recording_version: Literal[3] = 3
-    eligibility_version: str
     eligibility_prompt_hash: str
     requested_model: str
     run_id: str
@@ -220,7 +218,7 @@ def load_postings(database: Path, run_id: str) -> list[Posting]:
                 FROM selected
             )
             SELECT bound.job_id, c.id, c.content_hash, c.text,
-                   d.decision, d.policy_version
+                   d.decision, d.prompt_hash
             FROM bound
             LEFT JOIN job_contents c
               ON c.id = bound.content_id AND c.job_id = bound.job_id
@@ -232,7 +230,7 @@ def load_postings(database: Path, run_id: str) -> list[Posting]:
     if not rows:
         raise ValueError("run has no postings to replay")
     postings: list[Posting] = []
-    for job_id, content_id, content_hash, text, accepted, contract in rows:
+    for job_id, content_id, content_hash, text, accepted, prompt_hash in rows:
         if (
             content_id is None
             or not isinstance(text, str)
@@ -242,10 +240,10 @@ def load_postings(database: Path, run_id: str) -> list[Posting]:
             raise ValueError(f"job {job_id} has no usable content checkpoint")
         if accepted not in (None, "eligible", "ineligible", "unknown"):
             raise ValueError(f"job {job_id} has an invalid accepted decision")
-        if contract is not None and not isinstance(contract, str):
-            raise ValueError(f"job {job_id} has an invalid accepted contract")
+        if prompt_hash is not None and not isinstance(prompt_hash, str):
+            raise ValueError(f"job {job_id} has an invalid accepted prompt hash")
         postings.append(
-            Posting(job_id, content_id, content_hash, text, accepted, contract)
+            Posting(job_id, content_id, content_hash, text, accepted, prompt_hash)
         )
     return postings
 
@@ -253,7 +251,6 @@ def load_postings(database: Path, run_id: str) -> list[Posting]:
 def _recording_key(model: str, run_id: str, posting: Posting, replay_index: int) -> str:
     payload = {
         "model": model,
-        "eligibility_version": ELIGIBILITY_VERSION,
         "eligibility_prompt_hash": ELIGIBILITY_PROMPT_HASH,
         "run_id": run_id,
         "job_id": posting.job_id,
@@ -310,7 +307,6 @@ def _sidecar_contract(
         "recording_version": 2,
         "key": key,
         "requested_model": model,
-        "eligibility_version": ELIGIBILITY_VERSION,
         "eligibility_prompt_hash": ELIGIBILITY_PROMPT_HASH,
         "run_id": run_id,
         "job_id": posting.job_id,
@@ -570,7 +566,6 @@ async def replay(
                 reservation.unlink(missing_ok=True)
         raise
     return Recording(
-        eligibility_version=ELIGIBILITY_VERSION,
         eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
         requested_model=model,
         run_id=run_id,
@@ -582,7 +577,7 @@ async def replay(
                 content_id=posting.content_id,
                 content_hash=posting.content_hash,
                 accepted_decision=posting.accepted_decision,
-                accepted_contract=posting.accepted_contract,
+                accepted_prompt_hash=posting.accepted_prompt_hash,
             )
             for posting in postings
         ],
@@ -640,9 +635,9 @@ def _compatible(baseline: Recording, new: Recording) -> None:
             second.content_hash,
         ):
             raise ValueError("recordings have different content checkpoints")
-        if (first.accepted_decision, first.accepted_contract) != (
+        if (first.accepted_decision, first.accepted_prompt_hash) != (
             second.accepted_decision,
-            second.accepted_contract,
+            second.accepted_prompt_hash,
         ):
             raise ValueError("recordings have different accepted metadata")
 
@@ -656,7 +651,6 @@ def compare(baseline: Recording, new: Recording) -> str:
         }
         statuses = Counter(record.status for record in recording.records)
         model = _markdown(recording.requested_model)
-        version = _markdown(recording.eligibility_version)
         prompt_hash = _markdown(recording.eligibility_prompt_hash)
         grounding = statuses["ungrounded"]
         inconsistent = statuses["inconsistent"]
@@ -676,18 +670,18 @@ def compare(baseline: Recording, new: Recording) -> str:
         lines.extend(
             [
                 f"\n## {name}",
-                f"Model: {model}; eligibility version: {version}; "
-                f"prompt hash: {prompt_hash}; replays: {recording.replays}.",
+                f"Model: {model}; prompt hash: {prompt_hash}; "
+                f"replays: {recording.replays}.",
                 f"Grounding failures: {grounding}/{len(recording.records)} calls; "
                 f"structurally inconsistent: {inconsistent}.",
                 f"Model errors: {statuses['model_error']}; "
                 f"invalid responses: {invalid}.",
                 f"Agreement with accepted decisions: {agreement}/{compared} "
-                "grounded calls (accepted decisions may predate this contract).",
+                "grounded calls (accepted decisions may come from another prompt).",
                 f"Mean prompt tokens: {prompt_tokens}; mean completion tokens: "
                 f"{completion_tokens}; mean latency ms: {latency}.",
                 "\n### Outcomes per posting (decision/supporting+conflicting counts)",
-                "| Job | Accepted decision | Accepted contract | Distribution |",
+                "| Job | Accepted decision | Accepted prompt hash | Distribution |",
                 "| --- | --- | --- | --- |",
             ]
         )
@@ -698,10 +692,10 @@ def compare(baseline: Recording, new: Recording) -> str:
                 if record.job_id == posting.job_id
             ]
             decision = posting.accepted_decision or "none"
-            contract = _markdown(posting.accepted_contract or "none")
+            accepted_hash = _markdown((posting.accepted_prompt_hash or "none")[:12])
             distribution = _markdown(_distribution(records))
             lines.append(
-                f"| {posting.job_id} | {decision} | {contract} | {distribution} |"
+                f"| {posting.job_id} | {decision} | {accepted_hash} | {distribution} |"
             )
         miss_counts = Counter(
             (miss.path, miss.reason)
@@ -776,14 +770,6 @@ def _load_recording(path: Path) -> Recording:
         not isinstance(payload, dict)
         or payload.get("recording_version") != RECORDING_VERSION
     ):
-        version = (
-            payload.get("recording_version") if isinstance(payload, dict) else None
-        )
-        if version in (None, 1, 2):
-            raise ValueError(
-                "recording versions 1 and 2 predate the one-shot contract; "
-                "compare two version 3 recordings"
-            )
         raise ValueError("unsupported recording version")
     return Recording.model_validate(payload)
 
@@ -812,7 +798,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     content_id=posting.content_id,
                     content_hash=posting.content_hash,
                     accepted_decision=posting.accepted_decision,
-                    accepted_contract=posting.accepted_contract,
+                    accepted_prompt_hash=posting.accepted_prompt_hash,
                 )
                 for posting in postings
             ]
@@ -820,7 +806,6 @@ def main(argv: Sequence[str] | None = None) -> int:
                 recording.requested_model != args.model
                 or recording.run_id != args.run
                 or recording.replays != args.replays
-                or recording.eligibility_version != ELIGIBILITY_VERSION
                 or recording.eligibility_prompt_hash != ELIGIBILITY_PROMPT_HASH
                 or recording.postings != expected_postings
             ):

@@ -6,7 +6,6 @@ from collections.abc import Mapping, Sequence
 from job_discovery.domain.company import Company
 from job_discovery.persistence import catalog_repo
 from job_discovery.persistence.timestamps import utc_now
-from job_eligibility import ELIGIBILITY_VERSION
 from job_pipeline.cli.common import (
     add_database_argument,
     add_policy_arguments,
@@ -16,7 +15,7 @@ from job_pipeline.cli.common import (
     run_async,
     select_companies,
 )
-from job_pipeline.persistence import decisions_repo, jobs_repo
+from job_pipeline.persistence import jobs_repo
 from job_pipeline.persistence.models import STAGE_PHASES, Stage
 from job_pipeline.runner.observe import observe, read_snapshot_keys
 
@@ -101,13 +100,8 @@ async def preview(args: argparse.Namespace, companies: Sequence[Company]) -> Non
                 )
                 for stage in STAGE_PHASES
             }
-            stale_ready = await decisions_repo.count_stale_ready(
-                session, {company.slug for company in companies}
-            )
         print("Pipeline preview")
         _print_counts(counts, work_counts, args.limit)
-        print(f"eligibility contract   {ELIGIBILITY_VERSION}")
-        print(f"ready, stale contract  {stale_ready}")
         if args.by_company:
             for company in companies:
                 company_keys = {key for key in snapshot_keys if key[0] == company.slug}

@@ -20,8 +20,6 @@ from job_discovery.domain.company import Company
 from job_discovery.persistence.timestamps import utc_now
 from job_discovery.settings import CaptureBrowser
 from job_eligibility import (
-    ELIGIBILITY_PROMPT_HASH,
-    ELIGIBILITY_VERSION,
     EligibilityResponse,
 )
 from job_eligibility import (
@@ -31,7 +29,6 @@ from job_eligibility import (
     validate as validate_eligibility,
 )
 from job_extractor import (
-    EXTRACTOR_VERSION,
     ExtractionResponse,
 )
 from job_extractor import (
@@ -631,11 +628,6 @@ async def _run_extraction(
         raise MissingCheckpointError("extraction has no current eligible decision")
     if current_decision.content_id != content.id:
         raise MissingCheckpointError("eligible decision references different content")
-    if not current_decision.is_current_contract:
-        raise MissingCheckpointError(
-            "eligible decision predates the current eligibility contract; "
-            "reprocess the job from eligibility"
-        )
     progress.decision = current_decision.decision
     async with deps.model_semaphore:
         extraction_completion = await _timed(
@@ -656,7 +648,6 @@ async def _run_extraction(
             attempt_id=attempt_id,
             content_id=content.id,
             result=results_repo.ResultInput(
-                extractor_version=result.extractor_version,
                 schema_version=result.schema_version,
                 result_json=result.model_dump_json(),
             ),
@@ -691,11 +682,8 @@ async def process_job(job_id: int, *, deps: WorkerDeps) -> JobOutcome:
             reason=deps.reason,
             model=deps.policy.model,
             reasoning_effort=deps.policy.reasoning_effort,
-            policy_version=ELIGIBILITY_VERSION,
-            extractor_version=EXTRACTOR_VERSION,
             started_at=utc_now(),
             stage=deps.stage,
-            eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
         )
     if attempt_id is None:
         return JobOutcome(

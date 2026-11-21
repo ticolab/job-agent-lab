@@ -228,6 +228,5 @@ class JobResult(BaseModel):
     posting_date: Fact[date]
     requisition_id: Fact[str]
     technologies_normalized: list[Technology]
-    extractor_version: str
     schema_version: int
     validation_notes: list[str]

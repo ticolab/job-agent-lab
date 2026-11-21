@@ -6,7 +6,6 @@
   "partition": "blind",
   "source_content_sha256": "be240c73b199559dcc19ea5d22527e31483e8cb24fb3072034a45d48da04dc51",
   "decision": "eligible",
-  "eligibility_version": "opportunity-oneshot-v2",
   "prompt_example": null,
   "missing_information": false,
   "obligations": [

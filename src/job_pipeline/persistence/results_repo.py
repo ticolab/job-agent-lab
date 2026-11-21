@@ -15,7 +15,6 @@ from job_pipeline.persistence.models import Job, JobResult
 
 @dataclass(frozen=True)
 class ResultInput:
-    extractor_version: str
     schema_version: int
     result_json: str
 
@@ -26,7 +25,6 @@ class ResultRecord:
     job_id: int
     attempt_id: int
     content_id: int
-    extractor_version: str
     schema_version: int
     result_json: str
     is_current: bool
@@ -39,7 +37,6 @@ def _record(result: JobResult) -> ResultRecord:
         job_id=result.job_id,
         attempt_id=result.attempt_id,
         content_id=result.content_id,
-        extractor_version=result.extractor_version,
         schema_version=result.schema_version,
         result_json=result.result_json,
         is_current=result.is_current,
@@ -88,7 +85,6 @@ async def accept_and_complete(
             job_id=job_id,
             attempt_id=attempt_id,
             content_id=content_id,
-            extractor_version=result.extractor_version,
             schema_version=result.schema_version,
             result_json=result.result_json,
             is_current=True,
@@ -129,7 +125,6 @@ async def accept(
             job_id=job_id,
             attempt_id=attempt_id,
             content_id=content_id,
-            extractor_version=result.extractor_version,
             schema_version=result.schema_version,
             result_json=result.result_json,
             is_current=True,

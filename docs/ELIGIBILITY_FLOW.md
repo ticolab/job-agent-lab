@@ -1,22 +1,24 @@
 # Eligibility Flow: Current State (2026-11-21)
 
 This document describes how job-posting eligibility works today, what the
-evaluation showed, what was released and why, and what remains to be done.
-"Eligible" means *retain the posting for follow-up* by one candidate who stays
-based in Costa Rica. It is not a judgment on payroll, work authorization, visa,
-schedule, skill fit, or vacancy.
+evaluation showed, and what remains to be done. "Eligible" means *retain the
+posting for follow-up* by one candidate who stays based in Costa Rica. It is not
+a judgment on payroll, work authorization, visa, schedule, skill fit, or vacancy.
+
+The project is pre-production and runs on one machine. Its data is disposable, so
+a design is replaced outright instead of kept compatible: there are no version
+tags, legacy columns, or upgrade paths.
 
 ## Status at a glance
 
 | Item | State |
 |---|---|
-| Contract | `opportunity-oneshot-v2`, prompt hash `3c1afd4e…3b3da` |
 | Eligibility model (default) | `gpt-5.4-mini-2026-03-17`, reasoning effort `medium` |
-| Extraction model (default) | `gpt-4.1-mini`, no reasoning effort (unchanged, never compared) |
-| Development gates | Passed under gate policy 2 (24 cases × 5 replays) |
-| Held-out regression check | Reported, no unsafe errors (8 cases × 5 replays) |
-| Blind release test | **Failed** (51 fresh postings × 5 replays) |
-| Release decision | Released anyway by the operator on 2026-11-21 as a **starting point** |
+| Extraction model (default) | `gpt-4.1-mini`, no reasoning effort (never compared) |
+| Prompt fingerprint | `3c1afd4e…3b3da` (automatic, see below) |
+| Development gates | Passed (24 postings × 5 replays) |
+| Held-out check | Reported, no unsafe errors (8 postings × 5 replays) |
+| Blind test | **Not passed** (51 postings × 5 replays); used as a starting point |
 | Shadow review on live postings | Not run |
 
 ## How the flow works
@@ -31,22 +33,30 @@ schedule, skill fit, or vacancy.
 4. Python then checks the answer, and never re-derives the geography itself:
    - strict schema;
    - structure: only the fixed "states nothing about location" answer may cite
-     nothing, and no excerpt may appear twice or in both lists;
-   - grounding: every excerpt must appear in the posting after normalizing case,
-     whitespace, dashes, and layout separators. Paraphrases, reordered or
-     joined text are rejected.
-5. An accepted answer is stored atomically with the contract version and
-   prompt hash, and the job moves on:
+     nothing, and no excerpt may appear in both lists (a repeat inside one list
+     is merged);
+   - grounding: each excerpt's **words** must occur in the posting as one
+     unbroken run of whole words in the same order. Case, punctuation, symbols,
+     and whitespace are ignored. Paraphrases, reordered text, partial words, and
+     text stitched from separate passages are rejected.
+5. An accepted answer is stored atomically. The stored evidence is the posting's
+   own text for the matched span, not the model's copy. The job then moves on:
    - `eligible` → `ready_for_extraction`;
    - `ineligible` → `completed_ineligible`;
    - `unknown` → `unknown` (terminal until reprocessed).
 6. A rejected answer is **never stored**. The job is retried after one day,
    then two days, and becomes `failed` after three attempts.
-7. **Extraction** (`job-pipeline extraction`) runs only on jobs whose current
-   eligible decision was made under the current contract on the same stored
-   text. Older decisions (for example the 10 local `ready_for_extraction` jobs
-   decided under `cr-2026.10.1`) fail with `missing_checkpoint` until they are
-   reprocessed from eligibility.
+7. **Extraction** (`job-pipeline extraction`) runs on jobs whose current decision
+   is eligible on the same stored text.
+
+### The prompt fingerprint
+
+Nothing is versioned by hand. `ELIGIBILITY_PROMPT_HASH` is computed from the
+prompt, the input wrapper, and the response schema. Each decision stores it, a
+stored decision is reused only under the same fingerprint, and saved evaluation
+answers are tied to it, so one prompt's answers are never scored as another's.
+Changing the prompt, the grounding rules, or the model never blocks the pipeline
+and never re-decides jobs on its own.
 
 ### The policy in brief
 
@@ -63,14 +73,14 @@ schedule, skill fit, or vacancy.
 - The prompt has six synthetic examples. None of their text occurs in any
   evaluation posting, and a test enforces that.
 
-## Release gates
+## Evaluation gates
 
 A candidate is evaluated with five replays per posting, in three stages: a
 development set it may be tuned on, a held-out set read only after the
-candidate is frozen, and a fresh blind set that was never seen. Automated gates:
+candidate is frozen, and a blind set. Automated gates:
 
 - 100% schema-valid and structurally consistent answers;
-- grounding of at least 99% of answers (see the amendment below);
+- grounding of at least 99% of answers;
 - 100% recall of the reviewed critical evidence, measured over accepted answers;
 - decision macro F1 of at least 0.90, and decision-plus-evidence agreement of
   at least 0.90;
@@ -80,53 +90,20 @@ candidate is frozen, and a fresh blind set that was never seen. Automated gates:
 - every divergent reason reviewed by the operator.
 
 The blind set must hold at least 10 postings of each label, labelled before any
-model call. A frozen candidate is the only thing the held-out and blind runs
-accept: the freeze record names the model, effort, contract version, prompt
-hash, and gate policy.
-
-**Gate amendment (gate policy 2, 2026-11-21, recorded before the freeze).**
-Grounding was lowered from 100% to at least 99%, and critical evidence recall
-now counts only accepted answers. A misquoted excerpt is rejected and retried,
-never stored, so a rare misquote costs a retry rather than a wrong decision, and
-counting the same call again as an evidence miss counted it twice. Every
-decision, safety, schema, structural, stability, and manual-review gate is
-unchanged. The amendment came after seeing the development near-miss, so the
-held-out and blind runs, not the development cases, carry the release evidence.
-
-## Where the labels come from
-
-The 32 postings in `opportunity-screening-v2` were collected on 2026-11-01 from
-eight companies and labelled by the operator (29 labels accepted unchanged, three
-overridden from unknown to eligible). The policy above is the result of that
-review. The earlier standalone review document was removed because its content
-now lives in the corpus: each case folder holds the posting text, the label, the
-operator's rationale, and the required quotes, and the manifest records the split
-and its history. Case-specific judgments to keep in mind:
-
-- GOL03 and OCE03 were first accepted as ineligible even though the foreign
-  location is not stated as "only". OCE03 was later changed to unknown (a foreign
-  header alone is not a restriction).
-- GOL04 stays unknown: no precedence of "Latin America" over "South America" was
-  approved.
-- KAK01 and KAK02 are resolved for *opportunity screening*, not legal eligibility.
-- JOB03 and JOB04 stay unknown rather than inheriting context from the job board.
+model call. The held-out and blind runs accept only a frozen candidate: the
+freeze record names the model, effort, and prompt fingerprint.
 
 ## Evidence
-
-All runs used five replays per posting. **Gate policy 2** was an operator
-amendment recorded before the freeze: grounding must reach at least 99% of
-calls instead of 100%, and critical evidence recall counts only accepted
-answers. The amendment was made after seeing a development near-miss.
 
 | | Development (24) | Held-out (8) | **Blind (51)** |
 |---|---|---|---|
 | False eligible | 0 | 0 | **0** |
 | Wrongful ineligible | 0 | 0 | **2** |
-| Decision macro F1 | 0.998 | 0.921 | 0.951 |
-| Grounding (gate ≥ 0.99) | 0.992 | 1.000 | **0.965** |
+| Decision macro F1 | 0.998 | 0.921 | 0.968 |
+| Grounding (gate ≥ 0.99) | 0.992 | 1.000 | 0.992 |
 | Critical evidence recall | 1.000 | n/a¹ | 0.996 |
-| Decision + evidence agreement | 0.992 | n/a¹ | 0.929 |
-| Cases unanimous across replays | 23/24 | 7/8 | 44/51 |
+| Decision + evidence agreement | 0.992 | n/a¹ | 0.957 |
+| Cases unanimous across replays | 23/24 | 7/8 | 46/51 |
 | Cost per run | $0.36 | $0.13 | $1.00 |
 
 ¹ The held-out cases have no reviewed evidence lists, so their evidence scores
@@ -134,79 +111,94 @@ are not comparable.
 
 Notes:
 
+- **What still fails on the blind set.** Two wrongful ineligibles (BL04), one
+  answer missing its critical evidence (BL38), three safety-critical cases that
+  are not unanimous (BL08, BL11, BL13), and 39 reasons awaiting operator review.
+- **Word-level grounding was added after the blind run.** Under the earlier
+  exact-text rule the blind grounding was 0.965: six of nine rejections were a
+  period the model added to a sentence it cut short. The same saved answers were
+  re-scored under the word rule, at no cost. Because the rule was designed from
+  those results, its blind numbers are optimistic until new postings confirm them.
 - **Cost and speed.** About $0.004 and 2 seconds per posting at medium effort,
   with one call per posting in production.
 - **Blind labels.** Claude proposed the blind labels from the policy text, the
   operator approved them before any model call, and no GPT model saw the
   postings. Two labelling errors (BL11 and BL38) were corrected after the run
   with their decisions unchanged. The corpus manifest records the correction.
-- **Earlier candidates.** `gpt-4.1-mini`, `gpt-4.1`, and `gpt-5.4-mini` with no
-  reasoning or with low effort all failed development (details in `README.md`).
+- **Other candidates.** `gpt-4.1-mini`, `gpt-4.1`, and `gpt-5.4-mini` with no
+  reasoning or with low effort all failed development.
+
+## Where the labels come from
+
+The 32 postings in `opportunity-screening-v2` were collected on 2026-11-01 from
+eight companies and labelled by the operator. Each case folder holds the posting
+text, the label, the operator's rationale, and the required quotes.
+Case-specific judgments to keep in mind:
+
+- OCE03 is unknown: a foreign header alone is not a restriction.
+- GOL04 stays unknown: no precedence of "Latin America" over "South America" was
+  approved.
+- KAK01 and KAK02 are resolved for *opportunity screening*, not legal eligibility.
+- JOB03 and JOB04 stay unknown rather than inheriting context from the job board.
 
 ## Known weaknesses
 
-1. **Quote copying (about 3.5% of answers).** The model sometimes joins
-   separate lines, drops a list dash, or rewords a phrase ("We don't" → "You
-   don't"). Grounding rejects these, so they cost retries rather than wrong
-   decisions. On a few postings the rate is high (3 of 5 on BL30 and BL40), so
-   such a job can end `failed` after three attempts.
-2. **Several foreign countries plus Latin America.** On BL04 the location line
-   reads "Remote in Chile / Remote in Philippines / Remote in Latin America /
-   Remote in Argentina". The model called it ineligible 2 of 5 times and unknown
-   3 of 5, although Latin America includes Costa Rica. These are the two
-   wrongful ineligibles.
-3. **Unstable borderline cases.** A header place against a LATAM permission
-   (BL08), a bare US region label (BL11), and cases where the evidence is
-   cited in both lists (BL13) occasionally flip or break structure. On the
-   held-out set, GOL04 let a perks line ("anywhere in South America") override
-   the role header twice.
+1. **Real decision mistakes (about 3% of blind answers, none a false eligible).**
+   - BL04: the location line reads "Remote in Chile / Remote in Philippines /
+     Remote in Latin America / Remote in Argentina". The model called it
+     ineligible 2 of 5 times and unknown 3 of 5, although Latin America includes
+     Costa Rica.
+   - Borderline cases occasionally flip: a bare US region label (BL11), and on
+     the held-out set a perks line ("anywhere in South America") overriding the
+     role header (GOL04).
+2. **Answers that are still rejected (under 1%).** The same excerpt cited in
+   both lists (BL08, BL13), and a quote whose words were changed ("We don't" →
+   "You don't"). These cost retries, not wrong decisions.
+3. **Fetching loses far more postings than the model does.** In a sample of 164
+   postings from 50 companies, about 20% could not be fetched (mostly redirects
+   to another site, plus blocks, timeouts, and not-found pages), and about 12%
+   returned a page that was not a real posting (a block page or "this job has
+   been filled").
 4. **Policy edges that may surprise.**
    - "Remote (PST/MST)" is eligible, because a time zone is a schedule.
    - A foreign city that appears only in a title is unknown, not ineligible.
    - Expect more `unknown` results than a human screener would give.
 
-None of these produced a false eligible in 415 evaluation calls. The errors
-point toward dropping or holding postings, not toward retaining excluded ones.
-
 ## Operating it
 
 ```bash
-uv run alembic upgrade head                         # migration c7e1d4b9a2f6 records the effort
+uv run alembic upgrade head                         # create the database (one revision)
 uv run job-pipeline eligibility --all               # gpt-5.4-mini-2026-03-17, medium effort
 uv run job-pipeline eligibility --all -m gpt-4.1-mini   # explicit model, no default effort
 uv run job-pipeline extraction --all                # gpt-4.1-mini
-uv run job-pipeline reprocess --job 42 --from-phase eligibility --reason "re-decide under v2"
-uv run job-pipeline show --job 42                   # decision, evidence, contract, model, effort
+uv run job-pipeline reprocess --job 42 --from-phase eligibility --reason "re-decide"
+uv run job-pipeline show --job 42                   # decision, evidence, model, effort
 ```
 
+- **Schema changes.** The schema is one squashed revision. After a model change,
+  regenerate it and recreate the database; there is no upgrade path.
 - **What each row records.** Every run and attempt stores the model and its
-  `reasoning_effort` (null means `temperature=0`). Decisions store the contract
-  version and prompt hash.
-- **Reuse.** A stored decision is reused only for the same text, contract
-  version, and prompt hash. Changing the model does not re-decide existing jobs.
-  Use `reprocess --from-phase eligibility` for that.
+  `reasoning_effort` (null means `temperature=0`). Decisions store the prompt
+  fingerprint.
+- **Re-deciding.** Changing the model or prompt does not re-decide existing
+  jobs. Use `reprocess --from-phase eligibility` for that.
 - **Unknown jobs.** `unknown` is terminal. Review them with `show` and reprocess
   them when the policy or model improves.
 
 ## Next steps
 
-1. **Shadow replay.** Run `scripts/replay_eligibility.py` (read-only) over
-   stored postings and compare against current decisions. It needs a small
-   change to accept `--reasoning-effort` before it can replay the released
-   candidate.
-2. **Prompt v3.** Two targets:
-   - quote copying: one excerpt per list, copied character for character;
-   - an explicit rule for a list of foreign places that includes a regional
-     permission.
-
-   This requires a new contract version, model-backed reprocessing, and a
-   **new** blind set, because the current one has now been seen.
-3. **Watch production.** Track the share of `failed` jobs from rejected answers
-   and the share of `unknown` results. If retries pile up, consider one
-   immediate in-run retry instead of a next-day retry.
-4. **Extraction model.** `gpt-4.1-mini` has never been compared against another
-   model. Evaluate it separately.
-5. **Operator review.** The 39 divergent blind reasons are still pending.
+1. **Fetching.** Recover the postings lost to off-site redirects and blocks, and
+   stop "job filled" and block pages from reaching the model as postings.
+2. **Prompt change for BL04.** Add an explicit rule and a synthetic example for
+   a list of foreign places that includes a regional permission, then re-run
+   the evaluations (about $1.50) on a new blind set.
+3. **Immediate retry.** Retry a rejected answer in the same run, telling the
+   model which excerpt was not found, instead of waiting a day.
+4. **Shadow replay.** Run `scripts/replay_eligibility.py` (read-only) over
+   stored postings. It needs `--reasoning-effort` first.
+5. **Extraction model.** `gpt-4.1-mini` has never been compared against another
+   model.
+6. **Operator review.** The 39 divergent blind reasons are still pending.
 
 ## Where things live
 
@@ -215,8 +207,8 @@ uv run job-pipeline show --job 42                   # decision, evidence, contra
 | Prompt, schema, grounding | `src/job_eligibility/` |
 | Pipeline, persistence, CLI | `src/job_pipeline/` |
 | Defaults | `src/job_pipeline/settings.py` (`ELIGIBILITY_MODEL`, `ELIGIBILITY_REASONING_EFFORT`, `DEFAULT_MODEL`) |
-| Labels, rationale, and quotes per posting | `expected_eligibility.json` and `expected_evidence.json` in each corpus case folder |
 | The policy text the model sees | `SYSTEM_PROMPT` in `src/job_eligibility/prompt.py` |
+| Labels, rationale, and quotes per posting | `expected_eligibility.json` and `expected_evidence.json` in each corpus case folder |
 | Development and held-out corpus | `tests/fixtures/postings/opportunity-screening-v2/` |
 | Blind corpus | `tests/fixtures/postings/opportunity-screening-blind-v1/` |
 | Evaluator | `scripts/evaluate_leaf.py` (`--reasoning-effort`, `--partition blind`) |

@@ -28,14 +28,13 @@ from pydantic import ValidationError
 
 from job_eligibility import (
     ELIGIBILITY_PROMPT_HASH,
-    ELIGIBILITY_VERSION,
     MAX_EVIDENCE_CHARACTERS,
     PROMPT_EXAMPLES,
     Decision,
     EligibilityResponse,
     build_messages,
     collect_grounding_misses,
-    grounding_text,
+    contains_words,
     is_missing_information,
     occurs_in,
     structural_errors,
@@ -484,7 +483,6 @@ _EVIDENCE_KEYS = {
     "partition",
     "source_content_sha256",
     "decision",
-    "eligibility_version",
     "prompt_example",
     "missing_information",
     "obligations",
@@ -501,13 +499,9 @@ GateProfile = Literal["development", "blind", "report"]
 _PARTITIONS = frozenset({"development", "exposed_regression", "blind"})
 RECORDING_VERSION_ONE_SHOT = 3
 FREEZE_VERSION = 1
-# Gate policy 2 (operator amendment, 2026-11-21): grounding must reach
-# MIN_GROUNDING_RATE instead of 100%, and critical evidence recall is measured
-# over grounded calls only. A misquoted excerpt is rejected by validation and
-# retried in production, never stored, so one rare misquote costs a retry rather
-# than a wrong decision; counting it again as an evidence miss would double-count
-# it. Every decision, safety, schema, and structural gate is unchanged.
-GATE_POLICY_VERSION = 2
+# Grounding must reach this share of calls, and critical evidence recall is
+# measured over grounded calls only: a rejected excerpt is retried in production
+# and never stored, so it costs a retry rather than a wrong decision.
 MIN_GROUNDING_RATE = 0.99
 
 
@@ -656,11 +650,7 @@ def _prompt_example_cases(corpus: Path) -> dict[str, str]:
         return {}
     patterns = section.get("patterns") if isinstance(section, dict) else None
     source = section.get("source") if isinstance(section, dict) else None
-    if (
-        not isinstance(patterns, dict)
-        or section.get("eligibility_version") != ELIGIBILITY_VERSION
-        or source not in {"synthetic", "corpus"}
-    ):
+    if not isinstance(patterns, dict) or source not in {"synthetic", "corpus"}:
         raise RuntimeError("corpus prompt examples do not match the current contract")
     if source == "synthetic":
         if patterns:
@@ -720,7 +710,6 @@ def _load_case(
         or payload.get("partition") != expected["partition"]
         or payload.get("source_content_sha256") != source_hash
         or payload.get("decision") != decision
-        or payload.get("eligibility_version") != ELIGIBILITY_VERSION
         or not isinstance(reviewed, bool)
         or payload.get("review_status")
         != ("reviewed" if reviewed else "pending_operator_review")
@@ -757,18 +746,15 @@ def _satisfaction(
     case: EligibilityCase, supporting: Sequence[str], conflicting: Sequence[str]
 ) -> tuple[frozenset[str], bool]:
     """Which obligations a response meets, and whether conflict pairs split."""
-    normalized = {
-        "supporting": [grounding_text(value) for value in supporting],
-        "conflicting": [grounding_text(value) for value in conflicting],
-    }
+    cited = {"supporting": supporting, "conflicting": conflicting}
     buckets: dict[str, set[str]] = {}
     for obligation in case.obligations:
         found = {
             bucket
             for bucket in _BUCKETS
             for alternative in obligation.alternatives
-            for value in normalized[bucket]
-            if grounding_text(alternative) in value
+            for value in cited[bucket]
+            if contains_words(value, alternative)
         }
         allowed = set(_BUCKETS) if obligation.role == "either" else {obligation.role}
         buckets[obligation.obligation_id] = found & allowed
@@ -792,7 +778,6 @@ def _recording_key(
 ) -> str:
     payload: dict[str, object] = {
         "model": model,
-        "eligibility_version": ELIGIBILITY_VERSION,
         "eligibility_prompt_hash": ELIGIBILITY_PROMPT_HASH,
         "case_id": case.case_id,
         "source_hash": case.source_hash,
@@ -830,7 +815,6 @@ def _recording_contract(
         "recording_version": RECORDING_VERSION_ONE_SHOT,
         "key": path.stem,
         "requested_model": model,
-        "eligibility_version": ELIGIBILITY_VERSION,
         "eligibility_prompt_hash": ELIGIBILITY_PROMPT_HASH,
         "case_id": case.case_id,
         "source_content_sha256": case.source_hash,
@@ -1240,7 +1224,6 @@ def _dispositions(
         or payload.get("schema_version") != 1
         or payload.get("model") != model
         or payload.get("reasoning_effort") != reasoning_effort
-        or payload.get("eligibility_version") != ELIGIBILITY_VERSION
         or payload.get("eligibility_prompt_hash") != ELIGIBILITY_PROMPT_HASH
         or not isinstance(values, dict)
     ):
@@ -1263,7 +1246,6 @@ def _reason_review_payload(
         "schema_version": 1,
         "model": model,
         "reasoning_effort": reasoning_effort,
-        "eligibility_version": ELIGIBILITY_VERSION,
         "eligibility_prompt_hash": ELIGIBILITY_PROMPT_HASH,
         "instructions": (
             "Review each divergent reason against its posting and set disposition "
@@ -1299,10 +1281,8 @@ def _freeze_payload(
 ) -> dict[str, object]:
     return {
         "freeze_version": FREEZE_VERSION,
-        "gate_policy_version": GATE_POLICY_VERSION,
         "model": model,
         "reasoning_effort": reasoning_effort,
-        "eligibility_version": ELIGIBILITY_VERSION,
         "eligibility_prompt_hash": ELIGIBILITY_PROMPT_HASH,
         "replays": replays,
         "development_report_sha256": report_sha256,
@@ -1326,10 +1306,8 @@ def _require_freeze(
         payload.get(key) != value
         for key, value in {
             "freeze_version": FREEZE_VERSION,
-            "gate_policy_version": GATE_POLICY_VERSION,
             "model": model,
             "reasoning_effort": reasoning_effort,
-            "eligibility_version": ELIGIBILITY_VERSION,
             "eligibility_prompt_hash": ELIGIBILITY_PROMPT_HASH,
         }.items()
     ):
@@ -1358,9 +1336,7 @@ def _eligibility_report(
     primary_results = [r for r in results if r.case.prompt_example is None]
     primary = _scope_metrics(primary_results)
     lines = [
-        f"contract eligibility_version={ELIGIBILITY_VERSION} "
-        f"prompt_hash={ELIGIBILITY_PROMPT_HASH} gate_profile={profile} "
-        f"gate_policy={GATE_POLICY_VERSION}",
+        f"contract prompt_hash={ELIGIBILITY_PROMPT_HASH} gate_profile={profile}",
         *(
             [f"candidate model={model} reasoning_effort={reasoning_effort or 'none'}"]
             if model is not None

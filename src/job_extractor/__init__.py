@@ -22,10 +22,9 @@ from job_extractor.schema import (
     WorkMode,
 )
 from job_extractor.validate import UngroundedEvidenceError, validate
-from job_extractor.version import EXTRACTOR_VERSION, PROMPT_HASH, SYSTEM_PROMPT
+from job_extractor.version import PROMPT_HASH, SYSTEM_PROMPT
 
 __all__ = [
-    "EXTRACTOR_VERSION",
     "PROMPT_HASH",
     "SCHEMA_VERSION",
     "SYSTEM_PROMPT",

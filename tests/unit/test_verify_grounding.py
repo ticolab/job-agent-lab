@@ -23,11 +23,10 @@ def _load() -> ModuleType:
     return module
 
 
-def _database(*, one_shot: bool = True) -> sqlite3.Connection:
+def _database() -> sqlite3.Connection:
     connection = sqlite3.connect(":memory:")
-    conflicting = "conflicting_evidence_json TEXT," if one_shot else ""
     connection.executescript(
-        f"""
+        """
         CREATE TABLE job_contents (
             id INTEGER PRIMARY KEY,
             text TEXT NOT NULL
@@ -36,8 +35,8 @@ def _database(*, one_shot: bool = True) -> sqlite3.Connection:
             id INTEGER PRIMARY KEY,
             job_id INTEGER NOT NULL,
             content_id INTEGER NOT NULL,
-            {conflicting}
-            evidence_json TEXT NOT NULL
+            supporting_evidence_json TEXT NOT NULL,
+            conflicting_evidence_json TEXT NOT NULL
         );
         CREATE TABLE job_results (
             id INTEGER PRIMARY KEY,
@@ -57,20 +56,21 @@ def _database(*, one_shot: bool = True) -> sqlite3.Connection:
 def _decision(
     connection: sqlite3.Connection,
     supporting: object,
-    conflicting: object | None,
+    conflicting: object,
     *,
     raw: bool = False,
 ) -> None:
     connection.execute(
         "INSERT INTO job_decisions "
-        "(id, job_id, content_id, evidence_json, conflicting_evidence_json) "
+        "(id, job_id, content_id, supporting_evidence_json, "
+        "conflicting_evidence_json) "
         "VALUES (?, ?, ?, ?, ?)",
         (
             1,
             7,
             1,
             supporting if raw else json.dumps(supporting),
-            None if conflicting is None else json.dumps(conflicting),
+            json.dumps(conflicting),
         ),
     )
 
@@ -101,19 +101,6 @@ def test_verify_accepts_grounded_buckets_and_nested_result_evidence() -> None:
         ),
     )
     assert module.verify(connection) == []
-
-
-def test_verify_accepts_legacy_decisions_with_null_conflicts_and_old_schema() -> None:
-    module = _load()
-    connection = _database()
-    _decision(connection, ["Build Python APIs."], None)
-    assert module.verify(connection) == []
-    legacy = _database(one_shot=False)
-    legacy.execute(
-        "INSERT INTO job_decisions VALUES (?, ?, ?, ?)",
-        (1, 7, 1, json.dumps(["Mexico only"])),
-    )
-    assert [miss.path for miss in module.verify(legacy)] == ["$.supporting_evidence[0]"]
 
 
 def test_verify_reports_safe_misses_in_both_buckets_and_invalid_payload() -> None:
@@ -214,7 +201,7 @@ def test_pipeline_queries_execute_against_pipeline_shape() -> None:
             job_id INTEGER NOT NULL,
             decision TEXT NOT NULL,
             reason TEXT NOT NULL,
-            policy_version TEXT NOT NULL,
+            prompt_hash TEXT NOT NULL,
             is_current INTEGER NOT NULL,
             decided_at TEXT NOT NULL
         );
@@ -237,7 +224,7 @@ def test_pipeline_queries_execute_against_pipeline_shape() -> None:
             1,
             'unknown',
             'Location is not stated.',
-            'cr-2026.10.1',
+            'hash',
             1,
             '2026-10-23'
         );

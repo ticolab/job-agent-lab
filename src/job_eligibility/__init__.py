@@ -1,6 +1,12 @@
 """Pure one-shot eligibility leaf with no imports from other repository packages."""
 
-from job_eligibility.normalize import grounding_text, occurs_in
+from job_eligibility.normalize import (
+    contains_words,
+    locate,
+    occurs_in,
+    word_key,
+    words,
+)
 from job_eligibility.prompt import (
     INPUT_TEMPLATE,
     PROMPT_EXAMPLES,
@@ -24,15 +30,13 @@ from job_eligibility.validate import (
     UngroundedEvidenceError,
     collect_grounding_misses,
     is_missing_information,
-    normalize,
     structural_errors,
     validate,
 )
-from job_eligibility.version import ELIGIBILITY_PROMPT_HASH, ELIGIBILITY_VERSION
+from job_eligibility.version import ELIGIBILITY_PROMPT_HASH
 
 __all__ = [
     "ELIGIBILITY_PROMPT_HASH",
-    "ELIGIBILITY_VERSION",
     "INPUT_TEMPLATE",
     "MAX_EVIDENCE_CHARACTERS",
     "MAX_EVIDENCE_ITEMS",
@@ -50,10 +54,12 @@ __all__ = [
     "UngroundedEvidenceError",
     "build_messages",
     "collect_grounding_misses",
-    "grounding_text",
+    "contains_words",
     "is_missing_information",
-    "normalize",
+    "locate",
     "occurs_in",
     "structural_errors",
     "validate",
+    "word_key",
+    "words",
 ]
