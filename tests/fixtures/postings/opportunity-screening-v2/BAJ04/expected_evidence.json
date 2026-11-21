@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "BAJ04",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "development",
+  "source_content_sha256": "0aa7ed20135783136c8452a0b96172a4adc0dc3db26c15f60ecec7137ff8d6fe",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BAJ04-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "(SD01TH) Shopify Designer - LATAM 100% REMOTO",
+        "LATAM 100% REMOTO"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

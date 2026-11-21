@@ -227,6 +227,7 @@ async def run_pipeline(
             run_id=run_id,
             selection=selection,
             model=policy.model,
+            reasoning_effort=policy.reasoning_effort,
             started_at=now,
             stage=stage,
             trigger=trigger,

@@ -8,6 +8,6 @@ domain, never the other way around.
 
 This is the innermost ring of the dependency graph, and being a leaf is
 what lets the same types cross every boundary without dragging a browser
-or a database session along with them. See ``ARCHITECTURE.md`` for the
+or a database session along with them. See ``docs/ARCHITECTURE.md`` for the
 dependency rule; ``tests/unit/test_layering.py`` enforces it.
 """

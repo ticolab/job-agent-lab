@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "GOL02",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "development",
+  "source_content_sha256": "5884aa4ad78b1c7f02e1300800e8affa0d68cd04a27494d04993b3e67f4e5288",
+  "decision": "ineligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "GOL02-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Location: Hybrid – Mexicali, Mexico (3 days onsite, 2 days remote)",
+        "Hybrid – Mexicali, Mexico"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

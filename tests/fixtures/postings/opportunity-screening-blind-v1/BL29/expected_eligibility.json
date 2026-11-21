@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL29",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "localizada en San Antonio del Tejar, Alajuela, Costa Rica"
+  ],
+  "rationale": "Permanent position located in Alajuela, Costa Rica.",
+  "partition": "blind",
+  "source_content_sha256": "7b72be453a40adc6f01b62ffdc0436375827c20cbabdf8567d12cd20694b78e5",
+  "provenance": {
+    "company": "Cargill",
+    "title": "Técnico (a) en Refrigeración",
+    "source_url": "https://careers.cargill.com/en/job/alajuela/tecnico-a-en-refrigeracion-san-rafael-alajuela/23251/102572131328",
+    "captured_at_utc": "2026-11-21T15:48:56.938608+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

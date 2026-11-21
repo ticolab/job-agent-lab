@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "case_id": "RAI02",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "Remote (anywhere)"
+  ],
+  "rationale": "Role Remote (anywhere) includes Costa Rica, with separate board corroboration; legal hiring unverified.",
+  "partition": "development",
+  "source_content_sha256": "6983caf1c405db014ce20539c6a6846d07afab4333b042c72df6d6ef2523b9eb",
+  "provenance": {
+    "company": "Railway",
+    "title": "Senior Product Designer",
+    "source_url": "https://railway.com/careers/Product-designer",
+    "captured_at_utc": "2026-11-01T20:52:03.019341Z"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_accepted_unchanged",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "eligible",
+    "source_partition": "development"
+  }
+}

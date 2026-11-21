@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "BAJ03",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "development",
+  "source_content_sha256": "f65ce3b8c5ce93ebb73c781c3ddb295aa3763e127722870ba4bf9b6f82068b6b",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BAJ03-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Location: Remote, Latin America (Mexico and Colombia preferred)",
+        "Remote, Latin America"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

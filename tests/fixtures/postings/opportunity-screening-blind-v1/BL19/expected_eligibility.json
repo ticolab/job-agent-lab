@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL19",
+  "reviewed": true,
+  "decision": "unknown",
+  "must_cite": [
+    "Hybrid or on-site work model."
+  ],
+  "rationale": "Hybrid or on-site work model with no place stated.",
+  "partition": "blind",
+  "source_content_sha256": "24506178f446563e156ccfce9f03b1cef9045f6620bbd8386013b62c4095bd83",
+  "provenance": {
+    "company": "Boston Consulting Group",
+    "title": "(senior network engineer)",
+    "source_url": "https://careers.bcg.com/global/en/job/58289/Senior-Site-Reliability-Engineer",
+    "captured_at_utc": "2026-11-21T15:50:20.521974+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

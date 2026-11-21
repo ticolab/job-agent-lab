@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL47",
+  "reviewed": true,
+  "decision": "unknown",
+  "must_cite": [
+    "availability during 7:00 a.m. to 1:00 p.m. EST"
+  ],
+  "rationale": "Only an EST working-hours requirement; no location or arrangement.",
+  "partition": "blind",
+  "source_content_sha256": "683b87f9cdd2e9ef101672f5e1a7eb949e8e3fab7a6cefb32172d749ba59640a",
+  "provenance": {
+    "company": "Progress",
+    "title": "(EPMO business systems analyst)",
+    "source_url": "https://www.progress.com/company/careers/open-positions/business-systems-project-manager-opmPAfwU",
+    "captured_at_utc": "2026-11-21T15:49:32.572198+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

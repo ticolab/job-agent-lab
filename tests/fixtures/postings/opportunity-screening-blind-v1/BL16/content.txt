@@ -1,0 +1,60 @@
+Senior Sales Engineer - Finance and Strategic
+Zscaler (NASDAQ: ZS) accelerates digital transformation so customers can be more agile, efficient, resilient, and secure. The Zscaler Zero Trust Exchange platform protects thousands of customers from cyberattacks and data loss by securely connecting users, devices, and applications in any location. Distributed across 200+ public data centers globally and thousands of private sites at the edge, the SASE-based Zero Trust Exchange is the world’s largest in-line cloud security platform.
+We believe the future of work is Human + AI and are building an AI-native enterprise where human potential is amplified by machine intelligence to solve the world’s hardest security challenges. Driven by deep customer obsession, we are committed to the mission, outcome, and to each other. We bring these commitments to life through three core behaviors: ownership and collaboration, trust through outcomes and impact, and a challenge culture with ongoing feedback. Ready to make an impact at the company pioneering security transformation in the AI era? Join us at Zscaler.
+Role
+We are looking for an experienced Senior Sales Engineer to join our Finance & strategic SE team. This is a hybrid position based in Japan, reporting to the Manager, Sales Engineering in Japan within the Sales and Go-to-Market department You will join a global group of professionals dedicated to delighting customers and driving a secure, cloud-enabled digital future. As a key member of the team, you will help cement our position as the world leader in cloud security through technical excellence and trusted partnerships.
+What you’ll do (Role Expectations)
+- •
+Provide technical expertise and strategic advice to enterprise customers
+- •
+Take total ownership of the technical sale and associated processes
+- •
+Independently deliver high-impact sales pitches, technical demonstrations, and whiteboard presentations
+Who You Are (Success Profile)
+- •
+You thrive in ambiguity. You're comfortable building the path as you walk it. You thrive in a dynamic environment, seeing ambiguity not as a hindrance, but as the raw material to build something meaningful.
+- •
+You act like an owner. Your passion for the mission fuels your bias for action. You operate with integrity because you genuinely care about the outcome. True ownership involves leveraging dynamic range: the ability to navigate seamlessly between high-level strategy and hands-on execution.
+- •
+You are a problem-solver. You love running towards the challenges because you are laser-focused on finding the solution, knowing that solving the hard problems delivers the biggest impact.
+- •
+You are a high-trust collaborator. You are ambitious for the team, not just yourself. You embrace our challenge culture by giving and receiving ongoing feedback—knowing that candor delivered with clarity and respect is the truest form of teamwork and the fastest way to earn trust.
+- •
+You are a learner. You have a true growth mindset and are obsessed with your own development, actively seeking feedback to become a better partner and a stronger teammate. You love what you do and you do it with purpose.
+What We’re Looking for (Minimum Qualifications)
+- •
+BSCS or equivalent with extensive experience as a Sales Engineer or systems integrator
+- •
+7+ years of experience in Pre-Sales roles, with at least 3 years focused on selling security or networking solutions in direct or high-touch sales environments
+- •
+Technical proficiency in HTTP and web-related technologies
+- •
+High fluency in written and spoken Japanese
+- • Foundational understanding of AI/ML technologies and experience leveraging, securing, or positioning AI-driven solutions to optimize outcomes within your functional domain
+What Will Make You Stand Out (Preferred Qualifications)
+- •
+Experience working with routing and switching products, including complex troubleshooting
+- •
+Solid understanding of SaaS-based technologies and network security frameworks
+- •
+Hands-on experience with systems installation, configuration, and administration of macOS, UNIX/Linux, and Windows-based systems
+- • Demonstrate strong AI fluency by leveraging coding assistants, LLMs, and Generative AI tools to accelerate troubleshooting, solution design, automation, and customer problem-solving, while applying sound technical judgment to validate outputs.
+#LI-KM10
+#LI-Hybrid
+At Zscaler, we are committed to building a team that reflects the communities we serve and the customers we work with. We foster an inclusive environment that values all backgrounds and perspectives, emphasizing collaboration and belonging. Join us in our mission to make doing business seamless and secure.
+Our Benefits program is one of the most important ways we support our employees. Zscaler proudly offers comprehensive and inclusive benefits to meet the diverse needs of our employees and their families throughout their life stages, including:
+- • Various health plans
+- • Time off plans for vacation and sick time
+- • Parental leave options
+- • Retirement options
+- • Education reimbursement
+- • In-office perks, and more!
+Learn more about Zscaler's hybrid working model and benefits here.
+By applying for this role, you adhere to applicable laws, regulations, and Zscaler policies, including those related to security and privacy standards and guidelines.
+Zscaler is committed to providing equal employment opportunities to all individuals. We strive to create a workplace where employees are treated with respect and have the chance to succeed. All qualified applicants will be considered for employment without regard to race, color, religion, sex (including pregnancy or related medical conditions), age, national origin, sexual orientation, gender identity or expression, genetic information, disability status, protected veteran status, or any other characteristic protected by federal, state, or local laws. See more information by clicking on the Know Your Rights: Workplace Discrimination is Illegal link.
+Pay Transparency
+Zscaler complies with all applicable federal, state, and local pay transparency rules.
+Zscaler is committed to providing reasonable support (called accommodations or adjustments) in our recruiting processes for candidates who are differently abled, have long term conditions, mental health conditions or sincerely held religious beliefs, or who are neurodivergent or require pregnancy-related support.
+Apply for this job
+*
+indicates a required field

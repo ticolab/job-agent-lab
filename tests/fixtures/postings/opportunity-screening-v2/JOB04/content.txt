@@ -1,0 +1,21 @@
+Configuration Specialist
+
+We are looking for a detail-oriented and technically minded Configuration Specialist to support the setup, maintenance, testing, and troubleshooting of a software platform used by U.S.-based clients. In this role, you will translate business and client requirements into accurate system configurations, working with modules, forms, permissions, workflows, and business rules. You will also investigate system issues, determine whether they are related to configuration, data, user behavior, or product functionality, and collaborate with technical teams when escalation is required.
+What You’ll Do:
+Configure and maintain system modules, forms, permissions, workflows, and business rules.
+Translate client and business requirements into effective system configurations.
+Troubleshoot configuration and software-related issues and identify root causes.
+Test and validate configurations to ensure they meet requirements and quality standards.
+Document configuration changes, troubleshooting steps, and resolutions.
+Collaborate with Product, Engineering, Operations, Support, and other internal teams.
+Communicate technical concepts and solutions clearly to both technical and non-technical stakeholders.
+Manage multiple priorities while maintaining a high level of accuracy and attention to detail.
+What We’re Looking For:
+Experience working with software, SaaS platforms, application support, system configuration, implementation, or technical support.
+Strong troubleshooting, analytical, and problem-solving skills.
+Ability to understand workflows, system logic, and business requirements.
+Excellent attention to detail and commitment to quality.
+Strong documentation and communication skills.
+Ability to work independently and collaborate effectively across teams.
+Professional English communication skills.
+Experience with tools or concepts such as SQL, APIs, JSON, CRM platforms, Jira, or workflow management systems is a plus.

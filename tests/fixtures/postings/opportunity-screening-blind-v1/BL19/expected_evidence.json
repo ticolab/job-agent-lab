@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL19",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "24506178f446563e156ccfce9f03b1cef9045f6620bbd8386013b62c4095bd83",
+  "decision": "unknown",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL19-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Hybrid or on-site work model."
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

@@ -26,7 +26,11 @@ import job_pipeline.persistence.runs_repo as runs_repo
 from job_discovery.domain.company import Company
 from job_discovery.persistence import models as discovery_models
 from job_discovery.persistence.engine import create_engine, create_session_factory
-from job_eligibility import EligibilityResponse
+from job_eligibility import (
+    ELIGIBILITY_PROMPT_HASH,
+    ELIGIBILITY_VERSION,
+    EligibilityResponse,
+)
 from job_extractor import ExtractionResponse
 from job_pipeline.content import ladder
 from job_pipeline.content.fetch import AddressResolver, FetchResult, fetch
@@ -57,21 +61,14 @@ class IneligibleCaller:
     ) -> Completion[T]:
         self.calls += 1
         assert schema is EligibilityResponse
-        raw = """{
-          "decision": "ineligible",
-          "reason": "The role is based in Canada.",
-          "evidence": ["Canada"],
-          "signals": {
-            "locations_named": ["Canada"],
-            "locations_named_evidence": ["Canada"],
-            "remote_scope": "none_stated",
-            "remote_scope_evidence": [],
-            "exhaustive_country_list": null,
-            "exhaustive_country_list_evidence": [],
-            "work_authorization_required_in": [],
-            "work_authorization_evidence": []
-          }
-        }"""
+        raw = json.dumps(
+            {
+                "decision": "ineligible",
+                "reason": "The role requires on-site work in Canada.",
+                "supporting_evidence": ["Canada"],
+                "conflicting_evidence": [],
+            }
+        )
         return Completion(
             parsed=schema.model_validate_json(raw),
             raw_json=raw,
@@ -95,18 +92,9 @@ def _eligible_json() -> str:
     return json.dumps(
         {
             "decision": "eligible",
-            "reason": "The role names Costa Rica.",
-            "evidence": ["Costa Rica"],
-            "signals": {
-                "locations_named": ["Costa Rica"],
-                "locations_named_evidence": ["Costa Rica"],
-                "remote_scope": "none_stated",
-                "remote_scope_evidence": [],
-                "exhaustive_country_list": None,
-                "exhaustive_country_list_evidence": [],
-                "work_authorization_required_in": [],
-                "work_authorization_evidence": [],
-            },
+            "reason": "The role is located in Costa Rica.",
+            "supporting_evidence": ["Costa Rica"],
+            "conflicting_evidence": [],
         }
     )
 
@@ -635,13 +623,329 @@ def test_ineligible_stops_before_extraction_and_accounts_tokens(tmp_path: Path) 
     )
 
 
+def _eligibility_deps(
+    factory: async_sessionmaker[AsyncSession],
+    client: httpx.AsyncClient,
+    caller: object,
+    *,
+    model: str = "test",
+) -> WorkerDeps:
+    return WorkerDeps(
+        session_factory=factory,
+        stage="eligibility",
+        http_client=client,
+        browser=None,
+        caller=cast(EligibleCaller, caller),
+        policy=PipelinePolicy(model=model, retry_backoff=timedelta(0)),
+        run_id="run-1",
+        trigger="scheduled",
+        reason=None,
+        companies={COMPANY.slug: COMPANY},
+    )
+
+
+async def _due_for_eligibility_again(
+    factory: async_sessionmaker[AsyncSession], run_id: str
+) -> None:
+    """Make a decided job due at eligibility again, as a reaped retry would be."""
+    async with factory() as session, session.begin():
+        await session.execute(
+            update(models.Job)
+            .where(models.Job.id == 1)
+            .values(
+                status="retry",
+                next_phase="eligibility",
+                next_attempt_after=datetime.now(UTC) - timedelta(days=1),
+                attempt_count=1,
+            )
+        )
+    async with factory() as session:
+        await runs_repo.start_run(
+            session,
+            run_id=run_id,
+            stage="eligibility",
+            trigger="scheduled",
+            selection=COMPANY.slug,
+            model="test",
+            started_at=datetime.now(UTC),
+        )
+
+
+def test_eligibility_decision_persists_contract_identity_evidence_and_tokens(
+    tmp_path: Path,
+) -> None:
+    class ConflictCaller(EligibleCaller):
+        async def complete(
+            self,
+            messages: Sequence[Mapping[str, str]],
+            schema: type[T],
+        ) -> Completion[T]:
+            completion = await super().complete(messages, schema)
+            raw = json.dumps(
+                {
+                    "decision": "eligible",
+                    "reason": "The role is located in Costa Rica.",
+                    "supporting_evidence": ["Software Engineer in Costa Rica."],
+                    "conflicting_evidence": ["Python is required."],
+                }
+            )
+            return replace(
+                completion, parsed=schema.model_validate_json(raw), raw_json=raw
+            )
+
+    async def scenario() -> None:
+        factory = await _database(tmp_path / "decision-audit.db")
+        caller = ConflictCaller()
+        with respx.mock:
+            respx.get("https://acme.example/jobs/1").mock(
+                return_value=httpx.Response(200, text=POSTING_HTML)
+            )
+            async with httpx.AsyncClient() as client:
+                outcome = await process_job(
+                    1,
+                    deps=_eligibility_deps(
+                        factory, client, caller, model="configured-model"
+                    ),
+                )
+        assert outcome.status == "ready_for_extraction"
+        assert outcome.decision == "eligible"
+        assert caller.eligibility_calls == 1
+        async with factory() as session:
+            decision = await decisions_repo.current(session, 1)
+            attempt = (await attempts_repo.history(session, 1))[-1]
+        assert decision is not None
+        assert decision.is_current_contract
+        assert decision.policy_version == attempt.policy_version == ELIGIBILITY_VERSION
+        assert (
+            decision.prompt_hash
+            == attempt.eligibility_prompt_hash
+            == ELIGIBILITY_PROMPT_HASH
+        )
+        assert decision.reason == "The role is located in Costa Rica."
+        assert decision.evidence_json == '["Software Engineer in Costa Rica."]'
+        assert decision.conflicting_evidence_json == '["Python is required."]'
+        assert decision.attempt_id == attempt.id
+        assert attempt.model == "configured-model"
+        assert attempt.outcome == "ready_for_extraction"
+        assert (attempt.prompt_tokens, attempt.completion_tokens) == (2, 3)
+
+    run_async(scenario())
+
+
+def test_compatible_decision_reuse_skips_model_and_semaphore(tmp_path: Path) -> None:
+    async def scenario() -> None:
+        factory = await _database(tmp_path / "decision-reuse.db")
+        caller = EligibleCaller()
+        with respx.mock:
+            respx.get("https://acme.example/jobs/1").mock(
+                return_value=httpx.Response(200, text=POSTING_HTML)
+            )
+            async with httpx.AsyncClient() as client:
+                deps = _eligibility_deps(factory, client, caller)
+                assert (
+                    await process_job(1, deps=deps)
+                ).status == "ready_for_extraction"
+                await _due_for_eligibility_again(factory, "run-2")
+                forbidden = asyncio.Semaphore(0)
+                reused = await process_job(
+                    1,
+                    deps=replace(
+                        deps,
+                        caller=HangingCaller(),
+                        model_semaphore=forbidden,
+                        run_id="run-2",
+                    ),
+                )
+        assert reused.status == "ready_for_extraction"
+        assert reused.decision == "eligible"
+        assert caller.eligibility_calls == 1
+        assert forbidden.locked()
+        async with factory() as session:
+            decisions = await decisions_repo.history(session, 1)
+            attempts = await attempts_repo.history(session, 1)
+            job = await jobs_repo.get(session, 1)
+        assert len(decisions) == 1 and decisions[0].is_current
+        assert decisions[0].attempt_id == attempts[0].id
+        assert attempts[-1].outcome == "ready_for_extraction"
+        assert attempts[-1].prompt_tokens is None
+        assert attempts[-1].completion_tokens is None
+        assert job is not None and job.attempt_count == 0
+
+    run_async(scenario())
+
+
+@pytest.mark.parametrize(
+    "stale",
+    [
+        {"prompt_hash": "old-hash"},
+        {"policy_version": "opportunity-oneshot-v0"},
+        {"policy_version": "cr-2026.10.1", "prompt_hash": None},
+    ],
+)
+def test_incompatible_decision_contract_forces_model_call(
+    tmp_path: Path, stale: dict[str, object]
+) -> None:
+    async def scenario() -> None:
+        factory = await _database(tmp_path / "decision-incompatible.db")
+        caller = EligibleCaller()
+        with respx.mock:
+            respx.get("https://acme.example/jobs/1").mock(
+                return_value=httpx.Response(200, text=POSTING_HTML)
+            )
+            async with httpx.AsyncClient() as client:
+                deps = _eligibility_deps(factory, client, caller)
+                assert (
+                    await process_job(1, deps=deps)
+                ).status == "ready_for_extraction"
+                values = dict(stale)
+                if values.get("prompt_hash", "") is None:
+                    values["conflicting_evidence_json"] = None
+                async with factory() as session, session.begin():
+                    await session.execute(
+                        update(models.JobDecision)
+                        .where(models.JobDecision.job_id == 1)
+                        .values(**values)
+                    )
+                await _due_for_eligibility_again(factory, "run-2")
+                second = await process_job(1, deps=replace(deps, run_id="run-2"))
+        assert second.status == "ready_for_extraction"
+        assert caller.eligibility_calls == 2
+        async with factory() as session:
+            history = await decisions_repo.history(session, 1)
+        assert len(history) == 2
+        assert not history[0].is_current and not history[0].is_current_contract
+        assert history[-1].is_current and history[-1].is_current_contract
+
+    run_async(scenario())
+
+
+@pytest.mark.parametrize(
+    ("payload", "category", "message"),
+    [
+        (
+            {
+                "decision": "eligible",
+                "reason": "The role is located in Costa Rica.",
+                "supporting_evidence": ["fabricated geography"],
+                "conflicting_evidence": [],
+            },
+            "ungrounded_evidence",
+            "ungrounded evidence",
+        ),
+        (
+            {
+                "decision": "eligible",
+                "reason": "The role is located in Costa Rica.",
+                "supporting_evidence": ["Costa Rica"],
+                "conflicting_evidence": ["Costa Rica"],
+            },
+            "validation_failed",
+            "$.conflicting_evidence[0] appears in both evidence buckets",
+        ),
+        (
+            {
+                "decision": "eligible",
+                "reason": "No geography.",
+                "supporting_evidence": [],
+                "conflicting_evidence": [],
+            },
+            "validation_failed",
+            "eligible requires supporting evidence; "
+            "empty evidence requires the missing-information reason",
+        ),
+    ],
+)
+def test_invalid_verdicts_retry_without_a_decision(
+    tmp_path: Path, payload: dict[str, object], category: str, message: str
+) -> None:
+    class InvalidCaller(EligibleCaller):
+        async def complete(
+            self,
+            messages: Sequence[Mapping[str, str]],
+            schema: type[T],
+        ) -> Completion[T]:
+            completion = await super().complete(messages, schema)
+            raw = json.dumps(payload)
+            return replace(
+                completion, parsed=schema.model_validate_json(raw), raw_json=raw
+            )
+
+    async def scenario() -> None:
+        factory = await _database(tmp_path / "invalid-verdict.db")
+        with respx.mock:
+            respx.get("https://acme.example/jobs/1").mock(
+                return_value=httpx.Response(200, text=POSTING_HTML)
+            )
+            async with httpx.AsyncClient() as client:
+                outcome = await process_job(
+                    1, deps=_eligibility_deps(factory, client, InvalidCaller())
+                )
+        assert outcome.status == "retry"
+        assert outcome.error is not None
+        assert outcome.error.category == category
+        assert outcome.error.message == message
+        async with factory() as session:
+            assert await decisions_repo.current(session, 1) is None
+            attempt = (await attempts_repo.history(session, 1))[-1]
+        assert attempt.outcome == "retry"
+        assert (attempt.prompt_tokens, attempt.completion_tokens) == (2, 3)
+
+    run_async(scenario())
+
+
+def test_missing_information_unknown_persists_empty_evidence(tmp_path: Path) -> None:
+    from job_eligibility import MISSING_INFORMATION_REASON
+
+    class MissingCaller(EligibleCaller):
+        async def complete(
+            self,
+            messages: Sequence[Mapping[str, str]],
+            schema: type[T],
+        ) -> Completion[T]:
+            completion = await super().complete(messages, schema)
+            raw = json.dumps(
+                {
+                    "decision": "unknown",
+                    "reason": MISSING_INFORMATION_REASON,
+                    "supporting_evidence": [],
+                    "conflicting_evidence": [],
+                }
+            )
+            return replace(
+                completion, parsed=schema.model_validate_json(raw), raw_json=raw
+            )
+
+    async def scenario() -> None:
+        factory = await _database(tmp_path / "missing-information.db")
+        with respx.mock:
+            respx.get("https://acme.example/jobs/1").mock(
+                return_value=httpx.Response(200, text=POSTING_HTML)
+            )
+            async with httpx.AsyncClient() as client:
+                outcome = await process_job(
+                    1, deps=_eligibility_deps(factory, client, MissingCaller())
+                )
+        assert outcome.status == "unknown"
+        async with factory() as session:
+            decision = await decisions_repo.current(session, 1)
+            job = await jobs_repo.get(session, 1)
+        assert decision is not None and decision.decision == "unknown"
+        assert decision.reason == MISSING_INFORMATION_REASON
+        assert decision.evidence_json == "[]"
+        assert decision.conflicting_evidence_json == "[]"
+        assert job is not None and job.status == "unknown"
+        assert job.next_phase == "eligibility"
+
+    run_async(scenario())
+
+
 def test_hand_off_checkpoint_error_is_terminal(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     async def reject_hand_off(*args: object, **kwargs: object) -> int | None:
         raise decisions_repo.CheckpointError("eligible checkpoint disappeared")
 
-    monkeypatch.setattr(decisions_repo, "hand_off_to_extraction", reject_hand_off)
+    monkeypatch.setattr(decisions_repo, "finalize_eligibility", reject_hand_off)
 
     async def scenario() -> None:
         factory = await _database(tmp_path / "handoff-error.db")
@@ -982,7 +1286,15 @@ def test_queue_wait_is_not_charged_against_the_job_timeout(
 
 
 @pytest.mark.parametrize(
-    "missing", ["content", "decision", "ineligible", "old_content"]
+    "missing",
+    [
+        "content",
+        "decision",
+        "ineligible",
+        "old_content",
+        "legacy_contract",
+        "stale_hash",
+    ],
 )
 def test_missing_extraction_checkpoint_is_terminal_without_model_calls(
     tmp_path: Path,
@@ -1002,6 +1314,19 @@ def test_missing_extraction_checkpoint_is_terminal_without_model_calls(
                     update(models.JobDecision).values(
                         is_current=missing != "decision", decision="ineligible"
                     )
+                )
+            if missing == "legacy_contract":
+                # A ready job admitted by the pre-one-shot verdict contract.
+                await session.execute(
+                    update(models.JobDecision).values(
+                        policy_version="cr-2026.10.1",
+                        prompt_hash=None,
+                        conflicting_evidence_json=None,
+                    )
+                )
+            if missing == "stale_hash":
+                await session.execute(
+                    update(models.JobDecision).values(prompt_hash="old-hash")
                 )
             if missing == "old_content":
                 old = await session.get(models.JobContent, job.current_content_id)
@@ -1048,6 +1373,14 @@ def test_missing_extraction_checkpoint_is_terminal_without_model_calls(
         assert current_job is not None and current_job.attempt_count == 1
         assert attempts[-1].error_category == "missing_checkpoint"
         assert attempts[-1].finished_at is not None
+        if missing in {"legacy_contract", "stale_hash"}:
+            assert outcome.error.message.startswith(
+                "eligible decision predates the current eligibility contract"
+            )
+            # The extraction attempt audits the contract that admitted the job.
+            assert attempts[-1].eligibility_prompt_hash == (
+                None if missing == "legacy_contract" else "old-hash"
+            )
 
     run_async(scenario())
 

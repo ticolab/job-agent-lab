@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "case_id": "BL11",
+  "reviewed": true,
+  "decision": "unknown",
+  "must_cite": [
+    "North Carolina Region"
+  ],
+  "rationale": "The only geography is the label 'North Carolina Region' with no restricting wording; a foreign place in a label alone gives unknown.",
+  "partition": "blind",
+  "source_content_sha256": "ce484edebd159ffcc8b6122191ede7ca91e53c13f7eb43c2bd07ee931b118212",
+  "provenance": {
+    "company": "AireSpring",
+    "title": "Channel Manager",
+    "source_url": "https://jobs.smartrecruiters.com/AireSpring1/744000160308359--channel-manager-",
+    "captured_at_utc": "2026-11-21T15:48:48.906000+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call.",
+    "post_run_correction": "2026-11-21: evidence form corrected after the blind run by operator decision; the posting does contain this line, so the missing-information form was wrong. Decision unchanged."
+  }
+}

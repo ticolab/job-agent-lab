@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL02",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "Based in Costa Rica"
+  ],
+  "rationale": "Role is based in Costa Rica.",
+  "partition": "blind",
+  "source_content_sha256": "83b0a012f203b8f25a16b1eb05cb60081af0ed87e59cb0a943ba2107673375d1",
+  "provenance": {
+    "company": "Boston Consulting Group",
+    "title": "(Talent Acquisition operations lead)",
+    "source_url": "https://careers.bcg.com/global/en/job/60329/Talent-Acquisition-Operations-Manager-Global-Businesses-Functions",
+    "captured_at_utc": "2026-11-21T15:50:21.610692+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

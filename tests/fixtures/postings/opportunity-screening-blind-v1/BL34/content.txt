@@ -1,0 +1,48 @@
+Principal AI Security Specialist, UK&I
+Zscaler (NASDAQ: ZS) accelerates digital transformation so customers can be more agile, efficient, resilient, and secure. The Zscaler Zero Trust Exchange platform protects thousands of customers from cyberattacks and data loss by securely connecting users, devices, and applications in any location. Distributed across 200+ public data centers globally and thousands of private sites at the edge, the SASE-based Zero Trust Exchange is the world’s largest in-line cloud security platform.
+We believe the future of work is Human + AI and are building an AI-native enterprise where human potential is amplified by machine intelligence to solve the world’s hardest security challenges. Driven by deep customer obsession, we are committed to the mission, outcome, and to each other. We bring these commitments to life through three core behaviors: ownership and collaboration, trust through outcomes and impact, and a challenge culture with ongoing feedback. Ready to make an impact at the company pioneering security transformation in the AI era? Join us at Zscaler.
+About the Role
+The AI revolution is here, and enterprises are racing to adopt GenAI - but they cannot deploy what they cannot secure. Zscaler is seeking an experienced Principal AI Security Specialist to bridge the gap between cutting-edge AI innovation and robust enterprise security.
+In this highly strategic, field-facing role, you will combine the elite consultative strengths of a Solutions Engineer with deep expertise in LLMs, RAG architectures, and data protection. As our premier technical authority, you will partner with Fortune 500 executives and architects, serving as a trusted advisor to help them confidently unlock the power of AI without compromising their data or infrastructure. If you are a builder, an educator, and a master storyteller who thrives in a fast-evolving market, this is your chance to lead the industry's most critical conversation.
+What You’ll Do
+- • Architect the AI Technical Strategy: Partner with enterprise account teams to own and execute the technical sales strategy, driving complex, high-value AI security opportunities from discovery to close.
+- • Deliver Compelling, High-Impact Demos & POVs: Configure and present tailored, outcome-driven demonstrations of Zscaler’s AI security platform that resonate with both deep-tech practitioners and C-level executives. When needed, take customers through successful demos and POVs to validate Zscaler’s ability to securely enable enterprise AI.
+- • Serve as a Subject Matter Expert: Act as the field authority on modern AI patterns (such as RAG, agents, and prompt workflows), advising clients on how to prevent sensitive data exposure and unsanctioned AI usage.
+- • Scale the Field Motion: Collaborate with Product and Engineering to inject real-world customer feedback into the product roadmap, while building reusable demo assets and enablement playbooks to upscale our global sales force.
+- • Enable Those Around You: Develop reusable demos, technical assets, competitive positioning, and enablement content to help scale Zscaler’s AI field motion while sharing best practices and training with enterprise account teams
+Who You Are (Success Profile)
+- • You thrive in ambiguity. You're comfortable building the path as you walk it. You thrive in a dynamic environment, seeing ambiguity not as a hindrance, but as the raw material to build something meaningful.
+- • You act like an owner. Your passion for the mission fuels your bias for action. You operate with integrity because you genuinely care about the outcome. You adapt to what’s needed, navigating seamlessly between high-level strategy and hands-on execution.
+- • You are a high-trust collaborator. You are ambitious for the team, not just yourself. You embrace our challenge culture by giving and receiving ongoing feedback—knowing that candor delivered with clarity and respect is the truest form of teamwork and the fastest way to earn trust.
+- • You are customer-obsessed. You build deep empathy for the customer—both internal and external—and anchor your decisions in solving their real-world problems. You champion their needs from start to finish, knowing their success is our success.
+- • You are driven by innovation. You have a deep curiosity for how things work and are energized by solving complex technical challenges. You believe in the power of technology to accelerate transformation and are always looking for a better, more secure, and scalable way.
+What We’re Looking For
+- • Deep Fluency in AI/GenAI: Strong foundational knowledge of Large Language Models (LLMs), retrieval-augmented generation (RAG), MCP (Model Context Protocol) orchestration patterns, and the inherent security risks associated with them.
+- • 10+ Years of Solutions Engineering Mastery: A proven track record in a customer-facing technical role (Sales Engineering, Solutions Architecture, or Technical Advisory) navigating complex, enterprise-level sales cycles.
+- • Enterprise Security Foundations: Solid grasp of cybersecurity principles, including Zero Trust architecture, data loss prevention (DLP), cloud-native security platforms, and API integrations.
+- • Elite Executive Communication: Exceptional presentation and storytelling skills, with a demonstrated ability to seamlessly translate complex AI architectures into tangible business value and security outcomes.
+- • Collaborate and Co-elevate: Successfully work cross-functionally with Sales, Solutions Engineering, Product, Engineering, Marketing, and other go-to-market teams in a hyper-growth, rapidly evolving market.
+Preferred Qualifications
+- • Demonstrate strong AI fluency by leveraging coding assistants, LLMs, and Generative AI tools to accelerate troubleshooting, solution design, automation, and customer problem-solving, while applying sound technical judgment to validate outputs.
+- • Hands-on AI Prototyping: Interacting with LLM APIs, scripting, creating agentic automation routines, and building lightweight AI applications.
+- • Advanced AI Risk Expertise: Direct experience helping enterprises deploy production AI technologies while navigating data leakage, model governance, compliance frameworks, and shadow AI usage.
+- • Scale & Enablement Focus: A history of creating high-impact field assets, technical workshops, and competitive positioning content that helps broader go-to-market teams win.
+#LI-MM8
+#LI-REMOTE
+At Zscaler, we are committed to building a team that reflects the communities we serve and the customers we work with. We foster an inclusive environment that values all backgrounds and perspectives, emphasizing collaboration and belonging. Join us in our mission to make doing business seamless and secure.
+Our Benefits program is one of the most important ways we support our employees. Zscaler proudly offers comprehensive and inclusive benefits to meet the diverse needs of our employees and their families throughout their life stages, including:
+- • Various health plans
+- • Time off plans for vacation and sick time
+- • Parental leave options
+- • Retirement options
+- • Education reimbursement
+- • In-office perks, and more!
+Learn more about Zscaler's hybrid working model and benefits here.
+By applying for this role, you adhere to applicable laws, regulations, and Zscaler policies, including those related to security and privacy standards and guidelines.
+Zscaler is committed to providing equal employment opportunities to all individuals. We strive to create a workplace where employees are treated with respect and have the chance to succeed. All qualified applicants will be considered for employment without regard to race, color, religion, sex (including pregnancy or related medical conditions), age, national origin, sexual orientation, gender identity or expression, genetic information, disability status, protected veteran status, or any other characteristic protected by federal, state, or local laws. See more information by clicking on the Know Your Rights: Workplace Discrimination is Illegal link.
+Pay Transparency
+Zscaler complies with all applicable federal, state, and local pay transparency rules.
+Zscaler is committed to providing reasonable support (called accommodations or adjustments) in our recruiting processes for candidates who are differently abled, have long term conditions, mental health conditions or sincerely held religious beliefs, or who are neurodivergent or require pregnancy-related support.
+Apply for this job
+*
+indicates a required field

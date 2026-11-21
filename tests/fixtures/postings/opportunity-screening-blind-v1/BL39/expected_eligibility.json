@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL39",
+  "reviewed": true,
+  "decision": "unknown",
+  "must_cite": [
+    "Cologne, Germany"
+  ],
+  "rationale": "Cologne, Germany only in the title beside 'Remote'; salary note is context.",
+  "partition": "blind",
+  "source_content_sha256": "0e341a294d17831f79c2a1f7436e978e5ba63773af92a14972fec3d2f1034995",
+  "provenance": {
+    "company": "Speechify",
+    "title": "Team Lead, Android Core Product - Cologne, Germany",
+    "source_url": "https://job-boards.greenhouse.io/speechify/jobs/6203357004",
+    "captured_at_utc": "2026-11-21T15:56:22.640375+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

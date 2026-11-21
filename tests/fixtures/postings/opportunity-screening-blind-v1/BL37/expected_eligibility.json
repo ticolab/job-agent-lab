@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL37",
+  "reviewed": true,
+  "decision": "unknown",
+  "must_cite": [
+    "Senior Data Engineer"
+  ],
+  "rationale": "No role location, work arrangement, residence, or authorization stated.",
+  "partition": "blind",
+  "source_content_sha256": "2aba01cbbcf41a297b6488ed443809cd1e91e807f159c51598dc667cb2e2ef6c",
+  "provenance": {
+    "company": "Athenaworks",
+    "title": "Senior Data Engineer",
+    "source_url": "https://recruiterflow.com/db_84d9b0015205ce7ab8380a53a0ac4024/jobs/542",
+    "captured_at_utc": "2026-11-21T15:48:52.345373+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

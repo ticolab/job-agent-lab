@@ -1,0 +1,42 @@
+Company Website
+Product Manager, Self Service Enablement
+Bogotá, Colombia
+Apply for Position
+Or refer someone
+Job Openings  Product Manager, Self Service Enablement
+About the job Product Manager, Self Service Enablement
+Job Title: Product Manager, Self-Service Enablement
+
+Location: Remote – Latin America
+Type of Contract: Full-Time | Remote | Contractor
+Salary Range: Market Rates
+Language Requirements: English proficiency required
+
+Our client is seeking a skilled Product Manager with proven B2B SaaS experience and a track record of launching successful self-service product experiences. You will play a key role in transforming their App Builder platform into a self-service product that customers can discover, purchase, build with, and operate independently. Your work will directly impact customer adoption, time to value, product usability, and the platform’s readiness for general availability.
+
+Key Responsibilities
+Own the end-to-end self-service enablement strategy, including onboarding journeys, navigation, in-product guidance, and support experiences that help customers build and launch applications independently.
+Map user journeys across business builders, tenant administrators, executive sponsors, and enterprise architects to identify adoption barriers and prioritize product improvements.
+Translate internal knowledge into reusable templates, pattern guides, validation rules, safe defaults, and actionable in-product guidance.
+Partner with engineering and design to deliver intuitive navigation, onboarding flows, error prevention, usage dashboards, cost estimates, and application health indicators.
+Define and monitor product success metrics, including activation, time to first application, user drop-off, error rates, support contacts, and self-service conversion; use analytics and experiments to drive improvements.
+Collaborate with Operations, Customer Success, Finance, Legal, and program leadership to develop predictable usage limits, support processes, escalation paths, and self-service purchasing and plan management experiences.
+Lead self-service readiness assessments throughout phased beta rollouts, incorporating customer feedback and reporting progress toward general availability, including the goal of enabling 1,000 builders and reducing time to first application to under one hour for templated use cases.
+Must-Have Qualifications
+3+ years of product management experience in B2B SaaS, including ownership of at least one self-service or product-led experience successfully launched with measurable adoption results.
+Demonstrated success improving product metrics such as activation rates, time to value, self-service conversion, or support contacts per user.
+Strong UX sensibility and experience collaborating with designers on onboarding flows, navigation, empty states, error handling, dashboards, and usability testing.
+Working knowledge of platform concepts such as multi-tenancy, quotas, rate limits, permissions, and usage metering to make informed product trade-offs.
+Strong data fluency, including defining event instrumentation, interpreting funnel and cohort analyses, and using product analytics to guide decisions.
+Excellent written communication skills, with the ability to explain product limitations, errors, and technical issues clearly while maintaining customer trust.
+Ability to manage phased product rollouts with real customers, limited resources, evolving requirements, and competing priorities.
+Preferred Qualifications
+Experience with low-code or no-code application builders, workflow automation platforms, or developer tools.
+Experience launching AI-powered features, including considerations around model costs, output quality, and user trust.
+Familiarity with HRM/HCM, ITSM/ESM, ERP, manufacturing, or supply chain systems and their data sensitivity requirements.
+Experience with usage-based or tiered pricing, self-service checkout, and subscription management.
+Experience managing beta or early-access programs, including participant communications, feedback collection, and iterative product improvements.
+Familiarity with enterprise requirements such as single sign-on (SSO), audit logging, GDPR, and SOC 2.
+Apply for Position
+Or refer someone
+Share

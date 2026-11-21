@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "case_id": "KAK03",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "development",
+  "source_content_sha256": "4dc23037d84363422fd021833b299d7bbf78a244e3db8cc4a1f4ac9703561bc8",
+  "decision": "ineligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "KAK03-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "This is a hybrid role based in Guadalajara, Mexico, requiring regular in-office presence.",
+        "hybrid role based in Guadalajara, Mexico",
+        "Mexico Only"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

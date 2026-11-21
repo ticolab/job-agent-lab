@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "GOL01",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "development",
+  "source_content_sha256": "b8a8f88f46c713825787228c26e296c21b9959e966ec1b296932d662043cc4f2",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "GOL01-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Work arrangement: Remote",
+        "100% Remote."
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

@@ -6,15 +6,17 @@ from collections.abc import Mapping, Sequence
 from job_discovery.domain.company import Company
 from job_discovery.persistence import catalog_repo
 from job_discovery.persistence.timestamps import utc_now
+from job_eligibility import ELIGIBILITY_VERSION
 from job_pipeline.cli.common import (
     add_database_argument,
     add_policy_arguments,
     add_selection_arguments,
     open_database,
+    open_read_only_database,
     run_async,
     select_companies,
 )
-from job_pipeline.persistence import jobs_repo
+from job_pipeline.persistence import decisions_repo, jobs_repo
 from job_pipeline.persistence.models import STAGE_PHASES, Stage
 from job_pipeline.runner.observe import observe, read_snapshot_keys
 
@@ -80,7 +82,10 @@ def _print_counts(
 
 async def preview(args: argparse.Namespace, companies: Sequence[Company]) -> None:
     now = utc_now()
-    async with open_database(args) as session_factory:
+    # --no-observe must not write, so it reads a transactionally consistent
+    # online backup rather than the live database or a WAL-less file copy.
+    opener = open_read_only_database if args.no_observe else open_database
+    async with opener(args) as session_factory:
         if args.no_observe:
             snapshot_keys = await read_snapshot_keys(session_factory, companies)
         else:
@@ -96,8 +101,13 @@ async def preview(args: argparse.Namespace, companies: Sequence[Company]) -> Non
                 )
                 for stage in STAGE_PHASES
             }
+            stale_ready = await decisions_repo.count_stale_ready(
+                session, {company.slug for company in companies}
+            )
         print("Pipeline preview")
         _print_counts(counts, work_counts, args.limit)
+        print(f"eligibility contract   {ELIGIBILITY_VERSION}")
+        print(f"ready, stale contract  {stale_ready}")
         if args.by_company:
             for company in companies:
                 company_keys = {key for key in snapshot_keys if key[0] == company.slug}

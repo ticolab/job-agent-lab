@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "case_id": "GOL02",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "Location: Hybrid – Mexicali, Mexico (3 days onsite, 2 days remote)"
+  ],
+  "rationale": "Required recurring Mexicali onsite attendance excludes remaining Costa Rica-based.",
+  "partition": "development",
+  "source_content_sha256": "5884aa4ad78b1c7f02e1300800e8affa0d68cd04a27494d04993b3e67f4e5288",
+  "provenance": {
+    "company": "Golabs Tech",
+    "title": "OCM Consultant",
+    "source_url": "https://recruitcrm.io/apply/17920167048160117843AVo?source=Jobspage&new=yes",
+    "captured_at_utc": "2026-11-01T20:49:07.101223+00:00"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_accepted_unchanged",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "ineligible",
+    "source_partition": "development"
+  }
+}

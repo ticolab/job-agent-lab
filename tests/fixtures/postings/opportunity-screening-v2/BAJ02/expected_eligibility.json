@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "case_id": "BAJ02",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "Remote, based in Mexico."
+  ],
+  "rationale": "Explicit Mexico base excludes Costa Rica; no relocation exception inferred.",
+  "partition": "development",
+  "source_content_sha256": "b12e923adcd1f8ce77384e5702bb711baca3d872260ed5f8e4c9a2fceb88a199",
+  "provenance": {
+    "company": "Baja Nearshore",
+    "title": "Renewal Specialist - Remote, Mexico",
+    "source_url": "https://recruitcrm.io/apply/17925079071980148048Iqh?source=Jobspage&new=yes",
+    "captured_at_utc": "2026-11-01T20:49:41.102951+00:00"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_accepted_unchanged",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "ineligible",
+    "source_partition": "development"
+  }
+}

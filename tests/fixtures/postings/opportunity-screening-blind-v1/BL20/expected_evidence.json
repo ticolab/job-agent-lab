@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL20",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "adcde2430235b85f95c6f7b96f351a97953e4d9c7e9e9668a9f74117b5bc67ff",
+  "decision": "unknown",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL20-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "CST/CDT"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

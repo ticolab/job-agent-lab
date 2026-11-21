@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "OCE01",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "development",
+  "source_content_sha256": "9c5a8cecb46e91dec44c35e4ec90722b5854cc5c4a03ef3517073a4d2238f8b0",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "OCE01-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "100% Remote\nAll LatAm",
+        "All LatAm"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

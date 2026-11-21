@@ -1,0 +1,51 @@
+Senior Professional Services Consultant
+Zscaler (NASDAQ: ZS) accelerates digital transformation so customers can be more agile, efficient, resilient, and secure. The Zscaler Zero Trust Exchange platform protects thousands of customers from cyberattacks and data loss by securely connecting users, devices, and applications in any location. Distributed across 200+ public data centers globally and thousands of private sites at the edge, the SASE-based Zero Trust Exchange is the world’s largest in-line cloud security platform.
+We believe the future of work is Human + AI and are building an AI-native enterprise where human potential is amplified by machine intelligence to solve the world’s hardest security challenges. Driven by deep customer obsession, we are committed to the mission, outcome, and to each other. We bring these commitments to life through three core behaviors: ownership and collaboration, trust through outcomes and impact, and a challenge culture with ongoing feedback. Ready to make an impact at the company pioneering security transformation in the AI era? Join us at Zscaler.
+Role
+We are looking for a Senior Professional Services Consultant – Data Security Posture Management (DSPM) to join our team. This is a Remote (PST/MST) role reporting to the Manager, Professional Services (West) in the Professional Services department. Sitting at the intersection of strategic enterprise consulting and forward-deployed engineering, you will serve as the primary technical authority and end-to-end delivery owner for enterprise DSPM customers. In this role, you will architect, deploy, and optimize DSPM solutions alongside the broader Zscaler Zero Trust Exchange platform to eliminate cloud data risks, enforce AI governance, and build resilient modern data architectures.
+What you’ll do (Role Expectations)
+- • Serve as the primary technical delivery owner across the customer lifecycle, leading multi-cloud, hybrid, and regulated DSPM architecture and Zero Trust ecosystem deployments
+- • Configure and optimize cloud and on-premises data connectors across AWS, Azure, GCP, Snowflake, Databricks, BigQuery, and enterprise repositories
+- • Customize data classification pipelines, Data Firewall policy engines, and sensitive data discovery workflows to drive measurable risk reduction
+- • Implement enterprise identity, access, and governance controls including SSO/SAML, SCIM, RBAC, minimal-permission service accounts, and cloud IAM integrations
+- • Diagnose complex customer deployment challenges and partner directly with Core Engineering and Product Management to influence platform capabilities and pre-sales evaluations
+- • Integrate Across the Zero Trust Ecosystem: Architect and integrate DSPM capabilities alongside ZIA, ZPA, ZDX, and the broader Zero Trust Exchange across complex enterprise environments, including AI-driven workload and GenAI pipeline scenarios
+Who You Are (Success Profile)
+- • You thrive in dynamic environments, navigating technical ambiguity with ease and treating complex architectures as raw material to build high-impact customer solutions.
+- • You operate with an ownership mindset, moving seamlessly between executive-level architectural strategy and hands-on production troubleshooting to guarantee customer outcomes.
+- • You are a relentless problem-solver who actively tackles complex technical barriers, from untangling cross-cloud IAM permission chains to resolving connector-level defects.
+- • You are a high-trust collaborator who partners across customer teams, Sales, and Core Engineering with directness, transparency, and mutual respect.
+- • You maintain an active growth mindset, continuously expanding your technical depth across evolving cloud data platforms, security paradigms, and enterprise AI adoption.
+What We’re Looking for (Minimum Qualifications)
+- • Proven track record in customer-facing technical delivery roles such as Professional Services, Forward Deployed Engineering, or Security/Cloud Architecture Consulting for enterprise accounts
+- • Hands-on technical experience deploying data security or cloud solutions across major public clouds (AWS, Azure, GCP) and modern data platforms (Snowflake, Databricks, BigQuery, SQL/NoSQL, SharePoint, or SMB)
+- • In-depth understanding of Data Security Posture Management (DSPM), data classification frameworks, and AI/ML workload security principles
+- • Strong hands-on command of modern enterprise identity frameworks, including SAML/SSO, OAuth2, SCIM, RBAC, conditional access, and cloud IAM permission architectures
+- • Strong technical grounding in enterprise networking, private endpoints, network isolation, proxies, and Zero Trust architecture
+- • Foundational understanding of AI/ML technologies and experience leveraging, securing, or positioning AI-driven solutions to optimize outcomes within your functional domain
+What Will Make You Stand Out (Preferred Qualifications)
+- • Hands-on scripting and debugging capability in Python, SQL, REST APIs, or backend data services to automate pipelines and solve integration challenges
+- • Direct experience deploying and operating Zscaler solutions (ZIA, ZPA, ZDX) or equivalent enterprise SASE/SSE platforms with experience using generative AI tools to streamline research, data analysis, and workflows
+- • Experience architecting solutions within highly regulated frameworks (FedRAMP, PCI-DSS, HIPAA, GDPR) or industry certifications such as ZDTA/ZDTE, CISSP, CCSP, or Cloud Security specialties
+#LI-NH1 #LI-Remote
+Zscaler’s salary ranges are benchmarked and are determined by role and level. The range displayed on each job posting reflects the minimum and maximum target for new hire salaries for the position across all US locations and could be higher or lower based on a multitude of factors, including job-related skills, experience, and relevant education or training.
+The base salary range listed for this full-time position excludes commission/ bonus/ equity (if applicable) + benefits.
+Base Pay Range
+$143,500 - $205,000 USD
+At Zscaler, we are committed to building a team that reflects the communities we serve and the customers we work with. We foster an inclusive environment that values all backgrounds and perspectives, emphasizing collaboration and belonging. Join us in our mission to make doing business seamless and secure.
+Our Benefits program is one of the most important ways we support our employees. Zscaler proudly offers comprehensive and inclusive benefits to meet the diverse needs of our employees and their families throughout their life stages, including:
+- • Various health plans
+- • Time off plans for vacation and sick time
+- • Parental leave options
+- • Retirement options
+- • Education reimbursement
+- • In-office perks, and more!
+Learn more about Zscaler's hybrid working model and benefits here.
+By applying for this role, you adhere to applicable laws, regulations, and Zscaler policies, including those related to security and privacy standards and guidelines.
+Zscaler is committed to providing equal employment opportunities to all individuals. We strive to create a workplace where employees are treated with respect and have the chance to succeed. All qualified applicants will be considered for employment without regard to race, color, religion, sex (including pregnancy or related medical conditions), age, national origin, sexual orientation, gender identity or expression, genetic information, disability status, protected veteran status, or any other characteristic protected by federal, state, or local laws. See more information by clicking on the Know Your Rights: Workplace Discrimination is Illegal link.
+Pay Transparency
+Zscaler complies with all applicable federal, state, and local pay transparency rules.
+Zscaler is committed to providing reasonable support (called accommodations or adjustments) in our recruiting processes for candidates who are differently abled, have long term conditions, mental health conditions or sincerely held religious beliefs, or who are neurodivergent or require pregnancy-related support.
+Apply for this job
+*
+indicates a required field

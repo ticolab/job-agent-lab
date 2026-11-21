@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "NBS02",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "development",
+  "source_content_sha256": "2c7938ea792b9976f187ad6cabd6d1aa73823956967567cf95a5fedb94d9302f",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "NBS02-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Location: Remote – Latin America Preferred",
+        "Remote – Latin America"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "case_id": "AKU03",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "This person must reside in LATAM."
+  ],
+  "rationale": "LATAM location and explicit LATAM residence requirement include Costa Rica; legal engagement remains unverified.",
+  "partition": "development",
+  "source_content_sha256": "d5e705d0dfb83fe8128caf1e4f555f42c8a7d50ced17f2dfecf0e8f5d66b5b4c",
+  "provenance": {
+    "company": "Akurey",
+    "title": "Business Data Analyst (AI-Assisted Analytics)",
+    "source_url": "https://www.akurey.com/careers/requirements?pId=304",
+    "captured_at_utc": "2026-11-01T20:51:48.333575Z"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_accepted_unchanged",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "eligible",
+    "source_partition": "development"
+  }
+}

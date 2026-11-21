@@ -1,0 +1,44 @@
+Senior Sales Engineer - Public Sector
+Zscaler (NASDAQ: ZS) accelerates digital transformation so customers can be more agile, efficient, resilient, and secure. The Zscaler Zero Trust Exchange platform protects thousands of customers from cyberattacks and data loss by securely connecting users, devices, and applications in any location. Distributed across 200+ public data centers globally and thousands of private sites at the edge, the SASE-based Zero Trust Exchange is the world’s largest in-line cloud security platform.
+We believe the future of work is Human + AI and are building an AI-native enterprise where human potential is amplified by machine intelligence to solve the world’s hardest security challenges. Driven by deep customer obsession, we are committed to the mission, outcome, and to each other. We bring these commitments to life through three core behaviors: ownership and collaboration, trust through outcomes and impact, and a challenge culture with ongoing feedback. Ready to make an impact at the company pioneering security transformation in the AI era? Join us at Zscaler.
+We are looking for a Senior Sales Engineer to join our team. This is a remote role for candidates based within commuting distance of London, the South East, or the Midlands, reporting to the Sales Engineering Manager in the Solutions Consulting (Public Sector) department. You will lead the technical charge in protecting UK public sector infrastructure and drive mission-critical cloud security outcomes across government and public sector organizations.
+What you’ll do (Role Expectations)
+- • Present and whiteboard the Zscaler cloud security platform to prospective customers to demonstrate clear architectural value
+- • Set the vision and translate complex goals into enticing, relevant recommendations that resonate with public sector stakeholders
+- • Act as a trusted advisor to our clients, guiding them through every stage of their digital transformational journey
+- • Gather technical requirements and promote the value proposition through impactful POVs, presentations, and demonstrations with prospects and customers
+Who You Are (Success Profile)
+- • You thrive in ambiguity. You're comfortable building the path as you walk it. You thrive in a dynamic environment, seeing ambiguity not as a hindrance, but as the raw material to build something meaningful.
+- • You act like an owner. Your passion for the mission fuels your bias for action. You operate with integrity because you genuinely care about the outcome. True ownership involves leveraging dynamic range: the ability to navigate seamlessly between high-level strategy and hands-on execution.
+- • You are a problem-solver. You love running towards the challenges because you are laser-focused on finding the solution, knowing that solving the hard problems delivers the biggest impact.
+- • You are a high-trust collaborator. You are ambitious for the team, not just yourself. You embrace our challenge culture by giving and receiving ongoing feedback—knowing that candor delivered with clarity and respect is the truest form of teamwork and the fastest way to earn trust.
+- • You are a learner. You have a true growth mindset and are obsessed with your own development, actively seeking feedback to become a better partner and a stronger teammate. You love what you do and you do it with purpose.
+What We’re Looking for (Minimum Qualifications)
+- • Foundational understanding of AI/ML technologies and experience leveraging, securing, or positioning AI-driven solutions to optimize outcomes within your functional domain
+- • At least 7 years of experience as a Sales Engineer, Systems Integrator, or Senior Architect within a public sector organization in particular defence organisations
+- • Comprehensive knowledge of enterprise network or cloud security technologies
+- • Demonstrated ability to deliver technical whiteboards, produce high-quality presentations, and conduct live demonstrations
+- • Experience partnering with sales teams to identify, qualify, and scope opportunities while delivering proof of concept engagements to achieve technical victories
+What Will Make You Stand Out (Preferred Qualifications)
+- • Experience positioning or securing AI-driven threat protection platforms and AI-enabled cloud security architectures within public sector environments
+- • Cloud Platform certifications or industry-standard credentials such as CISSP or CCNP
+- • Deep technical experience in SASE, Proxy technology, Cybersecurity, IPS, DLP, CASB, CNAPP, or advanced Networking
+#LI-Hybrid
+#LI-LS2
+At Zscaler, we are committed to building a team that reflects the communities we serve and the customers we work with. We foster an inclusive environment that values all backgrounds and perspectives, emphasizing collaboration and belonging. Join us in our mission to make doing business seamless and secure.
+Our Benefits program is one of the most important ways we support our employees. Zscaler proudly offers comprehensive and inclusive benefits to meet the diverse needs of our employees and their families throughout their life stages, including:
+- • Various health plans
+- • Time off plans for vacation and sick time
+- • Parental leave options
+- • Retirement options
+- • Education reimbursement
+- • In-office perks, and more!
+Learn more about Zscaler's hybrid working model and benefits here.
+By applying for this role, you adhere to applicable laws, regulations, and Zscaler policies, including those related to security and privacy standards and guidelines.
+Zscaler is committed to providing equal employment opportunities to all individuals. We strive to create a workplace where employees are treated with respect and have the chance to succeed. All qualified applicants will be considered for employment without regard to race, color, religion, sex (including pregnancy or related medical conditions), age, national origin, sexual orientation, gender identity or expression, genetic information, disability status, protected veteran status, or any other characteristic protected by federal, state, or local laws. See more information by clicking on the Know Your Rights: Workplace Discrimination is Illegal link.
+Pay Transparency
+Zscaler complies with all applicable federal, state, and local pay transparency rules.
+Zscaler is committed to providing reasonable support (called accommodations or adjustments) in our recruiting processes for candidates who are differently abled, have long term conditions, mental health conditions or sincerely held religious beliefs, or who are neurodivergent or require pregnancy-related support.
+Apply for this job
+*
+indicates a required field

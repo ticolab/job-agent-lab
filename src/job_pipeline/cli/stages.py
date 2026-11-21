@@ -16,8 +16,9 @@ from job_pipeline.cli.common import (
     build_policy,
     open_database,
     require_provider_credential,
+    resolve_model,
 )
-from job_pipeline.llm import LiteLLMCaller, StructuredCaller
+from job_pipeline.llm import LiteLLMCaller, ReasoningEffort, StructuredCaller
 from job_pipeline.persistence import jobs_repo
 from job_pipeline.persistence.models import Stage
 from job_pipeline.reporting import save_accepted_results
@@ -25,8 +26,10 @@ from job_pipeline.runner import PipelineResult, WorkerDeps, run_pipeline
 from job_pipeline.runner.scheduler import browser_required
 
 
-def caller_factory(model: str, timeout: float) -> StructuredCaller:
-    return LiteLLMCaller(model, timeout=timeout)
+def caller_factory(
+    model: str, timeout: float, reasoning_effort: ReasoningEffort | None = None
+) -> StructuredCaller:
+    return LiteLLMCaller(model, timeout=timeout, reasoning_effort=reasoning_effort)
 
 
 _DEFAULT_CALLER_FACTORY = caller_factory
@@ -91,10 +94,13 @@ async def run_stage(
     reprocess: Sequence[int] | None = None,
     reason: str | None = None,
 ) -> PipelineResult:
+    resolve_model(args, stage)
     policy = build_policy(args)
     started = time.monotonic()
     async with open_database(args) as session_factory, AsyncExitStack() as resources:
-        caller = caller_factory(policy.model, policy.job_timeout)
+        caller = caller_factory(
+            policy.model, policy.job_timeout, policy.reasoning_effort
+        )
         http_client = None
         browser = None
         if stage == "eligibility":

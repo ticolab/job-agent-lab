@@ -1,0 +1,43 @@
+Senior React Native Mobile Engineer (Fixed-Term)
+At Sparq, we help companies solve the right problems—not just build more technology.
+We’re a modern product engineering partner blending strategy, craftsmanship, and speed to help organizations modernize confidently in the age of AI. From data ecosystems to digital products and AI acceleration, we turn complexity into clarity and ideas into impact.
+If you’re driven to build what’s next, lead with empathy, and deliver excellence without ego, you’ll feel right at home at Sparq.
+Why you will enjoy Mondays again:
+- • Opportunity to work alongside a talented, diverse team in a collaborative and creative environment
+- • Ongoing investment in your growth through training, mentorship, and industry certifications
+- • Hands-on exposure to cutting-edge technologies across multiple industries
+- • Recognition programs and employee awards within an inclusive culture that celebrates great work, including our AI Innovators Program
+- • Remote work
+A Day in the Life:
+- • Design, develop, and maintain a cross-platform mobile application using React Native and TypeScript, delivering a consistent experience across iOS and Android devices.
+- • Lead technical discovery efforts and proof-of-concept development, including voice capture, WebRTC, and native device capabilities.
+- • Build and maintain the mobile application foundation, shared UI components, and reusable architecture to support efficient feature development.
+- • Implement secure user authentication through Microsoft Entra ID and integrate mobile functionality with backend services.
+- • Develop and maintain native module integrations for iOS and Android, ensuring seamless access to platform-specific capabilities.
+- • Optimize application performance, state management, and responsiveness while troubleshooting platform-specific issues.
+- • Manage mobile build, testing, and release processes, including alpha and beta distribution through TestFlight, Google Play testing tracks, Apple Business Manager, and Managed Google Play.
+- • Collaborate with engineering and cross-functional teams to deliver stable releases, resolve technical challenges, and maintain consistent functionality across platforms.
+- • Actively use AI tools, including Claude through our Anthropic partnership, to streamline tasks, improve the quality of your work, and share best practices with teammates while continuously seeking new ways to integrate AI into your everyday workflows
+What it takes:
+- • Consultative approach and problem solving skills to successfully align digital solutions with long-term business goals of the client
+- • Hands-on experience using AI tools to enhance daily work, or a strong desire to do so, including a willingness to experiment, learn, and champion AI adoption within your role
+- • Claude Certified Developer or Architect highly preferred; possible opportunity to obtain as a Sparq colleague
+- • Commitment to understanding and exceeding client expectations
+- • Ability to perform project oversight and execution of deliverables
+- • Flexibility to adapt within a high-growth organization
+- • Ability to lead, mentor and motivate those around them
+- • Hunger for continuous learning and professional development
+- • Intellectual curiosity to provide creative solutions
+- • Full understanding of the software development life cycle
+- • Ability to positively impact fellow colleagues through effective leadership, presentations, coaching, etc.
+- • Desire to work in a team environment
+- • Good interpersonal, written and verbal communication skills
+Regardless of your specific role, we seek individuals who are excited to explore, adopt, and evangelize AI tools and methodologies. If you have experience in AI or a proven track record of rapidly learning and mentoring others on emerging tech, you’ll fit right in.
+Equal Employment Opportunity Policy: Sparq is proud to offer equal employment opportunity without regard to age, color, disability, gender, gender identity, genetic information, marital status, military status, national origin, race, religion, sexual orientation, veteran status, or any other legally protected characteristic.
+We are committed to providing equal employment opportunities and believe in an inclusive workplace. If you require reasonable accommodations to participate in the job application or interview process, please let us know by contacting recruiting@teamsparq.com
+#LI-REMOTE
+Client Services
+Mexico
+Costa Rica
+Uruguay
+Share on:

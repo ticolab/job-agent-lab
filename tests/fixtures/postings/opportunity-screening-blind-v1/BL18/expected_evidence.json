@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL18",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "9981db3050aa7083445c73c53afb96c5fbd723e7fbb18be34c57b9d40af3b095",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL18-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "based in Escazú, Costa Rica"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

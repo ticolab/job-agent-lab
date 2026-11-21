@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL05",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "7ce73966fb93dbdb2e5ab973fd79da7552e447333ba006324915314a17fc11e3",
+  "decision": "ineligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL05-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Right to work in the UK"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

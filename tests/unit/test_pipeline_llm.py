@@ -72,7 +72,30 @@ def test_litellm_caller_parses_response_and_passes_safe_options(
     assert completion.completion_tokens == 3
     assert captured["response_format"] is Answer
     assert captured["temperature"] == 0
+    assert "reasoning_effort" not in captured
     assert "tools" not in captured
+
+
+def test_reasoning_effort_replaces_pinned_temperature(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    captured: dict[str, Any] = {}
+
+    async def fake_acompletion(**kwargs: Any) -> dict[str, Any]:
+        captured.update(kwargs)
+        return {"choices": [{"message": {"content": '{"value":"yes"}'}}]}
+
+    monkeypatch.setattr("job_pipeline.llm.litellm.acompletion", fake_acompletion)
+    caller = LiteLLMCaller("test", timeout=5, reasoning_effort="low")
+    assert run_async(caller.complete(MESSAGES, Answer)).parsed.value == "yes"
+    assert captured["reasoning_effort"] == "low"
+    assert "temperature" not in captured
+    assert captured["response_format"] is Answer
+
+
+def test_unknown_reasoning_effort_is_rejected() -> None:
+    with pytest.raises(ValueError, match="unsupported reasoning effort"):
+        LiteLLMCaller("test", timeout=5, reasoning_effort="extreme")  # type: ignore[arg-type]
 
 
 def test_absent_or_zero_usage_is_none(monkeypatch: pytest.MonkeyPatch) -> None:

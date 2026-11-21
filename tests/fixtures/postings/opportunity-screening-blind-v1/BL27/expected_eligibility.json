@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL27",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "remote based in India"
+  ],
+  "rationale": "Remote role based in India.",
+  "partition": "blind",
+  "source_content_sha256": "c73a5b0ffabd203a57745a041294231665f78b60d4c44b0e2f3ce980497e2083",
+  "provenance": {
+    "company": "Zscaler",
+    "title": "Staff Integration Engineer (Security Platform and Data Pipelines)",
+    "source_url": "https://job-boards.greenhouse.io/zscaler/jobs/5267231007",
+    "captured_at_utc": "2026-11-21T15:55:08.878725+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

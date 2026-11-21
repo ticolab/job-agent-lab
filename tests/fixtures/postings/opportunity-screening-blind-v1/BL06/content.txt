@@ -1,0 +1,45 @@
+Regular
+
+Costa Rica/Heredia
+
+JOB OVERVIEW
+Plan A Technologies is looking for a Senior Data Migration Technical Analyst to lead end-to-end data migration activities within regulated environments. This role is responsible for defining migration strategy, analyzing and mapping source data, designing transformation and reconciliation processes, and ensuring data integrity through to production cutover.
+You will work closely with business and technical stakeholders to scope and execute migrations, build repeatable data pipelines, and implement robust validation and reconciliation controls. The ideal candidate combines strong SQL and data engineering fundamentals with hands-on experience in GxP-compliant systems (e.g., LIMS, QMS, or document management platforms), ensuring migrations meet regulatory, quality, and audit requirements.
+This role requires ownership of the full migration lifecycle—from discovery and profiling through transformation, testing, cutover, and post-migration stabilization—while maintaining traceability, documentation, and compliance with industry standards such as GAMP 5, 21 CFR Part 11, and ALCOA+.
+Please note: you must have at least 5+ years of experience in data migration, data conversion, system implementation, data integration, or enterprise content migration to be considered for this role.
+JOB RESPONSIBILITY
+- • Lead workshops and inventory and profile source data; create approved source-to-target mappings and define cleansing, transformation, defaulting, load-sequence, and exception rules.
+- • Define and develop extracts, transformation scripts, import files, and repeatable migration runs.
+- • Reconcile source and target data using record counts, control totals, field comparisons, relationship checks, exception reports, and risk-based sampling.
+- • Work with QA, CSV, IT, Vendors on validation deliverables
+- • Work with business and technical SMEs to define migration scope, including data to be migrated, remediated, archived, or excluded.
+- • Develop and maintain approved source-to-target mapping specifications.
+- • Maintain traceability through extraction, transformation, staging, loading, testing, and final verification.
+- • Develop cutover, rollback, data-freeze, and post-migration stabilization plans.
+EXPERIENCE
+- • 5+ years of experience in data migration, data conversion, system implementation, data integration, or enterprise content migration.
+- • Experience completing at least one full migration lifecycle from source discovery through production cutover and reconciliation.
+- • Strong SQL and relational database skills, source-to-target mapping, ETL or scripted transformation, data-quality analysis, and reconciliation.
+- • Experience in a pharmaceutical or biotechnology GxP environment with working knowledge of GAMP 5, 21 CFR Part 11, CSV or CSA, and ALCOA plus principles.
+- • LabWare LIMS or LabWare SaaS experience is strongly preferred; knowledge of QA QC master data, specifications, methods, products, samples, results, stability, or environmental monitoring is desirable.
+- • Demonstrated ability to design and execute data-reconciliation controls.
+- • Understanding of relational integrity, metadata, data types, identifiers, parent-child relationships, and data dependencies.
+- • Experience investigating migration defects and documenting exceptions and resolutions.
+- • Strong familiarity with AI, and experience using AI tools.
+- • Strong analytical, technical documentation, and problem-solving skills.
+- • Good communication and problem-solving skills.
+- • Excellent verbal and written English communication skills.
+- • Initiative and drive to do great things.
+Preferred:
+- • Experience with one or more of the following platforms: LabWare LIMS, Egnyte, Veeva Vault, and ZenQMS
+- • Experience migrating laboratory data, controlled documents, training records, quality records, metadata, permissions, audit trails, electronic signatures, or version history.
+- • Experience with Python, PowerShell, SQL Server, Oracle, PostgreSQL, REST APIs, or commercial ETL tools such as Databricks.
+ABOUT THE COMPANY/BENEFITS
+Plan A Technologies is a global engineering firm created to solve the toughest tech challenges facing today’s businesses. Founded by software entrepreneurs Aron Ezra and Slav Kulik, Plan A helps organizations analyze their tech ecosystem to identify exactly what needs to be improved across their products and infrastructure—and then builds the solutions to fix it.
+Rather than offering theoretical ideas or software that never launches, Plan A combines elite engineering talent with custom-built, proprietary AI agents to deliver fast, secure, production-ready solutions. Its capabilities span proprietary AI agent deployment, custom software development, application modernization, data platforms, cloud migrations, systems integration, and practical technical advice.
+With more than 500 successful product deployments completed worldwide, Plan A helps organizations of every size—from ambitious startups to global enterprises—modernize their systems, automate complex operations, and stay ahead of the technology curve.
+Read more about us here: www.PlanAtechnologies.com .
+Location: Work From Home 100% of the time, or come in to one of our global offices. Up to you.
+Great colleagues and an upbeat work environment: You'll join an excellent team of supportive engineers and project managers who work hard but don't ever compete with each other.
+Benefits: Vacation, Brand New Laptop, and More: You’ll get a generous vacation schedule, and other goodies.
+If this sounds like you, we'd love to hear from you!

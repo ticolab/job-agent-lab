@@ -1,0 +1,94 @@
+More Jobs
+Senior DevOps / Site Reliability Engineer
+Apply To This Job
+Close
+
+
+Senior DevOps / Site Reliability Engineer
+
+Type: Contractor, Full-time
+Work arrangement: Remote
+
+About the Role
+
+We are looking for a Senior DevOps / Site Reliability Engineer to own the reliability, delivery pipeline, and AWS infrastructure behind a real-money skill gaming platform. Your first priority will be completing the move from manual Jenkins deployments to automated releases on GitHub Actions and Terraform-managed ECS. This is a hands-on senior role on a small team with real ownership.
+
+
+Responsibilities
+
+Own the GitHub Actions and Terraform ECS deployment pipeline, including approvals, migration gates, and rollback.Make zero-downtime database migrations the default for a PostgreSQL-backed Django system that handles payments.
+
+Manage the Terraform estate and a multi-account AWS Organization, bringing all resources under code.
+
+Rebuild alerting around SLOs, own observability tooling, and lead incident response and postmortems.
+
+Own secrets, certificates, patching, and security reviews required by gaming and payments partners.
+
+Optimize AWS spend and report on it monthly.
+
+Extend existing AI agents to automate operational toil, and document runbooks for the team.
+
+
+Tech Stack
+
+AWS (ECS, RDS, Redshift, GameLift)
+
+Terraform / Terraform Cloud
+
+GitHub Actions / Jenkins
+
+Docker
+
+Python / Django
+
+PostgreSQL
+
+Grafana, Sentry, PagerDuty
+
+What We’re Looking For​​​​
+
+5+ years of hands-on experience in DevOps or SRE roles, running production workloads on AWS and owning the Terraform behind them.
+
+Proven experience automating a manual release process.
+
+Background in systems where downtime has financial or regulatory impact (payments, fintech, gaming, or similar).
+
+Enough Python and Django knowledge to understand how migrations and workers affect deployments.
+
+Practical experience defining SLOs, reducing alert noise, and building useful dashboards.
+
+Strong written and verbal English communication skills.
+
+Significant professional experience using generative AI tools (e.g., Claude Code) in coding and operations, in addition to a strong DevOps skillset.
+
+Nice to Have
+
+Advanced GitHub Actions (reusable workflows, OIDC to AWS).
+
+Blue/green or canary deployments.
+
+Jenkins to GitHub Actions migration experience.
+
+Unity or mobile game build pipelines.
+
+Regulated real-money products (KYC, geolocation).
+
+FinOps experience with measurable cost reductions.
+
+Why join us?
+
+Competitive compensation paid in USD.
+
+100% Remote.
+
+Paid Time Off: 12 PTO days per year.
+
+Local Holidays: All official holidays in your country.
+
+Birthday Off.
+
+Career Growth opportunities.
+
+Recognition Program.
+
+Paid approved leaves.

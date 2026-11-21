@@ -1,34 +1,59 @@
-"""Pure eligibility leaf with no imports from other repository packages."""
+"""Pure one-shot eligibility leaf with no imports from other repository packages."""
 
-from job_eligibility.prompt import SYSTEM_PROMPT, Message, build_messages
+from job_eligibility.normalize import grounding_text, occurs_in
+from job_eligibility.prompt import (
+    INPUT_TEMPLATE,
+    PROMPT_EXAMPLES,
+    SYSTEM_PROMPT,
+    Message,
+    PromptExample,
+    build_messages,
+)
 from job_eligibility.schema import (
+    MAX_EVIDENCE_CHARACTERS,
+    MAX_EVIDENCE_ITEMS,
+    MAX_REASON_CHARACTERS,
+    MISSING_INFORMATION_REASON,
     Decision,
-    EligibilityDecision,
     EligibilityResponse,
-    LocationSignals,
-    RemoteScope,
+    EligibilityVerdict,
 )
 from job_eligibility.validate import (
-    COSTA_RICA_NAMES,
+    EligibilityValidationError,
+    GroundingMiss,
     UngroundedEvidenceError,
+    collect_grounding_misses,
+    is_missing_information,
     normalize,
+    structural_errors,
     validate,
 )
-from job_eligibility.version import POLICY_VERSION, PROMPT_HASH
+from job_eligibility.version import ELIGIBILITY_PROMPT_HASH, ELIGIBILITY_VERSION
 
 __all__ = [
-    "COSTA_RICA_NAMES",
-    "POLICY_VERSION",
-    "PROMPT_HASH",
+    "ELIGIBILITY_PROMPT_HASH",
+    "ELIGIBILITY_VERSION",
+    "INPUT_TEMPLATE",
+    "MAX_EVIDENCE_CHARACTERS",
+    "MAX_EVIDENCE_ITEMS",
+    "MAX_REASON_CHARACTERS",
+    "MISSING_INFORMATION_REASON",
+    "PROMPT_EXAMPLES",
     "SYSTEM_PROMPT",
     "Decision",
-    "EligibilityDecision",
     "EligibilityResponse",
-    "LocationSignals",
+    "EligibilityValidationError",
+    "EligibilityVerdict",
+    "GroundingMiss",
     "Message",
-    "RemoteScope",
+    "PromptExample",
     "UngroundedEvidenceError",
     "build_messages",
+    "collect_grounding_misses",
+    "grounding_text",
+    "is_missing_information",
     "normalize",
+    "occurs_in",
+    "structural_errors",
     "validate",
 ]

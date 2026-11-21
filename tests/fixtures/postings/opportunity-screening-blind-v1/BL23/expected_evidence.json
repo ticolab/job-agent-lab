@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL23",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "138301b47ec2caa134260e59bb20d54fbe5708dc65313426a977b7c72f71dd6d",
+  "decision": "ineligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL23-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "based within commuting distance of London"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

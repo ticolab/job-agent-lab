@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "AKU03",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "development",
+  "source_content_sha256": "d5e705d0dfb83fe8128caf1e4f555f42c8a7d50ced17f2dfecf0e8f5d66b5b4c",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "AKU03-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "This person must reside in LATAM.",
+        "Job Location\nLATAM"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

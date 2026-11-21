@@ -11,6 +11,7 @@ from job_pipeline.cli.common import (
     add_model_policy_arguments,
     add_selection_arguments,
     add_verbosity_argument,
+    resolve_model,
     run_async,
     select_companies,
 )
@@ -38,5 +39,6 @@ def execute(args: argparse.Namespace) -> None:
         run_async(preview.preview(args, companies))
         return
     load_dotenv()
+    resolve_model(args, "eligibility")
     stages.preflight_provider(args.model)
     run_async(stages.run_stage(args, companies, stage="eligibility"))

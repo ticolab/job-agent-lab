@@ -38,7 +38,7 @@ Together they form four package roots with one-way dependencies.
 | Package | Responsibility | Repository dependencies |
 |---|---|---|
 | `job_discovery` | Discover current posting URLs. | None of the three new packages. |
-| `job_eligibility` | Render and validate eligibility decisions. | None. |
+| `job_eligibility` | Render the one-shot eligibility prompt, define its strict verdict schema, and validate structure and evidence grounding. | None. |
 | `job_extractor` | Render and validate structured job facts. | None. |
 | `job_pipeline` | Own identity, content acquisition, model calls, persistence, lifecycle, and the CLI. | The two leaves and approved discovery units. |
 
@@ -53,11 +53,27 @@ job_extractor   → nothing in this repository
 job_discovery   → neither leaf nor job_pipeline
 ```
 
-The leaves are pure because prompts, schemas, and deterministic validation must
-be testable without network, browser, model, or database access. The pipeline
-makes the model calls and supplies posting text. It uses two calls for a new
-job: a smaller eligibility call, followed by extraction only for an eligible
-posting. Both calls use the same stored content.
+The leaves are pure because prompts, schemas, and grounding must be testable
+without network, browser, model, or database access. The eligibility model makes
+the semantic decision in one call and returns exactly four fields: `decision`,
+`reason`, `supporting_evidence`, and `conflicting_evidence`. Python never
+re-derives geographic meaning; it enforces the schema, the two accepted response
+shapes (canonical missing-information `unknown` with no evidence, or at least one
+supporting excerpt), excerpt uniqueness across both buckets, and normalized-exact
+grounding of every excerpt. `job_pipeline` persists the grounded verdict and calls
+extraction only after an eligible decision over the same stored content under the
+current contract.
+
+This is a deliberate trade. The SYS-2027 facts-plus-deterministic-policy design
+made the decision reproducible from durable facts, but required a thirteen-variant
+fact schema and a policy engine that reconstructed meaning the model had already
+read. The one-shot contract is smaller and keeps all geographic interpretation in
+one auditable call, at two costs: grounding verifies that a quote exists, not that
+it was interpreted correctly, and a policy change can no longer be replayed for
+free over stored facts. Semantic quality therefore rests on reviewed evidence
+obligations, five-replay evaluation, a fresh blind corpus, and manual reason
+review; policy changes require a new contract version and model-backed
+reprocessing.
 
 All pipeline tables share `job_discovery.persistence.models.Base`. One metadata
 graph lets Alembic maintain one migration chain, resolves the foreign key to
@@ -102,30 +118,49 @@ explicit reprocessing after a policy change, while ordinary runs remain
 idempotent. Every repository call uses its own short-lived session, and no
 session is held across network, browser, or model awaits.
 
-Each leaf exports a human-readable version and a hash over its prompt and
-response schema. A prompt or schema change requires the corresponding
-`POLICY_VERSION` or `EXTRACTOR_VERSION` bump and prompt-hash golden update. A
-model change alone does not bump either version. Version changes never trigger
-automatic reprocessing. The production runner defaults to `gpt-4.1-mini`, but
-that default is implementation configuration rather than evidence of a reviewed
-model rollout.
+Eligibility has two identities. `ELIGIBILITY_VERSION`
+(`opportunity-oneshot-v2`) names the semantic contract: the embedded
+operator-approved opportunity-screening-v2 policy, the six synthetic prompt
+examples, the
+response shape, structural rules, and grounding normalization; any semantic
+change bumps it. `ELIGIBILITY_PROMPT_HASH` covers the exact prompt, input
+wrapper, and response-schema bytes. Attempts record both (the eligibility prompt
+hash in `job_attempts.eligibility_prompt_hash`), decisions persist both, and
+reuse, recordings, and evaluator replay require both. `EXTRACTOR_VERSION`
+identifies extraction independently. Model selection alone bumps neither
+identity. No version change automatically reprocesses completed jobs, and the
+default model is configuration, not evidence of reviewed rollout.
+
+Decision rows keep supporting evidence in the original `evidence_json` column and
+add `conflicting_evidence_json` and `prompt_hash`, which are null together on
+legacy rows and present together on one-shot rows (a CHECK constraint).
+Composite foreign keys tie each decision to an attempt and a content checkpoint of
+the same job. Legacy decisions are never backfilled: they stay auditable, are
+never reused, and cannot admit a job to extraction. Extraction attempts record the
+contract version and prompt hash of the decision they consume.
 
 V1 deliberately omits URL-reuse detection and cross-company duplicate
 reconciliation. Structured compensation, a dashboard read model, slow
 completed-job rechecks, and version-selected bulk reprocessing are future work.
 
 `job-pipeline` implements `preview`, `eligibility`, `extraction`, `reprocess`,
-and `show`. `job-pipeline run` is permanently retired: any arguments exit 2
+and `show`. `job-pipeline run` is permanently retired:
+any arguments exit 2
 with a message naming both stage commands, without opening a database.
 
-`preview` syncs the catalog and observes selected discovery URLs by default.
-It reports eligibility work, extraction backlog, in-progress jobs, and terminal
-dispositions, plus separate would-process counts capped by `--limit`.
-`--by-company` repeats the sections. `--no-observe` uses read-only, merge-aware
-membership. No preview constructs HTTP, browser, or model clients.
+`preview` syncs the catalog and observes selected discovery URLs by default. It
+reports eligibility work, extraction backlog, active jobs, terminal dispositions,
+the current eligibility contract, and ready jobs whose decision predates it. `--no-observe` uses merge-aware membership from a
+transactionally consistent SQLite online backup opened read-only; it never copies
+the database and WAL as separate files. No preview constructs HTTP, browser, or
+model clients.
 
-`eligibility` observes and processes only its stage, stopping at the durable
-extraction boundary. `extraction` reads snapshot membership without changing it:
+`eligibility` observes, acquires content, reuses a current decision only when it
+matches the content, contract version, and prompt hash, and otherwise makes one
+model call outside any database session. It then validates and grounds the
+verdict and, in one transaction, writes the decision, transitions the job, releases
+the lease, and finishes the attempt, stopping at the durable extraction boundary.
+`extraction` reads snapshot membership without changing it:
 it applies the same URL keys, follows `merged_into_id` chains, and omits URLs
 without existing jobs. It never observes, syncs the catalog, fetches, decides
 eligibility, or constructs HTTP/browser resources. Run, attempt, and result
@@ -144,16 +179,36 @@ can be outside the snapshot; completing that second stage then requires another
 explicit `reprocess --from-phase extraction`, since ordinary extraction is
 snapshot-scoped. `show` prints metadata and accepted results without posting
 bodies, labels attempts in the current stage, and adds `run_stage`/`run_trigger`
-to each attempt.
+to each attempt. It redacts and truncates the decision reason and every
+supporting and conflicting excerpt, and labels each decision `current`, `stale`,
+or `legacy` by contract.
 
-Every new `pipeline_runs` row requires stage `eligibility` or `extraction` and
-trigger `scheduled` or `reprocess`. Both columns are CHECK-constrained; legacy
+New runs require stage `eligibility` or `extraction` and trigger `scheduled` or
+`reprocess`. These values are CHECK-constrained; legacy
 runs migrate to `combined`, with trigger `reprocess` if any attempt had that
 trigger, otherwise `scheduled`. New runs never write `combined`. Per-stage
 usage joins attempts to runs by stage, trigger, and model.
 
-Implementation and offline tests do not imply that the deferred live posting
-corpus has been reviewed or that a production model rollout has occurred.
+The tracked v2 fixture corpus keeps its 32 posting texts, reviewed eligibility
+labels, provenance, and development/exposed-regression split. SYS-2028 deleted the
+24 SYS-2027 atomic-fact files by explicit decision (the manifest records their
+pre-removal hashes) and added operator-reviewed supporting/conflicting evidence
+obligations for the 24 development cases. The v2 prompt examples are
+synthetic, so the manifest names no example-backed case and all 24 development
+cases form the primary score; the evaluator can still exclude example-backed
+cases when a manifest declares corpus-derived examples. Exposed-regression and
+blind evaluation require a freeze record from a passing development run. The v1
+contract failed its development gates after the two allowed prompt revisions
+(negative result in `README.md`). On v2, `gpt-5.4-mini-2026-03-17` at medium
+reasoning effort passed the development gates under gate policy 2 and is frozen;
+its exposed-regression report is in `README.md`. It then failed the blind corpus
+gates (no false eligibles; grounding, two wrongful ineligibles, and stability
+failed) and was released by operator decision as the eligibility default and a
+starting point; `docs/ELIGIBILITY_FLOW.md` records the state. Eligibility defaults to
+that model at `medium` effort, extraction keeps `gpt-4.1-mini`, and
+`pipeline_runs` and `job_attempts` record the effort in a nullable
+`reasoning_effort` column (null means `temperature=0`). No shadow evidence exists. Implementation and offline tests do not
+imply benchmark completion or production rollout.
 
 The runner treats `jobs.current_attempt_id` as an ownership lease. Claiming a
 job and creating its attempt happen atomically; every phase advance, checkpoint,
@@ -174,7 +229,9 @@ policy, and uncommitted model work may be repeated. Token spend lost before a
 commit is not reconstructed. Historical inconsistencies are not repaired.
 
 Extraction requires current content and a current eligible decision on that
-same content. A missing or mismatched prerequisite fails immediately with
+same content. Its attempt records the actual current decision's policy version,
+including a legacy version, using the claim transaction rather than a long-lived
+session. A missing or mismatched prerequisite fails immediately with
 `missing_checkpoint`, without a model call or retry. An accepted extraction
 result completes the job. Retries resume from `next_phase`; explicit reprocessing
 invalidates downstream current records without deleting history.

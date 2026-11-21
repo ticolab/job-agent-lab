@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL24",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "open to candidates based in the United States who are authorized to work in the U.S."
+  ],
+  "rationale": "Open only to candidates based in and authorized to work in the U.S.",
+  "partition": "blind",
+  "source_content_sha256": "c1edc84709d834d714b8cd7c517464308c6952a95616e0195550e789329a2ad1",
+  "provenance": {
+    "company": "Perform",
+    "title": "Lead Engineer, Health Data Integrations",
+    "source_url": "https://job-boards.greenhouse.io/perform-careers/jobs/4477249009",
+    "captured_at_utc": "2026-11-21T15:55:40.399135+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

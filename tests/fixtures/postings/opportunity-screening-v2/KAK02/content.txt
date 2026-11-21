@@ -1,0 +1,52 @@
+# Apply for the Senior Product Data Scientist
+
+## Summary
+
+We're looking for a Product Data Scientist who is deeply focused on understanding user behavior and driving product decision-making through experimentation. This person will work closely with product managers, engineers, and design to identify opportunities, run structured A/B tests, and uncover insights that directly influence the product roadmap. The ideal candidate is comfortable owning experiments end-to-end — from hypothesis to rollout — and translating complex data into clear direction for the product team.
+
+## Key Responsibilities
+
+- Analyze user behavior patterns, product usage flows, drop-offs, and engagement trends.
+- Design, execute, and evaluate A/B tests and other experimentation frameworks to validate product decisions.
+- Partner with product teams to define key metrics, success criteria, and hypotheses for upcoming features.
+- Build dashboards and self-serve tools that help the product team understand the health of the product.
+- Work with data engineers to ensure clean, reliable, and accessible data for analysis.
+- Translate complex findings into clear, actionable insights for stakeholders.
+
+## Core Requirements
+
+- Strong experience with A/B testing, experiment design, hypothesis testing, and interpreting experiment results.
+- Solid skills in SQL and Python for data manipulation and analysis.
+- Experience working with data warehousing and workflow tools (Snowflake, Airflow, Superset, Eppo, etc.).
+- Background in product analytics or product-facing data science roles.
+- Ability to communicate insights clearly and influence product strategy using data.
+- Excellent written and verbal communication skills in English.
+- Ability to work independently in a remote, fast-paced environment.
+
+## Additional
+
+Latin America Timezone Overlap: 7h of daily overlap with GMT-3 required.
+
+## Visible application area and screening questions
+
+Location
+
+Upload CV
+
+Click or drag file to this area to upload
+
+Supports .pdf,.doc,.docx up to 10MB
+
+Have you worked with A/B testing or controlled experiments in production? *
+
+Please Select
+
+Which of the following best describes your involvement in experiments? *
+
+Please Select
+
+What best describes your recent work? *
+
+Please Select
+
+Apply Now

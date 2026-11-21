@@ -1,0 +1,27 @@
+En Rekluti, consultora especializada en talento tecnológico en LATAM, buscamos Desarrollador Oracle para impulsar los proyectos de software a gran escala de nuestros principales clientes internacionales.
+- • Resumen: Como Desarrollador Oracle, serás la pieza central a cargo del mantenimiento, análisis, diseño e implementación sobre el stack de base de datos y desarrollo de Oracle (PL/SQL, Forms/Reports, BI y APEX), operando en modalidad remota con disponibilidad de viajar a Costa Rica según lo exija el proyecto. Tus principales desafíos:
+- • Construir, optimizar y refactorizar requerimientos sobre sistemas transaccionales y de analítica de datos utilizando tecnologías Oracle Database y PL/SQL.
+- • Desarrollar, migrar y dar soporte a flujos en Oracle Forms, Reports, BI Publisher y aplicaciones ágiles sobre Oracle APEX.
+- • Controlar el ciclo de vida de las tareas utilizando herramientas como Azure DevOps, asegurando entregables documentados y con una garantía técnica de 6 meses.
+- • Atender incidentes técnicos en la plataforma y realizar guardias según los requerimientos del contrato.
+Hard Skills (Requisitos Excluyentes):
+- • Bachillerato universitario completo en Ciencias de la Computación (título certificado).
+- • Mínimo 2 proyectos de desarrollo y mantenimiento dentro de los últimos 10 años en plataforma Oracle.
+- • Experiencia técnica sólida en: Oracle Database (10g, 11c, 12c+), Oracle PL/SQL, Forms/Reports (6i, 10g, 11c o superior), Oracle APEX, BI Publisher, WebLogic Server y BI Enterprise Edition.
+- • Deseable: Conocimientos de Sockets Java, Pro*C y C++.
+- • Certificación vigente obligatoria: Oracle PL/SQL Developer Certified Associate (OCA) O Certified Professional (OCP) O Oracle APEX Cloud Developer Professional.
+- • Certificaciones vigentes de Scrum y DevOps.
+Power Skills:
+- • Adaptabilidad al Cambio: Flexibilidad para trabajar con código legado y migrarlo exitosamente hacia arquitecturas Web o APEX.
+- • Proactividad y Autonomía: Capacidad para proponer mejoras en la lógica de base de datos que optimicen significativamente el tiempo de respuesta.
+- • Trabajo Colaborativo: Sinergia de trabajo continuo con DBAs y desarrolladores para resolver incidentes críticos de negocio.
+Highlights: Proyectos globales de alto impacto. Remoto (con opción de movilización a Costa Rica según necesidades del proyecto), acompañamiento 1:1 de HRBP y desafíos técnicos de alta complejidad. Cultura de alto rendimiento e innovación.
+DESARROLLADOR ORACLE
+- • Remote
+- • wd5u4
+Job description
+or
+All done!
+Your application has been successfully submitted!
+You've already applied for this job
+Thank you for your interest - we've already received your application, so this new submission can't be accepted. Your previous application is on file.

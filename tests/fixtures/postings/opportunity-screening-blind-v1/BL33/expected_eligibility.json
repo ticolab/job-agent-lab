@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL33",
+  "reviewed": true,
+  "decision": "unknown",
+  "must_cite": [
+    "Full Stack Web Developer"
+  ],
+  "rationale": "No role location, arrangement, residence, or authorization stated.",
+  "partition": "blind",
+  "source_content_sha256": "479e4a69ab32863865d836d53cfc6440053201187d8ecd3f65b759e8778b096b",
+  "provenance": {
+    "company": "Perform",
+    "title": "Full Stack Web Developer",
+    "source_url": "https://job-boards.greenhouse.io/perform-careers/jobs/4435248009",
+    "captured_at_utc": "2026-11-21T15:49:27.328437+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

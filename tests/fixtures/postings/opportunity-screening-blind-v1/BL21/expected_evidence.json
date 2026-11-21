@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "BL21",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "33824a49a0f7330c42349f73a2535f4e08376f337798bb348ef812c5895f9fd6",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL21-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Location: Costa Rica (remote)",
+        "Costa Rica (remote)"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

@@ -18,10 +18,14 @@ declarations become documentation.
 
 from __future__ import annotations
 
+import asyncio
+import sqlite3
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any
+from urllib.parse import quote
 
 from sqlalchemy import event, inspect
 from sqlalchemy.ext.asyncio import (
@@ -93,6 +97,22 @@ def _apply_pragmas(dbapi_connection: Any, _connection_record: Any) -> None:
         cursor.close()
 
 
+def _apply_read_only_pragmas(dbapi_connection: Any, _connection_record: Any) -> None:
+    cursor = dbapi_connection.cursor()
+    try:
+        cursor.execute("PRAGMA query_only = ON")
+    finally:
+        cursor.close()
+
+
+def create_read_only_engine(path: Path) -> AsyncEngine:
+    resolved = quote(str(path.resolve()), safe="/")
+    url = f"sqlite+aiosqlite:///file:{resolved}?mode=ro&uri=true"
+    engine = create_async_engine(url)
+    event.listen(engine.sync_engine, "connect", _apply_read_only_pragmas)
+    return engine
+
+
 def create_engine(path: Path | None = None) -> AsyncEngine:
     """Create the async engine for the database at *path*.
 
@@ -129,6 +149,26 @@ def create_session_factory(engine: AsyncEngine) -> async_sessionmaker[AsyncSessi
     return async_sessionmaker(engine, expire_on_commit=False)
 
 
+async def missing_columns(
+    session: AsyncSession, required: dict[str, tuple[str, ...]]
+) -> tuple[str, ...]:
+    def _columns(connection: Any, table: str) -> set[str]:
+        return {column["name"] for column in inspect(connection).get_columns(table)}
+
+    connection = await session.connection()
+    missing: list[str] = []
+    for table, columns in required.items():
+
+        def _table_columns(sync_connection: Any, table_name: str = table) -> set[str]:
+            return _columns(sync_connection, table_name)
+
+        present = await connection.run_sync(_table_columns)
+        missing.extend(
+            f"{table}.{column}" for column in columns if column not in present
+        )
+    return tuple(missing)
+
+
 async def missing_tables(session: AsyncSession) -> tuple[str, ...]:
     """Names of the schema's tables that are absent from the database.
 
@@ -157,6 +197,37 @@ async def missing_tables(session: AsyncSession) -> tuple[str, ...]:
     return tuple(
         name for name in sorted(models.Base.metadata.tables) if name not in present
     )
+
+
+def _online_backup(source: Path, destination: Path) -> None:
+    source_uri = f"file:{quote(str(source), safe='/')}?mode=ro"
+    with (
+        sqlite3.connect(source_uri, uri=True) as source_connection,
+        sqlite3.connect(destination) as destination_connection,
+    ):
+        source_connection.backup(destination_connection)
+
+
+@asynccontextmanager
+async def read_only_database(
+    path: Path,
+) -> AsyncIterator[async_sessionmaker[AsyncSession]]:
+    resolved = path.resolve()
+    if not resolved.is_file():
+        engine = create_read_only_engine(resolved)
+        try:
+            yield create_session_factory(engine)
+        finally:
+            await engine.dispose()
+        return
+    with TemporaryDirectory(prefix="job-pipeline-preview-") as temporary:
+        snapshot = Path(temporary) / resolved.name
+        await asyncio.to_thread(_online_backup, resolved, snapshot)
+        engine = create_read_only_engine(snapshot)
+        try:
+            yield create_session_factory(engine)
+        finally:
+            await engine.dispose()
 
 
 @asynccontextmanager

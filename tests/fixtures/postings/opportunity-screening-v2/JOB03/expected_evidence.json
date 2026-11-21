@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "JOB03",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "development",
+  "source_content_sha256": "9c493202270a1d34736bec7f73404e9fc1a047a218c44c60fe9dd8c6f035f515",
+  "decision": "unknown",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "JOB03-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "work with full overlap in the Italian time zone (CET/CEST).",
+        "full overlap in the Italian time zone"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

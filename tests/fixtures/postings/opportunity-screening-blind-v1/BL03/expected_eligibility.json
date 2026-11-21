@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL03",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "CO-Bogotá | CO-Barranquilla | CR-H-Costa Rica"
+  ],
+  "rationale": "Location list includes Costa Rica alongside Colombian cities.",
+  "partition": "blind",
+  "source_content_sha256": "527b14c46a3e13131959386f9eba1edb9ed5a585c0ff216b5db9dd837aaea96a",
+  "provenance": {
+    "company": "Auxis",
+    "title": "Network Engineer Sr.",
+    "source_url": "https://jobs-auxis.icims.com/jobs/4990/sr-network-engineer/job?in_iframe=1",
+    "captured_at_utc": "2026-11-21T15:48:53.853533+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

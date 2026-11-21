@@ -14,6 +14,7 @@ from job_pipeline.cli.common import (
     add_verbosity_argument,
     fail,
     open_database,
+    resolve_model,
     run_async,
 )
 from job_pipeline.persistence import jobs_repo
@@ -94,6 +95,9 @@ async def _run(args: argparse.Namespace) -> None:
 def execute(args: argparse.Namespace) -> None:
     configure_logging(args.verbose)
     load_dotenv()
+    resolve_model(
+        args, "extraction" if args.from_phase == "extraction" else "eligibility"
+    )
     stages.preflight_provider(args.model)
     run_async(_run(args))
 

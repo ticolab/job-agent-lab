@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Capture a frozen rendered-HTML snapshot of a company's listing page.
 
-Used by the snapshot regression harness described in ``ARCHITECTURE.md``.
+Used by the snapshot regression harness described in ``docs/ARCHITECTURE.md``.
 Each invocation renders ``company.job_board_url`` in headless Chromium
 (with the same launch arguments the production agent uses), runs the
 production matcher as a sanity check, and writes ``page.html`` plus

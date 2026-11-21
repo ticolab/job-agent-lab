@@ -1,0 +1,63 @@
+Principal Engineer, Developer Surfaces Lead
+About us
+Appnovation is the AI Product Company. Headquartered in Vancouver, Canada, with teams around the world, Appnovation builds AI products, delivers enterprise AI and digital solutions, and co-invests with clients to bring new AI products to market.
+Open source has been the foundation of Appnovation's work since 2007, and it remains the foundation underneath every AI product the company builds today. Appnovation teams work with organizations in highly regulated industries, including global leaders such as Pfizer, Google and AstraZeneca, to help them adopt AI they can govern and own.
+Technology is foundational to all of Appnovation’s offerings, from consulting to digital innovation to digital product and service creation. The technology department is focused on delivering software solutions that enable rich consumer experiences, from mobile and web applications to advanced analytics and machine learning, to content and engagement management service enablement platforms.
+Inherent throughout our tech capabilities is deep expertise in the Software Development Life Cycle, a drive for creativity, a passion for the craft, and collaboration with other disciplines - all foundational ingredients in successful digital experiences and client partnerships.
+ABOUT THE ROLE
+We are seeking a Principal Engineer to lead the technical direction of an internal developer platform for a global life sciences client. The platform is the paved road that lets any engineering team take an idea from a laptop to production in minutes, whether that’s a web application, an autonomous AI agent or an MCP (Model Context Protocol) server.
+Developers reach the platform through several surfaces: native Mac and Windows desktop apps, web-based tooling and programmatic MCP interfaces. Each one is built and owned by a strong, independent engineering team. You will own the technical direction, architecture and delivery across all of them, bringing them together into one coherent developer experience without slowing down the engineers who already own each surface.
+This is a senior technical leadership role with no direct reports. You will lead through influence and hands-on credibility, especially in the Electron and Vue desktop codebase. You will also be accountable for security- and privacy-first capabilities and for a better day-to-day experience for developers, measured through a quarterly Developer Experience (DX) survey.
+ROLE RESPONSIBILITIES
+- • Technical Direction Across Surfaces: Be the top technical authority across the desktop (Mac and Windows), web and MCP surfaces. Make the calls on technology choices, design approach, solution architecture and implementation, and turn different team approaches into one coherent direction.
+- • Hands-On Engineering: Stay close to the code, especially the Electron and Vue desktop codebase. Lead or take part in code reviews and step into the hardest problems yourself.
+- • Delivery Across Teams: Line up objectives, dependencies and schedules across the surface teams to keep them unblocked, and take work from idea to production against program OKRs and KPIs.
+- • Security and Privacy by Design: Make sure privacy and security are built into the design from the start, not added later. Promote secure code hygiene, guide secure SaaS configuration, and work with security teams on vulnerabilities, defences and compliance.
+- • Developer Experience: Act on Developer Experience (DX) survey findings and team feedback to make it easier for engineers to deliver, and create an environment where engineers can do their best work.
+- • Stakeholder and Architecture Partnership: Represent engineering in program and stakeholder meetings. Translate between business stakeholders, enterprise and business architects, vendors and developers, flag risks early, and give ballpark estimates.
+- • Engineering Standards and Community: Work with other Principal Engineers, including through the Principal Engineers Forum, to share best practices and quality standards. Push for automation, DevOps and an “everything as code instead of paperwork” mindset.
+- • Incident Management and Resilience: Lead or support the response to security incidents and operational outages, guide the team to fix issues quickly, and run post-mortems to prevent repeats. Work with operations and support teams to keep day-to-day operations running smoothly.
+- • Technical Mentorship: Mentor and coach engineers across each surface, build agreement among strong, independent contributors, and support the growth of the wider team.
+QUALIFICATIONS
+- • 10+ years of experience in frontend, desktop or developer tooling engineering, with growing responsibility for delivering digital solutions, products and services.
+- • Bachelor’s or Master’s degree in Computer Science, Engineering or a related field.
+- • Hands-on experience building and shipping developer-facing tools across more than one surface, ideally including Electron and Vue, shown through shipped apps, public repositories or code samples.
+- • Broad technical knowledge across frontend, desktop and backend systems: a genuine full-stack generalist who leans frontend.
+- • Experience with the Model Context Protocol (MCP) or similar programmatic interfaces for AI agents and scripts.
+- • Proven ability to lead without positional authority and build agreement across teams you don’t manage.
+- • Deep understanding of privacy and security by design, DevSecOps, CI/CD, RESTful APIs, and integration and microservice patterns.
+- • Experience delivering large-scale enterprise software in a global 24/7 environment, working in a DevOps model.
+- • Excellent communication skills, including explaining complex topics simply to senior non-technical stakeholders and working well asynchronously with distributed teams.
+- • Based in the UK or Europe with the right to work there, and able to work GMT/BST hours.
+PREFERRED QUALIFICATIONS
+- • Experience delivering MCP or edge services on Cloudflare Workers or similar serverless platforms.
+- • Experience in pharma, life sciences or another regulated industry, including its data handling rules, policies and standards.
+- • Experience with Agile and lean delivery (Scrum, Kanban), including estimating complex technical stories and breaking them down.
+- • Systems thinking shown by designing complex solutions that integrate multiple systems.
+- • Professional certifications in engineering leadership.
+LEADERSHIP CAPABILITIES
+- • Technical Strategy and Judgment: Connects the needs of each surface, the platform strategy and new technology into one practical direction, and is honest about which problems need a new approach and which are already solved.
+- • Influence and Partnership: Builds agreement and drives decisions across strong, independent teams without relying on formal authority.
+- • Technical Depth and Breadth: Brings hands-on credibility across desktop, web and MCP to guide engineers, challenge assumptions and make sound platform-scale choices.
+- • Security and Privacy Mindset: Designs for security, privacy and compliance from the start, so solutions can pass review in a regulated setting.
+- • Developer Empathy: Treats developers as customers, uses DX data and feedback to decide what to improve, and protects the speed of the teams who own each surface.
+WHO YOU ARE
+- • You have a customer-first mindset and a devotion to customer service
+- • You are the person people bring the hard questions to, and you are comfortable in that role
+- • You are comfortable with uncertainty and new technology, and can learn quickly from documentation
+- • You can explain complex technical solutions to technical and non-technical audiences and connect them to measurable business value
+- • You engage and build positive internal and external client relationships, while managing multiple initiatives, often with competing priorities
+- • You have solid analytical, problem-solving and decision-making skills, with strong attention to detail
+- • You set high standards for code quality, test coverage, performance, scalability and security and seek continuous improvement
+- • You document your work and collaborate well asynchronously
+- • You are responsive and thrive in a fast-paced, diverse, high-performance environment with rapidly changing business needs
+- • You don’t expect to know everything, and you are open to learning new things
+- • You have prior experience in consulting
+- • Prior experience and connections in the Life Sciences industry is preferred
+#LI-Remote
+Accommodations are available upon request throughout the recruitment process.
+Create a Job Alert
+Interested in building your career at Appnovation Technologies? Get future opportunities sent straight to your email.
+Apply for this job
+*
+indicates a required field

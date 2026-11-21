@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "case_id": "BL08",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "fefb15c7d26214dd7e6e3517eb926e689f2073d71151d3f6b21e1f36475dca98",
+  "decision": "unknown",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL08-E01",
+      "role": "either",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Argentina"
+      ]
+    },
+    {
+      "obligation_id": "BL08-E02",
+      "role": "either",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Location: LATAM (Remote)",
+        "LATAM (Remote)"
+      ]
+    }
+  ],
+  "conflict_pairs": [
+    [
+      "BL08-E01",
+      "BL08-E02"
+    ]
+  ]
+}

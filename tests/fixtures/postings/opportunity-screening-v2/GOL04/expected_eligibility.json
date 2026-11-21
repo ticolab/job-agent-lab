@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "case_id": "GOL04",
+  "reviewed": true,
+  "decision": "unknown",
+  "must_cite": [
+    "Contractor · Full Time · Remote in Latin America · CST & IST overlap · Professional English fluency",
+    "100% Remote Work — Work from anywhere in South America."
+  ],
+  "rationale": "Concrete LATAM versus South America conflict retained; no precedence or boilerplate exception approved.",
+  "partition": "exposed_regression",
+  "source_content_sha256": "cd894581ccffe0d709677b377a0e58260e3479fb490e1333064c8a997c5acfa9",
+  "provenance": {
+    "company": "Golabs Tech",
+    "title": "AI Engineering Manager",
+    "source_url": "https://recruitcrm.io/apply/17925326109480117843lFf?source=Jobspage&new=yes",
+    "captured_at_utc": "2026-11-01T20:49:24.143408+00:00"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_accepted_unchanged",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "unknown",
+    "source_partition": "test"
+  }
+}

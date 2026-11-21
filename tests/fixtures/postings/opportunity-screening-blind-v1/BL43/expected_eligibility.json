@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL43",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "Location: CRI-Costa Rica-Belen"
+  ],
+  "rationale": "Role location is Costa Rica (Belén).",
+  "partition": "blind",
+  "source_content_sha256": "c1b7d2040e98c5ea7b1be6bf83b778cce1966b559ac2c084894b7c55c5e73485",
+  "provenance": {
+    "company": "Align Technology",
+    "title": "Customer Service Agent- English (Belen ONLY)",
+    "source_url": "https://jobs.aligntech.com/en/postings/19e8d7b8-1569-4574-8402-d2104dfe7e44",
+    "captured_at_utc": "2026-11-21T15:50:20.842368+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

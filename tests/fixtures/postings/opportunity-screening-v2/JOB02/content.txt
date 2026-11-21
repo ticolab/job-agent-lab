@@ -1,0 +1,7 @@
+Senior PLC Engineer
+
+We’re looking for a PLC Engineer based in Mexico to develop, modify, and troubleshoot PLC programs on Allen-Bradley and Siemens control systems. You’ll travel to customer sites in the US for extended periods (typically six weeks or longer) to support installation, commissioning, and start-up, working directly with customer teams to get systems running smoothly
+Key Requirements:
+5+ years of hands-on PLC programming in industrial automation environments.
+Strong experience with Allen-Bradley and Siemens PLCs.
+Availability for extended travel to the US, with on-site periods of around six weeks or longer, and a valid US visa.

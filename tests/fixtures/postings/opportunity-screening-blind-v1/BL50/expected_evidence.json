@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL50",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "317f76ea81efe47b628a553233ea7f0aa0933761785d974e5e32c0c429ad8456",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL50-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Argentina; Brazil; Chile; Colombia; Costa Rica"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

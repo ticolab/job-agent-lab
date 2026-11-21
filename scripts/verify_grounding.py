@@ -1,8 +1,17 @@
-"""Verify that persisted evidence quotes occur in their stored posting text."""
+"""Verify that persisted evidence excerpts occur in their stored posting text.
+
+Decision rows are checked bucket by bucket (supporting evidence in
+``evidence_json``, conflicting evidence in ``conflicting_evidence_json``) with
+the eligibility leaf's normalized-exact grounding. Extraction results are
+checked with the extractor's whitespace and case normalization. A miss reports
+its location, a SHA-256 digest, and a character count, never the excerpt or
+posting text itself. The database is opened read-only.
+"""
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sqlite3
 import sys
@@ -13,6 +22,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from job_discovery.settings import DATABASE_PATH
+from job_eligibility import grounding_text
 
 SourceKind = Literal["decision", "result"]
 
@@ -24,12 +34,25 @@ class GroundingMiss:
     job_id: int
     content_id: int
     path: str
-    quote: str
+    detail: str
 
 
 def normalize(text: str) -> str:
-    """Apply the leaves' shared grounding normalization."""
+    """Apply the extractor's grounding normalization."""
     return " ".join(unicodedata.normalize("NFKC", text).casefold().split())
+
+
+_Row = tuple[int, int, int]
+
+
+def _miss(source: SourceKind, row: _Row, path: str, detail: str) -> GroundingMiss:
+    row_id, job_id, content_id = row
+    return GroundingMiss(source, row_id, job_id, content_id, path, detail)
+
+
+def _safe_detail(value: str) -> str:
+    digest = hashlib.sha256(value.encode()).hexdigest()
+    return f"not_in_posting sha256={digest} chars={len(value)}"
 
 
 def _quote_lists(value: Any, path: str = "$") -> Iterator[tuple[str, str]]:
@@ -52,89 +75,89 @@ def _quote_lists(value: Any, path: str = "$") -> Iterator[tuple[str, str]]:
             yield from _quote_lists(child, f"{path}[{index}]")
 
 
-def _decision_quotes(value: Any) -> Iterator[tuple[str, str]]:
-    if not isinstance(value, list):
-        raise ValueError("decision evidence must be a JSON array")
-    for index, quote in enumerate(value):
+def _bucket(raw: str | None, name: str) -> Iterator[tuple[str, str]]:
+    if raw is None:
+        return
+    values = json.loads(raw)
+    if not isinstance(values, list):
+        raise ValueError(f"{name} must be a JSON array")
+    for index, quote in enumerate(values):
         if not isinstance(quote, str) or not quote.strip():
-            raise ValueError("decision evidence entries must be nonempty strings")
-        yield f"$.evidence[{index}]", quote
+            raise ValueError(f"{name} entries must be nonempty strings")
+        yield f"$.{name}[{index}]", quote
 
 
-def _check_rows(
-    connection: sqlite3.Connection,
-    *,
-    source: SourceKind,
-    table: str,
-    payload_column: str,
-) -> list[GroundingMiss]:
+def _decision_misses(connection: sqlite3.Connection) -> list[GroundingMiss]:
+    columns = {row[1] for row in connection.execute("PRAGMA table_info(job_decisions)")}
+    conflicting = (
+        "source.conflicting_evidence_json"
+        if "conflicting_evidence_json" in columns
+        else "NULL"
+    )
     query = f"""
         SELECT source.id, source.job_id, source.content_id,
-               source.{payload_column}, content.text
-        FROM {table} AS source
+               source.evidence_json, {conflicting}, content.text
+        FROM job_decisions AS source
         JOIN job_contents AS content ON content.id = source.content_id
         ORDER BY source.id
     """
     misses: list[GroundingMiss] = []
-    for row_id, job_id, content_id, raw_payload, posting_text in connection.execute(
+    for row_id, job_id, content_id, supporting, opposing, text in connection.execute(
         query
     ):
-        try:
-            payload = json.loads(raw_payload)
-            quotes = (
-                _decision_quotes(payload)
-                if source == "decision"
-                else _quote_lists(payload)
-            )
-            normalized_posting = normalize(posting_text)
+        row = (row_id, job_id, content_id)
+        posting = grounding_text(text)
+        for name, raw in (
+            ("supporting_evidence", supporting),
+            ("conflicting_evidence", opposing),
+        ):
+            try:
+                quotes = list(_bucket(raw, name))
+            except (json.JSONDecodeError, ValueError, TypeError) as exc:
+                misses.append(_miss("decision", row, "$", f"invalid payload: {exc}"))
+                continue
             for path, quote in quotes:
-                if normalize(quote) not in normalized_posting:
-                    misses.append(
-                        GroundingMiss(
-                            source=source,
-                            row_id=row_id,
-                            job_id=job_id,
-                            content_id=content_id,
-                            path=path,
-                            quote=quote,
-                        )
-                    )
+                normalized = grounding_text(quote)
+                if not normalized or normalized not in posting:
+                    misses.append(_miss("decision", row, path, _safe_detail(quote)))
+    return misses
+
+
+def _result_misses(connection: sqlite3.Connection) -> list[GroundingMiss]:
+    query = """
+        SELECT source.id, source.job_id, source.content_id,
+               source.result_json, content.text
+        FROM job_results AS source
+        JOIN job_contents AS content ON content.id = source.content_id
+        ORDER BY source.id
+    """
+    misses: list[GroundingMiss] = []
+    for row_id, job_id, content_id, raw_payload, text in connection.execute(query):
+        row = (row_id, job_id, content_id)
+        try:
+            posting = normalize(text)
+            found = [
+                _miss("result", row, path, _safe_detail(quote))
+                for path, quote in _quote_lists(json.loads(raw_payload))
+                if normalize(quote) not in posting
+            ]
         except (json.JSONDecodeError, ValueError, TypeError) as exc:
-            misses.append(
-                GroundingMiss(
-                    source=source,
-                    row_id=row_id,
-                    job_id=job_id,
-                    content_id=content_id,
-                    path="$",
-                    quote=f"invalid payload: {exc}",
-                )
-            )
+            found = [_miss("result", row, "$", f"invalid payload: {exc}")]
+        misses.extend(found)
     return misses
 
 
 def verify(connection: sqlite3.Connection) -> list[GroundingMiss]:
     """Return every ungrounded or malformed persisted evidence value."""
-    misses = _check_rows(
-        connection,
-        source="decision",
-        table="job_decisions",
-        payload_column="evidence_json",
-    )
-    misses.extend(
-        _check_rows(
-            connection,
-            source="result",
-            table="job_results",
-            payload_column="result_json",
-        )
-    )
-    return misses
+    return [*_decision_misses(connection), *_result_misses(connection)]
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Check persisted decision and result evidence grounding."
+        description=(
+            "Check persisted decision (supporting and conflicting) and result "
+            "evidence grounding."
+        )
     )
     parser.add_argument(
         "--database",
@@ -161,7 +184,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     for miss in misses:
         print(
             f"{miss.source} row={miss.row_id} job={miss.job_id} "
-            f"content={miss.content_id} path={miss.path} quote={miss.quote!r}"
+            f"content={miss.content_id} path={miss.path} {miss.detail}"
         )
     print(f"grounding_misses={len(misses)}")
     return int(bool(misses))

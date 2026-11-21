@@ -1,0 +1,62 @@
+Senior Fullstack Developer
+About us
+Appnovation is the AI Product Company. Headquartered in Vancouver, Canada, with teams around the world, Appnovation builds AI products, delivers enterprise AI and digital solutions, and co-invests with clients to bring new AI products to market.
+Open source has been the foundation of Appnovation's work since 2007, and it remains the foundation underneath every AI product the company builds today. Appnovation teams work with organizations in highly regulated industries, including global leaders such as Pfizer, Google and AstraZeneca, to help them adopt AI they can govern and own.
+We are hiring a UK-based Senior Developer to join a new dedicated Appnovation team serving a range of clients across different industries.
+The team builds and runs corporate and enterprise-scale web properties on a composable stack: headless CMS, Node and React front ends, and the integrations that connect them to each client’s wider platform.
+This is a hands-on engineering role. You will build features, migrations and integrations end to end, working within the technical direction set by the account’s technical lead, and helping keep the codebase to a high standard.
+What you will do
+Build and deliver
+- • Build front ends in React (ideally Next.js) and back-end services in Node.js and TypeScript.
+- • Implement content models, components and editorial features in headless CMS platforms such as Sanity, Contentful, Builder.io, Strapi or Webflow.
+- • Build and maintain integrations between the CMS and other systems, such as CRM, DAM, search and analytics, using REST and GraphQL APIs and webhooks.
+- • Deliver content and platform migrations, using n8n or similar tools alongside Node scripts for content mapping, transformation and redirects.
+- • Contribute to estimates and backlog refinement, and flag risks or blockers early.
+Quality and standards
+- • Write clean, tested, maintainable code, and test your own work before it reaches QA.
+- • Take part in code review, giving and receiving feedback constructively.
+- • Build to WCAG 2.2 AA accessibility standards, checking with automated tools and manual keyboard and screen-reader testing.
+- • Apply technical SEO best practice, including semantic HTML, structured data and metadata, and structure content so it works well in AI-driven search (AEO and GEO).
+- • Build to performance budgets and Core Web Vitals targets (LCP, INP, CLS).
+AI-assisted development
+- • Use AI coding tools such as Claude Code, GitHub Copilot or Cursor as part of your daily work, following the team's agreed practices.
+- • Review, test and understand all AI-generated code before committing it, holding it to the same standard as hand-written code.
+- • Keep client data and secrets out of prompts, and raise concerns about AI-generated code that is duplicated, inconsistent or insecure.
+Team and collaboration
+- • Work closely with the Technical Lead, designers, QA and the project manager to deliver against sprint goals.
+- • Document the features, integrations and migration steps you build so others can maintain them.
+- • Support and pair with less experienced developers.
+- • Join client technical discussions when needed, explaining your work clearly.
+What success looks like
+- • You deliver reliably. Features, integrations and migrations ship to the agreed standard and on time.
+- • Your code holds up. It passes review, meets accessibility and performance targets, and is easy for others to maintain.
+- • AI speeds you up, not slows you down. You use AI tools to work faster without adding defects or rework.
+- • Your work is documented. Another developer can pick up what you built from what is written down. You are familiar with project processes and standard tools such as Jira.
+What you bring
+Required
+- • 5+ years in professional web development.
+- • Experience building corporate or enterprise-scale websites, ideally multi-site or multi-region.
+- • Agency or consulting experience.
+- • Clear communication with both technical and non-technical colleagues.
+- • Right to work in the UK.
+Technical skills
+- • React: strong production experience, ideally with Next.js.
+- • Node.js and TypeScript: building APIs, serverless functions and scripts.
+- • Headless CMS: hands-on experience with at least one of Sanity, Contentful, Builder.io, Strapi or Webflow.
+- • Integrations: REST and GraphQL APIs, webhooks and authentication (OAuth, SSO).
+- • Migrations: content or platform migration experience, ideally using n8n or similar automation tools.
+- • Web standards: working knowledge of WCAG 2.2 AA accessibility, technical SEO and Core Web Vitals.
+- • Engineering practice: Git, CI/CD and automated testing.
+- • AI-assisted development: comfortable using AI coding tools, with the judgement to review and correct their output.
+Nice to have
+- • Experience with more than one headless CMS, or with composable commerce or search platforms (e.g. Shopify, commercetools, Algolia).
+- • Experience integrating AI solutions into projects.
+- • Familiarity with AEO and GEO, structured data and AI-driven search.
+- • Familiarity with design systems such as ShadCN and tools such as Storybook and Figma.
+#LI-Remote
+Accommodations are available upon request throughout the recruitment process.
+Create a Job Alert
+Interested in building your career at Appnovation Technologies? Get future opportunities sent straight to your email.
+Apply for this job
+*
+indicates a required field

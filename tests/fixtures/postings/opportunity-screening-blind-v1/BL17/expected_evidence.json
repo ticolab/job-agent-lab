@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL17",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "deb682b5b576a9a59f278fdfd5fe1ffa93a713b4bc66e10b7cb8bc916b0319f3",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL17-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Costa Rica"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

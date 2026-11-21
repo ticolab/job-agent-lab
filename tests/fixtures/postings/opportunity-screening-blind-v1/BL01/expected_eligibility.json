@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL01",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "Presencial – San José, Costa Rica"
+  ],
+  "rationale": "On-site in San José, Costa Rica; must reside there.",
+  "partition": "blind",
+  "source_content_sha256": "ba96c0371cc32d0ef349f6e3d64df37893b065878ed9d6f36a3e13e29c0a50ec",
+  "provenance": {
+    "company": "Rekluti",
+    "title": "Jefe Administrativo Financiero – Costa Rica",
+    "source_url": "https://easyapplyrekluti.recruitee.com/o/contador-general-senior-kruger-2",
+    "captured_at_utc": "2026-11-21T15:49:35.374885+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

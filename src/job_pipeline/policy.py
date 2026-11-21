@@ -7,14 +7,17 @@ from datetime import datetime, timedelta
 from typing import Literal, Protocol
 
 from job_discovery.persistence.timestamps import utc_now
-from job_eligibility.validate import UngroundedEvidenceError as EligibilityEvidenceError
+from job_eligibility.validate import EligibilityValidationError
+from job_eligibility.validate import (
+    UngroundedEvidenceError as EligibilityEvidenceError,
+)
 from job_extractor.validate import UngroundedEvidenceError as ExtractionEvidenceError
 from job_pipeline.content.model import (
     RETRYABLE_CATEGORIES,
     TERMINAL_CATEGORIES,
     AcquisitionFailure,
 )
-from job_pipeline.llm import ModelCallError, ModelResponseError
+from job_pipeline.llm import ModelCallError, ModelResponseError, ReasoningEffort
 from job_pipeline.settings import (
     DEFAULT_BROWSER_CONCURRENCY,
     DEFAULT_HTTP_CONCURRENCY,
@@ -86,6 +89,8 @@ class PipelinePolicy:
     retry_backoff: timedelta = RETRY_BACKOFF
     limit: int | None = None
     model: str = DEFAULT_MODEL
+    # None pins temperature 0; a value is sent to reasoning models instead.
+    reasoning_effort: ReasoningEffort | None = None
 
     def claim_ceiling(self, stage: Literal["eligibility", "extraction"]) -> int:
         return (
@@ -109,7 +114,7 @@ def classify_failure(
         return failure.category, failure.category in RETRYABLE_CATEGORIES
     if isinstance(failure, ModelCallError):
         return "model_call", True
-    if isinstance(failure, ModelResponseError):
+    if isinstance(failure, (ModelResponseError, EligibilityValidationError)):
         return "validation_failed", True
     if isinstance(failure, (EligibilityEvidenceError, ExtractionEvidenceError)):
         return "ungrounded_evidence", True

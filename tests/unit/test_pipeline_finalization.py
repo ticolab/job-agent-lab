@@ -22,7 +22,12 @@ from sqlalchemy.orm import Session
 
 from job_discovery.persistence.engine import create_engine, create_session_factory
 from job_discovery.persistence.timestamps import utc_now
-from job_eligibility import POLICY_VERSION, EligibilityResponse
+from job_eligibility import (
+    ELIGIBILITY_PROMPT_HASH,
+    ELIGIBILITY_VERSION,
+    MISSING_INFORMATION_REASON,
+    EligibilityResponse,
+)
 from job_extractor import EXTRACTOR_VERSION
 from job_pipeline.content import ladder
 from job_pipeline.content.model import AcquiredContent
@@ -80,13 +85,14 @@ class UnknownCaller(IneligibleCaller):
         self, messages: Sequence[Mapping[str, str]], schema: type[T]
     ) -> Completion[T]:
         completion = await super().complete(messages, schema)
-        payload = json.loads(completion.raw_json)
-        payload["decision"] = "eligible"
-        payload["reason"] = "Unsupported eligibility claim."
-        payload["evidence"] = ["Canada"]
-        payload["signals"]["locations_named"] = []
-        payload["signals"]["locations_named_evidence"] = []
-        raw = json.dumps(payload)
+        raw = json.dumps(
+            {
+                "decision": "unknown",
+                "reason": MISSING_INFORMATION_REASON,
+                "supporting_evidence": [],
+                "conflicting_evidence": [],
+            }
+        )
         return replace(completion, parsed=schema.model_validate_json(raw), raw_json=raw)
 
 
@@ -144,9 +150,10 @@ async def _seed_reused(factory: Factory) -> int:
             trigger="scheduled",
             reason=None,
             model="test",
-            policy_version=POLICY_VERSION,
+            policy_version=ELIGIBILITY_VERSION,
             extractor_version=EXTRACTOR_VERSION,
             started_at=utc_now(),
+            eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
         )
     async with factory() as session:
         content_id = await contents_repo.store(
@@ -172,7 +179,12 @@ async def _seed_reused(factory: Factory) -> int:
             attempt_id=attempt_id,
             content_id=content_id,
             decision=decisions_repo.DecisionInput(
-                "ineligible", "Canada", '["Canada"]', POLICY_VERSION
+                "ineligible",
+                "The role requires on-site work in Canada.",
+                '["Canada"]',
+                ELIGIBILITY_VERSION,
+                "[]",
+                ELIGIBILITY_PROMPT_HASH,
             ),
             decided_at=utc_now(),
         )
@@ -234,7 +246,7 @@ async def _build_path(
             1,
             deps,
             decisions_repo,
-            "accept_and_complete",
+            "finalize_eligibility",
             "unknown" if unknown else "completed_ineligible",
             "eligibility",
             tokens=(10, 2),
@@ -246,8 +258,8 @@ async def _build_path(
             name,
             1,
             deps,
-            jobs_repo,
-            "release",
+            decisions_repo,
+            "finalize_eligibility",
             "completed_ineligible",
             "eligibility",
             decision="ineligible",
@@ -357,8 +369,11 @@ async def _committed_state(
         if case.name.startswith("P1-"):
             assert decision.attempt_id == attempt.id
         if case.reused_decision_id is not None:
+            # A compatible decision is reused as-is: no new row, no model call,
+            # and the decision keeps the provenance of the attempt that made it.
             assert decision.id == case.reused_decision_id
             assert decision.attempt_id != attempt.id
+            assert decision.is_current_contract
             async with factory() as session:
                 assert len(await decisions_repo.history(session, case.job_id)) == 1
     else:
@@ -1099,10 +1114,11 @@ def test_stale_caller_cannot_finalize(
                                     trigger="scheduled",
                                     reason=None,
                                     model="test",
-                                    policy_version=POLICY_VERSION,
+                                    policy_version=ELIGIBILITY_VERSION,
                                     extractor_version=EXTRACTOR_VERSION,
                                     started_at=utc_now(),
                                     stage=case.deps.stage,
+                                    eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
                                 )
                             assert replacement_id is not None
                         async with factory() as session:
@@ -1303,10 +1319,11 @@ def test_stale_repository_boundary_reports_skipped(
                                 trigger="scheduled",
                                 reason=None,
                                 model="test",
-                                policy_version=POLICY_VERSION,
+                                policy_version=ELIGIBILITY_VERSION,
                                 extractor_version=EXTRACTOR_VERSION,
                                 started_at=utc_now(),
                                 stage=case.deps.stage,
+                                eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
                             )
                         assert replacement_id is not None
                     async with factory() as session:

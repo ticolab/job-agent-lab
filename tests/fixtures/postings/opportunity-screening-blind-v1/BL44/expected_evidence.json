@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "case_id": "BL44",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "f0589dc25eaa6835ee5b31a0e6626d0b594333b90c3802c8a16ae650ab3124a5",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL44-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "This is a 100% remote position",
+        "100% remote position",
+        "Costa Rica"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

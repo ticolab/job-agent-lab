@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL12",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "Primary work location: Grecia, Alajuela, Costa Rica"
+  ],
+  "rationale": "Primarily onsite in Grecia, Alajuela, Costa Rica; authorization required for the country of employment (Costa Rica).",
+  "partition": "blind",
+  "source_content_sha256": "521e79d5081b0b358b5ffe74df92b212f66cf02559f60dea056912db61d98ee1",
+  "provenance": {
+    "company": "Johnson & Johnson",
+    "title": "Manufacturing Engineer, Orthopedics, 2nd shift",
+    "source_url": "https://www.careers.jnj.com/en/jobs/r-110515/manufacturing-engineer-orthopeadics-2nd-shift-grecia-costa-rica/",
+    "captured_at_utc": "2026-11-21T15:50:48.772730+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}
