@@ -4,7 +4,7 @@ This document describes how job-posting eligibility works today, what the
 evaluation showed, what was released and why, and what remains to be done.
 "Eligible" means *retain the posting for follow-up* by one candidate who stays
 based in Costa Rica. It is not a judgment on payroll, work authorization, visa,
-schedule, skill fit, or vacancy (see `docs/GEOGRAPHIC_ELIGIBILITY_REVIEW.md`).
+schedule, skill fit, or vacancy.
 
 ## Status at a glance
 
@@ -92,6 +92,24 @@ counting the same call again as an evidence miss counted it twice. Every
 decision, safety, schema, structural, stability, and manual-review gate is
 unchanged. The amendment came after seeing the development near-miss, so the
 held-out and blind runs, not the development cases, carry the release evidence.
+
+## Where the labels come from
+
+The 32 postings in `opportunity-screening-v2` were collected on 2026-11-01 from
+eight companies and labelled by the operator (29 labels accepted unchanged, three
+overridden from unknown to eligible). The policy above is the result of that
+review. The earlier standalone review document was removed because its content
+now lives in the corpus: each case folder holds the posting text, the label, the
+operator's rationale, and the required quotes, and the manifest records the split
+and its history. Case-specific judgments to keep in mind:
+
+- GOL03 and OCE03 were first accepted as ineligible even though the foreign
+  location is not stated as "only". OCE03 was later changed to unknown (a foreign
+  header alone is not a restriction).
+- GOL04 stays unknown: no precedence of "Latin America" over "South America" was
+  approved.
+- KAK01 and KAK02 are resolved for *opportunity screening*, not legal eligibility.
+- JOB03 and JOB04 stay unknown rather than inheriting context from the job board.
 
 ## Evidence
 
@@ -197,7 +215,8 @@ uv run job-pipeline show --job 42                   # decision, evidence, contra
 | Prompt, schema, grounding | `src/job_eligibility/` |
 | Pipeline, persistence, CLI | `src/job_pipeline/` |
 | Defaults | `src/job_pipeline/settings.py` (`ELIGIBILITY_MODEL`, `ELIGIBILITY_REASONING_EFFORT`, `DEFAULT_MODEL`) |
-| Policy review | `docs/GEOGRAPHIC_ELIGIBILITY_REVIEW.md` |
+| Labels, rationale, and quotes per posting | `expected_eligibility.json` and `expected_evidence.json` in each corpus case folder |
+| The policy text the model sees | `SYSTEM_PROMPT` in `src/job_eligibility/prompt.py` |
 | Development and held-out corpus | `tests/fixtures/postings/opportunity-screening-v2/` |
 | Blind corpus | `tests/fixtures/postings/opportunity-screening-blind-v1/` |
 | Evaluator | `scripts/evaluate_leaf.py` (`--reasoning-effort`, `--partition blind`) |

@@ -204,7 +204,7 @@ reasoning effort passed the development gates under gate policy 2 and is frozen;
 its exposed-regression report is in `README.md`. It then failed the blind corpus
 gates (no false eligibles; grounding, two wrongful ineligibles, and stability
 failed) and was released by operator decision as the eligibility default and a
-starting point; `ELIGIBILITY_FLOW.md` records the state. Eligibility defaults to
+starting point; `docs/ELIGIBILITY_FLOW.md` records the state. Eligibility defaults to
 that model at `medium` effort, extraction keeps `gpt-4.1-mini`, and
 `pipeline_runs` and `job_attempts` record the effort in a nullable
 `reasoning_effort` column (null means `temperature=0`). No shadow evidence exists. Implementation and offline tests do not

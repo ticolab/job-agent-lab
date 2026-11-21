@@ -311,7 +311,7 @@ grounding rejected (grounding 0.992, critical evidence recall 0.993), and becaus
 the five RAI02 reasons still awaited operator disposition.
 
 Gate policy 2 (operator amendment, 2026-11-21, recorded in
-`ELIGIBILITY_FLOW.md` before any freeze): grounding must reach at least 99% of
+`docs/ELIGIBILITY_FLOW.md` before any freeze): grounding must reach at least 99% of
 calls rather than 100%, and critical evidence recall counts only grounded calls. A
 misquote is rejected and retried in production, never stored. The amendment came
 after seeing the near-miss above, so exposed-regression and blind results, not the
@@ -342,7 +342,7 @@ foreign remote countries plus Latin America), and four unstable safety cases
 missing-information form although each posting has one geographic line) were
 corrected after the run with decisions unchanged, as the manifest history records.
 The operator released the candidate anyway on 2026-11-21 as the eligibility
-default and a starting point. `ELIGIBILITY_FLOW.md` describes the current flow,
+default and a starting point. `docs/ELIGIBILITY_FLOW.md` describes the current flow,
 its known weaknesses, and the next steps; shadow review has not run.
 
 ### Operating discovery

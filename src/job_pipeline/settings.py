@@ -2,7 +2,7 @@
 
 Eligibility defaults to the frozen one-shot candidate, ``gpt-5.4-mini-2026-03-17``
 at medium reasoning effort, released as a starting point by operator decision on
-2026-11-21 although it failed the blind gates (see ``ELIGIBILITY_FLOW.md``).
+2026-11-21 although it failed the blind gates (see ``docs/ELIGIBILITY_FLOW.md``).
 Extraction keeps the inexpensive ``DEFAULT_MODEL``, which was never evaluated
 against another model. An explicit ``--model`` drops the eligibility default
 effort, because a non-reasoning model rejects one. Concurrency constants cap HTTP,
