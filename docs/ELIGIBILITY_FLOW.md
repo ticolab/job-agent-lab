@@ -147,7 +147,7 @@ Case-specific judgments to keep in mind:
    - BL04: the location line reads "Remote in Chile / Remote in Philippines /
      Remote in Latin America / Remote in Argentina". The model called it
      ineligible 2 of 5 times and unknown 3 of 5, although Latin America includes
-     Costa Rica.
+     Costa Rica. Details and a proposed rule: `ISSUE_BL04_LATAM_COUNTRY_LIST.md`.
    - Borderline cases occasionally flip: a bare US region label (BL11), and on
      the held-out set a perks line ("anywhere in South America") overriding the
      role header (GOL04).
@@ -155,10 +155,10 @@ Case-specific judgments to keep in mind:
    both lists (BL08, BL13), and a quote whose words were changed ("We don't" →
    "You don't"). These cost retries, not wrong decisions.
 3. **Fetching loses far more postings than the model does.** In a sample of 164
-   postings from 50 companies, about 20% could not be fetched (mostly redirects
-   to another site, plus blocks, timeouts, and not-found pages), and about 12%
-   returned a page that was not a real posting (a block page or "this job has
-   been filled").
+   postings from 50 companies, about 12% could not be fetched (off-site
+   redirects, blocks, timeouts, and not-found pages), and about 14% returned a
+   page that was not a real posting (a block page or "this job has been
+   filled"). Details and fixes: `ISSUE_FETCHING_LOSSES.md`.
 4. **Policy edges that may surprise.**
    - "Remote (PST/MST)" is eligible, because a time zone is a schedule.
    - A foreign city that appears only in a title is unknown, not ineligible.
