@@ -1,0 +1,48 @@
+Finance AI & Machine Learning Analyst (m/f/d)
+At Fujitsu, we have been shaping a more sustainable future through innovative technology since 1935. What began as a pioneer of computer technology in Japan has grown into a global leader in digital transformation, with approximately 130,000 employees across more than 50 countries worldwide.As part of the Fujitsu Group, Fsas Technologies plays an important role by delivering high-quality services and innovative solutions that help our customers succeed. Our teams combine deep technical expertise with close collaboration and a commitment to continuous growth and development. Together, we solve complex challenges, create lasting value, and support organizations across a wide range of industries in their transformation journeys.At Fsas Technologies, you will have the opportunity to apply your skills, learn new ones, and make a meaningful impact. Together, we shape the future of technology while contributing to Fujitsu’s broader purpose and vision.
+Apply now for one of our European locations in Germany, Austria, United Kingdom, Spain, Portugal, Belgium, Netherlands, or Finland
+Legal Entity: Fsas Technologies
+We would like to fill the position at the earliest possible date.
+Shape the Future of Finance with AI
+Are you passionate about Artificial Intelligence, Machine Learning and Data Analytics and ready to apply your skills to real-world Finance challenges?
+Join our Finance AI & Analytics team and help us turn financial data into intelligent solutions. From predictive forecasting and Generative AI to workflow automation, you will contribute to innovative use cases that support the transformation of Finance.
+Working alongside experienced colleagues and Finance stakeholders, you will translate business requirements into practical AI and analytics solutions while continuing to grow your technical expertise and understanding of financial processes.
+What You’ll Do
+- • Predictive Analytics & Forecasting: Support the development, testing and implementation of machine learning models and statistical approaches for financial forecasting and analytics.
+- • AI & Automation: Contribute to AI-based applications and workflow automation solutions for Finance processes.
+- • Generative AI: Support the implementation and testing of Generative AI use cases, including narrative reporting and interactive tools.
+- • Machine Learning Lifecycle: Contribute to data exploration, model development, testing, deployment support and monitoring.
+- • Finance Collaboration: Work closely with Finance stakeholders to translate business requirements into clearly defined AI and analytics tasks and identify opportunities for improvement.
+- • Responsible AI: Apply established standards for Responsible AI, data privacy, security and model governance.
+What You Bring
+- • A degree in Data Science, Artificial Intelligence, Machine Learning, Statistics or a related technical discipline.
+- • Approximately 1–2 years of relevant professional, internship or practical project experience in machine learning, predictive analytics or AI application development.
+- • Basic knowledge of financial data and processes, or a strong interest in developing this expertise.
+- • An interest in financial forecasting and Finance-related AI use cases. Experience in corporate finance, banking or fintech, including collaboration with FP&A or Treasury teams, is an advantage.
+- • Basic practical experience in developing and testing machine learning solutions.
+- • The ability to communicate technical concepts clearly to both technical and non-technical stakeholders.
+Your Technical Skills
+- • Programming & Development: Python, SQL, Git and solid software engineering practices
+- • Machine Learning & AI: Keras, TensorFlow and Scikit-Learn
+- • Data & Analytics: Enterprise data warehouses, time-series analysis and predictive modelling
+- • Generative AI: Basic knowledge of prompt engineering, RAG and Generative AI concepts
+- • Agentic AI: Interest in developing practical experience with agentic workflows
+- • MLOps: Familiarity with deployment concepts, containerised environments and CI/CD pipelines is an advantage
+- • AI Governance: Model validation, explainable AI (XAI), fairness metrics and automated monitoring
+Language
+- • Fluent English
+What We Offer You
+- • Flexible working hours and mobile working options that support a healthy balance between work and personal life, with no fixed office days.
+- • 30 days of annual leave, additional special leave for important life events and access to a time value account for personal projects and extended breaks.
+- • Personal and professional development through tailored talent programmes, coaching, mentoring and extensive learning platforms.
+- • A competitive, performance-based compensation package.
+- • Exclusive employee benefits and discounts.
+Interested?
+Ready to shape the future of Finance with AI and Machine Learning?
+Apply now and become part of our innovative and forward-thinking team.
+Even if you don’t meet every requirement, we encourage you to apply. We believe that potential, passion and personality are just as important as skills and experience.
+We look forward to receiving your application, including your earliest possible start date and salary expectations.
+Join FSAS Technologies and help us shape the future of Finance through AI, Machine Learning and intelligent automation.
+Learn more about FSAS Technologies www.fsastech.com/de-de
+#Europe_Priority
+At Fujitsu and Fsas Technologies, we are committed to fostering a workplace culture built on diversity, respect, and mutual appreciation. We believe that diverse perspectives strengthen collaboration, enrich our culture, and enable us to create better solutions for our customers and society.We promote equal opportunity throughout every stage of the employment lifecycle, from recruitment to career development. Employment decisions are based solely on qualifications, skills, experience, and the requirements of the role. Discrimination, harassment, or unfair treatment of any kind has no place within our organization. This commitment applies regardless of race, ethnicity, color, religion, sex, age, disability, marital status, sexual orientation, gender identity or expression, genetic information, veteran status, or any other characteristic protected by applicable law.These principles are fundamental to who we are and how we grow as an organization. We therefore welcome applications from individuals with diverse backgrounds, experiences, and perspectives. Every individual contributes to strengthening the trust of our customers, advancing our capabilities, and creating an environment where people can thrive, develop their potential, and achieve success together.

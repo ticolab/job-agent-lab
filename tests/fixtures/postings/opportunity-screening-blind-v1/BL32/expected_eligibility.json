@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL32",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "fully remote design team"
+  ],
+  "rationale": "Role joins a fully remote team; no location restriction.",
+  "partition": "blind",
+  "source_content_sha256": "79b8dba2aa5c7cf79d19930f4b6677f5e955c2b0a6c531a89eb437805ead1aad",
+  "provenance": {
+    "company": "doola",
+    "title": "Product Designer",
+    "source_url": "https://jobs.lever.co/doola/64cf6f36-b623-4b18-aa98-8fc6cdcbea62",
+    "captured_at_utc": "2026-11-21T15:49:06.670266+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

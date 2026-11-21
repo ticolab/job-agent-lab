@@ -1,0 +1,38 @@
+About doola
+doola is a dynamic company committed to simplifying the complexities of business formation, payment setup, compliance, taxes, and more. We empower entrepreneurs and businesses of all sizes to navigate financial and regulatory requirements with ease, so they can focus on what truly matters: building and growing their ventures.
+About the Role
+A magical user experience isn't just a bonus, it's central to everything we build. We're looking for an experienced, curious Product Designer to help us craft intuitive, engaging, and impactful experiences across our core platform.
+You'll join a small, fully remote design team spread across time zones and work closely with Product, Engineering, and Growth. You'll improve the dashboard our users rely on every day, from forming a company to managing bookkeeping, taxes, and complex financial workflows, and help shape what doola builds next. Your job is to make those experiences feel simple, clear, and even delightful.
+We design with AI as part of our everyday toolkit, from research synthesis and rapid prototyping to evolving our design system alongside engineering. If you're excited to tackle real user problems, move fast without losing craft, and have an outsized impact at an early-stage startup, this is your chance.
+\n
+- • Own key areas of the product end to end, from problem framing and discovery through ideation, prototyping, user testing, and production
+- • Translate PRDs, customer calls, and product data into clear user flows, design directions, and well-documented specs that engineering can build with confidence
+- • Design clean, elegant web interfaces that make complex financial and compliance workflows feel simple
+- • Partner with Product and Engineering to shape scope, make smart tradeoffs, and ship iteratively
+- • Contribute to and help evolve our Design System, including components, tokens, documentation, and governance, as it moves toward a closer design-to-code workflow
+- • Use AI tools thoughtfully across the design process, such as synthesizing research, exploring directions, prototyping in code, and automating repetitive work, and share what you learn with the team
+- • Participate in early-stage discovery for new product opportunities, helping the team validate ideas before committing to them
+- • Bring a strong point of view to critiques and help raise the quality bar across the team
+- • Report to the Design Lead and collaborate closely with Product Designers and Visual Designers on the team
+- • 5+ years of experience as a Product Designer, with a portfolio showing shipped work on complex web products
+- • Strong UX thinking, visual design skills, and clear written communication, especially in async, remote environments
+- • Deeply user-focused: you design with empathy and back decisions with research and data
+- • Hands-on experience applying AI to the design process (for example, AI-assisted prototyping, research synthesis, or design-to-code tools like Claude, Figma Make, Cursor, or similar), with good judgment about where it helps and where it doesn't
+- • Experience contributing to or maintaining a design system, ideally in close collaboration with front-end engineers
+- • Expert in Figma (components, variants, auto layout, variables, design systems)
+- • Comfortable with ambiguity and shifting priorities: you can move quickly, balance speed and quality, and stay focused in a fast-paced environment
+- • Proactive, self-motivated, and collaborative; you take initiative and drive projects to completion with minimal oversight
+- • Genuine interest in our mission and the impact we're creating
+- • Experience in fintech, SaaS, or products with regulatory, financial, or compliance complexity
+- • Experience at startups or within small, fast-moving, cross-functional teams
+- • Understanding of front-end development, or comfort prototyping in code. You don't need to be an engineer, but knowing how code works helps you design smarter, more feasible interfaces
+- • Experience with product discovery methods such as design sprints, opportunity mapping, or jobs-to-be-done
+- • Experience working across time zones in a distributed team
+Establishing team values is critical. We believe it's equally essential to identify team non-values. We're stronger in driving our mission home with both in mind. Our goal in sharing these up front is to be as straightforward with people as possible, not combative.
+Action item: If you read our values and non-values and get more fired up about working at doola, let's talk: doola.com/careers
+If you're passionate about helping businesses succeed and thrive, and you have the skills and experience outlined above, we want to hear from you. Join us at doola and be part of a team dedicated to simplifying the path to business success.
+doola is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees.
+Product Designer
+Key responsibilities
+Skills and qualifications
+Bonus qualifications

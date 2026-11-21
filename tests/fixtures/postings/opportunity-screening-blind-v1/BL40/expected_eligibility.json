@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL40",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "must be based in the United States"
+  ],
+  "rationale": "Must be based in the United States.",
+  "partition": "blind",
+  "source_content_sha256": "d1de80b4d5f83084f5f6cd786adeba119fc9d007c72574ff0b046b1feb4565fb",
+  "provenance": {
+    "company": "Sapphire Labs",
+    "title": "Business Development Executive – U.S. Market",
+    "source_url": "https://careers.sapphirelabs.io/jobs/684561-business-development-executive-u-s-market",
+    "captured_at_utc": "2026-11-21T15:51:49.782006+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

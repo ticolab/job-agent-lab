@@ -1,0 +1,61 @@
+# AI SYSTEMS ENGINEER / AGENTIC ENGINEER
+
+APPLY NOW
+
+Modality
+Full-time / Freelance
+
+Job Location
+LATAM
+
+## WHAT YOU WILL BE DOING
+
+Contract Duration: This is a temporary position with a 6-month contract.
+
+- Build and ship within the existing agent architecture and AI SDLC.
+- Use AI to create and maintain agents and skills that accelerate delivery through the backlog.
+- Run agent swarms as part of daily engineering work.
+- Ship AI-powered and agentic features into production across the landing page and CRM platforms.
+- Deliver output well above the current pace of roughly one small pull request per day.
+- Proactively flag, fix, or backlog small issues and tech debt found during assigned work.
+
+## WHAT WE'RE LOOKING FOR
+
+- An AI-forward working style, using AI to create and maintain agents and skills that accelerate the backlog.
+- Proven experience running agent swarms in real delivery work.
+- Demonstrated experience shipping AI-powered or agentic features that are actually in production, not just proofs of concept.
+- Solid hands-on experience building within an existing agent architecture.
+- Strong, practical skills working in Node.js and TypeScript.
+- Familiarity with AWS cloud infrastructure.
+- Hands-on experience working with Postgres databases.
+- A demonstrated track record of meaningful, consistent shipped output.
+- Hands-on experience with the stack: React, Tailwind, GraphQL, AWS, Postgres, DynamoDB, and TypeScript.
+
+### Culture Fit
+
+We are looking for someone who:
+
+- Moves with urgency and doesn't wait for permission.
+- Treats AI as a real capability multiplier rather than a buzzword.
+- Measures success by how much they unblock and upskill others.
+- Builds momentum without leaving people behind.
+- Stays calm under uncertainty, since the roadmap and team composition are still being shaped, and thrives in that environment.
+- Is decisive on people and process without requiring consensus.
+
+## WHAT WOULD BE A PLUS?
+
+- CRM and marketing automation domain and technical experience.
+- Terraform or OpenTofu experience for infrastructure as code.
+- A .NET or Windows background, given the CRM side of the platform.
+- Exposure to Ruby, Python, Java, or Clojure codebases.
+- Experience with MySQL, GrapesJS, or Radix.
+
+APPLY NOW
+
+LET'S WORK TOGETHER
+
+Be sure about the quality of your future
+
+SEE ALL OPEN POSITIONS
+
+Employer footer location: SAN JOSE, COSTA RICA

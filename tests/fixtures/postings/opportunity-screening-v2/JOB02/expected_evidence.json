@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "JOB02",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "development",
+  "source_content_sha256": "ac469025bf1665383faf604ebd25bfe23b4c61064fb0c30ec9fe438dd89503b8",
+  "decision": "ineligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "JOB02-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "We’re looking for a PLC Engineer based in Mexico",
+        "based in Mexico"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

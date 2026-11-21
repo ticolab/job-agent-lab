@@ -1,0 +1,64 @@
+More Jobs
+AI Engineering Manager
+Apply To This Job
+Close
+
+
+AI Engineering Manager – AI Patient Scheduling
+
+Contractor · Full Time · Remote in Latin America · CST & IST overlap · Professional English fluency
+
+Our client is a healthcare AI company building AI-driven patient access and engagement products for enterprise health systems, with Voice AI and consumer AI agents live in production and integrated with major EHRs such as Epic, Oracle Health (Cerner), and Athena.
+
+We are looking for a hands-on AI Engineering Manager to lead the team behind their self-service AI scheduling product, where patients book care through Voice AI agents, consumer AI agents, or an RCS chat interface. You will size and sequence the work, review designs and code, remove cross-team blockers, and drive roadmap commitments to production against customer dates.
+
+Responsibilities
+Platform ownership:
+Lead delivery across the scheduling platform: a Python/FastAPI service with REST and MCP interfaces, a LangGraph-based workflow runtime, OCR and LLM document ingestion with human-in-the-loop routing, and the MCP tools AI agents call during live patient interactions.
+Coordinate dependencies with the EHR integration (FHIR R4, Epic/Cerner/Athena), contact-center, MCP server, and Infra/Platform teams.
+Delivery ownership:
+Own roadmap items, epics, and release commitments; turn them into sequenced, sized work with clear acceptance criteria and drive them to production.
+Run the delivery cadence (planning, prioritization, status, risk escalation) and re-plan honestly when scope or dependencies move.
+Hands-on technical leadership:
+Review designs and code across the platform deeply enough to catch the decisions that cost the team later.
+Lead the technical response on production issues and customer escalations, and make sure root causes are fixed in the system.
+Cross-team coordination:
+Own the dependency map: what you are waiting on, who owns it, and the committed date.
+Negotiate interface contracts early and escalate blocked dependencies quickly and specifically.
+Team leadership:
+Lead a small, senior team distributed across South America, North America, and India: set expectations, give direct feedback, and build shared working norms.
+Assess capacity against the roadmap, flag gaps early, and onboard new engineers quickly into a large monorepo.
+Agentic SDLC adoption:
+Lead the team's move from a Cursor-based, copilot-assisted workflow to agent-driven delivery across planning, implementation, review, and testing.
+Hold agent-produced code to the same review, testing, and observability standards as hand-written code, and report on the pilot with evidence.
+Requirements
+7+ years in software engineering, with 2–3+ years managing or leading engineering teams, including distributed teams across time zones.
+Track record of owning delivery for a product or platform area end to end, from roadmap through production, including what went wrong.
+Current hands-on engineering ability: this role reviews code and makes technical calls, and is not a purely process-facing management role.
+Experience coordinating across multiple engineering teams with separate ownership and cadences.
+Strong backend background: Python and/or TypeScript, REST API design, relational data modeling, caching, and containerized services.
+Working understanding of LLM application patterns: agent orchestration, workflow graphs, tool/function calling, MCP, prompt and context design, and evaluation.
+Comfort with modern delivery infrastructure (Git-based workflow with code review, CI/CD, Docker, cloud deployment, observability tooling) and AI-assisted development tools in daily use.
+Ability to read an unfamiliar large codebase and form an accurate picture of it quickly.
+Professional fluency in English and the written communication skills to run cross-team coordination.
+Nice to Have
+Healthcare systems experience, particularly EHR integration (Epic, Oracle Health/Cerner, Athena) or FHIR.
+Voice AI, conversational AI, or contact-center platform experience.
+Document extraction / IDP pipelines, including human-in-the-loop review design.
+Multi-tenant SaaS with per-tenant isolation and configuration.
+Familiarity with HIPAA and PHI handling requirements in production systems.
+Experience leading a team through the adoption of AI-assisted or agentic development practices.
+Additional Information
+Reports to the Director of Engineering (North America).
+Requires working overlap with both CST and IST time zones.
+Interview process: a technical deep-dive on systems you built or led, a delivery-leadership discussion, a dependency-management and prioritization session, and a hands-on technical exercise.
+What We Offer
+Competitive USD Compensation — Get paid in USD.
+100% Remote Work — Work from anywhere in South America.
+Equipment Provided — We provide the equipment you need to do your best work.
+Paid Time Off — Enjoy 12 PTO days per year to rest, recharge, and take time for yourself.
+Local Public Holidays — Celebrate all official holidays in your country.
+Birthday Off — Enjoy your special day, on us!
+Career Growth Opportunities — Keep learning, developing your skills, and advancing your career.
+Recognition Program — Your contributions matter, and we make an effort to celebrate them.
+Paid Approved Leaves — Receive paid leave for eligible, approved absences, in accordance with company policies.

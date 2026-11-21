@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "BL35",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "c2a1cee637c233f6403c2a399c76d50934adece2693b0eb1fca3d04164473d9f",
+  "decision": "ineligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL35-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "operation of the American Fork office",
+        "Regular on-site presence and movement throughout the workplace are required."
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

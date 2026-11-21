@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "RAI02",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "development",
+  "source_content_sha256": "6983caf1c405db014ce20539c6a6846d07afab4333b042c72df6d6ef2523b9eb",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "RAI02-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Remote (anywhere)"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

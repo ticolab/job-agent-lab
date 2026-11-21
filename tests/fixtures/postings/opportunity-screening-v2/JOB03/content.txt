@@ -1,0 +1,7 @@
+Mid-level Android Engineer
+
+We are looking for a mid-level Android Engineer to join a cross-functional feature team within the Android chapter, building and maintaining features in a Kotlin app with Jetpack Compose and an internal design system. You will work on features, migrate legacy XML screens to Compose, and implement asynchronous flows such as background uploads during multi-step forms. You should also use AI coding tools daily and be able to validate their output, communicate clearly in English, and work with full overlap in the Italian time zone (CET/CEST).
+Key Requirements:
+3+ years of native Android development with Kotlin (main focus in recent years), with good knowledge of Coroutines and Flow.
+2+ years of hands-on experience with Jetpack Compose.
+Experience with Hilt and clean code/architectural patterns, with at least a conceptual understanding of MVI.

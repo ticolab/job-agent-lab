@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL41",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "This role will be based in Costa Rica"
+  ],
+  "rationale": "Role will be based in Costa Rica (US clients are context).",
+  "partition": "blind",
+  "source_content_sha256": "b8b7c49570634cf3c0f90ffae46800a095580fe3389d582c99cc29903cb54a3d",
+  "provenance": {
+    "company": "LSEG",
+    "title": "Account Manager",
+    "source_url": "https://lseg.wd3.myworkdayjobs.com/en-US/Careers/job/CRI-Lagunilla-de-Heredia-Ultra/Account-Manager_R0124942?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+    "captured_at_utc": "2026-11-21T15:49:22.921428+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

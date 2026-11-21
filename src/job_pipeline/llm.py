@@ -8,13 +8,15 @@ import time
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Protocol, TypeVar
+from typing import Any, Literal, Protocol, TypeVar
 
 import litellm
 from pydantic import BaseModel, ValidationError
 
 T = TypeVar("T", bound=BaseModel)
 RECORDING_VERSION = 1
+ReasoningEffort = Literal["minimal", "low", "medium", "high"]
+REASONING_EFFORTS: tuple[ReasoningEffort, ...] = ("minimal", "low", "medium", "high")
 
 
 @dataclass(frozen=True)
@@ -79,7 +81,12 @@ def _positive_token_count(usage: object | None, name: str) -> int | None:
 
 
 class LiteLLMCaller:
-    """Call one LiteLLM model with Pydantic structured output."""
+    """Call one LiteLLM model with Pydantic structured output.
+
+    Without ``reasoning_effort`` every call pins ``temperature=0``. With it, the
+    effort is sent and temperature is left at the provider default, because
+    reasoning models reject ``temperature=0`` while reasoning is active.
+    """
 
     def __init__(
         self,
@@ -87,25 +94,34 @@ class LiteLLMCaller:
         *,
         timeout: float,
         max_retries: int = 1,
+        reasoning_effort: ReasoningEffort | None = None,
     ) -> None:
+        if reasoning_effort is not None and reasoning_effort not in REASONING_EFFORTS:
+            raise ValueError(f"unsupported reasoning effort: {reasoning_effort}")
         self.model = model
         self.timeout = timeout
         self.max_retries = max_retries
+        self.reasoning_effort = reasoning_effort
 
     async def complete(
         self,
         messages: Sequence[Mapping[str, str]],
         schema: type[T],
     ) -> Completion[T]:
+        sampling: dict[str, object] = (
+            {"temperature": 0}
+            if self.reasoning_effort is None
+            else {"reasoning_effort": self.reasoning_effort}
+        )
         started = time.monotonic()
         try:
             response = await litellm.acompletion(
                 model=self.model,
                 messages=[dict(message) for message in messages],
                 response_format=schema,
-                temperature=0,
                 timeout=self.timeout,
                 max_retries=self.max_retries,
+                **sampling,
             )
         except Exception as exc:
             raise ModelCallError(self.model, str(exc)) from exc

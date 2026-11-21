@@ -26,7 +26,11 @@ from job_discovery.domain.company import Company
 from job_discovery.persistence import jobs_repo as discovery_jobs_repo
 from job_discovery.persistence import models as discovery_models
 from job_discovery.persistence.engine import create_engine, create_session_factory
-from job_eligibility import EligibilityResponse
+from job_eligibility import (
+    ELIGIBILITY_PROMPT_HASH,
+    ELIGIBILITY_VERSION,
+    EligibilityResponse,
+)
 from job_extractor import ExtractionResponse
 from job_pipeline.cli import common, eligibility, extraction, reprocess
 from job_pipeline.cli import main as main_module
@@ -73,18 +77,9 @@ class AcceptedCaller:
             raw = json.dumps(
                 {
                     "decision": "eligible",
-                    "reason": "The role names Costa Rica.",
-                    "evidence": ["Costa Rica"],
-                    "signals": {
-                        "locations_named": ["Costa Rica"],
-                        "locations_named_evidence": ["Costa Rica"],
-                        "remote_scope": "none_stated",
-                        "remote_scope_evidence": [],
-                        "exhaustive_country_list": None,
-                        "exhaustive_country_list_evidence": [],
-                        "work_authorization_required_in": [],
-                        "work_authorization_evidence": [],
-                    },
+                    "reason": "The role is located in Costa Rica.",
+                    "supporting_evidence": ["Costa Rica"],
+                    "conflicting_evidence": [],
                 }
             )
         elif schema is ExtractionResponse:
@@ -198,7 +193,14 @@ def test_dispatcher_and_policy_flags_use_real_parser() -> None:
         for row in __import__(
             "job_pipeline.cli.main", fromlist=["SUBCOMMANDS"]
         ).SUBCOMMANDS
-    } == {"preview", "run", "eligibility", "extraction", "reprocess", "show"}
+    } == {
+        "preview",
+        "run",
+        "eligibility",
+        "extraction",
+        "reprocess",
+        "show",
+    }
     args = parser.parse_args(
         [
             "eligibility",
@@ -479,7 +481,12 @@ async def _seed_audit(path: Path) -> tuple[async_sessionmaker[AsyncSession], int
             attempt_id=attempt_id,
             content_id=content_id,
             decision=decisions_repo.DecisionInput(
-                "eligible", "Costa Rica.", '["Costa Rica"]', "policy"
+                "eligible",
+                "Costa Rica api_key=top-secret " + "L" * 250 + ".",
+                json.dumps(["y" * 400 + " SECRET FULL POSTING TEXT"]),
+                ELIGIBILITY_VERSION,
+                json.dumps(["Costa Rica token=alternative-secret " + "R" * 250]),
+                ELIGIBILITY_PROMPT_HASH,
             ),
             decided_at=datetime(2026, 1, 1),
         )
@@ -522,9 +529,18 @@ def test_show_prints_audit_metadata_without_posting_text(
     output = capsys.readouterr().out
     assert "Content versions" in output
     assert "Attempts" in output
-    assert "evidence" in output
+    assert "supporting_evidence:" in output
+    assert "conflicting_evidence:" in output
+    assert "contract: current" in output
+    assert f"prompt_hash: {ELIGIBILITY_PROMPT_HASH}" in output
     assert '"title": "Engineer"' in output
     assert "SECRET FULL POSTING TEXT" not in output
+    assert "top-secret" not in output
+    assert "alternative-secret" not in output
+    assert "L" * 201 not in output
+    assert "R" * 201 not in output
+    assert "y" * 200 in output
+    assert "y" * 201 not in output
     assert '"private":"posting"' not in output
 
 
@@ -749,7 +765,11 @@ def test_completed_reprocess_retains_history_and_replaces_current_rows(
 ) -> None:
     path = tmp_path / "completed-reprocess.db"
     factory, job_id = run_async(_seed_audit(path))
-    monkeypatch.setattr(run, "caller_factory", lambda model, timeout: AcceptedCaller())
+    monkeypatch.setattr(
+        run,
+        "caller_factory",
+        lambda model, timeout, reasoning_effort=None: AcceptedCaller(),
+    )
     monkeypatch.setattr(run, "http_client_factory", _null_http)
     monkeypatch.setattr(run, "browser_factory", lambda enabled: _null_browser(enabled))
 
@@ -943,10 +963,14 @@ def test_run_injects_factories_and_keeps_job_failure_exit_zero(
         async def complete(self, messages: Any, schema: Any) -> Any:
             raise AssertionError("404 must stop before the model")
 
-    def fake_caller(model: str, timeout: float) -> StructuredCaller:
+    def fake_caller(
+        model: str, timeout: float, reasoning_effort: object = None
+    ) -> StructuredCaller:
         constructed["caller"] += 1
-        assert model
+        # Eligibility defaults to the released candidate and its effort.
+        assert model == common.settings.ELIGIBILITY_MODEL
         assert timeout > 0
+        assert reasoning_effort == common.settings.ELIGIBILITY_REASONING_EFFORT
         return UnusedCaller()
 
     @asynccontextmanager
@@ -1138,7 +1162,11 @@ def test_run_accepts_result_and_writes_json(
         f"<html><body><main><h1>Engineer</h1><p>{posting_text}</p></main></body></html>"
     )
 
-    monkeypatch.setattr(run, "caller_factory", lambda model, timeout: AcceptedCaller())
+    monkeypatch.setattr(
+        run,
+        "caller_factory",
+        lambda model, timeout, reasoning_effort=None: AcceptedCaller(),
+    )
     with respx.mock(assert_all_called=True) as router:
         router.get(URL).mock(return_value=httpx.Response(200, text=posting))
         main(
@@ -1166,6 +1194,107 @@ def test_run_accepts_result_and_writes_json(
     payload = json.loads(written[0].read_text(encoding="utf-8"))
     assert payload["company_slug"] == COMPANY.slug
     assert payload["result"]["title"]["value"] == "software engineer"
+
+
+def test_reasoning_effort_reaches_the_caller_and_is_recorded(
+    catalog: None,
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    import sqlite3
+
+    path = tmp_path / "effort.db"
+    run_async(_seed_snapshot(path))
+    posting_text = (
+        "Costa Rica remote software engineer. "
+        "Python is required. " + "Build reliable software systems in Costa Rica. " * 30
+    )
+    posting = (
+        f"<html><body><main><h1>Engineer</h1><p>{posting_text}</p></main></body></html>"
+    )
+    efforts: list[object] = []
+
+    def fake_caller(
+        model: str, timeout: float, reasoning_effort: object = None
+    ) -> StructuredCaller:
+        efforts.append(reasoning_effort)
+        return AcceptedCaller()
+
+    monkeypatch.setattr(run, "caller_factory", fake_caller)
+    with respx.mock(assert_all_called=True) as router:
+        router.get(URL).mock(return_value=httpx.Response(200, text=posting))
+        main(
+            [
+                "eligibility",
+                "-c",
+                "acme",
+                "-m",
+                "gpt-5.4-mini-2026-03-17",
+                "--reasoning-effort",
+                "medium",
+                "--database",
+                str(path),
+            ]
+        )
+    main(["extraction", "-c", "acme", "--database", str(path)])
+    assert efforts == ["medium", None]
+    connection = sqlite3.connect(path)
+    try:
+        runs = connection.execute(
+            "SELECT stage, model, reasoning_effort FROM pipeline_runs "
+            "ORDER BY started_at"
+        ).fetchall()
+        attempts = connection.execute(
+            "SELECT model, reasoning_effort FROM job_attempts ORDER BY id"
+        ).fetchall()
+    finally:
+        connection.close()
+    assert runs == [
+        ("eligibility", "gpt-5.4-mini-2026-03-17", "medium"),
+        ("extraction", common.settings.DEFAULT_MODEL, None),
+    ]
+    assert attempts == [
+        ("gpt-5.4-mini-2026-03-17", "medium"),
+        (common.settings.DEFAULT_MODEL, None),
+    ]
+
+
+def test_reasoning_effort_choices_match_the_caller_and_schema() -> None:
+    from job_pipeline.llm import REASONING_EFFORTS
+    from job_pipeline.persistence import models as pipeline_models
+
+    assert pipeline_models.REASONING_EFFORTS == REASONING_EFFORTS
+    parser = build_parser()
+    for command in ("eligibility", "extraction"):
+        assert parser.parse_args([command, "--all"]).reasoning_effort is None
+        args = parser.parse_args([command, "--all", "--reasoning-effort", "low"])
+        assert common.build_policy(args).reasoning_effort == "low"
+    with pytest.raises(SystemExit) as exc:
+        parser.parse_args(["eligibility", "--all", "--reasoning-effort", "extreme"])
+    assert exc.value.code == 2
+
+
+def test_stage_defaults_resolve_model_and_effort() -> None:
+    parser = build_parser()
+    settings = common.settings
+    eligibility_args = parser.parse_args(["eligibility", "--all"])
+    common.resolve_model(eligibility_args, "eligibility")
+    assert eligibility_args.model == settings.ELIGIBILITY_MODEL
+    assert eligibility_args.reasoning_effort == settings.ELIGIBILITY_REASONING_EFFORT
+    extraction_args = parser.parse_args(["extraction", "--all"])
+    common.resolve_model(extraction_args, "extraction")
+    assert extraction_args.model == settings.DEFAULT_MODEL
+    assert extraction_args.reasoning_effort is None
+    # An explicit model never inherits the eligibility default effort.
+    explicit = parser.parse_args(["eligibility", "--all", "-m", "gpt-4.1-mini"])
+    common.resolve_model(explicit, "eligibility")
+    assert (explicit.model, explicit.reasoning_effort) == ("gpt-4.1-mini", None)
+    chosen = parser.parse_args(["eligibility", "--all", "--reasoning-effort", "low"])
+    common.resolve_model(chosen, "eligibility")
+    assert (chosen.model, chosen.reasoning_effort) == (
+        settings.ELIGIBILITY_MODEL,
+        "low",
+    )
 
 
 def test_reprocess_requires_reason_and_company_for_status() -> None:
@@ -1245,9 +1374,20 @@ def test_stage_dry_runs_construct_nothing_and_extraction_is_read_only(
             }
 
     before = run_async(counts())
+    files_before = {
+        child.name: child.read_bytes()
+        for child in tmp_path.iterdir()
+        if child.is_file()
+    }
     main([stage, "-c", "acme", "--dry-run", "--database", str(path)])
+    files_after_dry_run = {
+        child.name: child.read_bytes()
+        for child in tmp_path.iterdir()
+        if child.is_file()
+    }
     after = run_async(counts())
     if stage == "extraction":
+        assert files_after_dry_run == files_before
         assert before == after
     else:
         assert after["jobs"] == 1
@@ -1605,5 +1745,9 @@ def test_preview_stage_sections_limit_company_and_merged_alias(
     assert output.count("would process (eligibility) 1") == 2
     assert output.count("would process (extraction) 1") == 2
     assert "ready for extraction   1" in output
-    assert "retry due              1" in output
-    assert "retry waiting          1" in output
+    assert output.count("retry due              1") >= 2
+    assert output.count("retry waiting          1") >= 2
+    assert output.count(f"eligibility contract   {ELIGIBILITY_VERSION}") == 1
+    # The ready job's alias was dropped from the snapshot, but the contract
+    # audit is company-scoped: it still has no current-contract decision.
+    assert output.count("ready, stale contract  1") == 1

@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL31",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "Based in the UK or Europe with the right to work there"
+  ],
+  "rationale": "Must be based in the UK or Europe with the right to work there.",
+  "partition": "blind",
+  "source_content_sha256": "4b8c4747019f6520158ed6a252f15ee06f56b9294e9848f4c10396f492208cb5",
+  "provenance": {
+    "company": "Appnovation",
+    "title": "Principal Engineer, Developer Surfaces Lead",
+    "source_url": "https://job-boards.greenhouse.io/appnovation/jobs/8943092002",
+    "captured_at_utc": "2026-11-21T15:55:43.810209+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

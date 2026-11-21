@@ -24,6 +24,9 @@ is the classic source of "attached to a different loop" failures.
 
 from __future__ import annotations
 
+import asyncio
+import hashlib
+import threading
 from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -39,6 +42,7 @@ from job_discovery.persistence.engine import (
     create_engine,
     create_session_factory,
     database_url,
+    read_only_database,
 )
 from job_discovery.persistence.timestamps import as_naive_utc, utc_now
 from job_pipeline.persistence import models as pipeline_models
@@ -130,6 +134,115 @@ class TestEnginePragmas:
         assert observed["busy_timeout"] == 5000
         assert observed["synchronous"] == 1  # NORMAL
         assert observed["foreign_keys"] == 1
+
+    def test_read_only_snapshot_sees_wal_without_touching_source(
+        self, tmp_path: Path
+    ) -> None:
+        path = tmp_path / "read-only.db"
+
+        def digests() -> dict[str, str]:
+            return {
+                child.name: hashlib.sha256(child.read_bytes()).hexdigest()
+                for child in tmp_path.iterdir()
+                if child.name != f"{path.name}-shm"
+            }
+
+        async def scenario() -> tuple[int, int]:
+            engine = create_engine(path)
+            try:
+                async with engine.begin() as connection:
+                    await connection.execute(text("PRAGMA wal_autocheckpoint = 0"))
+                    await connection.execute(
+                        text("CREATE TABLE visible (value INTEGER)")
+                    )
+                    await connection.execute(text("INSERT INTO visible VALUES (7)"))
+                assert Path(f"{path}-wal").is_file()
+                before = digests()
+                async with read_only_database(path) as factory, factory() as session:
+                    query_only = (
+                        await session.execute(text("PRAGMA query_only"))
+                    ).scalar_one()
+                    value = (
+                        await session.execute(text("SELECT value FROM visible"))
+                    ).scalar_one()
+                assert digests() == before
+                return query_only, value
+            finally:
+                await engine.dispose()
+
+        assert _run(scenario()) == (1, 7)
+
+    def test_read_only_snapshot_is_consistent_during_concurrent_wal_commit(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        path = tmp_path / "consistent.db"
+
+        async def scenario() -> tuple[list[int], list[int]]:
+            engine = create_engine(path)
+            try:
+                async with engine.begin() as connection:
+                    await connection.execute(text("PRAGMA wal_autocheckpoint = 0"))
+                    await connection.execute(
+                        text("CREATE TABLE visible (value INTEGER)")
+                    )
+                    await connection.execute(text("INSERT INTO visible VALUES (1)"))
+                import job_discovery.persistence.engine as engine_module
+
+                started = threading.Event()
+                release = threading.Event()
+                original_backup = engine_module._online_backup
+
+                def blocked_backup(source: Path, destination: Path) -> None:
+                    started.set()
+                    release.wait(timeout=5)
+                    original_backup(source, destination)
+
+                monkeypatch.setattr(engine_module, "_online_backup", blocked_backup)
+                context = read_only_database(path)
+                enter = asyncio.create_task(context.__aenter__())
+                await asyncio.to_thread(started.wait, 5)
+                async with engine.begin() as connection:
+                    await connection.execute(text("INSERT INTO visible VALUES (2)"))
+                release.set()
+                factory = await enter
+                try:
+                    async with factory() as session:
+                        first = list(
+                            (
+                                await session.execute(
+                                    text("SELECT value FROM visible ORDER BY value")
+                                )
+                            ).scalars()
+                        )
+                    async with engine.begin() as connection:
+                        await connection.execute(text("INSERT INTO visible VALUES (3)"))
+                    async with factory() as session:
+                        second = list(
+                            (
+                                await session.execute(
+                                    text("SELECT value FROM visible ORDER BY value")
+                                )
+                            ).scalars()
+                        )
+                finally:
+                    await context.__aexit__(None, None, None)
+                return first, second
+            finally:
+                await engine.dispose()
+
+        assert _run(scenario()) == ([1, 2], [1, 2])
+
+    def test_read_only_nonexistent_path_is_not_created(self, tmp_path: Path) -> None:
+        path = tmp_path / "missing.db"
+
+        async def scenario() -> None:
+            async with read_only_database(path) as factory, factory() as session:
+                await session.execute(text("SELECT 1"))
+
+        with pytest.raises(Exception, match="unable to open database file"):
+            _run(scenario())
+        assert not path.exists()
+        assert list(tmp_path.iterdir()) == []
 
     def test_foreign_keys_are_actually_enforced(self, tmp_path: Path) -> None:
         """Without the pragma, every REFERENCES clause is inert.
@@ -919,6 +1032,340 @@ class TestMigrationParity:
 
         run_in_thread(round_trip)
 
+    def test_one_shot_contract_round_trip_preserves_legacy_history(
+        self, tmp_path: Path
+    ) -> None:
+        from alembic import command
+        from alembic.config import Config
+        from sqlalchemy import create_engine as create_sync_engine
+
+        path = tmp_path / "one-shot-round-trip.db"
+
+        def scenario() -> None:
+            config = Config(str(REPO_ROOT / "alembic.ini"))
+            config.set_main_option("script_location", str(REPO_ROOT / "migrations"))
+            config.set_main_option("sqlalchemy.url", database_url(path))
+            command.upgrade(config, "e7a9b2c4d601")
+            engine = create_sync_engine(f"sqlite:///{path}")
+            now = "2026-01-01 00:00:00.000000"
+            try:
+                with engine.begin() as connection:
+                    connection.execute(text("PRAGMA foreign_keys=ON"))
+                    connection.execute(
+                        text(
+                            "INSERT INTO companies "
+                            "(slug, name, job_board_url, strategy, synced_at) VALUES "
+                            "('acme', 'Acme', 'https://acme.test', 'dom', :now)"
+                        ),
+                        {"now": now},
+                    )
+                    connection.execute(
+                        text(
+                            "INSERT INTO pipeline_runs "
+                            "(id, stage, trigger, started_at, selection, model) VALUES "
+                            "('run', 'eligibility', 'scheduled', :now, 'all', 'model')"
+                        ),
+                        {"now": now},
+                    )
+                    for job_id in (1, 2):
+                        connection.execute(
+                            text(
+                                "INSERT INTO jobs "
+                                "(id, company_slug, url_key, status, next_phase, "
+                                "attempt_count, reprocess_requested, first_seen_at, "
+                                "last_seen_at, updated_at) VALUES "
+                                "(:id, 'acme', :key, 'new', 'fetch', 0, 0, "
+                                ":now, :now, :now)"
+                            ),
+                            {"id": job_id, "key": f"key-{job_id}", "now": now},
+                        )
+                        connection.execute(
+                            text(
+                                "INSERT INTO job_attempts "
+                                "(id, job_id, run_id, trigger, model, policy_version, "
+                                "extractor_version, started_at) VALUES "
+                                "(:id, :id, 'run', 'scheduled', 'model', "
+                                "'cr-2026.10.1', 'extractor', :now)"
+                            ),
+                            {"id": job_id, "now": now},
+                        )
+                        connection.execute(
+                            text(
+                                "INSERT INTO job_contents "
+                                "(id, job_id, content_hash, fingerprint, "
+                                "resolved_url, method, text, retrieved_at) VALUES "
+                                "(:id, :id, 'hash', 'fingerprint', "
+                                "'https://acme.test/1', 'http', "
+                                "'Work from Costa Rica', :now)"
+                            ),
+                            {"id": job_id, "now": now},
+                        )
+                    connection.execute(
+                        text(
+                            "INSERT INTO job_decisions "
+                            "(id, job_id, attempt_id, content_id, decision, reason, "
+                            "evidence_json, policy_version, is_current, decided_at) "
+                            "VALUES (1, 1, 1, 1, 'eligible', 'Legacy verdict.', "
+                            "'[\"Work from Costa Rica\"]', 'cr-2026.10.1', 1, :now)"
+                        ),
+                        {"now": now},
+                    )
+                command.upgrade(config, "head")
+                with engine.begin() as connection:
+                    connection.execute(text("PRAGMA foreign_keys=ON"))
+                    assert connection.execute(
+                        text(
+                            "SELECT policy_version, eligibility_prompt_hash "
+                            "FROM job_attempts WHERE id = 1"
+                        )
+                    ).one() == ("cr-2026.10.1", None)
+                    # Legacy decisions keep their only evidence list as supporting
+                    # evidence and are never backfilled with a hash or conflicts.
+                    assert connection.execute(
+                        text(
+                            "SELECT evidence_json, conflicting_evidence_json, "
+                            "policy_version, prompt_hash FROM job_decisions "
+                            "WHERE id = 1"
+                        )
+                    ).one() == (
+                        '["Work from Costa Rica"]',
+                        None,
+                        "cr-2026.10.1",
+                        None,
+                    )
+                    foreign_keys = inspect(connection).get_foreign_keys("job_decisions")
+                    composite = {
+                        (
+                            tuple(foreign_key["constrained_columns"]),
+                            foreign_key["referred_table"],
+                            tuple(foreign_key["referred_columns"]),
+                        )
+                        for foreign_key in foreign_keys
+                    }
+                    assert (
+                        ("attempt_id", "job_id"),
+                        "job_attempts",
+                        ("id", "job_id"),
+                    ) in composite
+                    assert (
+                        ("content_id", "job_id"),
+                        "job_contents",
+                        ("id", "job_id"),
+                    ) in composite
+                    assert not any(
+                        columns in {("attempt_id",), ("content_id",)}
+                        for columns, _, _ in composite
+                    )
+                    connection.execute(
+                        text("UPDATE job_decisions SET is_current = 0 WHERE id = 1")
+                    )
+                    connection.execute(
+                        text(
+                            "INSERT INTO job_decisions "
+                            "(id, job_id, attempt_id, content_id, decision, reason, "
+                            "evidence_json, conflicting_evidence_json, "
+                            "policy_version, prompt_hash, is_current, decided_at) "
+                            "VALUES (2, 1, 1, 1, 'unknown', 'Conflict.', "
+                            "'[\"Work from Costa Rica\"]', '[\"Hybrid\"]', "
+                            "'opportunity-oneshot-v1', 'hash-v1', 1, :now)"
+                        ),
+                        {"now": now},
+                    )
+                    assert (
+                        connection.execute(text("PRAGMA foreign_key_check")).all() == []
+                    )
+                invalid_inserts = [
+                    # Contract identity is all-or-nothing.
+                    "(3, 1, 1, 1, 'hash-only', NULL)",
+                    "(3, 1, 1, 1, NULL, '[]')",
+                    # A decision cannot cite another job's attempt or content.
+                    "(3, 1, 2, 1, NULL, NULL)",
+                    "(3, 1, 1, 2, NULL, NULL)",
+                ]
+                for values in invalid_inserts:
+                    with pytest.raises(IntegrityError), engine.begin() as connection:
+                        connection.execute(text("PRAGMA foreign_keys=ON"))
+                        connection.execute(
+                            text(
+                                "INSERT INTO job_decisions "
+                                "(id, job_id, attempt_id, content_id, prompt_hash, "
+                                "conflicting_evidence_json, decision, reason, "
+                                "evidence_json, policy_version, is_current, "
+                                f"decided_at) VALUES {values[:-1]}, 'unknown', "
+                                "'x.', '[]', 'v', 0, :now)"
+                            ),
+                            {"now": now},
+                        )
+                command.downgrade(config, "e7a9b2c4d601")
+                with engine.connect() as connection:
+                    assert not {"prompt_hash", "conflicting_evidence_json"} & {
+                        column["name"]
+                        for column in inspect(connection).get_columns("job_decisions")
+                    }
+                    assert "eligibility_prompt_hash" not in {
+                        column["name"]
+                        for column in inspect(connection).get_columns("job_attempts")
+                    }
+                    foreign_keys = inspect(connection).get_foreign_keys("job_decisions")
+                    assert {
+                        (
+                            tuple(foreign_key["constrained_columns"]),
+                            foreign_key["referred_table"],
+                        )
+                        for foreign_key in foreign_keys
+                    } >= {
+                        (("attempt_id",), "job_attempts"),
+                        (("content_id",), "job_contents"),
+                    }
+                    assert connection.execute(
+                        text(
+                            "SELECT id, decision, reason, evidence_json, "
+                            "policy_version FROM job_decisions ORDER BY id"
+                        )
+                    ).all() == [
+                        (
+                            1,
+                            "eligible",
+                            "Legacy verdict.",
+                            '["Work from Costa Rica"]',
+                            "cr-2026.10.1",
+                        ),
+                        (
+                            2,
+                            "unknown",
+                            "Conflict.",
+                            '["Work from Costa Rica"]',
+                            "opportunity-oneshot-v1",
+                        ),
+                    ]
+                    assert (
+                        connection.execute(text("PRAGMA foreign_key_check")).all() == []
+                    )
+                command.upgrade(config, "head")
+                with engine.connect() as connection:
+                    assert connection.execute(
+                        text(
+                            "SELECT id, prompt_hash, conflicting_evidence_json "
+                            "FROM job_decisions ORDER BY id"
+                        )
+                    ).all() == [(1, None, None), (2, None, None)]
+                    assert (
+                        connection.execute(text("PRAGMA foreign_key_check")).all() == []
+                    )
+            finally:
+                engine.dispose()
+
+        run_in_thread(scenario)
+
+    def test_reasoning_effort_round_trip_keeps_existing_rows_null(
+        self, tmp_path: Path
+    ) -> None:
+        from alembic import command
+        from alembic.config import Config
+        from sqlalchemy import create_engine as create_sync_engine
+
+        path = tmp_path / "reasoning-effort-round-trip.db"
+
+        def columns(connection: Any, table: str) -> set[str]:
+            return {column["name"] for column in inspect(connection).get_columns(table)}
+
+        def scenario() -> None:
+            config = Config(str(REPO_ROOT / "alembic.ini"))
+            config.set_main_option("script_location", str(REPO_ROOT / "migrations"))
+            config.set_main_option("sqlalchemy.url", database_url(path))
+            command.upgrade(config, "a5c3e9d17b40")
+            engine = create_sync_engine(f"sqlite:///{path}")
+            now = "2026-01-01 00:00:00.000000"
+            try:
+                with engine.begin() as connection:
+                    connection.execute(
+                        text(
+                            "INSERT INTO companies "
+                            "(slug, name, job_board_url, strategy, synced_at) VALUES "
+                            "('acme', 'Acme', 'https://acme.test', 'dom', :now)"
+                        ),
+                        {"now": now},
+                    )
+                    connection.execute(
+                        text(
+                            "INSERT INTO pipeline_runs "
+                            "(id, stage, trigger, started_at, selection, model) VALUES "
+                            "('old', 'eligibility', 'scheduled', :now, 'all', 'm')"
+                        ),
+                        {"now": now},
+                    )
+                    connection.execute(
+                        text(
+                            "INSERT INTO jobs "
+                            "(id, company_slug, url_key, status, next_phase, "
+                            "attempt_count, reprocess_requested, first_seen_at, "
+                            "last_seen_at, updated_at) VALUES "
+                            "(1, 'acme', 'key-1', 'new', 'fetch', 0, 0, "
+                            ":now, :now, :now)"
+                        ),
+                        {"now": now},
+                    )
+                    connection.execute(
+                        text(
+                            "INSERT INTO job_attempts "
+                            "(id, job_id, run_id, trigger, model, policy_version, "
+                            "extractor_version, started_at) VALUES "
+                            "(1, 1, 'old', 'scheduled', 'm', 'v', 'x', :now)"
+                        ),
+                        {"now": now},
+                    )
+                command.upgrade(config, "c7e1d4b9a2f6")
+                with engine.begin() as connection:
+                    # Rows that ran before the column existed used no effort.
+                    assert connection.execute(
+                        text("SELECT reasoning_effort FROM pipeline_runs")
+                    ).all() == [(None,)]
+                    assert connection.execute(
+                        text("SELECT reasoning_effort FROM job_attempts")
+                    ).all() == [(None,)]
+                    connection.execute(
+                        text(
+                            "INSERT INTO pipeline_runs "
+                            "(id, stage, trigger, started_at, selection, model, "
+                            "reasoning_effort) VALUES ('new', 'eligibility', "
+                            "'scheduled', :now, 'all', 'm', 'medium')"
+                        ),
+                        {"now": now},
+                    )
+                    connection.execute(
+                        text(
+                            "INSERT INTO job_attempts "
+                            "(id, job_id, run_id, trigger, model, policy_version, "
+                            "extractor_version, started_at, reasoning_effort) VALUES "
+                            "(2, 1, 'new', 'scheduled', 'm', 'v', 'x', :now, 'medium')"
+                        ),
+                        {"now": now},
+                    )
+                for statement in (
+                    "UPDATE pipeline_runs SET reasoning_effort = 'extreme'",
+                    "UPDATE job_attempts SET reasoning_effort = 'extreme'",
+                ):
+                    with pytest.raises(IntegrityError), engine.begin() as connection:
+                        connection.execute(text(statement))
+                command.downgrade(config, "a5c3e9d17b40")
+                with engine.connect() as connection:
+                    assert "reasoning_effort" not in columns(
+                        connection, "pipeline_runs"
+                    )
+                    assert "reasoning_effort" not in columns(connection, "job_attempts")
+                    assert connection.execute(
+                        text("SELECT id, model FROM job_attempts ORDER BY id")
+                    ).all() == [(1, "m"), (2, "m")]
+                command.upgrade(config, "head")
+                with engine.connect() as connection:
+                    assert connection.execute(
+                        text("SELECT reasoning_effort FROM job_attempts ORDER BY id")
+                    ).all() == [(None,), (None,)]
+            finally:
+                engine.dispose()
+
+        run_in_thread(scenario)
+
     def test_pipeline_stage_seeded_round_trip_and_checks(self, tmp_path: Path) -> None:
         from alembic import command
         from alembic.config import Config
@@ -932,7 +1379,7 @@ class TestMigrationParity:
             config = Config(str(REPO_ROOT / "alembic.ini"))
             config.set_main_option("script_location", str(REPO_ROOT / "migrations"))
             config.set_main_option("sqlalchemy.url", database_url(path))
-            assert ScriptDirectory.from_config(config).get_heads() == ["e7a9b2c4d601"]
+            assert ScriptDirectory.from_config(config).get_heads() == ["c7e1d4b9a2f6"]
             command.upgrade(config, "c9eded2a94c2")
             engine = create_sync_engine(f"sqlite:///{path}")
             now = datetime(2026, 1, 1)
@@ -1096,6 +1543,9 @@ class TestMigrationParity:
                     "UPDATE pipeline_runs SET trigger = 'bogus'",
                     "UPDATE pipeline_runs SET stage = NULL",
                     "UPDATE pipeline_runs SET trigger = NULL",
+                    "UPDATE pipeline_runs SET stage = 'screening'",
+                    "UPDATE pipeline_runs SET trigger = 'manual'",
+                    "UPDATE jobs SET next_phase = 'screening' WHERE id = 1",
                     "UPDATE jobs SET status = 'ready_for_extraction', "
                     "next_phase = 'fetch' WHERE id = 1",
                     "UPDATE jobs SET status = 'ready_for_extraction', "

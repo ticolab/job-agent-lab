@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "BL29",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "7b72be453a40adc6f01b62ffdc0436375827c20cbabdf8567d12cd20694b78e5",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL29-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "localizada en San Antonio del Tejar, Alajuela, Costa Rica",
+        "San Antonio del Tejar, Alajuela, Costa Rica"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

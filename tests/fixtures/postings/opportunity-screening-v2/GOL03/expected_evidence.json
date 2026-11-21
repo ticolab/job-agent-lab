@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "GOL03",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "development",
+  "source_content_sha256": "cfc0f9bb5efea1f101c2da4fa7af0a38352984b884035bbfe75adfdfcd5da519",
+  "decision": "ineligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "GOL03-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Contractor · Remote in Argentina or Mexico · Full-time · 9-month project",
+        "Remote in Argentina or Mexico"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

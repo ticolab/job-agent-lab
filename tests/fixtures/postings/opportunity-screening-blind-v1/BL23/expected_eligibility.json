@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL23",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "based within commuting distance of London"
+  ],
+  "rationale": "Remote only for candidates within commuting distance of London / South East / Midlands.",
+  "partition": "blind",
+  "source_content_sha256": "138301b47ec2caa134260e59bb20d54fbe5708dc65313426a977b7c72f71dd6d",
+  "provenance": {
+    "company": "Zscaler",
+    "title": "Senior Sales Engineer - Public Sector",
+    "source_url": "https://job-boards.greenhouse.io/zscaler/jobs/5154844007",
+    "captured_at_utc": "2026-11-21T15:55:11.702490+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

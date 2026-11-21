@@ -1,0 +1,44 @@
+PH-25 Senior Jira Administrator
+100% Remote
+All LatAm
+Senior
+Full Time
+
+JOB DESCRIPTION
+
+Technologies: Jira, Workflows, ScriptRunner
+
+Job Summary
+
+Oceans Code Experts is looking for a talented Senior Jira Administrator to join our team. In this role, you will be responsible for managing, configuring, and optimizing the Atlassian Jira environment for our client, ProArch. You will collaborate closely with Project Managers and cross-functional teams to ensure Jira is aligned with organizational workflows and reporting requirements. This position requires at least 5 years of experience with advanced proficiency in Jira and agile methodologies.
+
+JOB REQUIREMENTS
+
+Job Responsibilities
+Configure and maintain the Atlassian Jira Software and/or Jira Service Management.
+Design and implement workflows in Jira to support agile methodologies like Scrum, Kanban, and SAFe.
+Create and manage user permissions, groups, and project roles within Jira.
+Utilize JQL to build filters, reports, and dashboards to meet project needs.
+Implement Jira Automation for streamlining processes and improving efficiency.
+Troubleshoot and resolve issues within the Jira environment with a keen attention to detail.
+Communicate effectively with technical and non-technical stakeholders to translate requirements into Jira configurations.
+Collaborate with teams to ensure Jira is effectively supporting project delivery and agile operations.
+Job Requirements
++3 years of hands-on experience as a Jira Administrator in a professional setting.
+Proficiency in configuring Jira Software and/or Jira Service Management.
+Strong understanding of agile methodologies such as Scrum, Kanban, and SAFe.
+Experience with Jira Automation and workflow design.
+Solid knowledge of JQL for building filters, reports, and dashboards.
+Excellent problem-solving skills and meticulous attention to detail.
+Strong communication skills to convey technical concepts to non-technical stakeholders.
+Advanced English proficiency, both written and spoken.
+Nice to Have
+Atlassian Certified Professional (ACP) certification.
+Experience with Confluence administration and Space management.
+Familiarity with Script Runner (Groovy scripting) or other advanced Jira plugins.
+Knowledge of REST API usage for Jira integrations.
+Position Type and Expected Hours of Work
+Full-time consulting position.
+Up to 40 hours per week with flexible core hours.
+Fully remote.
+Contract duration: 6 months.

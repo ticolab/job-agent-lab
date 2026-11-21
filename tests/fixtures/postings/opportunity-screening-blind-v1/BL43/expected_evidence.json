@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "BL43",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "c1b7d2040e98c5ea7b1be6bf83b778cce1966b559ac2c084894b7c55c5e73485",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL43-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Location: CRI-Costa Rica-Belen",
+        "CRI-Costa Rica-Belen"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "case_id": "BL30",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "be240c73b199559dcc19ea5d22527e31483e8cb24fb3072034a45d48da04dc51",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL30-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Remoto (con opción de movilización a Costa Rica",
+        "Remote"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

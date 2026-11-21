@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL45",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "d5765a22bf38ffe291eb38559b89a716a502032fc8f4432f83b54da69cfd2ab0",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL45-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "(Remote)"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

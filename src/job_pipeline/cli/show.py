@@ -21,6 +21,7 @@ from job_pipeline.persistence import (
     results_repo,
     runs_repo,
 )
+from job_pipeline.runner.diagnostics import redact_message
 
 SHOW_SUMMARY = "Show the complete audit history for one job."
 SHOW_DESCRIPTION = "Print job metadata, sources, versions, attempts, and results."
@@ -43,6 +44,21 @@ def _print_record(record: Any, *, omit: frozenset[str] = frozenset()) -> None:
     for field in fields(record):
         if field.name not in omit:
             print(f"  {field.name}: {_value(getattr(record, field.name))}")
+
+
+def _safe_evidence(raw: str | None) -> list[str] | str | None:
+    """Decode one stored evidence bucket for display, redacting each excerpt."""
+    if raw is None:
+        return None
+    try:
+        values = json.loads(raw)
+    except json.JSONDecodeError:
+        return "<invalid evidence>"
+    if not isinstance(values, list) or not all(
+        isinstance(value, str) for value in values
+    ):
+        return "<invalid evidence>"
+    return [redact_message(value) for value in values]
 
 
 async def _run(args: argparse.Namespace) -> None:
@@ -71,7 +87,7 @@ async def _run(args: argparse.Namespace) -> None:
             contents = await contents_repo.history(session, job.id)
             attempts = await attempts_repo.history(session, job.id)
             decisions = await decisions_repo.history(session, job.id)
-            current_result = await results_repo.current(session, job.id)
+            results = await results_repo.history(session, job.id)
             runs = await runs_repo.runs_by_id(
                 session, {attempt.run_id for attempt in attempts}
             )
@@ -97,22 +113,38 @@ async def _run(args: argparse.Namespace) -> None:
         print(f"  run_trigger: {run.trigger if run else 'unknown'}")
     print("Decisions")
     for decision in decisions:
-        _print_record(decision, omit=frozenset({"evidence_json"}))
-        try:
-            evidence = json.loads(decision.evidence_json)
-        except json.JSONDecodeError:
-            evidence = decision.evidence_json
-        print("  evidence:")
-        print(json.dumps(evidence, indent=4, ensure_ascii=False))
-    print("Current result")
-    if current_result is None:
+        _print_record(
+            decision,
+            omit=frozenset({"evidence_json", "conflicting_evidence_json", "reason"}),
+        )
+        print(f"  reason: {redact_message(decision.reason)}")
+        contract = (
+            "current"
+            if decision.is_current_contract
+            else "legacy"
+            if decision.prompt_hash is None
+            else "stale"
+        )
+        print(f"  contract: {contract}")
+        print("  supporting_evidence:")
+        print(
+            json.dumps(
+                _safe_evidence(decision.evidence_json), indent=4, ensure_ascii=False
+            )
+        )
+        conflicting = _safe_evidence(decision.conflicting_evidence_json)
+        if conflicting is not None:
+            print("  conflicting_evidence:")
+            print(json.dumps(conflicting, indent=4, ensure_ascii=False))
+    print("Result history")
+    if not results:
         print("  (none)")
-    else:
-        _print_record(current_result, omit=frozenset({"result_json"}))
+    for result in results:
+        _print_record(result, omit=frozenset({"result_json"}))
         try:
-            payload = json.loads(current_result.result_json)
+            payload = json.loads(result.result_json)
         except json.JSONDecodeError:
-            payload = current_result.result_json
+            payload = result.result_json
         print(json.dumps(payload, indent=2, ensure_ascii=False, sort_keys=True))
 
 

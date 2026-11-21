@@ -1,0 +1,67 @@
+# Apply for the Senior Backend (Go) Engineer (Mexico Only)
+
+This is a hybrid role based in Guadalajara, Mexico, requiring regular in-office presence.
+
+We’re looking for a Senior Backend Engineer with strong experience in Go to build and evolve backend systems for financial and operational workflows. This role focuses on developing scalable services that support processes such as invoicing, payments, and purchase orders, while integrating with enterprise systems. You’ll be working in partnership with a global technology company operating in the media and digital services space, contributing to a modern backend platform that combines traditional systems with AI-driven development practices.
+
+## Key Responsibilities
+
+- Design, build, and maintain backend services using Go
+- Develop and support systems related to financial operations (invoices, payments, purchase orders)
+- Work with AWS to build scalable, reliable cloud-based solutions
+- Contribute to integrations with external systems, including ERP platforms (e.g. SAP)
+- Collaborate on evolving an existing system that includes .NET components
+- Build and maintain asynchronous and event-driven systems where appropriate
+- Leverage AI tools and agentic development approaches to improve development speed and quality
+- Take ownership of features from design through delivery and iteration
+- Collaborate with cross-functional teams to ensure reliable and scalable solutions
+
+## Core Requirements
+
+- 5+ years of backend development experience, including at least 3+ years with Go
+- Strong experience with cloud (AWS preferable)
+- Familiarity with AI-assisted development tools (e.g. Claude Code or similar) and agentic workflows
+- Experience working with or integrating into existing/legacy systems
+- Strong understanding of backend architecture and scalable systems
+- Good communication skills and strong sense of ownership
+- Ability to work independently in a fast-paced environment
+
+## Nice-to-Have
+
+- Experience building or supporting financial or billing systems, e.g. invoices, payments, POs (highly preferred)
+- Experience developing financial or operational applications
+- Experience with asynchronous or event-driven architectures
+- Experience integrating with ERP systems (e.g. SAP)
+- Exposure to mixed tech stacks (e.g. Go + .NET environments)
+
+## Additional
+
+-Location: Guadalajara, Mexico
+
+## Visible application area and screening questions
+
+Location
+
+Upload CV
+
+Click or drag file to this area to upload
+
+Supports .pdf,.doc,.docx up to 10MB
+
+Do you have availability to work on-site in Guadalajara, Mexico, at least 2 days per week? *
+
+Please Select
+
+How many years of experience do you have as a Backend Engineer? *
+
+Please Select
+
+What is your proficiency in Go? *
+
+Please Select
+
+Please select the option that best reflects your ability to communicate in English in a professional setting. *
+
+Please Select
+
+Apply Now

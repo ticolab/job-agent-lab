@@ -1,0 +1,56 @@
+# SENIOR DATABASE ENGINEER / DBA
+
+APPLY NOW
+
+Modality
+Freelance
+
+Job Location
+LATAM
+
+## WHAT YOU WILL BE DOING
+
+### About the Role:
+
+This role owns a roughly 65TB Microsoft SQL Server estate running in a highly available, clustered configuration, supporting the Insightly CRM product directly. This is production database work for a live, customer-facing SaaS platform, not an analytics or reporting role.
+
+Contract Duration: This is a temporary position with a 6-month contract.
+
+### What this role will do:
+
+- Lead maintenance of the production SQL Server environment in an Always On availability group configuration, including failover handling, sync delay troubleshooting, and read replica load management
+- Carry 24x7 on-call for SQL alerts, lead incident response and root cause analysis for query plan regressions, TempDB contention, and deadlocks or blocking
+- Maintain database security: TDE, auditing, certificate and key rotation, and monitoring for anomalous access patterns
+- Run quarterly cumulative update patching across environments, index and statistics maintenance, and partitioning and archiving on multi-terabyte databases without blocking production
+- Own capacity planning for storage, CPU, and memory, and manage the recurring cycle of environment refreshes (staging, dev, QA)
+- Review developers' T-SQL and schema changes before deployment, and advise on table and index design
+- Support customer instance migrations between regions (sold as a service) and database prep for those moves
+- Handle confidential or legally sensitive data requests when they arise, including from law enforcement, following established process
+- Design and test disaster recovery for the database environment
+
+## WHAT WE'RE LOOKING FOR
+
+- 7 years of hands-on Microsoft SQL Server DBA experience in a 24x7 production environment, not SQL development alone
+- 3 years of direct experience with Always On availability groups, including failover handling and sync delay troubleshooting
+- Experience managing multi-terabyte production databases, including partitioning, archiving, and index and statistics maintenance without blocking production
+- Experience leading incident response and root cause analysis for production database issues
+- Experience with database security practices: TDE, auditing, certificate and key rotation
+- English fluency sufficient for real-time incident communication, with meaningful business hours overlap with Pacific time
+
+## WHAT WOULD BE A PLUS?
+
+- Experience supporting a SaaS CRM or similarly high-transaction-volume application
+- Exposure to Snowflake, Redshift, or AWS Aurora alongside transactional SQL Server work
+- Experience with customer instance migrations or similar large-scale data movement projects
+- Experience in a SOC 2, HIPAA, or PCI-regulated environment
+- Comfort handling legally sensitive or confidential data requests as part of a defined process
+
+APPLY NOW
+
+LET'S WORK TOGETHER
+
+Be sure about the quality of your future
+
+SEE ALL OPEN POSITIONS
+
+Employer footer location: SAN JOSE, COSTA RICA

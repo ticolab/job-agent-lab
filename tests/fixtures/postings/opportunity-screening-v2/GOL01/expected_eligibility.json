@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "case_id": "GOL01",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "Work arrangement: Remote",
+    "100% Remote."
+  ],
+  "rationale": "User accepts Remote and 100% Remote absent explicit exclusion for opportunity screening, not legally confirmed hiring.",
+  "partition": "development",
+  "source_content_sha256": "b8a8f88f46c713825787228c26e296c21b9959e966ec1b296932d662043cc4f2",
+  "provenance": {
+    "company": "Golabs Tech",
+    "title": "Senior DevOps / Site Reliability Engineer",
+    "source_url": "https://recruitcrm.io/apply/17913849976820117843vwE?source=Jobspage&new=yes",
+    "captured_at_utc": "2026-11-01T20:48:58.540655+00:00"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_overridden",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "eligible",
+    "source_partition": "development"
+  }
+}

@@ -1,0 +1,65 @@
+Senior Data Engineer
+Job Description
+Join Us to Shape the Digital World. We’re passionate about delivering cutting-edge technology to some of the world’s top startups and companies, powered by diverse and empowered teams of technologists eager to drive change.
+As a fairness-driven organization, we are committed to creating a safe and inclusive environment where everyone, regardless of background, is treated with respect and equity.
+We value people with strong technical skills who are collaborative, curious, results-driven, and take ownership. We embrace people who want to be themselves, enjoy daily flexibility, and are eager to grow, learn, and make a difference wherever the opportunity arises.
+If this resonates with you, we encourage you to apply for the role of Senior Data Engineer. We’re seeking exceptional talent to work on immersive client projects that will challenge and hone your skills.
+* Advanced English language proficiency is required for the role.
+JD Summary
+Our stack spans real-time streaming and a modern lakehouse:
+- •
+Streaming / ingestion: Kinesis, Firehose
+Raw data layer: S3 + Apache Iceberg
+Event registration & streaming apps: Kotlin
+Curated reporting layer: fact tables and aggregates in Redshift
+Given our traffic volumes, correctness, latency, and cost efficiency all matter — decisions here
+have a direct, visible impact on the business.
+About the Role
+We're looking for a Senior Data Engineer to help us mature our lakehouse architecture and take
+on meaningful ownership of critical systems. You'll work across the full pipeline: high-
+throughput streaming ingestion, Iceberg table design and maintenance on S3, and the curated
+Redshift models that power reporting. You'll also be a technical anchor for the team — someone
+who can make sound architectural calls, unblock teammates, and raise the bar on our
+engineering practices.
+This is a hands-on role on a small team, so you should be comfortable owning problems end to
+end, from design through production operation.
+What You'll Do
+Design, build, and operate streaming data pipelines (Kinesis, Firehose) that reliably handle high-volume ad network event traffic
+Own and evolve our S3 + Iceberg raw data layer — table design, partitioning, compaction, schema evolution, and cost/performance tuning
+Build and maintain curated aggregate and fact tables in Redshift that serve reporting and analytics use cases
+Contribute to and help evolve our Kotlin-based event registration and streaming applications
+Improve reliability, observability, and data quality across the pipeline (monitoring, alerting, testing, backfills)
+Make architectural recommendations as we scale our lakehouse — table formats, ingestion patterns, cost optimization, and tooling
+Partner closely with analysts to understand reporting needs and ensure the curated layer meets them
+Mentor other engineers on the team and help level up our data engineering practices, given the team's small size and high leverage per hire
+What We're Looking For (Must have)
+5+ years of data engineering experience, including work on high-volume/high-throughput data systems
+Strong JVM experience (Java and/or Kotlin) — you're comfortable reading, writing, and debugging production JVM services, not just scripting
+Kotlin experience strongly preferred — our streaming and event registration applications are written in Kotlin
+Hands-on experience with streaming/event ingestion technologies (Kinesis, Kafka, Firehose, or similar)
+Experience with modern table formats on object storage — Iceberg, Delta Lake, or Hudi —including schema evolution and partitioning strategy
+Solid SQL skills and experience building and maintaining data warehouse models (Redshift, Snowflake, BigQuery, or similar) for reporting/analytics
+Proficiency in Python for data pipeline tooling, automation, and scripting
+Hands-on experience building and operating pipelines with Apache Airflow
+Comfort operating in AWS (S3, IAM, and the broader ecosystem around Kinesis/Firehose/Redshift)
+A track record of owning systems in production — you think about monitoring, failure modes, and cost, not just the happy path
+Strong communication skills and the judgment to work independently on a small team
+Nice to Have
+Experience in ad tech, martech, or another high-volume event-driven domain
+Experience mentoring engineers or setting technical direction on a small team
+Familiarity with dbt or other transformation tooling used alongside a lakehouse architecture
+Exposure to cost optimization for large-scale streaming/storage workloads.
+Why Join:
+High ownership, high impact — on a team this size, your architectural decisions directly shape
+how the business processes and reports on its data
+Modern lakehouse stack (Iceberg, Kinesis/Firehose, Redshift) with real scale behind it
+A small, senior-leaning team where your voice on technical direction matters from day one
+A happy team makes all the difference. That’s why we offer:
+Payment in USD
+A truly flexible work schedule
+A Non-Working Pay Days Policy
+Learning Budget
+An opportunity for you to help create change in the industry
+And more!
+Athenaworks is an inclusive and safe organization that values your technical skills, work experience, collaboration abilities, and potential to grow in your career. We proudly welcome self-taught individuals, as we focus solely on your ability to deliver exceptional work. We will never consider any irrelevant personal or professional aspects of your life.
+Loading...

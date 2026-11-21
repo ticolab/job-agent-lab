@@ -1,0 +1,90 @@
+Senior Customer Success Engineer – EMEA
+- • Customer Operations
+- • Remote
+- • EMEA
+Who are Tyk, and what do we do?
+The Tyk API Management platform is helping to drive the connected world and power new products and services. We’re changing the way that organisations connect any number of their systems and services.Whether internal, external, public or highly encrypted systems, Tyk helps businesses drive value across the retail, finance, telecoms, healthcare, or media industries (to name just a few!)
+If you’ve banked online, used an app to check the news, or perhaps even driven a connected car, API’s, and by extension, Tyk, make that possible. Founded in 2015 with offices in London – UK, London – Ontario, Atlanta and Singapore, we have many thousands of users of our B2B platform across the globe. Brands using Tyk range from Lotte, Bell, T Mobile, to RBS, Capital One and Vinci. We have a varied user base hailing from every continent – even Antarctica.
+Total flexibility, default remote, radical responsibility
+We offer unlimited paid holidays and remote working from anywhere in the world, for everyone. Why? Tyk was founded on the principle of offering flexibility and autonomy to our employees, we believe this allows our employees to achieve their best results. It also means we can build the best possible team, location and working hours are no barrier.
+If this sounds like an environment that you believe could work for you then read on to find out more.
+About the role
+As a Senior Customer Success Engineer at Tyk, you’ll be a strategic and technical leader within the Customer Success organization. The team owns traditional support, but this role goes well beyond reacting to issues. You’ll help build a proactive Customer Success function focused on long-term customer trust, early risk detection, a better customer experience, and making sure customers get the most value from Tyk.
+You’ll lead high-priority and technically complex engagements, mentor Customer Success Engineers, and work with Engineering, Product and Account Management to turn customer challenges into improvements across the business.
+Your focus is your region. You’ll work alongside the Customer Success Engineers there to raise their technical understanding, share knowledge and close gaps, so the region handles more complex work independently.
+A key part of the role is improving how the team operates. You’ll build processes that strengthen customer relationships, improve technical delivery and let the team scale. You’ll also champion AI across Customer Success: faster debugging and investigation, better knowledge sharing, and less repetitive work.
+You’re the person people turn to when things get complex, whether technical, customer-facing, operational or cross-functional.
+Key responsibilities
+Escalation management
+- • Proactively oversee the Zendesk queue, making sure SLAs are met and stepping in on critical escalations.
+- • Act as an escalation point for systemic issues, leading incident resolution. Escalations come to you before going to Product.
+- • Work with Senior and Principal engineers across regions to resolve recurring support workflow challenges.
+- • Guide triage practices so issues are isolated quickly and accurately across the team.
+Mentorship and team development
+- • Coach and mentor Customer Success Engineers in your region on technical depth, customer engagement, ownership and handling complex situations independently.
+- • Set a high standard for technical quality, communication, accountability and customer ownership.
+- • Flag capability gaps to Customer Success leadership and help close them through training, documentation and hiring input.
+- • Support engineers through complex cases while building their confidence to lead them independently.
+- • Foster a culture of learning, knowledge sharing, collaboration and constructive feedback.
+Proactive customer engagement
+- • Build trusted relationships with key Enterprise customers through regular account syncs, acting as their senior technical partner.
+- • Lead onboardings and regular syncs for Enterprise customers, whose complex environments need senior-level judgement. Onboardings are completed to the checklist.
+- • Partner with Account Management to spot customer risk, recurring pain points and opportunities before they become escalations.
+- • Help improve proactive engagement processes, so the team builds relationships rather than only answering tickets.
+Technical excellence and innovation
+- • Lead deep technical investigations, including complex debugging and source code analysis.
+- • Innersourcing is strongly encouraged: contribute bug fixes, small features or workarounds to the product to unblock customers, and help other engineers do the same.
+- • Build and adopt tools, automation and AI to reduce response and resolution time.
+- • Maintain ticket quality, so Product receives actionable, high-quality submissions.
+- • Anticipate platform-wide issues and prevent them through architecture awareness.
+- • Keep critical knowledge documented: the Zendesk knowledge base, debugging guides and external documentation.
+Operations and cross-team collaboration
+You’ll initially be on call one weekend in three, covering two 12-hour shifts - one on Saturday and one on Sunday. The rotation may become less frequent as the team grows.
+- • Meet escalation SLAs and play a key role in the on-call rotation for 24/7 global support.
+- • Own high-severity incidents and critical customer escalations.
+- • Review team metrics regularly and help set team goals and focus areas.
+- • Represent Customer Success in company initiatives, and help evolve support policies such as SLAs, escalation procedures and "won’t fix" standards.
+Voice of the customer and long-term impact
+- • Contribute evidenced trends to the monthly Voice of the Customer digest to Product.
+- • Lead root cause analysis and post-mortems for major incidents from the Customer Success side.
+- • Reduce ticket volume by finding recurring pain points and proposing durable fixes in the platform or documentation.
+- • Help evolve support strategy as Tyk grows, influencing structure, tooling and hiring.
+What we’re looking for
+- • Extensive experience in technical support, Customer Success Engineering or similar roles, with proven leadership in complex escalations and systemic improvements.
+- • Experience coaching or mentoring engineers.
+- • Strong technical depth and a hands-on engineering mindset: reproducing problems, working through logs and configuration, reading source code, and diagnosing issues across distributed systems.
+- • Strong Docker and Kubernetes knowledge, including debugging deployments, networking, configuration, scaling and application behaviour in containerized environments. This is essential.
+- • Experience deploying and troubleshooting on-premise environments, including standing up representative customer environments.
+- • Strong background with large Enterprise customers and complex technical environments.
+- • Strong experience with APIs and API Management: gateways, authentication, networking, traffic flows and distributed architectures.
+- • Comfort learning technologies beyond Tyk, such as Redis, MongoDB, SQL databases, load balancers, proxies, SSO, OAuth/OIDC and Identity Providers.
+- • Comfort contributing product code and documentation changes.
+- • Exceptional written and verbal communication across technical and non-technical stakeholders.
+- • Ability to lead without authority, influencing Product, Engineering, Account Management and Customer Success.
+- • Passion for operational excellence, automation, AI adoption and scalable Customer Success practices.
+- • A growth mindset: curiosity, humility and a desire to keep improving yourself and those around you.
+- • Comfort working with customers across regions, with willingness to join rotational on-call shifts, including weekends.
+Why Customer Success @ Tyk?
+Tyk is on a mission to simplify API and service management for everyone. As a Senior Customer Success Engineer, you’ll shape the future of Customer Success, not just as a service but as a strategic advantage. You’ll lead initiatives, mentor engineers and work with passionate people around the globe.
+Here’s why you should join us:
+- • Everyone has unlimited paid holidays.
+- • We have total flexibility in hours, as we believe creativity flows better when our people are given freedom to decide when they are most productive. Everyone is unique after all.
+- • Employee share scheme
+- • Generous maternity and paternity leave
+- • Volunteering Days
+- • Company retreats
+- • Employee Wellbeing platform
+We all share the same vision – we value authenticity, respect, responsibility, independence, honesty, diversity and inclusion and most importantly treating others how you wish to be treated. We look for like-minded people who bring their personalities to work everyday, strive to achieve their personal goals and who are willing to challenge the way we do things, why? – to make what we do even better!
+It’s ok to screw up
+We’ve found that it’s often the ‘stupid’ or unexpected ideas that turn out to be the successful ones – so try it, at least we can say we have.
+The only stupid idea, is the untested one
+It’s in our DNA – starting a business with founders 12 hours apart, giving our gateway away for free – sure, we did that, and we’d do it again.
+Trust starts with you – make it count
+Trust is a two-way street – instil it from day one.
+Assume best intent
+We have each other’s back – we’re all on the same team. Think before you speak or act.
+Make things, better
+Always try to leave things better than when you found them – change is constant, inevitable and embraced! Be that change we want to see.
+What’s it like to work here?! check it out: https://tyk.io/worklife/
+Tyk is an equal opportunities employer and we are determined to ensure that no applicant or employee receives less favourable treatment on the grounds of gender, age, disability, religion, belief, sexual orientation, marital status, or race, or is disadvantaged by conditions or requirements which cannot be shown to be justifiable.
+You can see more about us here https://tyk.io

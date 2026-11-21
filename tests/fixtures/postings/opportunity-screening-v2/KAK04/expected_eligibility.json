@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "case_id": "KAK04",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "This is a remote role, but candidates must be based in Austin, TX or very close to Austin to support occasional in-person collaboration and stronger alignment with our HQ."
+  ],
+  "rationale": "Explicit Austin-area residence overrides remote culture; combined hybrid duties are not geographic basis; no relocation exception.",
+  "partition": "exposed_regression",
+  "source_content_sha256": "d0edb564f7fe2ce2c83896debb6aaf68173871ed0c4a38c36d40f5da6b47a064",
+  "provenance": {
+    "company": "Kake",
+    "title": "Finance & Accounting Manager (Operations + FP&A)",
+    "source_url": "https://kake.co/jobs/finance-accounting-manager-operations-fp-a-eae5a7b6f30b",
+    "captured_at_utc": "2026-11-01T20:52:15.690877Z"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_accepted_unchanged",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "ineligible",
+    "source_partition": "test"
+  }
+}

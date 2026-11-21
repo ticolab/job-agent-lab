@@ -1,0 +1,45 @@
+Location: Remote (LATAM; El Salvador preferred, other LATAM locations welcome)
+Team: Engineering / IT Applications
+Type: Full-Time
+We're looking for a React Native Mobile Engineer to take a hands-on role in designing, building, and shipping high-quality mobile applications for iOS and Android. You'll work closely with product, design, and backend teams to deliver polished, performant user experiences that matter to real people every day.
+In this role, you'll own the mobile layer of our product — from architecture decisions and component design to performance tuning, release management, and continuous improvement. You'll be a key technical voice in shaping how we build for mobile, and you'll collaborate across time zones with a team that takes craft seriously.
+- • Design, develop, and ship production-grade React Native applications for iOS and Android
+- • Translate product requirements and design mockups into clean, maintainable, and performant mobile code
+- • Build and maintain reusable component libraries and shared mobile infrastructure
+- • Integrate with RESTful APIs, GraphQL services, and third-party SDKs
+- • Optimize app performance, startup time, and memory usage across a range of devices
+- • Manage the full release lifecycle including app store submissions, versioning, and over-the-air (OTA) updates
+- • Write unit and integration tests to ensure reliability and code quality
+- • Participate in code reviews and contribute to improving development standards and practices
+- • Collaborate with backend engineers, designers, and product managers to deliver cohesive features
+- • Mentor junior mobile engineers and promote best practices across the team
+- • 4–6 years of overall mobile or front-end engineering experience
+- • 3+ years of hands-on experience with React Native in a production environment
+- • Strong proficiency in JavaScript and TypeScript
+- • Solid understanding of React fundamentals — hooks, context, state management, and component lifecycle
+- • Experience with state management solutions such as Redux, Zustand, or React Query
+- • Familiarity with native iOS (Swift/Objective-C) and Android (Kotlin/Java) development is a strong plus
+- • Experience with Expo and/or bare React Native workflows
+- • Familiarity with CI/CD pipelines for mobile (Fastlane, Bitrise, GitHub Actions, or similar)
+- • Experience with app store submission and release processes (Apple App Store & Google Play)
+- • Solid understanding of mobile UI/UX principles and platform-specific design guidelines (HIG & Material)
+- • Experience consuming and integrating RESTful APIs and third-party services
+- • Comfortable working with Git-based workflows in a collaborative team environment
+- • Excellent attention to detail, communication skills, and a strong sense of ownership
+- • Bachelor’s degree in Computer Science or a related field preferred, or equivalent practical experience
+- • Remote-friendly environment with collaboration across regions and time zones
+- • A team that values quality, ownership, accountability, and thoughtful engineering
+- • Meaningful ownership over the mobile product — from architecture to production
+- • Supportive leadership that encourages growth, learning, and initiative
+- • The chance to build experiences that users interact with every single day
+React Native Mobile Engineer
+About the Role
+What You'll Do
+What We're Looking For
+What It's Like to Work Here
+- Department
+- Engineering
+- Remote status
+- Fully Remote
+About Sapphire Labs
+Sapphire Labs is a nearshore product development partner founded in Texas in 2022. We embed senior engineers, designers, and product managers directly into your team — same tools, same standups, same time zone — so you can ship faster without the overhead of full-time hiring. With 60+ team members across the US and Latin America, we focus on engineers with 5+ years of experience who tackle complex challenges in fintech, SaaS, and marketplace platforms. Learn more about our nearshore software development services or get in touch to discuss your project.

@@ -1,0 +1,74 @@
+# Apply for the Senior AI/LLM Engineer (Python)
+
+## Senior AI/LLM Engineer (Python) - Remote
+
+Kake is a remote-first company and a people-first global community of senior engineers. Kake engineers are behind some of the world’s most innovative products (Brands you’ve heard!), from Fortune 500 to fast-growing companies. We believe it’s not where your table is, but what you bring to the table that matters. Our community spans 45,000+ engineers across 55+ countries; join a culture where great people stay, grow, and thrive (and love eating kake!).
+
+Senior AI/LLM Engineers with strong Python experience, skilled in designing, building, and productionizing LLM-powered applications and AI systems at scale. It's a great fit for people who enjoy working at the intersection of software engineering and applied AI, and who take ownership from prototyping through production deployment.
+
+## What you’ll build and own
+
+- Design, build, and deploy LLM-powered features and applications using Python.
+- Develop and maintain backend services and APIs (e.g., FastAPI) that expose AI/LLM capabilities to other systems.
+- Build and optimize RAG pipelines, including embeddings, vector search, and retrieval strategies.
+- Design, test, and iterate on prompts, agents, and orchestration flows using frameworks such as LangChain, LlamaIndex, or similar.
+- Integrate with LLM providers and APIs (e.g., OpenAI, Anthropic, open-source models) and manage tradeoffs around cost, latency, and quality.
+- Evaluate model outputs systematically, building tooling and metrics to test accuracy, safety, and regression across iterations.
+- Work with containerized environments and data infrastructure (e.g., PostgreSQL, Redis, vector databases) to support reliable AI systems in production.
+- Collaborate with cross-functional stakeholders to translate ambiguous product needs into technically sound AI solutions.
+
+## Core Requirements
+
+- Strong proficiency in Python and experience with FastAPI or similar backend frameworks.
+- Experience working with LLM APIs (e.g., OpenAI, Anthropic, or similar) and frameworks such as LangChain or LlamaIndex.
+- Experience with RAG architectures, embeddings, and vector databases (e.g., Pinecone, Weaviate, pgvector, or similar).
+- Hands-on experience with Docker and containerized development environments.
+- Experience working with PostgreSQL, Redis, or similar data stores.
+- Strong experience writing functional and integration tests, including evaluation frameworks for AI/LLM output quality.
+- Excellent written and verbal communication skills in English.
+- Ability to work independently in a remote, fast-paced environment.
+
+## Nice-to-Have
+
+- Experience fine-tuning or evaluating open-source LLMs.
+- Familiarity with prompt engineering best practices and agentic workflows.
+- Experience with distributed systems, streaming (e.g., Kafka), or large-scale applications.
+- Background in machine learning fundamentals (e.g., scikit-learn, PyTorch, or TensorFlow).
+- Comfortable working flexible hours to overlap with distributed teams across different time zones.
+
+## Additional
+
+US Timezone Overlap: 5h–6h daily PST
+
+## Why Join Kake?
+
+The icing on the Kake:
+
+- Competitive Pay in USD: Work globally, get paid globally.
+- Fully Remote: Simply put, we trust you.
+- Better Me Fund: We invest in your personal growth and passions.
+- Compassion is Badass: Join a community that invests in social good.
+
+Ready for your piece of the Kake? Apply now!
+
+Quick note: Due to the high volume of applications, only shortlisted candidates will be contacted.
+
+## Visible application area and screening questions
+
+Location
+
+Upload CV
+
+Click or drag file to this area to upload
+
+Supports .pdf,.doc,.docx up to 10MB
+
+Describe a production-grade AI system you’ve built (e.g., involving LLMs, RAG, or NLP). What were the biggest technical challenges, and how did you ensure scalability and reliability? *
+
+How many years of experience do you have with Python, LLMs, RAG pipelines, NLP systems, and cloud platforms (AWS, GCP, or Azure), including AI orchestration? *
+
+Are you comfortable working across backend, frontend, and cloud infrastructure to ship end-to-end features independently? *
+
+Please Select
+
+Apply Now

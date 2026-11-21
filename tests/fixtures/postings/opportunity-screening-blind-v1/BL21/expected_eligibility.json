@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL21",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "Location: Costa Rica (remote)"
+  ],
+  "rationale": "Location stated as Costa Rica (remote).",
+  "partition": "blind",
+  "source_content_sha256": "33824a49a0f7330c42349f73a2535f4e08376f337798bb348ef812c5895f9fd6",
+  "provenance": {
+    "company": "CSC Generation",
+    "title": "Lead QA Engineer (Backcountry)",
+    "source_url": "https://jobs.lever.co/cscgeneration-2/dc1c9985-49b6-444d-a431-632df72b535a",
+    "captured_at_utc": "2026-11-21T15:50:24.189008+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

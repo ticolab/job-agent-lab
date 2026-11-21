@@ -18,8 +18,15 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 import job_pipeline.settings as settings
 from job_discovery.catalog import COMPANIES, find_company
 from job_discovery.domain.company import Company
-from job_discovery.persistence.engine import database, missing_tables
+from job_discovery.persistence.engine import (
+    database,
+    missing_columns,
+    missing_tables,
+    read_only_database,
+)
+from job_pipeline.llm import REASONING_EFFORTS
 from job_pipeline.persistence import models
+from job_pipeline.persistence.models import Stage
 from job_pipeline.policy import PipelinePolicy
 
 
@@ -151,7 +158,26 @@ def add_fetch_policy_arguments(parser: argparse.ArgumentParser) -> None:
 
 
 def add_model_policy_arguments(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("-m", "--model", default=settings.DEFAULT_MODEL)
+    parser.add_argument(
+        "-m",
+        "--model",
+        default=None,
+        help=(
+            f"default: {settings.ELIGIBILITY_MODEL} for eligibility, "
+            f"{settings.DEFAULT_MODEL} for extraction"
+        ),
+    )
+    parser.add_argument(
+        "--reasoning-effort",
+        choices=REASONING_EFFORTS,
+        default=None,
+        help=(
+            "send this reasoning effort to a reasoning model instead of "
+            "temperature 0; recorded on the run and each attempt. Default: "
+            f"{settings.ELIGIBILITY_REASONING_EFFORT} with the default "
+            "eligibility model, otherwise none"
+        ),
+    )
     parser.add_argument("--limit", type=positive_int, default=None, metavar="N")
     parser.add_argument(
         "--model-concurrency",
@@ -167,6 +193,22 @@ def add_model_policy_arguments(parser: argparse.ArgumentParser) -> None:
     )
 
 
+def resolve_model(args: argparse.Namespace, stage: Stage) -> None:
+    """Fill the stage's default model, and its effort only for that default.
+
+    An explicit ``--model`` keeps only an explicit ``--reasoning-effort``, so a
+    non-reasoning model is never sent the eligibility default effort.
+    """
+    if getattr(args, "model", None) is not None:
+        return
+    if stage == "eligibility":
+        args.model = settings.ELIGIBILITY_MODEL
+        if getattr(args, "reasoning_effort", None) is None:
+            args.reasoning_effort = settings.ELIGIBILITY_REASONING_EFFORT
+    else:
+        args.model = settings.DEFAULT_MODEL
+
+
 def build_policy(args: argparse.Namespace) -> PipelinePolicy:
     return PipelinePolicy(
         http_concurrency=getattr(
@@ -178,7 +220,8 @@ def build_policy(args: argparse.Namespace) -> PipelinePolicy:
         model_concurrency=args.model_concurrency,
         job_timeout=float(args.timeout_seconds),
         limit=args.limit,
-        model=args.model,
+        model=args.model if args.model is not None else settings.DEFAULT_MODEL,
+        reasoning_effort=getattr(args, "reasoning_effort", None),
     )
 
 
@@ -238,6 +281,16 @@ def _migrate_hint(path: Path | None) -> str:
     return f"{settings.DATABASE_ENV_VAR}={path} uv run alembic upgrade head"
 
 
+# Present tables are not enough: a database migrated only to an earlier
+# revision has every table but lacks the one-shot contract or reasoning-effort
+# columns.
+_REQUIRED_COLUMNS = {
+    "pipeline_runs": ("reasoning_effort",),
+    "job_attempts": ("eligibility_prompt_hash", "reasoning_effort"),
+    "job_decisions": ("prompt_hash", "conflicting_evidence_json"),
+}
+
+
 @asynccontextmanager
 async def open_database(
     args: argparse.Namespace,
@@ -252,6 +305,39 @@ async def open_database(
                 f"Database schema is missing table(s): {', '.join(absent)}. "
                 f"Run '{_migrate_hint(path)}' first."
             )
+        async with session_factory() as session:
+            absent_columns = await missing_columns(session, _REQUIRED_COLUMNS)
+        if absent_columns:
+            fail(
+                "Database schema is missing pipeline column(s): "
+                f"{', '.join(absent_columns)}. Run '{_migrate_hint(path)}' first."
+            )
+        yield session_factory
+
+
+@asynccontextmanager
+async def open_read_only_database(
+    args: argparse.Namespace,
+) -> AsyncIterator[async_sessionmaker[AsyncSession]]:
+    path = Path(args.database) if args.database else settings.DATABASE_PATH
+    if not path.is_file():
+        fail(f"Database does not exist: {path}")
+    assert models.Job.__tablename__ in models.Base.metadata.tables
+    async with read_only_database(path) as session_factory:
+        async with session_factory() as session:
+            absent = await missing_tables(session)
+        if absent:
+            fail(
+                f"Database schema is missing table(s): {', '.join(absent)}. "
+                f"Run '{_migrate_hint(path)}' first."
+            )
+        async with session_factory() as session:
+            absent_columns = await missing_columns(session, _REQUIRED_COLUMNS)
+        if absent_columns:
+            fail(
+                "Database schema is missing pipeline column(s): "
+                f"{', '.join(absent_columns)}. Run '{_migrate_hint(path)}' first."
+            )
         yield session_factory
 
 
@@ -261,8 +347,10 @@ __all__ = [
     "add_selection_arguments",
     "add_verbosity_argument",
     "build_policy",
+    "resolve_model",
     "fail",
     "open_database",
+    "open_read_only_database",
     "positive_int",
     "provider_credential",
     "require_provider_credential",

@@ -1,0 +1,51 @@
+Lead Engineer, Health Data Integrations
+Role Overview
+A lab result can arrive on time and still be hard to use. It has to reach the right patient record, carry enough context for a physician to act on it, and make sense to the person receiving it. The same challenge applies to data from electronic health records, insurers, wearables, and medical devices.
+We’re seeking a Lead Engineer, Health Data Integrations to build and operate the integrations behind a health data platform for personalized primary care. You’ll own the work from the first conversation with a lab, EHR vendor, or device partner through the point where a member or physician can use the data. You’ll work across APIs, data pipelines, mobile integrations, and front-end features on an API-first, event-driven Azure platform. The team uses Claude Code as its primary development interface.
+This is a hands-on senior individual contributor role reporting to the Director of Engineering, Integrations. The role works directly with protected health information and external vendors and is open to candidates based in the United States who are authorized to work in the U.S.
+What you’ll do
+- •
+- • Build and operate integrations with lab and diagnostics partners so results arrive complete, normalized, and ready for members and physicians to use.
+- • Connect EMR and EHR systems using FHIR and legacy interfaces where needed. Integrate payer data, including eligibility, claims, and patient-access APIs.
+- • Integrate on-device mobile health data and cloud-based wearable APIs. Handle consent, synchronization, and gaps in device data.
+- • Lead the work to bring data from in-clinic medical devices into the cloud platform.
+- • Map data from different sources into a common model that supports standard clinical terminology, patient matching, provenance, and auditability.
+- • Build the APIs, services, and front-end features that help members understand their health data and physicians act on it.
+- • Work directly with labs, EHR vendors, payers, and device partners to scope, test, and launch integrations. Partner with product, clinical, and data engineering teams to decide which data matters and how to present it.
+- • Design for HIPAA requirements from the start. Build in encryption, access controls, audit logging, and minimum-necessary data handling. Align vendor integrations with Business Associate Agreements.
+- • Set the standards for testing, observability, and CI/CD so the team can catch integration failures before they affect members or physicians.
+- • Use Claude Code and agentic development in your daily workflow, from prototyping and code generation through automated testing and deployment. Define how the team reviews and verifies AI-generated changes.
+- • Work with technical and business product owners to test assumptions, clarify what each integration needs to deliver, and sequence work by impact.
+- • You’re comfortable debugging a FHIR resource, working through a mobile health sync issue, and reviewing a React screen or Azure deployment in the same week.
+- • You’ve seen healthcare integrations break in production and can explain what went wrong, how you diagnosed it, and what you changed.
+- • You can move a project forward on a small team when requirements are still taking shape. You raise blockers early and communicate clearly with engineers, clinicians, and vendor partners.
+- • Bachelor’s degree in computer science or a related field and 8+ years shipping software, including 3+ years building healthcare data integrations at a health-tech, digital health, or healthcare startup.
+- • Hands-on production experience with FHIR R4 and SMART on FHIR, plus working knowledge of HL7 v2, C-CDA, and clinical terminologies such as LOINC and SNOMED CT.
+- • Integration experience in at least two of these areas — hospital and EHR systems such as Epic, Oracle Health/Cerner, or athenahealth; payer data such as eligibility, claims, or X12 EDI; and lab systems such as Quest or Labcorp.
+- • Experience integrating Apple HealthKit or Android Health Connect, including the native or cross-platform mobile work involved, and working with wearable APIs such as WHOOP, Fitbit, Oura, or Garmin.
+- • Experience leading a substantial platform build or integration program end to end.
+- • Full-stack development experience with a modern back end such as Node.js, .NET, or Python and a front end such as React or Next.js. You’ve built APIs, event-driven systems, and data pipelines in production.
+- • Cloud-native experience on Azure, or equivalent experience on another cloud platform and a willingness to work in Azure, including CI/CD and infrastructure as code.
+- • Practical experience applying HIPAA requirements and protecting PHI in production systems.
+- • Daily use of AI coding tools such as Claude Code or Copilot, with a clear approach to reviewing and testing their output.
+The ideal candidate can sit down with a clinician or vendor, work out what data is available and how it will be used, and carry that integration into production. They can trace a result back to its source, explain a gap in plain language, and fix the underlying problem.
+What you’ll bring
+- • Bachelor’s degree in computer science or a related field, plus 8+ years shipping software, including 3+ years building healthcare data integrations at a health-tech, digital health, or healthcare startup.
+- • Hands-on production experience with FHIR R4 and SMART on FHIR, and working knowledge of HL7 v2, C-CDA, LOINC, and SNOMED CT.
+- • Integration experience across at least two of these areas — hospital and EHR systems, payer and insurance data, and lab systems.
+- • Experience integrating Apple HealthKit or Android Health Connect, including the mobile development involved, and working with wearable data APIs such as WHOOP, Fitbit, Oura, or Garmin.
+- • Experience leading a significant platform build or integration program from design through launch.
+- • Full-stack experience with a modern back end such as Node.js, .NET, or Python, and a front end such as React or Next.js. You’ve built APIs, event-driven systems, and data pipelines in production.
+- • Cloud-native engineering experience on Azure or equivalent experience on another cloud platform and a willingness to work in Azure. This includes CI/CD and infrastructure as code.
+- • Practical experience protecting PHI in production systems and applying HIPAA requirements.
+- • Daily use of AI coding tools such as Claude Code or GitHub Copilot, with a habit of testing and reviewing their output.
+- • Ability to work independently on a small team, raise blockers early, and communicate clearly with engineers, clinicians, and vendor partners.
+- • Based in the United States and authorized to work in the U.S.
+You should be able to carry an integration through the full arc:
+Clinical Need → Partner Discovery → Integration Design → Data Validation → Production → Member and Physician Use
+The work is complete when the right data reaches the right person in a form they can use.
+Create a Job Alert
+Interested in building your career at Total Performance Consulting? Get future opportunities sent straight to your email.
+Apply for this job
+*
+indicates a required field

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL31",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "4b8c4747019f6520158ed6a252f15ee06f56b9294e9848f4c10396f492208cb5",
+  "decision": "ineligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL31-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Based in the UK or Europe with the right to work there"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

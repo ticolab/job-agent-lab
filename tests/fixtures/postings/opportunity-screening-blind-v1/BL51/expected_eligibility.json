@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL51",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "Authorized to work in the US without sponsorship"
+  ],
+  "rationale": "Requires authorization to work in the US without sponsorship.",
+  "partition": "blind",
+  "source_content_sha256": "fbd2a4172f4d7d34fc9008d97152b59a58bdbd1a23930bff7dc1558e1a27c6c9",
+  "provenance": {
+    "company": "Perform",
+    "title": "Account Executive — Project & Solutions Sales",
+    "source_url": "https://job-boards.greenhouse.io/perform-careers/jobs/4373423009",
+    "captured_at_utc": "2026-11-21T15:56:50.044542+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

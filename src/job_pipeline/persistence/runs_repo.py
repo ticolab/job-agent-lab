@@ -46,6 +46,7 @@ async def start_run(
     started_at: datetime,
     stage: Stage,
     trigger: str,
+    reasoning_effort: str | None = None,
 ) -> None:
     async with session.begin():
         session.add(
@@ -55,6 +56,7 @@ async def start_run(
                 trigger=trigger,
                 selection=selection,
                 model=model,
+                reasoning_effort=reasoning_effort,
                 started_at=as_naive_utc(started_at),
             )
         )

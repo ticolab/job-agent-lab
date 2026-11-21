@@ -1,6 +1,11 @@
 """Pipeline defaults, with one constant for every operational ceiling and threshold.
 
-The model selects the inexpensive default. Concurrency constants cap HTTP,
+Eligibility defaults to the frozen one-shot candidate, ``gpt-5.4-mini-2026-03-17``
+at medium reasoning effort, released as a starting point by operator decision on
+2026-11-21 although it failed the blind gates (see ``ELIGIBILITY_FLOW.md``).
+Extraction keeps the inexpensive ``DEFAULT_MODEL``, which was never evaluated
+against another model. An explicit ``--model`` drops the eligibility default
+effort, because a non-reasoning model rejects one. Concurrency constants cap HTTP,
 browser, model, and per-host work independently. The job timeout bounds each
 network or model step of one posting once that step holds its slot; time spent
 waiting for a slot is never charged against it, so a corpus-sized run cannot
@@ -17,6 +22,8 @@ from datetime import timedelta
 from job_discovery.settings import DATABASE_ENV_VAR, DATABASE_PATH
 
 DEFAULT_MODEL = "gpt-4.1-mini"
+ELIGIBILITY_MODEL = "gpt-5.4-mini-2026-03-17"
+ELIGIBILITY_REASONING_EFFORT = "medium"
 DEFAULT_HTTP_CONCURRENCY = 10
 DEFAULT_BROWSER_CONCURRENCY = 2
 DEFAULT_MODEL_CONCURRENCY = 4
@@ -41,6 +48,8 @@ __all__ = [
     "DEFAULT_MODEL",
     "DEFAULT_MODEL_CONCURRENCY",
     "DEFAULT_PER_HOST_CONCURRENCY",
+    "ELIGIBILITY_MODEL",
+    "ELIGIBILITY_REASONING_EFFORT",
     "FETCH_TIMEOUT",
     "MIN_CONTENT_CHARS",
     "MAX_CAPTURED_FRAMES",

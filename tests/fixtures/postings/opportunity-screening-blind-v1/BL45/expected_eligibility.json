@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL45",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "(Remote)"
+  ],
+  "rationale": "Remote (title) with no location restriction anywhere in the posting.",
+  "partition": "blind",
+  "source_content_sha256": "d5765a22bf38ffe291eb38559b89a716a502032fc8f4432f83b54da69cfd2ab0",
+  "provenance": {
+    "company": "AireSpring",
+    "title": "Telecom Channel Manager - Managed Services Provider (Remote)",
+    "source_url": "https://jobs.smartrecruiters.com/AireSpring1/744000158334420-telecom-channel-manager-managed-services-provider-remote-",
+    "captured_at_utc": "2026-11-21T15:48:48.668787+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "case_id": "AKU04",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "Job Location\nLATAM"
+  ],
+  "rationale": "Role LATAM includes Costa Rica; Pacific overlap and on-call are schedule not residence constraints.",
+  "partition": "development",
+  "source_content_sha256": "5204f02dcd8357d9afb6cc14c9619646c3623b131dab4a5ed886cfc2c879e7ac",
+  "provenance": {
+    "company": "Akurey",
+    "title": "Senior Database Engineer / DBA",
+    "source_url": "https://www.akurey.com/careers/requirements?pId=308",
+    "captured_at_utc": "2026-11-01T20:51:48.307545Z"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_accepted_unchanged",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "eligible",
+    "source_partition": "development"
+  }
+}

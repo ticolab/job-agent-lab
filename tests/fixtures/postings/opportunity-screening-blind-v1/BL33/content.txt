@@ -1,0 +1,43 @@
+Full Stack Web Developer
+Role Overview
+We are seeking a Senior Full Stack Web Developer to join an engineering team supporting a global entertainment and media organization. You will work within an agile development team, partner closely with product management, perform code reviews, and mentor other developers as you help build and maintain high-quality web applications.
+This role is a strong fit for self-motivated engineers who are passionate about both the business and the technology behind it. Deep knowledge of JavaScript, TypeScript, HTML, CSS, and Node.js is essential, and hands-on experience with React, Redux, Jest, Azure SQL, and MongoDB is a strong plus. Just as important is the ability to adapt quickly as technologies and priorities change.
+Key Responsibilities
+- • Develop and maintain web applications using modern web technologies.
+- • Collaborate with cross-functional teams, including product management, to define, design, and ship new features.
+- • Write clean, maintainable, and efficient code.
+- • Ensure the performance, quality, and responsiveness of applications.
+- • Identify and resolve bottlenecks and fix bugs.
+- • Guide and mentor other full stack developers on business and technical concepts to improve code quality and delivery speed.
+- • Help maintain code quality, organization, and automation across the codebase.
+- • Participate in code reviews and provide constructive feedback to peers.
+- • Stay current with industry trends and emerging technologies.
+Required Qualifications
+- • Minimum of five (5) years of experience as a Full Stack Web Developer or in a similar role.
+- • Mastery of front-end technologies such as HTML, CSS, JavaScript, and TypeScript, along with frameworks like React, Angular, or Vue.js.
+- • Strong experience with a Node.js framework such as Hapi.js or Express.js.
+- • Experience with database systems such as MongoDB, MSSQL, MySQL, PostgreSQL, or similar.
+- • Experience working on large single-page web applications with complex state management.
+- • Familiarity with UI frameworks such as Bootstrap, Semantic UI React, Material, Tailwind, or similar.
+- • Experience writing unit and integration tests using tools such as Jest, Chai, Cypress, or similar.
+- • Experience performing code reviews to ensure security, code quality, maintainability, and knowledge sharing across the team.
+- • Familiarity with version control systems such as Git.
+- • Solid understanding of RESTful APIs and web services.
+- • Very strong problem-solving skills and attention to detail.
+- • Excellent communication and teamwork skills.
+- • Bachelor's degree in Computer Science, Engineering, or a related field, or equivalent work experience.
+Preferred Experience
+- • Hands-on experience with React, Redux, Jest, Azure SQL, and MongoDB.
+- • Experience with SAP/BTP integrations.
+- • Experience with cloud services such as AWS, Azure, or Google Cloud.
+- • Experience working in FinTech or financial systems environments.
+- • Experience working in agile development teams.
+- • Experience mentoring or leading other developers.
+Ideal Candidate
+The ideal candidate is a seasoned full stack engineer who takes ownership of quality, from clean code and solid test coverage to thoughtful code reviews. They are comfortable working across the front end and back end, collaborate easily with product and engineering peers, and enjoy helping other developers grow.
+Just as important as technical depth is the ability to adapt to changing technology, understand the business context behind the work, and contribute to a team culture of collaboration and continuous improvement.
+Create a Job Alert
+Interested in building your career at Total Performance Consulting? Get future opportunities sent straight to your email.
+Apply for this job
+*
+indicates a required field

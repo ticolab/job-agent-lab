@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "case_id": "AKU01",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "Job Location\nLATAM"
+  ],
+  "rationale": "Role Job Location LATAM includes Costa Rica; footer is employer address, shared benefits are not a freelance entitlement promise.",
+  "partition": "development",
+  "source_content_sha256": "c7285d93253c810768e1c6f9199ce288eda68e6067f35cd9f52f47016937adb5",
+  "provenance": {
+    "company": "Akurey",
+    "title": "AI Systems Engineer / Agentic Engineer",
+    "source_url": "https://www.akurey.com/careers/requirements?pId=307",
+    "captured_at_utc": "2026-11-01T20:51:48.326084Z"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_accepted_unchanged",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "eligible",
+    "source_partition": "development"
+  }
+}

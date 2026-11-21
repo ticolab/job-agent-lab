@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL13",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "0287f2d75a4c5aae134fc7dd5ae7b54ab6c55e62ca18dbb7fbe68ed90a8036cc",
+  "decision": "ineligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL13-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Remote-USA"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

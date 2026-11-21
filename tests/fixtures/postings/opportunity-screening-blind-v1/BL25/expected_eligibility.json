@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL25",
+  "reviewed": true,
+  "decision": "unknown",
+  "must_cite": [
+    "EMEA"
+  ],
+  "rationale": "EMEA appears only as a title/header label (like OCE03); company says remote from anywhere.",
+  "partition": "blind",
+  "source_content_sha256": "ea8ed5ad6bd681c8813c6a2f4319bf898ad5859d262fd8ed7087113661897cf5",
+  "provenance": {
+    "company": "Tyk",
+    "title": "Senior Customer Success Engineer – EMEA",
+    "source_url": "https://tyk.io/jobs/senior-cse-emea/",
+    "captured_at_utc": "2026-11-21T15:49:42.757446+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

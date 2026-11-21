@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL07",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "06cb2134ae0aae906c04e0a369983dc58c33975dc858220a130f9170bad5d5f1",
+  "decision": "unknown",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL07-E01",
+      "role": "either",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Providence, RI, USA"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

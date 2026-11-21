@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL35",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "operation of the American Fork office"
+  ],
+  "rationale": "Regular on-site presence required at the American Fork office (outside Costa Rica).",
+  "partition": "blind",
+  "source_content_sha256": "c2a1cee637c233f6403c2a399c76d50934adece2693b0eb1fca3d04164473d9f",
+  "provenance": {
+    "company": "Progress",
+    "title": "Workplace Operations Specialist",
+    "source_url": "https://www.progress.com/company/careers/open-positions/workplace-operations-specialist-o3L4Afwc",
+    "captured_at_utc": "2026-11-21T15:49:32.564999+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

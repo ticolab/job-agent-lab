@@ -22,6 +22,10 @@ import job_pipeline.persistence.results_repo as results_repo
 import job_pipeline.persistence.runs_repo as runs_repo
 from job_discovery.persistence import models as discovery_models
 from job_discovery.persistence.engine import create_engine, create_session_factory
+from job_eligibility import (
+    ELIGIBILITY_PROMPT_HASH,
+    ELIGIBILITY_VERSION,
+)
 from tests.unit.asyncio_harness import run_async, track_engine
 
 
@@ -82,9 +86,10 @@ async def _seed_attempt_and_content(
             trigger="scheduled",
             reason=None,
             model="gpt-4.1-mini",
-            policy_version="policy-1",
+            policy_version=ELIGIBILITY_VERSION,
             extractor_version="extractor-1",
             started_at=datetime(2026, 1, 1, tzinfo=UTC),
+            eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
         )
         content_id = await contents_repo.store(
             session,
@@ -266,6 +271,655 @@ def test_content_storage_is_idempotent_and_identity_is_searchable(
     first, second, requisition_job, fingerprint_job = run_async(scenario())
     assert first == second
     assert requisition_job == fingerprint_job
+
+
+async def _own_job(
+    factory: async_sessionmaker[AsyncSession],
+    job_id: int,
+    attempt_id: int,
+    content_id: int,
+) -> None:
+    async with factory() as session, session.begin():
+        await session.execute(
+            update(models.Job)
+            .where(models.Job.id == job_id)
+            .values(
+                status="in_progress",
+                current_attempt_id=attempt_id,
+                current_content_id=content_id,
+            )
+        )
+
+
+def _verdict(
+    decision: str = "eligible",
+    *,
+    supporting: str = '["évidence"]',
+    conflicting: str = '["conflict"]',
+    policy_version: str = ELIGIBILITY_VERSION,
+    prompt_hash: str | None = ELIGIBILITY_PROMPT_HASH,
+) -> decisions_repo.DecisionInput:
+    return decisions_repo.DecisionInput(
+        decision,
+        "The model reason.",
+        supporting,
+        policy_version,
+        conflicting if prompt_hash is not None else None,
+        prompt_hash,
+    )
+
+
+async def _owned_attempt(
+    factory: async_sessionmaker[AsyncSession], name: str, tmp_path: Path
+) -> tuple[int, int, int]:
+    del tmp_path
+    job_id = await _seed_job(factory)
+    attempt_id, content_id = await _seed_attempt_and_content(factory, job_id)
+    await _own_job(factory, job_id, attempt_id, content_id)
+    async with factory() as session, session.begin():
+        await session.execute(
+            update(models.Job).where(models.Job.id == job_id).values(attempt_count=1)
+        )
+    return job_id, attempt_id, content_id
+
+
+@pytest.mark.parametrize(
+    ("decision_value", "expected_status", "expected_phase", "expected_count"),
+    [
+        ("eligible", "ready_for_extraction", "extraction", 0),
+        ("ineligible", "completed_ineligible", "eligibility", 1),
+        ("unknown", "unknown", "eligibility", 1),
+    ],
+)
+def test_eligibility_finalizer_persists_verdict_and_completes_atomically(
+    tmp_path: Path,
+    decision_value: str,
+    expected_status: str,
+    expected_phase: str,
+    expected_count: int,
+) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / f"finalize-{decision_value}.db")
+        job_id, attempt_id, content_id = await _owned_attempt(
+            factory, decision_value, tmp_path
+        )
+        async with factory() as session:
+            finalized = await decisions_repo.finalize_eligibility(
+                session,
+                job_id=job_id,
+                attempt_id=attempt_id,
+                content_id=content_id,
+                decision=_verdict(decision_value),
+                decided_at=datetime(2026, 1, 2, tzinfo=UTC),
+                prompt_tokens=11,
+                completion_tokens=7,
+            )
+        assert finalized is not None
+        decision_id, outcome = finalized
+        assert outcome == decision_value
+        async with factory() as session:
+            job = await jobs_repo.get(session, job_id)
+            decision = await decisions_repo.current(session, job_id)
+            attempt = (await attempts_repo.history(session, job_id))[-1]
+        assert job is not None and decision is not None
+        assert decision.id == decision_id
+        assert job.status == expected_status
+        assert job.next_phase == expected_phase
+        assert job.attempt_count == expected_count
+        assert job.current_attempt_id is None
+        assert decision.attempt_id == attempt_id
+        assert decision.content_id == content_id
+        assert decision.reason == "The model reason."
+        assert decision.evidence_json == '["évidence"]'
+        assert decision.conflicting_evidence_json == '["conflict"]'
+        assert decision.policy_version == ELIGIBILITY_VERSION
+        assert decision.prompt_hash == ELIGIBILITY_PROMPT_HASH
+        assert decision.is_current_contract
+        assert attempt.outcome == expected_status
+        assert attempt.phase_reached == "eligibility"
+        assert (attempt.prompt_tokens, attempt.completion_tokens) == (11, 7)
+
+    run_async(scenario())
+
+
+def test_finalizer_reuses_only_a_compatible_current_decision(tmp_path: Path) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "finalize-reuse.db")
+        job_id, attempt_id, content_id = await _owned_attempt(
+            factory, "reuse", tmp_path
+        )
+        async with factory() as session:
+            with pytest.raises(
+                decisions_repo.CheckpointError, match="no current compatible decision"
+            ):
+                await decisions_repo.finalize_eligibility(
+                    session,
+                    job_id=job_id,
+                    attempt_id=attempt_id,
+                    content_id=content_id,
+                    decision=None,
+                    decided_at=datetime(2026, 1, 2),
+                    prompt_tokens=None,
+                    completion_tokens=None,
+                )
+        async with factory() as session:
+            job = await jobs_repo.get(session, job_id)
+        assert job is not None and job.current_attempt_id == attempt_id
+        async with factory() as session:
+            existing = await decisions_repo.accept(
+                session,
+                job_id=job_id,
+                attempt_id=attempt_id,
+                content_id=content_id,
+                decision=_verdict("ineligible"),
+                decided_at=datetime(2026, 1, 2),
+            )
+        async with factory() as session:
+            compatible = await decisions_repo.current_compatible(
+                session, job_id=job_id, content_id=content_id
+            )
+            assert compatible is not None and compatible.id == existing
+            assert (
+                await decisions_repo.current_compatible(
+                    session, job_id=job_id, content_id=content_id + 1
+                )
+                is None
+            )
+        async with factory() as session:
+            finalized = await decisions_repo.finalize_eligibility(
+                session,
+                job_id=job_id,
+                attempt_id=attempt_id,
+                content_id=content_id,
+                decision=None,
+                decided_at=datetime(2026, 1, 3),
+                prompt_tokens=None,
+                completion_tokens=None,
+            )
+        assert finalized == (existing, "ineligible")
+        async with factory() as session:
+            job = await jobs_repo.get(session, job_id)
+            history = await decisions_repo.history(session, job_id)
+        assert job is not None and job.status == "completed_ineligible"
+        assert [row.id for row in history] == [existing]
+
+    run_async(scenario())
+
+
+@pytest.mark.parametrize(
+    "values",
+    [
+        {"prompt_hash": "old-hash"},
+        {"policy_version": "opportunity-oneshot-v0"},
+        {
+            "policy_version": "cr-2026.10.1",
+            "prompt_hash": None,
+            "conflicting_evidence_json": None,
+        },
+        {"is_current": False},
+    ],
+)
+def test_incompatible_decisions_are_never_reused(
+    tmp_path: Path, values: dict[str, object]
+) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "finalize-incompatible.db")
+        job_id, attempt_id, content_id = await _owned_attempt(
+            factory, "incompatible", tmp_path
+        )
+        async with factory() as session:
+            await decisions_repo.accept(
+                session,
+                job_id=job_id,
+                attempt_id=attempt_id,
+                content_id=content_id,
+                decision=_verdict(),
+                decided_at=datetime(2026, 1, 2),
+            )
+        async with factory() as session, session.begin():
+            await session.execute(update(models.JobDecision).values(**values))
+        async with factory() as session:
+            assert (
+                await decisions_repo.current_compatible(
+                    session, job_id=job_id, content_id=content_id
+                )
+                is None
+            )
+        async with factory() as session:
+            with pytest.raises(decisions_repo.CheckpointError):
+                await decisions_repo.finalize_eligibility(
+                    session,
+                    job_id=job_id,
+                    attempt_id=attempt_id,
+                    content_id=content_id,
+                    decision=None,
+                    decided_at=datetime(2026, 1, 3),
+                    prompt_tokens=None,
+                    completion_tokens=None,
+                )
+
+    run_async(scenario())
+
+
+def test_finalizer_stale_owner_changes_nothing(tmp_path: Path) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "finalize-stale.db")
+        job_id, attempt_id, content_id = await _owned_attempt(
+            factory, "stale", tmp_path
+        )
+        async with factory() as session:
+            for owner, content in ((attempt_id + 1, content_id), (attempt_id, 999)):
+                assert (
+                    await decisions_repo.finalize_eligibility(
+                        session,
+                        job_id=job_id,
+                        attempt_id=owner,
+                        content_id=content,
+                        decision=_verdict(),
+                        decided_at=datetime(2026, 1, 2),
+                        prompt_tokens=1,
+                        completion_tokens=1,
+                    )
+                    is None
+                )
+            assert await decisions_repo.current(session, job_id) is None
+            job = await jobs_repo.get(session, job_id)
+            attempts = await attempts_repo.history(session, job_id)
+        assert job is not None and job.status == "in_progress"
+        assert attempts[-1].finished_at is None
+
+    run_async(scenario())
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("policy_version", "wrong-version"),
+        ("eligibility_prompt_hash", "wrong-hash"),
+        ("eligibility_prompt_hash", None),
+        ("finished_at", datetime(2026, 1, 1)),
+    ],
+)
+def test_finalizer_revalidates_attempt_contract_and_rolls_back(
+    tmp_path: Path, field: str, value: str | datetime | None
+) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / f"attempt-{field}.db")
+        job_id, attempt_id, content_id = await _owned_attempt(factory, field, tmp_path)
+        async with factory() as session, session.begin():
+            await session.execute(
+                update(models.JobAttempt)
+                .where(models.JobAttempt.id == attempt_id)
+                .values({field: value})
+            )
+        async with factory() as session:
+            with pytest.raises(
+                decisions_repo.CheckpointError,
+                match="finished or uses another contract identity",
+            ):
+                await decisions_repo.finalize_eligibility(
+                    session,
+                    job_id=job_id,
+                    attempt_id=attempt_id,
+                    content_id=content_id,
+                    decision=_verdict(),
+                    decided_at=datetime(2026, 1, 2),
+                    prompt_tokens=1,
+                    completion_tokens=1,
+                )
+        async with factory() as session:
+            job = await jobs_repo.get(session, job_id)
+            attempt = await session.get(models.JobAttempt, attempt_id)
+            assert job is not None and attempt is not None
+            assert job.status == "in_progress"
+            assert job.current_attempt_id == attempt_id
+            assert await decisions_repo.current(session, job_id) is None
+            assert attempt.outcome is None
+
+    run_async(scenario())
+
+
+@pytest.mark.parametrize(
+    ("decision", "message"),
+    [
+        (_verdict(prompt_hash="other-hash"), "incompatible eligibility contract"),
+        (_verdict(policy_version="other-version"), "incompatible eligibility contract"),
+        (_verdict(prompt_hash=None), "one-shot decisions require a prompt hash"),
+        (
+            decisions_repo.DecisionInput(
+                "eligible",
+                "r.",
+                "[]",
+                ELIGIBILITY_VERSION,
+                None,
+                ELIGIBILITY_PROMPT_HASH,
+            ),
+            "must be supplied together",
+        ),
+        (_verdict(supporting="not json"), "supporting evidence must be valid JSON"),
+        (_verdict(supporting='["ok", 3]'), "list of nonblank strings"),
+        (_verdict(conflicting='["  "]'), "list of nonblank strings"),
+        (_verdict(supporting='["a","b","c","d","e","f"]'), "item limit"),
+        (_verdict(supporting="[]"), "only missing-information unknown"),
+        (_verdict("unknown", supporting="[]"), "only missing-information unknown"),
+        (_verdict("maybe"), "decision must be eligible"),
+    ],
+)
+def test_decision_shape_is_validated_before_any_mutation(
+    tmp_path: Path, decision: decisions_repo.DecisionInput, message: str
+) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "decision-shape.db")
+        job_id, attempt_id, content_id = await _owned_attempt(
+            factory, "shape", tmp_path
+        )
+        for operation in ("finalize", "accept"):
+            async with factory() as session:
+                with pytest.raises(decisions_repo.CheckpointError, match=message):
+                    if operation == "finalize":
+                        await decisions_repo.finalize_eligibility(
+                            session,
+                            job_id=job_id,
+                            attempt_id=attempt_id,
+                            content_id=content_id,
+                            decision=decision,
+                            decided_at=datetime(2026, 1, 2),
+                            prompt_tokens=1,
+                            completion_tokens=1,
+                        )
+                    else:
+                        await decisions_repo.accept(
+                            session,
+                            job_id=job_id,
+                            attempt_id=attempt_id,
+                            content_id=content_id,
+                            decision=decision,
+                            decided_at=datetime(2026, 1, 2),
+                        )
+        async with factory() as session:
+            job = await jobs_repo.get(session, job_id)
+            assert await decisions_repo.current(session, job_id) is None
+        assert job is not None and job.current_attempt_id == attempt_id
+
+    run_async(scenario())
+
+
+def test_missing_information_unknown_and_legacy_rows_are_accepted(
+    tmp_path: Path,
+) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "decision-forms.db")
+        job_id, attempt_id, content_id = await _owned_attempt(
+            factory, "forms", tmp_path
+        )
+        async with factory() as session:
+            legacy = await decisions_repo.accept(
+                session,
+                job_id=job_id,
+                attempt_id=attempt_id,
+                content_id=content_id,
+                decision=decisions_repo.DecisionInput(
+                    "eligible", "Legacy.", '["Costa Rica"]', "cr-2026.10.1"
+                ),
+                decided_at=datetime(2026, 1, 2),
+            )
+        async with factory() as session:
+            record = await decisions_repo.current(session, job_id)
+        assert record is not None and record.id == legacy
+        assert record.prompt_hash is None and record.conflicting_evidence_json is None
+        assert not record.is_current_contract
+        async with factory() as session:
+            finalized = await decisions_repo.finalize_eligibility(
+                session,
+                job_id=job_id,
+                attempt_id=attempt_id,
+                content_id=content_id,
+                decision=_verdict("unknown", supporting="[]", conflicting="[]"),
+                decided_at=datetime(2026, 1, 3),
+                prompt_tokens=None,
+                completion_tokens=None,
+            )
+        assert finalized is not None and finalized[1] == "unknown"
+        async with factory() as session:
+            history = await decisions_repo.history(session, job_id)
+        assert [row.is_current for row in history] == [False, True]
+        assert history[-1].evidence_json == "[]"
+
+    run_async(scenario())
+
+
+def test_database_rejects_half_contract_identity(tmp_path: Path) -> None:
+    async def scenario(prompt_hash: str | None, conflicting: str | None) -> None:
+        factory = await _fresh_database(tmp_path / f"pair-{prompt_hash}.db")
+        job_id, attempt_id, content_id = await _owned_attempt(factory, "pair", tmp_path)
+        async with factory() as session, session.begin():
+            session.add(
+                models.JobDecision(
+                    job_id=job_id,
+                    attempt_id=attempt_id,
+                    content_id=content_id,
+                    decision="unknown",
+                    reason="reason",
+                    evidence_json="[]",
+                    conflicting_evidence_json=conflicting,
+                    prompt_hash=prompt_hash,
+                    policy_version="policy",
+                    is_current=True,
+                    decided_at=datetime(2026, 1, 1),
+                )
+            )
+
+    for values in (("hash", None), (None, "[]")):
+        with pytest.raises(IntegrityError):
+            run_async(scenario(*values))
+
+
+def test_count_stale_ready_reports_noncurrent_contracts(tmp_path: Path) -> None:
+    async def scenario() -> list[int]:
+        factory = await _fresh_database(tmp_path / "stale-ready.db")
+        job_id, attempt_id, content_id = await _owned_attempt(
+            factory, "stale-ready", tmp_path
+        )
+        counts: list[int] = []
+
+        async def count() -> None:
+            async with factory() as session:
+                counts.append(await decisions_repo.count_stale_ready(session, {"acme"}))
+
+        async with factory() as session, session.begin():
+            await session.execute(
+                update(models.Job).values(
+                    status="ready_for_extraction",
+                    next_phase="extraction",
+                    current_attempt_id=None,
+                )
+            )
+        await count()
+        async with factory() as session:
+            await decisions_repo.accept(
+                session,
+                job_id=job_id,
+                attempt_id=attempt_id,
+                content_id=content_id,
+                decision=decisions_repo.DecisionInput(
+                    "eligible", "Legacy.", "[]", "cr-2026.10.1"
+                ),
+                decided_at=datetime(2026, 1, 2),
+            )
+        await count()
+        async with factory() as session:
+            await decisions_repo.accept(
+                session,
+                job_id=job_id,
+                attempt_id=attempt_id,
+                content_id=content_id,
+                decision=_verdict(),
+                decided_at=datetime(2026, 1, 3),
+            )
+        await count()
+        async with factory() as session:
+            counts.append(await decisions_repo.count_stale_ready(session, {"other"}))
+            counts.append(await decisions_repo.count_stale_ready(session, set()))
+        return counts
+
+    assert run_async(scenario()) == [1, 1, 0, 0, 0]
+
+
+@pytest.mark.parametrize("path", ["repository", "database"])
+def test_decision_rejects_attempt_from_another_job(tmp_path: Path, path: str) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / f"decision-attempt-{path}.db")
+        await _three_jobs(factory)
+        async with factory() as session:
+            await runs_repo.start_run(
+                session,
+                stage="eligibility",
+                trigger="scheduled",
+                run_id="cross-decision",
+                selection="all",
+                model="test",
+                started_at=datetime(2026, 1, 1),
+            )
+            attempt_id = await attempts_repo.start(
+                session,
+                job_id=2,
+                run_id="cross-decision",
+                trigger="scheduled",
+                reason=None,
+                model="test",
+                policy_version="policy",
+                extractor_version="extractor",
+                started_at=datetime(2026, 1, 1),
+            )
+            content_id = await contents_repo.store(
+                session,
+                1,
+                contents_repo.AcquiredContent(
+                    content_hash="hash",
+                    fingerprint="fingerprint",
+                    requisition_id=None,
+                    resolved_url="https://acme.example/1",
+                    http_status=200,
+                    method="main_content",
+                    title="Engineer",
+                    text="Posting text",
+                    jsonld_json=None,
+                    retrieved_at=datetime(2026, 1, 1),
+                ),
+            )
+        async with factory() as session:
+            if path == "repository":
+                with pytest.raises(
+                    decisions_repo.CheckpointError, match="does not belong"
+                ):
+                    await decisions_repo.accept(
+                        session,
+                        job_id=1,
+                        attempt_id=attempt_id,
+                        content_id=content_id,
+                        decision=decisions_repo.DecisionInput(
+                            "unknown", "reason", "[]", "policy"
+                        ),
+                        decided_at=datetime(2026, 1, 1),
+                    )
+                assert await decisions_repo.current(session, 1) is None
+            else:
+                async with session.begin():
+                    session.add(
+                        models.JobDecision(
+                            job_id=1,
+                            attempt_id=attempt_id,
+                            content_id=content_id,
+                            decision="unknown",
+                            reason="reason",
+                            evidence_json="[]",
+                            policy_version="policy",
+                            is_current=True,
+                            decided_at=datetime(2026, 1, 1),
+                        )
+                    )
+
+    if path == "database":
+        with pytest.raises(IntegrityError):
+            run_async(scenario())
+    else:
+        run_async(scenario())
+
+
+def test_attempt_contract_identity_survives_finish_and_fail(tmp_path: Path) -> None:
+    async def scenario() -> None:
+        factory = await _fresh_database(tmp_path / "attempt-identity.db")
+        job_id = await _seed_job(factory)
+        async with factory() as session:
+            await runs_repo.start_run(
+                session,
+                stage="eligibility",
+                trigger="scheduled",
+                run_id="identity-audit",
+                selection="all",
+                model="test",
+                started_at=datetime(2026, 1, 1),
+            )
+            finished = await attempts_repo.start(
+                session,
+                job_id=job_id,
+                run_id="identity-audit",
+                trigger="scheduled",
+                reason=None,
+                model="test",
+                policy_version=ELIGIBILITY_VERSION,
+                extractor_version="extractor",
+                eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
+                started_at=datetime(2026, 1, 1),
+            )
+            failed = await attempts_repo.start(
+                session,
+                job_id=job_id,
+                run_id="identity-audit",
+                trigger="scheduled",
+                reason=None,
+                model="test",
+                policy_version=ELIGIBILITY_VERSION,
+                extractor_version="extractor",
+                eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
+                started_at=datetime(2026, 1, 2),
+            )
+            legacy = await attempts_repo.start(
+                session,
+                job_id=job_id,
+                run_id="identity-audit",
+                trigger="scheduled",
+                reason=None,
+                model="test",
+                policy_version="cr-2026.10.1",
+                extractor_version="extractor",
+                started_at=datetime(2026, 1, 3),
+            )
+            assert await attempts_repo.finish(
+                session,
+                finished,
+                phase_reached="eligibility",
+                outcome="unknown",
+                finished_at=datetime(2026, 1, 3),
+            )
+            await attempts_repo.fail(
+                session,
+                failed,
+                phase_reached="eligibility",
+                error_category="internal",
+                error_message="failed",
+                finished_at=datetime(2026, 1, 4),
+            )
+            history = await attempts_repo.history(session, job_id)
+        assert [row.id for row in history] == [finished, failed, legacy]
+        assert [row.eligibility_prompt_hash for row in history] == [
+            ELIGIBILITY_PROMPT_HASH,
+            ELIGIBILITY_PROMPT_HASH,
+            None,
+        ]
+        assert [row.outcome for row in history] == ["unknown", "failed", None]
+
+    run_async(scenario())
 
 
 def test_accept_supersedes_current_decision_and_result(tmp_path: Path) -> None:
@@ -1177,12 +1831,12 @@ def test_reap_is_scoped_by_stage(tmp_path: Path) -> None:
 @pytest.mark.parametrize(
     "variant", ["new", "checkpoint", "mismatch", "lost", "finished", "wrong_content"]
 )
-def test_atomic_hand_off(tmp_path: Path, variant: str) -> None:
+def test_atomic_eligible_finalization(tmp_path: Path, variant: str) -> None:
     async def scenario() -> None:
         factory = await _fresh_database(tmp_path / "handoff.db")
         job_id = await _seed_job(factory)
         attempt_id, content_id = await _seed_attempt_and_content(factory, job_id)
-        decision = decisions_repo.DecisionInput("eligible", "location", "[]", "p")
+        decision = _verdict("eligible")
         async with factory() as session, session.begin():
             await session.execute(
                 update(models.Job)
@@ -1205,6 +1859,7 @@ def test_atomic_hand_off(tmp_path: Path, variant: str) -> None:
                     decision=decision
                     if variant == "checkpoint"
                     else decisions_repo.DecisionInput("unknown", "old", "[]", "p"),
+                    # "mismatch" seeds a legacy decision: never reusable.
                     decided_at=datetime(2026, 1, 1),
                 )
         if variant == "finished":
@@ -1215,9 +1870,9 @@ def test_atomic_hand_off(tmp_path: Path, variant: str) -> None:
                     )
                 )
 
-        async def hand_off() -> int | None:
+        async def hand_off() -> tuple[int, str] | None:
             async with factory() as session:
-                return await decisions_repo.hand_off_to_extraction(
+                return await decisions_repo.finalize_eligibility(
                     session,
                     job_id=job_id,
                     attempt_id=attempt_id + 1 if variant == "lost" else attempt_id,
@@ -1472,9 +2127,10 @@ async def _finalization_claim(
             trigger="scheduled",
             reason=None,
             model="test",
-            policy_version="p",
+            policy_version=ELIGIBILITY_VERSION,
             extractor_version="e",
             started_at=datetime(2026, 1, 4),
+            eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
         )
     assert attempt_id is not None
     return attempt_id
@@ -1582,16 +2238,15 @@ async def _assert_no_finalization_orphans(
 
 async def _finalize_repository(
     session: AsyncSession, operation: str, attempt_id: int, content_id: int
-) -> int | bool | None:
+) -> int | bool | tuple[int, str] | None:
     moment = datetime(2026, 1, 5, tzinfo=UTC)
     if operation == "decision":
-        return await decisions_repo.accept_and_complete(
+        return await decisions_repo.finalize_eligibility(
             session,
             job_id=2,
             attempt_id=attempt_id,
             content_id=content_id,
-            decision=decisions_repo.DecisionInput("ineligible", "new", "[]", "new"),
-            status="completed_ineligible",
+            decision=_verdict("ineligible"),
             decided_at=moment,
             prompt_tokens=11,
             completion_tokens=7,

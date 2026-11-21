@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "case_id": "BL37",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "2aba01cbbcf41a297b6488ed443809cd1e91e807f159c51598dc667cb2e2ef6c",
+  "decision": "unknown",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": true,
+  "obligations": [],
+  "conflict_pairs": []
+}

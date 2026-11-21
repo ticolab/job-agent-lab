@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL32",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "79b8dba2aa5c7cf79d19930f4b6677f5e955c2b0a6c531a89eb437805ead1aad",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL32-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "fully remote design team"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

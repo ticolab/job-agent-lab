@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL44",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "This is a 100% remote position"
+  ],
+  "rationale": "100% remote; country list includes Costa Rica; US Eastern hours only preferred.",
+  "partition": "blind",
+  "source_content_sha256": "f0589dc25eaa6835ee5b31a0e6626d0b594333b90c3802c8a16ae650ab3124a5",
+  "provenance": {
+    "company": "CommandLink",
+    "title": "Billing & Collections Specialist",
+    "source_url": "https://ats.rippling.com/en-GB/commandlink/jobs/743d3003-a8b5-4301-8c1b-8fd0ec52a2f0",
+    "captured_at_utc": "2026-11-21T15:49:01.558760+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL39",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "0e341a294d17831f79c2a1f7436e978e5ba63773af92a14972fec3d2f1034995",
+  "decision": "unknown",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL39-E01",
+      "role": "either",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Cologne, Germany"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "case_id": "KAK01",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "Competitive Pay in USD: Work globally, get paid globally.",
+    "Fully Remote: Simply put, we trust you."
+  ],
+  "rationale": "User accepts role benefits Work globally plus Fully Remote for opportunity screening, not legal hiring confirmation. Community size alone is not permission; PST overlap is separate.",
+  "partition": "development",
+  "source_content_sha256": "73d2cae9c3cee412a8717c7cb434ae2772a6c29956ae3d35b26cc0f7bee93837",
+  "provenance": {
+    "company": "Kake",
+    "title": "Senior AI/LLM Engineer (Python)",
+    "source_url": "https://kake.co/jobs/senior-ai-llm-engineer-python-56a4536c4a20",
+    "captured_at_utc": "2026-11-01T20:52:15.575237Z"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_overridden",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "eligible",
+    "source_partition": "development"
+  }
+}

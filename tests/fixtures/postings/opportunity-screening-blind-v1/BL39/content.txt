@@ -1,0 +1,60 @@
+Team Lead, Android Core Product - Cologne, Germany
+Remote
+The mission of Speechify is to make sure that reading is never a barrier to learning.
+Over 50 million people use Speechify's text-to-speech products to turn whatever they're reading – PDFs, books, Google Docs, news articles, websites – into audio, so they can read faster, read more, and remember more. Speechify's text-to-speech reading products include its iOS app, Android App, Mac App, Chrome Extension, and Web App. Google recently named Speechify the Chrome Extension of the Year and Apple named Speechify its Design award winner for inclusivity for 2025.
+Today, nearly 200 people around the globe work on Speechify in a 100% distributed setting – Speechify has no office. These include frontend and backend engineers, AI research scientists, and others from Amazon, Microsoft, and Google, leading PhD programs like Stanford, high growth startups like Stripe, Vercel, Bolt, and many founders of their own companies.
+Overview
+Our Android app is the most used text-to-speech app in the Play Store, and the user base has grown faster than the way we build for it. We're looking for a Team Lead to own core product work and to raise how the team works around it.
+This is a hands-on role, and we want to be clear about the split. You'll be writing code, reviewing code, and owning features of your own — that doesn't shrink when you take this job. The rest of it is the part that doesn't happen on its own: catching when three people have solved the same problem separately, deciding which version everyone should use, and making sure the team's time goes to the work that actually needs a decision. If you want to stop building, this isn't the role. If you want the code you write to be the smaller half of your impact, it is.
+We are a flat organization that allows anyone to become a leader by showing excellent technical skills and delivering results consistently and fast. Work ethic, solid communication skills, and obsession with winning are paramount.
+What You'll Do
+- • Own major features end to end, working closely with our design team — from the decision through to release. This is real delivery, not oversight
+- • Own, maintain, and improve reliability metrics for key features
+- • Review pull requests and give the kind of feedback people learn from, not just approval
+- • Unblock the team: notice when someone has been stuck on the same thing for two days, and go take a look yourself
+- • Notice when something one person built should become the version the team uses, and see that change through
+- • Keep the shared pieces in working order — tested, clear enough for someone else to pick up, and consolidated when three versions of the same thing appear
+- • Call it when the team is ready to change how it works, rather than waiting for that to happen on its own
+- • Reduce how much manual intervention it takes to get a correct release out
+- • When the same problem shows up twice, get the underlying setup changed so there isn't a third time
+- • Shift verification left: grow what can be checked automatically so the nightly build going to QA is a confirmation rather than the first time anyone finds out
+- • Run planning so the team's attention goes to the work that still needs decisions rather than the work that's already clear
+- • Work out how much review each area needs, and where a person always signs off regardless
+- • Participate in discussions across Product, Design, and Engineering, and bring the team's constraints into those rooms early
+- • Handle critical issues, own feature releases, and provide nightly builds for the QA team
+- • Make sure the people early in their careers are getting work they can learn from, and the time to learn from it
+Some of your engineers will be skeptical about parts of how the team is asked to work. In our experience that skepticism tends to be specific and worth acting on, and the people raising it are often the right ones to hand the underlying problem to.
+An Ideal Candidate Should Have
+- • 5+ years of software engineering experience, including time leading a team or owning a major surface while staying hands-on
+- • Rock solid Kotlin, Kotlin Coroutines, Kotlin Flow, Dagger 2, MVVM, Clean Architecture, Background Services, Music Player Service, Android animations, Jetpack Navigation, and JUnit tests
+- • Experience shipping and maintaining background audio or other long-running background work
+- • Understanding of the importance of tests and how to approach writing them, including what can't be covered by them
+- • Something you introduced to a team that stuck after you stopped pushing it, and an honest account of what it cost to get there
+- • Some comfort with the unpopular half of the job: asking people to change how they work, and living with the friction that follows
+- • A view on which changes need heavy review and which don't, argued from what the system does
+- • A track record of building things the rest of your team actually used, not only things that made you faster
+- • The ability to describe how your team works with AI agents, not only how you do personally
+- • Product design intuition, user empathy, and the drive to push Android UI/UX further than the spec asks for
+- • Self-drive to improve the app and codebase beyond what's outlined in the spec
+- • Excellent communication skills
+Bonus
+- • Building, maintaining, or contributing to open source Android projects
+- • Experience with iOS, Web, or NodeJS
+Technologies we use
+- • Kotlin · Kotlin Coroutines · Kotlin Flow · Jetpack Navigation · Dagger 2 · Room · Custom Views, Canvas & Paint · Jetpack Compose · JUnit
+Interview process
+Several technical interviews plus an assessment on a real codebase. We aim to complete the process within 1 week.
+Use the tools you use every day. A good part of the process is a walkthrough where you talk through your reasoning — why this approach, what you considered and dropped, where you were unsure.
+The Germany Based Salary range for this role is: 30,000-120,000 USD/Year + Bonus + Stock depending on experience.
+Think you’re a good fit for this job?
+Tell us more about yourself and why you're interested in the role when you apply.
+And don’t forget to include links to your portfolio and LinkedIn.
+Not looking but know someone who would make a great fit?
+Refer them!
+Speechify is committed to a diverse and inclusive workplace.
+Speechify does not discriminate on the basis of race, national origin, gender, gender identity, sexual orientation, protected veteran status, disability, age, or other legally protected status.
+Create a Job Alert
+Interested in building your career at Speechify? Get future opportunities sent straight to your email.
+Apply for this job
+*
+indicates a required field

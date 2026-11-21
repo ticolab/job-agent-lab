@@ -1,148 +1,146 @@
-"""Pure evidence grounding and policy consistency validation."""
+"""Structural validation and normalized-exact grounding of one-shot verdicts.
+
+Grounding proves each excerpt occurs in the posting; it does not prove the
+model interpreted the excerpt correctly. Semantic review stays with reviewed
+evidence obligations, replay evaluation, and manual reason review.
+"""
 
 from __future__ import annotations
 
-import re
-import unicodedata
+import hashlib
+from collections.abc import Iterator
+from dataclasses import dataclass
+from typing import Literal
 
-from job_eligibility.schema import EligibilityDecision, EligibilityResponse
-from job_eligibility.version import POLICY_VERSION
+from job_eligibility.normalize import grounding_text, normalize_text
+from job_eligibility.schema import (
+    MISSING_INFORMATION_REASON,
+    EligibilityResponse,
+    EligibilityVerdict,
+)
+from job_eligibility.version import ELIGIBILITY_PROMPT_HASH, ELIGIBILITY_VERSION
 
-COSTA_RICA_NAMES: tuple[str, ...] = (
-    "Costa Rica",
-    "Alajuela",
-    "Cartago",
-    "Guanacaste",
-    "Heredia",
-    "Puntarenas",
-)
-_CITIES_FOR_CR_ADJACENCY: tuple[str, ...] = (
-    "Escazu",
-    "Escazú",
-    "San Jose",
-    "San José",
-)
-_LATAM_NAMES: tuple[str, ...] = ("LATAM", "Latin America")
+EvidenceBucket = Literal["supporting_evidence", "conflicting_evidence"]
+
+
+@dataclass(frozen=True, slots=True)
+class GroundingMiss:
+    """A safe grounding diagnostic: path, category, hash, and length only."""
+
+    path: str
+    reason: Literal["not_in_posting"]
+    value_sha256: str
+    value_characters: int
 
 
 class UngroundedEvidenceError(ValueError):
-    """Raised when a purported quote cannot be found in the posting."""
+    """Raised when a purported excerpt cannot be found in the posting."""
 
     def __init__(self, quote: str) -> None:
         self.quote = quote
-        super().__init__(f"ungrounded evidence: {quote!r}")
+        super().__init__("ungrounded evidence")
+
+
+class EligibilityValidationError(ValueError):
+    """Raised when a schema-valid response violates a structural invariant."""
 
 
 def normalize(text: str) -> str:
     """Normalize text identically on both sides of evidence matching."""
-    value = (
-        unicodedata.normalize("NFKC", text).replace("\r\n", "\n").replace("\r", "\n")
-    )
-    value = "\n".join(" ".join(line.split()) for line in value.split("\n"))
-    value = re.sub(r"\n{3,}", "\n\n", value).strip()
-    return value.casefold()
+    return normalize_text(text)
 
 
-def _grounding_normalize(text: str) -> str:
-    return " ".join(normalize(text).split())
-
-
-def _contains_name(value: str, name: str) -> bool:
-    return bool(
-        re.search(rf"(?<!\w){re.escape(_grounding_normalize(name))}(?!\w)", value)
-    )
-
-
-def _is_costa_rica(value: str) -> bool:
-    normalized = _grounding_normalize(value)
-    if any(_contains_name(normalized, name) for name in COSTA_RICA_NAMES):
-        return True
-    adjacent = "|".join(
-        re.escape(_grounding_normalize(name))
-        for name in (*COSTA_RICA_NAMES[1:], *_CITIES_FOR_CR_ADJACENCY)
-    )
-    return bool(
-        re.search(rf"(?:\bcr\b\W*(?:{adjacent})|(?:{adjacent})\W*\bcr\b)", normalized)
-    )
-
-
-def _is_latam(value: str) -> bool:
-    normalized = _grounding_normalize(value)
-    return any(_contains_name(normalized, name) for name in _LATAM_NAMES)
-
-
-def _all_quotes(response: EligibilityResponse) -> list[str]:
-    signals = response.signals
-    return [
-        *response.evidence,
-        *signals.locations_named_evidence,
-        *signals.remote_scope_evidence,
-        *signals.exhaustive_country_list_evidence,
-        *signals.work_authorization_evidence,
-    ]
-
-
-def _supports_eligible(response: EligibilityResponse) -> bool:
-    signals = response.signals
+def is_missing_information(response: EligibilityResponse) -> bool:
+    """Whether the response uses the canonical empty-evidence unknown form."""
     return (
-        any(_is_costa_rica(location) for location in signals.locations_named)
-        or signals.remote_scope in {"worldwide", "latam", "americas"}
-        or (
-            signals.exhaustive_country_list is not None
-            and any(
-                _is_costa_rica(country) for country in signals.exhaustive_country_list
-            )
-        )
+        response.decision == "unknown"
+        and response.reason == MISSING_INFORMATION_REASON
+        and not response.supporting_evidence
+        and not response.conflicting_evidence
     )
 
 
-def _supports_ineligible(response: EligibilityResponse) -> bool:
-    signals = response.signals
-    exhaustive_excludes = signals.exhaustive_country_list is not None and not any(
-        _is_costa_rica(country) for country in signals.exhaustive_country_list
+def _evidence(response: EligibilityResponse) -> Iterator[tuple[str, str]]:
+    buckets: tuple[EvidenceBucket, ...] = (
+        "supporting_evidence",
+        "conflicting_evidence",
     )
-    has_costa_rica = any(
-        _is_costa_rica(location) for location in signals.locations_named
-    )
-    has_latam = signals.remote_scope in {"latam", "americas"} or any(
-        _is_latam(location) for location in signals.locations_named
-    )
-    named_elsewhere = (
-        bool(signals.locations_named) and not has_costa_rica and not has_latam
-    )
-    authorization_elsewhere = any(
-        not _is_costa_rica(country)
-        for country in signals.work_authorization_required_in
-    )
-    return (
-        exhaustive_excludes
-        or signals.remote_scope == "other_region"
-        or named_elsewhere
-        or authorization_elsewhere
+    for bucket in buckets:
+        for index, quote in enumerate(getattr(response, bucket)):
+            yield f"$.{bucket}[{index}]", quote
+
+
+def structural_errors(response: EligibilityResponse) -> tuple[str, ...]:
+    """Return every structural violation; an empty tuple means consistent.
+
+    The two accepted shapes are the canonical missing-information unknown and
+    an evidenced response with at least one supporting excerpt. Duplicates and
+    cross-bucket overlap compare grounding-normalized text, so whitespace or
+    layout variants of one excerpt cannot be counted twice.
+    """
+    errors: list[str] = []
+    no_evidence = not response.supporting_evidence
+    if no_evidence:
+        if response.conflicting_evidence:
+            errors.append("conflicting evidence requires supporting evidence")
+        if response.decision != "unknown":
+            errors.append(f"{response.decision} requires supporting evidence")
+        if response.reason != MISSING_INFORMATION_REASON:
+            errors.append("empty evidence requires the missing-information reason")
+    elif response.reason == MISSING_INFORMATION_REASON:
+        errors.append("the missing-information reason forbids evidence")
+    seen: dict[str, str] = {}
+    for path, quote in _evidence(response):
+        key = grounding_text(quote)
+        bucket = path.split("[", 1)[0]
+        previous = seen.get(key)
+        if previous is None:
+            seen[key] = bucket
+        elif previous == bucket:
+            errors.append(f"{path} duplicates an earlier excerpt")
+        else:
+            errors.append(f"{path} appears in both evidence buckets")
+    return tuple(errors)
+
+
+def _miss(path: str, value: str) -> GroundingMiss:
+    return GroundingMiss(
+        path=path,
+        reason="not_in_posting",
+        value_sha256=hashlib.sha256(value.encode()).hexdigest(),
+        value_characters=len(value),
     )
 
 
-def validate(response: EligibilityResponse, posting_text: str) -> EligibilityDecision:
-    """Ground every quote and downgrade inconsistent verdicts to unknown."""
-    posting = _grounding_normalize(posting_text)
-    for quote in _all_quotes(response):
-        if _grounding_normalize(quote) not in posting:
+def collect_grounding_misses(
+    response: EligibilityResponse, posting_text: str
+) -> list[GroundingMiss]:
+    """Return a safe diagnostic for every excerpt absent from the posting."""
+    posting = grounding_text(posting_text)
+    misses: list[GroundingMiss] = []
+    for path, quote in _evidence(response):
+        normalized = grounding_text(quote)
+        if not normalized or normalized not in posting:
+            misses.append(_miss(path, quote))
+    return misses
+
+
+def validate(response: EligibilityResponse, posting_text: str) -> EligibilityVerdict:
+    """Reject structurally invalid or ungrounded responses; freeze the rest."""
+    errors = structural_errors(response)
+    if errors:
+        raise EligibilityValidationError("; ".join(errors))
+    posting = grounding_text(posting_text)
+    for _, quote in _evidence(response):
+        normalized = grounding_text(quote)
+        if not normalized or normalized not in posting:
             raise UngroundedEvidenceError(quote)
-
-    notes: list[str] = []
-    decision = response.decision
-    if decision == "eligible" and not _supports_eligible(response):
-        notes.append("eligible decision is unsupported by the extracted signals")
-        decision = "unknown"
-    elif decision == "ineligible" and not _supports_ineligible(response):
-        notes.append("ineligible decision is unsupported by the extracted signals")
-        decision = "unknown"
-
-    payload = response.model_dump()
-    payload["decision"] = decision
-    return EligibilityDecision(
-        **payload,
-        policy_version=POLICY_VERSION,
+    return EligibilityVerdict(
+        decision=response.decision,
+        reason=response.reason,
+        supporting_evidence=tuple(response.supporting_evidence),
+        conflicting_evidence=tuple(response.conflicting_evidence),
+        eligibility_version=ELIGIBILITY_VERSION,
+        prompt_hash=ELIGIBILITY_PROMPT_HASH,
         grounded=True,
-        validation_notes=notes,
     )

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "case_id": "BL36",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "e5a097471f35957ebb088b3a1cb7595446efbb5b8c32d23a4d8f9a882a23b546",
+  "decision": "unknown",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": true,
+  "obligations": [],
+  "conflict_pairs": []
+}

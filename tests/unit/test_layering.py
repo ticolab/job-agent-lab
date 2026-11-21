@@ -43,10 +43,11 @@ ALLOWED_IMPORTS: dict[str, dict[str, frozenset[str]]] = {
         ),
     },
     "job_eligibility": {
-        ROOT_UNIT: frozenset({"prompt", "schema", "validate", "version"}),
-        "prompt": frozenset(),
+        ROOT_UNIT: frozenset({"normalize", "prompt", "schema", "validate", "version"}),
+        "normalize": frozenset(),
+        "prompt": frozenset({"schema"}),
         "schema": frozenset(),
-        "validate": frozenset({"schema", "version"}),
+        "validate": frozenset({"normalize", "schema", "version"}),
         "version": frozenset({"prompt", "schema"}),
     },
     "job_extractor": {

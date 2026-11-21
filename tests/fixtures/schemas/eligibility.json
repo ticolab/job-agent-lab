@@ -1,103 +1,9 @@
 {
-  "$defs": {
-    "LocationSignals": {
-      "additionalProperties": false,
-      "description": "Location facts extracted from a posting with field-specific evidence.",
-      "properties": {
-        "exhaustive_country_list": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "title": "Exhaustive Country List"
-        },
-        "exhaustive_country_list_evidence": {
-          "items": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "maxItems": 5,
-          "title": "Exhaustive Country List Evidence",
-          "type": "array"
-        },
-        "locations_named": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Locations Named",
-          "type": "array"
-        },
-        "locations_named_evidence": {
-          "items": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "maxItems": 5,
-          "title": "Locations Named Evidence",
-          "type": "array"
-        },
-        "remote_scope": {
-          "enum": [
-            "worldwide",
-            "latam",
-            "americas",
-            "other_region",
-            "none_stated"
-          ],
-          "title": "Remote Scope",
-          "type": "string"
-        },
-        "remote_scope_evidence": {
-          "items": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "maxItems": 5,
-          "title": "Remote Scope Evidence",
-          "type": "array"
-        },
-        "work_authorization_evidence": {
-          "items": {
-            "minLength": 1,
-            "type": "string"
-          },
-          "maxItems": 5,
-          "title": "Work Authorization Evidence",
-          "type": "array"
-        },
-        "work_authorization_required_in": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Work Authorization Required In",
-          "type": "array"
-        }
-      },
-      "required": [
-        "locations_named",
-        "locations_named_evidence",
-        "remote_scope",
-        "remote_scope_evidence",
-        "exhaustive_country_list",
-        "exhaustive_country_list_evidence",
-        "work_authorization_required_in",
-        "work_authorization_evidence"
-      ],
-      "title": "LocationSignals",
-      "type": "object"
-    }
-  },
   "additionalProperties": false,
-  "description": "The model response before deterministic grounding and policy checks.",
+  "description": "The model response before structural validation and grounding.",
   "properties": {
     "decision": {
+      "description": "eligible retains the opportunity for a candidate who remains based in Costa Rica; ineligible means explicit wording excludes that candidate; unknown means the posting conflicts or does not say.",
       "enum": [
         "eligible",
         "ineligible",
@@ -106,31 +12,46 @@
       "title": "Decision",
       "type": "string"
     },
-    "evidence": {
-      "items": {
-        "minLength": 1,
-        "type": "string"
-      },
-      "maxItems": 5,
-      "minItems": 1,
-      "title": "Evidence",
-      "type": "array"
-    },
     "reason": {
+      "description": "One concise sentence on a single line that explains the decision from the cited evidence and ends with a period.",
+      "maxLength": 240,
       "minLength": 1,
-      "pattern": "^[^\\n]+[.!?]$",
+      "pattern": "^\\S[^\\r\\n]*[.!?]$",
       "title": "Reason",
       "type": "string"
     },
-    "signals": {
-      "$ref": "#/$defs/LocationSignals"
+    "supporting_evidence": {
+      "description": "Exact excerpts that establish the decision. Empty only for the missing-information unknown response.",
+      "items": {
+        "description": "One short contiguous excerpt copied exactly from the posting, with no paraphrase, summary, prefix, commentary, quotation wrapper, or text combined from separate passages.",
+        "maxLength": 300,
+        "minLength": 1,
+        "pattern": ".*\\S.*",
+        "type": "string"
+      },
+      "maxItems": 5,
+      "title": "Supporting Evidence",
+      "type": "array"
+    },
+    "conflicting_evidence": {
+      "description": "Exact excerpts that point toward a different decision, including the opposing side of a conflict that makes the decision unknown. Empty when nothing opposes the decision.",
+      "items": {
+        "description": "One short contiguous excerpt copied exactly from the posting, with no paraphrase, summary, prefix, commentary, quotation wrapper, or text combined from separate passages.",
+        "maxLength": 300,
+        "minLength": 1,
+        "pattern": ".*\\S.*",
+        "type": "string"
+      },
+      "maxItems": 5,
+      "title": "Conflicting Evidence",
+      "type": "array"
     }
   },
   "required": [
     "decision",
     "reason",
-    "evidence",
-    "signals"
+    "supporting_evidence",
+    "conflicting_evidence"
   ],
   "title": "EligibilityResponse",
   "type": "object"

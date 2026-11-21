@@ -10,7 +10,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from job_discovery.persistence.timestamps import as_naive_utc
 from job_pipeline.persistence.jobs_repo import claimable
-from job_pipeline.persistence.models import Job, JobAttempt, Stage
+from job_pipeline.persistence.models import (
+    Job,
+    JobAttempt,
+    JobDecision,
+    Stage,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,6 +36,8 @@ class AttemptRecord:
     extractor_version: str
     started_at: datetime
     finished_at: datetime | None
+    eligibility_prompt_hash: str | None = None
+    reasoning_effort: str | None = None
 
 
 def _record(attempt: JobAttempt) -> AttemptRecord:
@@ -51,6 +58,8 @@ def _record(attempt: JobAttempt) -> AttemptRecord:
         extractor_version=attempt.extractor_version,
         started_at=attempt.started_at,
         finished_at=attempt.finished_at,
+        eligibility_prompt_hash=attempt.eligibility_prompt_hash,
+        reasoning_effort=attempt.reasoning_effort,
     )
 
 
@@ -66,7 +75,16 @@ async def claim_and_start(
     extractor_version: str,
     started_at: datetime,
     stage: Stage,
+    eligibility_prompt_hash: str | None = None,
+    reasoning_effort: str | None = None,
 ) -> int | None:
+    """Claim the job and start an attempt that records its contract identity.
+
+    An eligibility attempt records the contract it runs under, supplied by the
+    caller. An extraction attempt instead records the identity of the current
+    decision it consumes, so its audit row names the eligibility contract that
+    actually admitted the job rather than the one the binary would apply.
+    """
     eligible = claimable(stage, started_at, reprocess=trigger == "reprocess")
 
     moment = as_naive_utc(started_at)
@@ -86,13 +104,25 @@ async def claim_and_start(
         )
         if claimed.scalar_one_or_none() is None:
             return None
+        if stage == "extraction":
+            decision_identity = await session.execute(
+                select(JobDecision.policy_version, JobDecision.prompt_hash).where(
+                    JobDecision.job_id == job_id,
+                    JobDecision.is_current.is_(True),
+                )
+            )
+            current_identity = decision_identity.one_or_none()
+            if current_identity is not None:
+                policy_version, eligibility_prompt_hash = current_identity
         attempt = JobAttempt(
             job_id=job_id,
             run_id=run_id,
             trigger=trigger,
             reason=reason,
             model=model,
+            reasoning_effort=reasoning_effort,
             policy_version=policy_version,
+            eligibility_prompt_hash=eligibility_prompt_hash,
             extractor_version=extractor_version,
             started_at=moment,
         )
@@ -125,6 +155,8 @@ async def start(
     policy_version: str,
     extractor_version: str,
     started_at: datetime,
+    eligibility_prompt_hash: str | None = None,
+    reasoning_effort: str | None = None,
 ) -> int:
     attempt = JobAttempt(
         job_id=job_id,
@@ -132,7 +164,9 @@ async def start(
         trigger=trigger,
         reason=reason,
         model=model,
+        reasoning_effort=reasoning_effort,
         policy_version=policy_version,
+        eligibility_prompt_hash=eligibility_prompt_hash,
         extractor_version=extractor_version,
         started_at=as_naive_utc(started_at),
     )

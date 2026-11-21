@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "case_id": "KAK02",
+  "reviewed": true,
+  "decision": "eligible",
+  "must_cite": [
+    "Latin America Timezone Overlap: 7h of daily overlap with GMT-3 required.",
+    "Ability to work independently in a remote, fast-paced environment."
+  ],
+  "rationale": "User accepts LATAM timezone target together with remote work for opportunity screening absent exclusion; not residence permission or schedule guarantee. No benefits borrowed from other roles.",
+  "partition": "development",
+  "source_content_sha256": "9e824bad903f2bbef8e5770a9ab30725b9e3d22773124d9448e78e3de10bc830",
+  "provenance": {
+    "company": "Kake",
+    "title": "Senior Product Data Scientist",
+    "source_url": "https://kake.co/jobs/senior-product-data-scientist-98b35d2c5ff6",
+    "captured_at_utc": "2026-11-01T20:52:15.868313Z"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_overridden",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "eligible",
+    "source_partition": "development"
+  }
+}

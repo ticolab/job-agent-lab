@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "case_id": "NBS04",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "Candidates must currently reside in Querétaro, Mexico."
+  ],
+  "rationale": "Explicit current Querétaro residence and regular onsite support exclude Costa Rica; EOR is not sponsorship proof.",
+  "partition": "development",
+  "source_content_sha256": "2b1495bdfe255dd28c4349ce066dde8592fea778c0eb18719ed002df2221e4ee",
+  "provenance": {
+    "company": "Nearshore Business Solutions",
+    "title": "Field Service Engineer – Semiconductor Equipment",
+    "source_url": "https://www.careers-page.com/nearshore-business-solutions/job/V6767X36",
+    "captured_at_utc": "2026-11-01T20:53:18.996701+00:00"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_accepted_unchanged",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "ineligible",
+    "source_partition": "development"
+  }
+}

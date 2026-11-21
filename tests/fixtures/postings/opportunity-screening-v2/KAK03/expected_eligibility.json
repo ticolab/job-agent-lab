@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "case_id": "KAK03",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "This is a hybrid role based in Guadalajara, Mexico, requiring regular in-office presence."
+  ],
+  "rationale": "Mexico Only and required Guadalajara onsite attendance exclude remaining Costa Rica-based.",
+  "partition": "development",
+  "source_content_sha256": "4dc23037d84363422fd021833b299d7bbf78a244e3db8cc4a1f4ac9703561bc8",
+  "provenance": {
+    "company": "Kake",
+    "title": "Senior Backend (Go) Engineer (Mexico Only)",
+    "source_url": "https://kake.co/jobs/senior-backend-go-engineer-mexico-only-8f085dfa24f3",
+    "captured_at_utc": "2026-11-01T20:52:15.794874Z"
+  },
+  "review_provenance": {
+    "v1_acceptance": "human_accepted_unchanged",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-02",
+    "v2_instruction": "carried_forward_from_v1"
+  },
+  "lineage": {
+    "source_evaluation_id": "opportunity-screening-v1",
+    "source_decision": "ineligible",
+    "source_partition": "development"
+  }
+}

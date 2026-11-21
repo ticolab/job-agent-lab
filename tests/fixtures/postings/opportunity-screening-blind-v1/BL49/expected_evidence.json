@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL49",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "a45cefbf9ce8aa1798578d91d22bc1e0f5ea9abdb827b184b21a47dc389d297f",
+  "decision": "eligible",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL49-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Americas"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

@@ -1,0 +1,57 @@
+The Network Engineer Sr. is responsible for providing technical leadership, administering and supporting client network environments according to best practices, ensuring high network availability and performance. In this role you will be responsible for solutioning, automating, resolving escalated service issues, mentoring junior engineers, engineering and implementing complex changes and overseeing efficient operations management.
+- • Provide L3 troubleshooting escalated support issues related to datacenter and server operations.
+- • Design and define operating runbooks to maintain network performance and reliability.
+- • Coach and support other engineers to resolve issues efficiently.
+- • Perform a root cause analysis to maintain the quality and efficiency standards.
+- • Assist in delivering new client migrations and complex projects.
+- • Lead the implementation and maintenance of cloud and on-premises network solutions.
+- • Offer recommendations to enhance client network environments and technologies.
+- • Support sales team in solutioning opportunities through customer meetings and executive presentations.
+- • Manage complex technical problems and ensure compliance of Auxis operating processes.
+- • Provide monthly analytics report on team performance and capacity.
+- • Oversee the execution of technical training programs for the team.
+- • Maintain awareness of current and emerging technologies relevant to networking and related operations.
+- • Make recommendations for performance improvements and automation to enhance operations.
+Experience:
+- • 6+ years of experience in related field.
+- • Proven experience with large, complex server-based cloud environments.
+- • Experience with Cloud technologies such as Azure and AWS.
+- • Participate in 24x7 on call support rotation.
+Education:
+- • Computer Science, Engineering, IT bachelor's degree or equivalent working experience.
+Technical Skills:
+- • Knowledge of network security methods and required configurations for network devices.
+- • Advance knowledge of cloud computing network environments.
+- • Excellent written, verbal, and interpersonal skills.
+- • Knowledge in ITIL.
+- • Advanced knowledge of network infrastructure, hardware, and VPN configuration (L2L, Access, Anyconnect or similar).
+- • Ability to implement, administer, and troubleshoot network infrastructure devices, including wireless access points, firewall, routers, switches, controllers.
+- • Proficiency in application transport, network infrastructure protocols, TCP/IP, LAN/WAN, and client-server applications
+- • Strong knowledge of data communications networking technologies, architectures, platforms, protocols, diagnostic tools, and monitoring tools for ICMP, SNMP, Netflow, Syslog.
+- • Advanced knowledge of network, security, and wireless protocols.
+- • Understanding of network infrastructure and hardware.
+- • Network diagramming skills and ability to design and implement medium to large networks.
+Required Technical Proficiencies:
+- • CCNA Cisco certification or equivalent.
+- • CompTia Network +
+- • Azure Network Engineer or AWS Network Specialty.
+- • ITIL 4 Foundations.
+- • Linux Essentials.
+Language Skills:
+- • English Level B2+
+Auxis prioritizes employee growth and development to help you advance your career. Auxis’ culture empowers you to be your best in the interest of a common team goal. We are constantly striving to improve our culture and environment and have invested in tools to continue to have better visualization of the pulse of our organization.
+Location
+CO-Bogotá | CO-Barranquilla | CR-H-Costa Rica
+Posted Date
+2 days ago(11/19/2026 5:19 PM)
+- Job ID
+- 2026-4990
+- # Positions
+- 1
+- Category
+- ITO
+Sorry the Share function is not working properly at this moment. Please refresh the page and try again later.
+Share on your newsfeed
+Application FAQs
+Software Powered by ICIMS
+www.icims.com

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "case_id": "BL26",
+  "reviewed": true,
+  "review_status": "reviewed",
+  "partition": "blind",
+  "source_content_sha256": "2cc397d2e91c899f080928a2f87fb1100c130fc3df856bd7ec2e727882fd5109",
+  "decision": "unknown",
+  "eligibility_version": "opportunity-oneshot-v2",
+  "prompt_example": null,
+  "missing_information": false,
+  "obligations": [
+    {
+      "obligation_id": "BL26-E01",
+      "role": "supporting",
+      "critical": true,
+      "excerpt_alternatives": [
+        "Hybrid working model"
+      ]
+    }
+  ],
+  "conflict_pairs": []
+}

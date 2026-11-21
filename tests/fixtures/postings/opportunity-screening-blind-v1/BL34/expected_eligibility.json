@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL34",
+  "reviewed": true,
+  "decision": "unknown",
+  "must_cite": [
+    "UK&I"
+  ],
+  "rationale": "UK&I appears only in the title; no restricting wording.",
+  "partition": "blind",
+  "source_content_sha256": "5daa167a54530675d1924e67202045ca414a9f04c50e26d4ca74a536242c5a04",
+  "provenance": {
+    "company": "Zscaler",
+    "title": "Principal AI Security Specialist, UK&I",
+    "source_url": "https://job-boards.greenhouse.io/zscaler/jobs/5174747007",
+    "captured_at_utc": "2026-11-21T15:55:11.711427+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

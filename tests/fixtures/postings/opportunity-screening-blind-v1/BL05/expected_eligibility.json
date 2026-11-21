@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL05",
+  "reviewed": true,
+  "decision": "ineligible",
+  "must_cite": [
+    "Right to work in the UK"
+  ],
+  "rationale": "Requires the right to work in the UK.",
+  "partition": "blind",
+  "source_content_sha256": "7ce73966fb93dbdb2e5ab973fd79da7552e447333ba006324915314a17fc11e3",
+  "provenance": {
+    "company": "Appnovation",
+    "title": "Senior Fullstack Developer",
+    "source_url": "https://job-boards.greenhouse.io/appnovation/jobs/8916866002",
+    "captured_at_utc": "2026-11-21T15:56:55.411448+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}

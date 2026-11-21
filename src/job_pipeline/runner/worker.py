@@ -20,7 +20,8 @@ from job_discovery.domain.company import Company
 from job_discovery.persistence.timestamps import utc_now
 from job_discovery.settings import CaptureBrowser
 from job_eligibility import (
-    POLICY_VERSION,
+    ELIGIBILITY_PROMPT_HASH,
+    ELIGIBILITY_VERSION,
     EligibilityResponse,
 )
 from job_eligibility import (
@@ -557,127 +558,61 @@ async def _run_eligibility(
         if content is None:
             raise RuntimeError("eligibility phase has no stored content checkpoint")
         async with deps.session_factory() as session:
-            checkpoint_decision = await decisions_repo.current(session, job.id)
-        if (
-            checkpoint_decision is not None
-            and checkpoint_decision.content_id == content.id
-        ):
-            progress.decision = checkpoint_decision.decision
-            if checkpoint_decision.decision == "eligible":
-                return await _hand_off(
-                    deps, job, attempt_id, content.id, None, progress
-                )
-            else:
-                checkpoint_status: JobStatus = (
-                    "completed_ineligible"
-                    if checkpoint_decision.decision == "ineligible"
-                    else "unknown"
-                )
-                released = await _release(
-                    deps,
-                    job.id,
-                    attempt_id,
-                    progress,
-                    status=checkpoint_status,
-                )
-                if released:
-                    return _report(
-                        job.id,
-                        job.company_slug,
-                        job.url_key,
-                        progress,
-                        checkpoint_status,
-                    )
-                return await _skipped(
-                    deps, job.id, job.company_slug, job.url_key, attempt_id, progress
-                )
-        if progress.decision is None:
+            compatible = await decisions_repo.current_compatible(
+                session, job_id=job.id, content_id=content.id
+            )
+        decision_input: decisions_repo.DecisionInput | None = None
+        if compatible is None:
             async with deps.model_semaphore:
-                eligibility_completion = await _timed(
+                completion = await _timed(
                     deps,
                     deps.caller.complete(
                         build_eligibility_messages(content.text),
                         EligibilityResponse,
                     ),
                 )
-            progress.add_tokens(
-                eligibility_completion.prompt_tokens,
-                eligibility_completion.completion_tokens,
-            )
-            decision = validate_eligibility(eligibility_completion.parsed, content.text)
-            progress.decision = decision.decision
-            decision_input = decisions_repo.DecisionInput(
-                decision=decision.decision,
-                reason=decision.reason,
-                evidence_json=json.dumps(decision.evidence),
-                policy_version=decision.policy_version,
-            )
-            decision_status: JobStatus = (
-                "completed_ineligible"
-                if decision.decision == "ineligible"
-                else "unknown"
-            )
-            if decision.decision == "eligible":
-                return await _hand_off(
-                    deps, job, attempt_id, content.id, decision_input, progress
-                )
+            progress.add_tokens(completion.prompt_tokens, completion.completion_tokens)
+            verdict = validate_eligibility(completion.parsed, content.text)
+            progress.decision = verdict.decision
+            decision_input = decisions_repo.from_verdict(verdict)
+        else:
+            progress.decision = compatible.decision
+        try:
             async with deps.session_factory() as session:
-                checkpoint_id = await decisions_repo.accept_and_complete(
+                checkpoint = await decisions_repo.finalize_eligibility(
                     session,
                     job_id=job.id,
                     attempt_id=attempt_id,
                     content_id=content.id,
                     decision=decision_input,
-                    status=decision_status,
                     decided_at=utc_now(),
                     prompt_tokens=progress.prompt_tokens or None,
                     completion_tokens=progress.completion_tokens or None,
                 )
-            if checkpoint_id is None:
-                return await _skipped(
-                    deps,
-                    job.id,
-                    job.company_slug,
-                    job.url_key,
-                    attempt_id,
-                    progress,
-                )
-            return _report(
-                job.id, job.company_slug, job.url_key, progress, decision_status
+        except decisions_repo.CheckpointError as exc:
+            raise MissingCheckpointError(str(exc)) from exc
+        if checkpoint is None:
+            return await _skipped(
+                deps,
+                job.id,
+                job.company_slug,
+                job.url_key,
+                attempt_id,
+                progress,
             )
+        _, decided = checkpoint
+        progress.decision = decided
+        decision_status = cast(
+            JobStatus,
+            {
+                "eligible": "ready_for_extraction",
+                "ineligible": "completed_ineligible",
+                "unknown": "unknown",
+            }[decided],
+        )
+        return _report(job.id, job.company_slug, job.url_key, progress, decision_status)
 
     raise RuntimeError("eligibility received an unsupported phase")
-
-
-async def _hand_off(
-    deps: WorkerDeps,
-    job: jobs_repo.JobRecord,
-    attempt_id: int,
-    content_id: int,
-    decision: decisions_repo.DecisionInput | None,
-    progress: _Progress,
-) -> JobOutcome:
-    try:
-        async with deps.session_factory() as session:
-            accepted = await decisions_repo.hand_off_to_extraction(
-                session,
-                job_id=job.id,
-                attempt_id=attempt_id,
-                content_id=content_id,
-                decision=decision,
-                decided_at=utc_now(),
-                prompt_tokens=progress.prompt_tokens or None,
-                completion_tokens=progress.completion_tokens or None,
-            )
-    except decisions_repo.CheckpointError as exc:
-        raise MissingCheckpointError(str(exc)) from exc
-    if accepted is None:
-        return await _skipped(
-            deps, job.id, job.company_slug, job.url_key, attempt_id, progress
-        )
-    return _report(
-        job.id, job.company_slug, job.url_key, progress, "ready_for_extraction"
-    )
 
 
 async def _run_extraction(
@@ -696,6 +631,11 @@ async def _run_extraction(
         raise MissingCheckpointError("extraction has no current eligible decision")
     if current_decision.content_id != content.id:
         raise MissingCheckpointError("eligible decision references different content")
+    if not current_decision.is_current_contract:
+        raise MissingCheckpointError(
+            "eligible decision predates the current eligibility contract; "
+            "reprocess the job from eligibility"
+        )
     progress.decision = current_decision.decision
     async with deps.model_semaphore:
         extraction_completion = await _timed(
@@ -750,10 +690,12 @@ async def process_job(job_id: int, *, deps: WorkerDeps) -> JobOutcome:
             trigger=deps.trigger,
             reason=deps.reason,
             model=deps.policy.model,
-            policy_version=POLICY_VERSION,
+            reasoning_effort=deps.policy.reasoning_effort,
+            policy_version=ELIGIBILITY_VERSION,
             extractor_version=EXTRACTOR_VERSION,
             started_at=utc_now(),
             stage=deps.stage,
+            eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
         )
     if attempt_id is None:
         return JobOutcome(

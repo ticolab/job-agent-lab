@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "case_id": "BL38",
+  "reviewed": true,
+  "decision": "unknown",
+  "must_cite": [
+    "Este empleador participa en el programa federal E-Verify"
+  ],
+  "rationale": "The only geographic hint is US E-Verify boilerplate; no role location, arrangement, residence, or authorization requirement is stated.",
+  "partition": "blind",
+  "source_content_sha256": "c271879a9df325368860cf63dad77d4274404e6916c5ebd3a78512073c958b35",
+  "provenance": {
+    "company": "Medtronic",
+    "title": "(Spanish manufacturing role)",
+    "source_url": "https://medtronic.wd1.myworkdayjobs.com/es/MedtronicCareers/job/Alajuela-Coyol-Alajuela-Costa-Rica/Operador-de-Maquina-I_R75756-1?locationCountry=99abe7e6bb3f4c108aebebf01a369ec5",
+    "captured_at_utc": "2026-11-21T15:49:23.472022+00:00",
+    "capture_method": "jsonld"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call.",
+    "post_run_correction": "2026-11-21: evidence form corrected after the blind run by operator decision; the posting does contain this line, so the missing-information form was wrong. Decision unchanged."
+  }
+}

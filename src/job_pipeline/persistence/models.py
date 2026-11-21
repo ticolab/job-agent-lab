@@ -17,6 +17,7 @@ from sqlalchemy import (
     CheckConstraint,
     DateTime,
     ForeignKey,
+    ForeignKeyConstraint,
     Index,
     Integer,
     String,
@@ -77,6 +78,11 @@ ERROR_CATEGORIES = (
     "internal",
     "interrupted",
 )
+
+
+# Mirrors job_pipeline.llm.REASONING_EFFORTS; persistence imports nothing outside
+# itself, so a test pins the two tuples equal.
+REASONING_EFFORTS: tuple[str, ...] = ("minimal", "low", "medium", "high")
 
 
 def _allowed(column: str, values: tuple[str, ...]) -> str:
@@ -151,6 +157,7 @@ class JobContent(Base):
     __tablename__ = "job_contents"
     __table_args__ = (
         UniqueConstraint("job_id", "content_hash", name="uq_job_contents_job_hash"),
+        UniqueConstraint("id", "job_id", name="uq_job_contents_id_job"),
         Index("ix_job_contents_fingerprint", "fingerprint"),
         Index("ix_job_contents_requisition", "requisition_id"),
     )
@@ -178,6 +185,10 @@ class PipelineRun(Base):
     __table_args__ = (
         CheckConstraint(_allowed("stage", RUN_STAGES), name="ck_pipeline_runs_stage"),
         CheckConstraint(_allowed("trigger", TRIGGERS), name="ck_pipeline_runs_trigger"),
+        CheckConstraint(
+            _allowed("reasoning_effort", REASONING_EFFORTS),
+            name="ck_pipeline_runs_reasoning_effort",
+        ),
     )
 
     stage: Mapped[str] = mapped_column(String, nullable=False)
@@ -189,6 +200,8 @@ class PipelineRun(Base):
     selection: Mapped[str] = mapped_column(Text, nullable=False)
     counts_json: Mapped[str | None] = mapped_column(Text, nullable=True)
     model: Mapped[str] = mapped_column(String, nullable=False)
+    # Null when the model ran without a reasoning effort (temperature 0).
+    reasoning_effort: Mapped[str | None] = mapped_column(String, nullable=True)
 
 
 class JobAttempt(Base):
@@ -207,6 +220,11 @@ class JobAttempt(Base):
             _allowed("error_category", ERROR_CATEGORIES),
             name="ck_job_attempts_error_category",
         ),
+        CheckConstraint(
+            _allowed("reasoning_effort", REASONING_EFFORTS),
+            name="ck_job_attempts_reasoning_effort",
+        ),
+        UniqueConstraint("id", "job_id", name="uq_job_attempts_id_job"),
         Index("ix_job_attempts_job_started", "job_id", "started_at"),
     )
 
@@ -228,9 +246,14 @@ class JobAttempt(Base):
     error_category: Mapped[str | None] = mapped_column(String, nullable=True)
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
     model: Mapped[str] = mapped_column(String, nullable=False)
+    reasoning_effort: Mapped[str | None] = mapped_column(String, nullable=True)
     prompt_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
     completion_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
     policy_version: Mapped[str] = mapped_column(String, nullable=False)
+    # Null for legacy attempts and for extraction attempts whose decision
+    # predates the one-shot contract; otherwise the eligibility prompt hash the
+    # attempt ran under (eligibility) or consumed (extraction).
+    eligibility_prompt_hash: Mapped[str | None] = mapped_column(String, nullable=True)
     extractor_version: Mapped[str] = mapped_column(String, nullable=False)
     started_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
@@ -242,6 +265,22 @@ class JobDecision(Base):
         CheckConstraint(
             _allowed("decision", DECISIONS), name="ck_job_decisions_decision"
         ),
+        CheckConstraint(
+            "(prompt_hash IS NULL) = (conflicting_evidence_json IS NULL)",
+            name="ck_job_decisions_contract_pair",
+        ),
+        ForeignKeyConstraint(
+            ["attempt_id", "job_id"],
+            ["job_attempts.id", "job_attempts.job_id"],
+            name="fk_job_decisions_attempt_job",
+            ondelete="RESTRICT",
+        ),
+        ForeignKeyConstraint(
+            ["content_id", "job_id"],
+            ["job_contents.id", "job_contents.job_id"],
+            name="fk_job_decisions_content_job",
+            ondelete="RESTRICT",
+        ),
         Index("ix_job_decisions_job_current", "job_id", "is_current"),
     )
 
@@ -251,20 +290,18 @@ class JobDecision(Base):
         ForeignKey("jobs.id", ondelete="CASCADE"),
         nullable=False,
     )
-    attempt_id: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("job_attempts.id", ondelete="RESTRICT"),
-        nullable=False,
-    )
-    content_id: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("job_contents.id", ondelete="RESTRICT"),
-        nullable=False,
-    )
+    attempt_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    content_id: Mapped[int] = mapped_column(Integer, nullable=False)
     decision: Mapped[str] = mapped_column(String, nullable=False)
     reason: Mapped[str] = mapped_column(Text, nullable=False)
+    # Supporting evidence. Legacy verdict rows used this column for their only
+    # evidence list, so it keeps its name rather than being backfilled.
     evidence_json: Mapped[str] = mapped_column(Text, nullable=False)
+    conflicting_evidence_json: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # The eligibility contract version (``ELIGIBILITY_VERSION`` for one-shot
+    # rows; older strings for legacy rows, which keep a null prompt hash).
     policy_version: Mapped[str] = mapped_column(String, nullable=False)
+    prompt_hash: Mapped[str | None] = mapped_column(String, nullable=True)
     is_current: Mapped[bool] = mapped_column(Boolean, nullable=False)
     decided_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 

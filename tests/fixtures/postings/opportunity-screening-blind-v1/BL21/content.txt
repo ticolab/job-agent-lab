@@ -1,0 +1,70 @@
+Adventure is Our Culture. Join a team that celebrates a lifestyle as bold as the terrain we love. At Backcountry, we are rooted in adventure, recognition, and wellbeing — on and off the mountain. We spotlight employee stories, celebrate milestones, and offer exclusive outdoor perks. Whether you are at HQ, in a retail store, or remote, you will be part of a team that thrives on energy, exploration, and connection.
+Reports to: Director of Engineering
+Location: Costa Rica (remote)
+\n
+As our Lead QA Engineer, you will own QA strategy and execution across Backcountry’s digital properties across web, API, and mobile with an AI-first approach.
+This is a high-ownership role built for someone who wants to lead with craft: raising automation coverage, strengthening release confidence, and influencing how quality is woven into every stage of the development lifecycle. In your first six months, you’ll establish Playwright as the primary automation framework and define repeatable release validation standards that support our weekly deployment cadence.
+By month twelve, the expectation is measurable improvement in regression stability, defect trends, and test coverage with targeted initiatives like Apple Pay automation moving from backlog to production.
+Lead QA Strategy & Execution
+- • Own the end-to-end testing lifecycle across Backcountry’s web, API, and mobile platforms.
+- • Define scalable QA frameworks, automation strategies, and release validation standards that support a weekly deployment cadence.
+- • Drive shift-left practices, integrating quality checks early in the SDLC to reduce downstream defect costs.
+- • Maintain and improve functional, regression, and performance/load testing coverage using tools like Playwright, Postman, and JMeter.
+Build & Mentor a High-Performing Team
+- • Develop, coach, and grow QA engineers, fostering a culture of quality ownership and continuous improvement.
+- • Influence quality practices across engineering teams, even without direct authority over every contributor.
+- • Serve as the internal expert and advocate for QA best practices, helping the broader engineering org level up.
+Drive AI/Automation & CI/CD Excellence
+- • Create re-usable agents that reduce overhead for your team.
+- • Champion Playwright as the primary automation framework and expand coverage across web and API surfaces.
+- • Integrate automation into CI/CD pipelines and support release validation processes, including occasional after-hours deployments.
+- • Lead targeted automation initiatives including Apple Pay automation and AI-assisted testing approaches.
+- • Evaluate and adopt modern QA tooling (BrowserStack, Appium, Gatling) where they improve coverage or efficiency.
+Collaborate Cross-Functionally
+- • Partner with product managers, developers, and DevOps to embed QA into Agile delivery workflows.
+- • Work within Jira and TestRail for defect management and test case organization.
+- • Align stakeholders on quality signals and communicate release readiness with clarity.
+Monitor & Optimize Quality Metrics
+- • Define and track KPIs for product quality, defect density, test coverage, and release reliability.
+- • Establish baseline performance and load testing checks integrated into the standard delivery workflow.
+- • Surface quality trends proactively and drive resolution before they become release blockers.
+- • 7+ years of experience in Quality Assurance and Testing, with at least 2+ years in a lead or senior individual contributor capacity.
+- • Proven, hands-on experience with Playwright for web and API E2E automation.
+- • Strong automation fundamentals across Cypress, Selenium, or comparable frameworks; ability to build and maintain scalable test suites.
+- • Working proficiency in Python, JavaScript, or Java; operate effectively in test frameworks and validate or correct AI-generated code.
+- • Solid experience with functional, regression, and performance/load testing (Postman, JMeter, or equivalent).
+- • Demonstrated SDLC and Agile experience with strong defect lifecycle management using Jira and TestRail.
+- • Ability to operate independently under a steady release cadence and manage competing priorities without close supervision.
+- • E-commerce QA automation experience, particularly in environments shipping frequently with CI/CD integration.
+- • Familiarity with BrowserStack, Appium, Gatling, or Argo CD.
+- • Experience with observability tooling like Grafana or GCP-based infrastructure.
+- • Hands-on experience with Apple Pay automation or similar payment flow testing.
+- • Practical, responsible use of AI-assisted testing tools — including the ability to validate and correct AI-generated test code.
+- • Strong communication and stakeholder alignment skills, including the ability to influence without authority.
+The people who do best here are builders. They take ownership, move fast, and want to see the direct impact of their work.
+- • Adventure is Our Culture: We celebrate the lifestyle our products enable. Milestone moments, employee stories, and exclusive outdoor perks are part of how we work.
+- • AI-First Skill Building: Get hands-on with advanced AI and automation tooling. You'll build a modern QA stack that puts you ahead in any engineering environment.
+- • Accelerated Ownership: High performers are quickly trusted with greater scope, new challenges, and leadership opportunities.
+- • Competitive Benefits: We offer an attractive benefits package including primarily remote work, private medical and life insurance, additional paid time off, monthly allowances and reimbursements, employee discounts, and opportunities for professional growth.
+- • Recruiter Intro: 30-minute video call to discuss your background, experience, and the role.
+- • Hiring Manager Screen: A fit and mutual interest conversation to explore alignment on the role, team, and working style.
+- • Technical & Behavioral Interviews: Two separate interviews: one with a senior engineer focused on your automation depth and technical approach, and one with a product stakeholder focused on cross-functional collaboration and quality advocacy.
+- • Leadership Interview: A conversation focused on how you lead, develop teams, and drive quality culture.
+- • Final Interview (On-Site): An in-person meeting with someone on the team in Costa Rica.
+- • Reference Checks: We will connect with a few professional references to round out our understanding of your work and impact.
+$115,000 - $145,000 a year
+The CSC family of brands provides equal employment opportunities to all employees and applicants for employment and prohibits discrimination and harassment of any type without regard to race, color, religion, age, sex, national origin, disability status, genetics, protected veteran status, sexual orientation, gender identity or expression, or any other characteristic protected by federal, provincial, state or local laws.
+The CSC family of brands is committed to providing reasonable accommodations for qualified individuals with disabilities in our job application procedures. If you need assistance or an accommodation due to a disability, please contact hrbenefits@cscshared.com
+Lead QA Engineer
+Costa Rica
+Backcountry – Engineering /
+Full Time /
+Remote
+About the Role
+What You’ll Do
+Required Qualifications
+Preferred Qualifications
+Why Join Backcountry
+Interview Process
+The CSC family of brands is committed to providing reasonable accommodations for qualified individuals with disabilities in our job application procedures. If you need assistance or an accommodation due to a disability, please contact [email protected]
+We may use artificial intelligence (AI) tools to support parts of the hiring process, such as reviewing applications, analyzing resumes, or assessing responses and identifying potential inconsistencies or verification signals in application materials based on available information. These tools assist our recruitment team but do not replace human judgment. Final hiring decisions are ultimately made by humans. If you would like more information about how your data is processed, please contact us.

@@ -18,8 +18,9 @@ from sqlalchemy.orm import Session
 
 from job_discovery.persistence.models import Company
 from job_eligibility import (
-    POLICY_VERSION,
-    PROMPT_HASH,
+    ELIGIBILITY_PROMPT_HASH,
+    ELIGIBILITY_VERSION,
+    MISSING_INFORMATION_REASON,
     EligibilityResponse,
     build_messages,
 )
@@ -35,9 +36,7 @@ from job_pipeline.persistence.models import (
 from tests.unit.asyncio_harness import run_async
 
 T = TypeVar("T", bound=BaseModel)
-LINE = "Contractor · Remote in Argentina or Mexico · Full-time · 9-month project"
-EXPLANATION = "The posting states 'Latin America' as the location."
-TEXT = f"Latin America\n{LINE}\nRemote\nPRIVATE POSTING BODY NOT FOR RECORDINGS"
+TEXT = "Engineer\nRemote\nPRIVATE POSTING BODY NOT FOR RECORDINGS"
 
 
 @pytest.fixture
@@ -49,6 +48,29 @@ def tool() -> ModuleType:
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
+
+
+def response(
+    *, bad: bool = False, inconsistent: bool = False, missing: bool = False
+) -> EligibilityResponse:
+    evidence = "not in posting SECRET" if bad else "Remote"
+    if missing:
+        return EligibilityResponse.model_validate(
+            {
+                "decision": "unknown",
+                "reason": MISSING_INFORMATION_REASON,
+                "supporting_evidence": [],
+                "conflicting_evidence": [],
+            }
+        )
+    return EligibilityResponse.model_validate(
+        {
+            "decision": "eligible",
+            "reason": "The role is remote with no exclusion.",
+            "supporting_evidence": [evidence],
+            "conflicting_evidence": [evidence] if inconsistent else ["Engineer"],
+        }
+    )
 
 
 @pytest.fixture
@@ -68,7 +90,7 @@ def database(tmp_path: Path) -> Path:
                     synced_at=now,
                 )
             )
-            for run_id in ("selected", "other", "empty"):
+            for run_id in ("selected", "empty"):
                 session.add(
                     PipelineRun(
                         id=run_id,
@@ -79,7 +101,7 @@ def database(tmp_path: Path) -> Path:
                         model="fake",
                     )
                 )
-            for job_id in (1, 2, 3):
+            for job_id in (1, 2):
                 session.add(
                     Job(
                         id=job_id,
@@ -101,7 +123,7 @@ def database(tmp_path: Path) -> Path:
                         fingerprint=f"fingerprint-{job_id}",
                         resolved_url=f"https://acme.example/jobs/{job_id}",
                         method="main",
-                        title="Role | <script> * [link](bad)",
+                        title="private title",
                         text=TEXT,
                         retrieved_at=now,
                     )
@@ -110,82 +132,38 @@ def database(tmp_path: Path) -> Path:
                     JobAttempt(
                         id=job_id,
                         job_id=job_id,
-                        run_id="selected" if job_id < 3 else "other",
+                        run_id="selected",
                         trigger="scheduled",
                         model="fake",
-                        policy_version=POLICY_VERSION,
+                        policy_version=ELIGIBILITY_VERSION,
+                        eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
                         extractor_version="extractor",
                         started_at=now,
                     )
                 )
+            session.flush()
             session.add(
-                JobAttempt(
-                    id=4,
+                JobDecision(
                     job_id=1,
-                    run_id="selected",
-                    trigger="scheduled",
-                    model="fake",
-                    policy_version=POLICY_VERSION,
-                    extractor_version="extractor",
-                    started_at=now,
+                    attempt_id=1,
+                    content_id=1,
+                    decision="eligible",
+                    reason="Accepted.",
+                    evidence_json='["Remote"]',
+                    conflicting_evidence_json="[]",
+                    policy_version=ELIGIBILITY_VERSION,
+                    prompt_hash=ELIGIBILITY_PROMPT_HASH,
+                    is_current=True,
+                    decided_at=now,
                 )
             )
-            session.add(
-                JobAttempt(
-                    id=5,
-                    job_id=2,
-                    run_id="other",
-                    trigger="scheduled",
-                    model="fake",
-                    policy_version=POLICY_VERSION,
-                    extractor_version="extractor",
-                    started_at=now,
-                )
-            )
-            for job_id, attempt_id in ((1, 1), (2, 5)):
-                session.add(
-                    JobDecision(
-                        job_id=job_id,
-                        attempt_id=attempt_id,
-                        content_id=job_id,
-                        decision="eligible",
-                        reason="Accepted.",
-                        evidence_json="[]",
-                        policy_version=POLICY_VERSION,
-                        is_current=True,
-                        decided_at=now,
-                    )
-                )
     finally:
         engine.dispose()
     return path
 
 
-def response(*, bad: bool = False, all_arrays: bool = False) -> EligibilityResponse:
-    quote = EXPLANATION if bad else "Remote"
-    return EligibilityResponse.model_validate(
-        {
-            "decision": "eligible",
-            "reason": "The location permits work.",
-            "evidence": [quote],
-            "signals": {
-                "locations_named": [],
-                "locations_named_evidence": [f"'{LINE}'"] if bad else [],
-                "remote_scope": "none_stated",
-                "remote_scope_evidence": ["bad scope"] if all_arrays else [],
-                "exhaustive_country_list": None,
-                "exhaustive_country_list_evidence": ["bad list"] if all_arrays else [],
-                "work_authorization_required_in": [],
-                "work_authorization_evidence": ["bad authorization"]
-                if all_arrays
-                else [],
-            },
-        }
-    )
-
-
 class FakeCaller:
-    def __init__(self, outcomes: Sequence[EligibilityResponse | Exception]) -> None:
+    def __init__(self, outcomes: Sequence[EligibilityResponse | BaseException]) -> None:
         self.outcomes = list(outcomes)
         self.calls: list[tuple[Sequence[Mapping[str, str]], type[BaseModel]]] = []
         self.active = 0
@@ -200,12 +178,12 @@ class FakeCaller:
         self.maximum = max(self.maximum, self.active)
         try:
             await asyncio.sleep(0)
-            if isinstance(outcome, Exception):
+            if isinstance(outcome, BaseException):
                 raise outcome
             return Completion(
                 parsed=schema.model_validate(outcome.model_dump()),
                 raw_json=outcome.model_dump_json(),
-                model="fake",
+                model="provider-model",
                 prompt_tokens=100,
                 completion_tokens=20,
                 latency_ms=7,
@@ -214,104 +192,130 @@ class FakeCaller:
             self.active -= 1
 
 
-def test_selection_and_read_only_replay(tool: ModuleType, database: Path) -> None:
+def test_selection_and_one_shot_replay_is_safe(
+    tool: ModuleType,
+    database: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(tool, "PROJECT_OUTPUT", tmp_path)
     before = database.read_bytes()
     postings = tool.load_postings(database, "selected")
-    assert [p.job_id for p in postings] == [1, 2]
-    assert [p.accepted_decision for p in postings] == ["eligible", None]
-    caller = FakeCaller(
-        [
-            response(),
-            response(bad=True),
-            response(),
-            ModelCallError("fake", "sk-secret PRIVATE POSTING BODY"),
-        ]
-    )
+    assert [
+        (posting.job_id, posting.accepted_decision, posting.accepted_contract)
+        for posting in postings
+    ] == [(1, "eligible", ELIGIBILITY_VERSION), (2, None, None)]
+    raw = tmp_path / "baseline.raw"
     recording = run_async(
         tool.replay(
             postings,
-            caller,
+            FakeCaller(
+                [response()] * 3
+                + [response(inconsistent=True), response(missing=True)]
+                + [response(bad=True)] * 5
+            ),
             run_id="selected",
             model="fake",
-            replays=2,
+            raw_directory=raw,
+            replays=5,
             concurrency=1,
         )
     )
     assert database.read_bytes() == before
-    assert recording.policy_version == POLICY_VERSION == "cr-2026.10.1"
-    assert recording.prompt_hash == PROMPT_HASH
-    assert recording.timestamp.endswith("+00:00")
-    assert len(recording.records) == 4
-    assert all(schema is EligibilityResponse for _, schema in caller.calls)
-    assert caller.calls[0][0] == build_messages(TEXT)
-    grounded, bad, _, error = recording.records
-    assert grounded.status == "grounded"
-    assert grounded.raw_decision == "eligible"
-    assert grounded.validated_decision == "unknown"
-    assert grounded.validation_notes
-    assert grounded.raw_response_json is None
-    assert grounded.prompt_tokens == 100
-    assert grounded.completion_tokens == 20
-    assert grounded.latency_ms == 7
-    assert bad.status == "ungrounded"
-    assert bad.raw_decision == "eligible"
-    assert bad.validated_decision is None
-    assert [(miss.path, miss.quote) for miss in bad.ungrounded] == [
-        ("$.evidence[0]", EXPLANATION),
-        ("$.signals.locations_named_evidence[0]", f"'{LINE}'"),
+    assert recording.recording_version == 3
+    assert recording.eligibility_version == ELIGIBILITY_VERSION
+    assert recording.eligibility_prompt_hash == ELIGIBILITY_PROMPT_HASH
+    grounded = recording.records[0]
+    inconsistent = recording.records[3]
+    missing = recording.records[4]
+    ungrounded = recording.records[5]
+    assert (
+        grounded.status,
+        grounded.decision,
+        grounded.supporting_count,
+        grounded.conflicting_count,
+        grounded.missing_information,
+    ) == ("grounded", "eligible", 1, 1, False)
+    assert inconsistent.status == "inconsistent"
+    assert inconsistent.decision is None
+    assert inconsistent.structural_errors == [
+        "$.conflicting_evidence[0] appears in both evidence buckets"
     ]
-    assert bad.raw_response_json == response(bad=True).model_dump_json()
-    assert error.status == "model_error"
-    assert error.raw_response_json is None
+    assert (missing.status, missing.decision, missing.missing_information) == (
+        "grounded",
+        "unknown",
+        True,
+    )
+    assert ungrounded.status == "ungrounded"
+    assert [miss.path for miss in ungrounded.grounding_misses] == [
+        "$.supporting_evidence[0]"
+    ]
+    assert ungrounded.grounding_misses[0].reason == "not_in_posting"
+    assert ungrounded.grounding_misses[0].value_characters == len(
+        "not in posting SECRET"
+    )
+    assert len(ungrounded.grounding_misses[0].value_sha256) == 64
+    assert grounded.raw_response_path.startswith("baseline.raw/")
+    assert all((path.stat().st_mode & 0o777) == 0o600 for path in raw.iterdir())
+    with pytest.raises(ValueError, match="ignored output"):
+        tool._write_sidecar(tmp_path.parent / "unsafe", "key", "{}")
     serialized = recording.model_dump_json()
-    assert TEXT not in serialized
     assert "PRIVATE POSTING BODY" not in serialized
-    assert "sk-secret" not in serialized
+    assert "not in posting SECRET" not in serialized
 
 
-def test_all_evidence_arrays_and_normalization(tool: ModuleType) -> None:
-    misses = tool.ungrounded_strings(response(bad=True, all_arrays=True), TEXT)
-    assert [miss.path for miss in misses] == [
-        "$.evidence[0]",
-        "$.signals.locations_named_evidence[0]",
-        "$.signals.remote_scope_evidence[0]",
-        "$.signals.exhaustive_country_list_evidence[0]",
-        "$.signals.work_authorization_evidence[0]",
-    ]
-    normalized = response().model_copy(update={"evidence": ["REMOTE IN COSTA RICA"]})
-    assert tool.ungrounded_strings(normalized, "Remote\n IN\u00a0Costa Rica") == []
+def test_uses_one_shot_prompt_and_schema(tool: ModuleType, database: Path) -> None:
+    postings = tool.load_postings(database, "selected")
+    caller = FakeCaller([response()] * 10)
+    run_async(tool.replay(postings, caller, run_id="selected", model="fake", replays=5))
+    assert caller.calls[0] == (build_messages(TEXT), EligibilityResponse)
 
 
-def test_errors_and_concurrency(tool: ModuleType, database: Path) -> None:
+@pytest.mark.parametrize("name", ["ELIGIBILITY_VERSION", "ELIGIBILITY_PROMPT_HASH"])
+def test_call_artifact_identity_includes_contract_version_and_hash(
+    tool: ModuleType, database: Path, monkeypatch: pytest.MonkeyPatch, name: str
+) -> None:
+    posting = tool.load_postings(database, "selected")[0]
+    current = tool._recording_key("fake", "selected", posting, 1)
+    contract = tool._sidecar_contract(current, "fake", "selected", posting, 1)
+    assert contract["eligibility_version"] == ELIGIBILITY_VERSION
+    assert contract["eligibility_prompt_hash"] == ELIGIBILITY_PROMPT_HASH
+    assert contract["content_hash"] == posting.content_hash
+    monkeypatch.setattr(tool, name, "changed")
+    assert tool._recording_key("fake", "selected", posting, 1) != current
+
+
+def test_errors_timeout_and_concurrency(tool: ModuleType, database: Path) -> None:
     postings = tool.load_postings(database, "selected")
     caller = FakeCaller(
         [
-            ModelResponseError("fake", "secret body"),
+            ModelResponseError("fake", "provider secret"),
             response(),
             response(),
-            response(),
+            ModelCallError("fake", "provider secret"),
+            *([response()] * 6),
         ]
     )
     recording = run_async(
         tool.replay(
-            postings,
-            caller,
-            run_id="selected",
-            model="fake",
-            replays=2,
-            concurrency=2,
+            postings, caller, run_id="selected", model="fake", replays=5, concurrency=2
         )
     )
     assert caller.maximum == 2
-    assert recording.records[0].status == "invalid_response"
-    assert "secret body" not in recording.model_dump_json()
+    assert [record.status for record in recording.records[:4]] == [
+        "invalid_response",
+        "grounded",
+        "grounded",
+        "model_error",
+    ]
+    assert "provider secret" not in recording.model_dump_json()
 
     class SlowCaller:
         async def complete(
             self, messages: Sequence[Mapping[str, str]], schema: type[T]
         ) -> Completion[T]:
             await asyncio.sleep(10)
-            raise AssertionError("must time out")
+            raise AssertionError
 
     timed = run_async(
         tool.replay(
@@ -319,102 +323,69 @@ def test_errors_and_concurrency(tool: ModuleType, database: Path) -> None:
             SlowCaller(),
             run_id="selected",
             model="fake",
-            replays=1,
+            replays=5,
             timeout=0.001,
         )
     )
-    assert all(
-        r.status == "model_error" and r.error == "model call timed out"
-        for r in timed.records
-    )
+    assert all(record.error_category == "timeout" for record in timed.records)
 
 
-@pytest.mark.parametrize("case", ["missing", "unknown", "empty", "checkpoint"])
-def test_input_errors_precede_credentials_and_calls(
-    tool: ModuleType,
-    database: Path,
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-    capsys: pytest.CaptureFixture[str],
-    case: str,
+def test_load_postings_is_bound_to_requested_run_history(
+    tool: ModuleType, database: Path
 ) -> None:
-    def forbidden(*args: object, **kwargs: object) -> None:
-        pytest.fail("input validation must precede credentials and calls")
-
-    monkeypatch.setattr(tool, "load_dotenv", forbidden)
-    monkeypatch.setattr(tool, "LiteLLMCaller", forbidden)
-    selected = "selected"
-    if case == "checkpoint":
-        with sqlite3.connect(database) as connection:
-            connection.execute("UPDATE jobs SET current_content_id = NULL WHERE id = 2")
-    elif case == "missing":
-        database = tmp_path / "missing.db"
-    else:
-        selected = case
-    assert (
-        tool.main(
-            [
-                "run",
-                "--run",
-                selected,
-                "--database",
-                str(database),
-                "--output",
-                str(tmp_path / "output"),
-                "--label",
-                "baseline",
-            ]
+    with sqlite3.connect(database) as connection:
+        connection.execute(
+            "INSERT INTO pipeline_runs "
+            "(id, stage, trigger, started_at, selection, model) "
+            "VALUES ('later', 'eligibility', 'scheduled', '2026-01-02', 'all', 'fake')"
         )
-        == 2
-    )
-    assert capsys.readouterr().err
-    assert not (tmp_path / "output").exists()
+        connection.execute(
+            "INSERT INTO job_attempts "
+            "(id, job_id, run_id, trigger, model, policy_version, "
+            "eligibility_prompt_hash, extractor_version, started_at) "
+            "VALUES (10, 1, 'later', 'scheduled', 'fake', ?, ?, 'extractor', "
+            "'2026-01-02')",
+            (ELIGIBILITY_VERSION, ELIGIBILITY_PROMPT_HASH),
+        )
+        connection.execute(
+            "INSERT INTO job_contents "
+            "(id, job_id, content_hash, fingerprint, resolved_url, method, text, "
+            "retrieved_at) VALUES "
+            "(10, 1, 'later-hash', 'later-fingerprint', "
+            "'https://acme.example/jobs/1-new', 'main', 'Later content', "
+            "'2026-01-02')"
+        )
+        connection.execute("UPDATE jobs SET current_content_id = 10 WHERE id = 1")
+        connection.execute("UPDATE job_decisions SET is_current = 0 WHERE id = 1")
+        connection.execute(
+            "INSERT INTO job_decisions "
+            "(id, job_id, attempt_id, content_id, decision, reason, evidence_json, "
+            "policy_version, is_current, decided_at) VALUES "
+            "(10, 1, 10, 10, 'unknown', 'later', '[]', 'cr-2026.10.1', 1, "
+            "'2026-01-02')",
+        )
+    postings = tool.load_postings(database, "selected")
+    assert postings[0].content_id == 1
+    assert postings[0].content_hash == "hash-1"
+    assert postings[0].accepted_decision == "eligible"
+    assert postings[0].accepted_contract == ELIGIBILITY_VERSION
 
 
-@pytest.mark.parametrize(
-    "flag,value",
-    [
-        ("--replays", "0"),
-        ("--concurrency", "0"),
-        ("--timeout", "0"),
-        ("--timeout", "nan"),
-        ("--timeout", "inf"),
-        ("--label", "../baseline"),
-        ("--label", "/baseline"),
-        ("--label", ".."),
-        ("--label", "a/b"),
-        ("--label", "a\\b"),
-    ],
-)
-def test_invalid_flags(tool: ModuleType, flag: str, value: str) -> None:
-    with pytest.raises(SystemExit) as exc:
+@pytest.mark.parametrize("value", ["0", "nan", "inf"])
+def test_invalid_timeout(tool: ModuleType, value: str) -> None:
+    with pytest.raises(SystemExit):
         tool.build_parser().parse_args(
-            [
-                "run",
-                "--run",
-                "selected",
-                "--label",
-                "baseline",
-                flag,
-                value,
-            ]
+            ["run", "--run", "selected", "--label", "x", "--timeout", value]
         )
-    assert exc.value.code == 2
 
 
-def test_cli_run_and_no_overwrite(
-    tool: ModuleType,
-    database: Path,
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-    capsys: pytest.CaptureFixture[str],
+def test_cli_no_overwrite_and_cleanup(
+    tool: ModuleType, database: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    caller = FakeCaller([response(), response()])
-    events = []
-    monkeypatch.setattr(tool, "load_dotenv", lambda: events.append("dotenv"))
-    monkeypatch.setattr(
-        tool, "require_provider_credential", lambda model: events.append("credential")
-    )
+    monkeypatch.setattr(tool, "PROJECT_OUTPUT", tmp_path)
+    caller = FakeCaller([response()] * 10)
+    monkeypatch.setattr(tool, "load_dotenv", lambda: None)
+    monkeypatch.setattr(tool, "require_provider_credential", lambda model: None)
     monkeypatch.setattr(tool, "LiteLLMCaller", lambda model, timeout: caller)
     monkeypatch.setattr(tool, "run_async", run_async)
     args = [
@@ -428,35 +399,183 @@ def test_cli_run_and_no_overwrite(
         "--label",
         "baseline",
         "--replays",
-        "1",
+        "5",
     ]
-    before = database.read_bytes()
     assert tool.main(args) == 0
-    assert events == ["dotenv", "credential"]
-    path = tmp_path / "baseline.json"
-    saved = path.read_bytes()
-    assert database.read_bytes() == before
-    assert len(tool.Recording.model_validate_json(saved).records) == 2
-    assert tool.main(args) == 2
-    assert "different --label" in capsys.readouterr().err
-    assert path.read_bytes() == saved
-    assert events == ["dotenv", "credential"]
-    assert len(caller.calls) == 2
+    aggregate = (
+        tmp_path / f"{__import__('hashlib').sha256(b'baseline').hexdigest()}.json"
+    )
+    saved = aggregate.read_bytes()
+    assert tool.Recording.model_validate_json(saved).recording_version == 3
+    assert tool.main(args) == 0
+    assert aggregate.read_bytes() == saved
+    assert len(caller.calls) == 10
 
 
-def test_missing_credential_removes_reserved_output(
+def test_cleanup_preserves_preexisting_files(
+    tool: ModuleType, database: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(tool, "PROJECT_OUTPUT", tmp_path)
+    monkeypatch.setattr(tool, "load_dotenv", lambda: None)
+    monkeypatch.setattr(tool, "require_provider_credential", lambda model: None)
+    monkeypatch.setattr(
+        tool,
+        "LiteLLMCaller",
+        lambda model, timeout: FakeCaller(
+            [response(), KeyboardInterrupt(), *([response()] * 8)]
+        ),
+    )
+    monkeypatch.setattr(tool, "run_async", run_async)
+    output = tmp_path / "run"
+    output.mkdir()
+    keep = output / "keep.json"
+    keep.write_text("keep", encoding="utf-8")
+    assert (
+        tool.main(
+            [
+                "run",
+                "--run",
+                "selected",
+                "--database",
+                str(database),
+                "--output",
+                str(output),
+                "--label",
+                "failed",
+                "--replays",
+                "5",
+                "--concurrency",
+                "1",
+            ]
+        )
+        == 130
+    )
+    assert keep.read_text(encoding="utf-8") == "keep"
+    failed_key = __import__("hashlib").sha256(b"failed").hexdigest()
+    assert not (output / f"{failed_key}.json").exists()
+    raw = output / f"{failed_key}.raw"
+    assert list(raw.glob("*.json"))
+    assert not list(raw.glob(".*.reserved"))
+
+
+def test_cli_returns_one_and_resumes_complete_error_artifacts_without_provider(
     tool: ModuleType,
     database: Path,
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(tool, "PROJECT_OUTPUT", tmp_path)
+    caller = FakeCaller([ModelCallError("fake", "secret")] * 10)
     monkeypatch.setattr(tool, "load_dotenv", lambda: None)
+    monkeypatch.setattr(tool, "require_provider_credential", lambda model: None)
+    monkeypatch.setattr(tool, "LiteLLMCaller", lambda model, timeout: caller)
+    monkeypatch.setattr(tool, "run_async", run_async)
+    args = [
+        "run",
+        "--run",
+        "selected",
+        "--database",
+        str(database),
+        "--output",
+        str(tmp_path),
+        "--label",
+        "errors",
+        "--replays",
+        "5",
+    ]
+    assert tool.main(args) == 1
+    assert len(caller.calls) == 10
+    key = __import__("hashlib").sha256(b"errors").hexdigest()
+    aggregate = tmp_path / f"{key}.json"
+    aggregate.unlink()
 
-    def missing(model: str) -> None:
-        raise SystemExit(2)
+    def forbidden(model: str) -> None:
+        raise AssertionError("complete call artifacts must skip credentials")
 
-    monkeypatch.setattr(tool, "require_provider_credential", missing)
-    with pytest.raises(SystemExit) as exc:
+    monkeypatch.setattr(tool, "require_provider_credential", forbidden)
+    monkeypatch.setattr(
+        tool,
+        "LiteLLMCaller",
+        lambda model, timeout: (_ for _ in ()).throw(
+            AssertionError("complete call artifacts must skip provider")
+        ),
+    )
+    assert tool.main(args) == 1
+    assert aggregate.is_file()
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("decision", "unknown"),
+        ("supporting_count", 2),
+        ("conflicting_count", 0),
+        ("missing_information", True),
+    ],
+)
+def test_resume_rejects_tampered_derived_summary(
+    tool: ModuleType,
+    database: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    field: str,
+    value: object,
+) -> None:
+    monkeypatch.setattr(tool, "PROJECT_OUTPUT", tmp_path)
+    postings = tool.load_postings(database, "selected")
+    raw = tmp_path / field
+    run_async(
+        tool.replay(
+            postings[:1],
+            FakeCaller([response()] * 5),
+            run_id="selected",
+            model="fake",
+            raw_directory=raw,
+            replays=5,
+        )
+    )
+    artifact = sorted(raw.glob("*.json"))[0]
+    payload = json.loads(artifact.read_text(encoding="utf-8"))
+    payload["record"][field] = value
+    artifact.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="summary does not match"):
+        run_async(
+            tool.replay(
+                postings[:1],
+                None,
+                run_id="selected",
+                model="fake",
+                raw_directory=raw,
+                replays=5,
+            )
+        )
+
+
+def test_core_replay_rejects_less_than_five(tool: ModuleType, database: Path) -> None:
+    postings = tool.load_postings(database, "selected")
+    with pytest.raises(ValueError, match="at least 5"):
+        run_async(
+            tool.replay(
+                postings,
+                FakeCaller([]),
+                run_id="selected",
+                model="fake",
+                replays=4,
+            )
+        )
+
+
+def test_credential_failure_removes_reserved_output(
+    tool: ModuleType, database: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(tool, "PROJECT_OUTPUT", tmp_path)
+    monkeypatch.setattr(tool, "load_dotenv", lambda: None)
+    monkeypatch.setattr(
+        tool,
+        "require_provider_credential",
+        lambda model: (_ for _ in ()).throw(SystemExit(2)),
+    )
+    with pytest.raises(SystemExit):
         tool.main(
             [
                 "run",
@@ -470,72 +589,73 @@ def test_missing_credential_removes_reserved_output(
                 "baseline",
             ]
         )
-    assert exc.value.code == 2
-    assert not (tmp_path / "baseline.json").exists()
+    key = __import__("hashlib").sha256(b"baseline").hexdigest()
+    assert not (tmp_path / f"{key}.json").exists()
+    assert not (tmp_path / f"{key}.raw").exists()
 
 
-def test_compare_counts_and_escaping(
-    tool: ModuleType,
-    database: Path,
-    tmp_path: Path,
-    capsys: pytest.CaptureFixture[str],
+def test_compare_is_safe_and_checks_compatibility(
+    tool: ModuleType, database: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     postings = tool.load_postings(database, "selected")
     baseline = run_async(
         tool.replay(
             postings,
-            FakeCaller([response(bad=True), response(), response(), response()]),
+            FakeCaller([response(bad=True)] * 5 + [response()] * 5),
             run_id="selected",
-            model="fake",
-            replays=2,
-            concurrency=1,
+            model="old",
+            replays=5,
         )
     )
     new = run_async(
         tool.replay(
             postings,
-            FakeCaller([response(), response(), response(), response()]),
+            FakeCaller([response()] * 10),
             run_id="selected",
-            model="fake",
-            replays=2,
-            concurrency=1,
+            model="new",
+            replays=5,
         )
     )
     report = tool.compare(baseline, new)
-    assert "Grounding failures: 1/4" in report
-    assert "Grounding failures: 0/4" in report
-    assert "Job 1: grounded 2/2" in report
-    assert "Job 1: accepted eligible; unknown: 2" in report
-    assert "Job 2: unknown: 2" in report
-    assert "Mean prompt tokens: 100.00 (4 measured)" in report
-    assert "mean completion tokens: 20.00 (4 measured)" in report
-    assert "<script>" not in report
-    assert "[link](bad)" not in report
-    assert "&lt;script&gt;" in report
-    assert "&#124;" in report
-    assert "signals&#46;locations" in report
+    assert "Grounding failures: 5/10 calls; structurally inconsistent: 0." in report
+    assert "Grounding failures: 0/10" in report
+    assert "Agreement with accepted decisions: 0/0 grounded calls" in report
+    assert "Agreement with accepted decisions: 5/5 grounded calls" in report
+    assert "eligible/s1c1: 5" in report
     assert "PRIVATE POSTING BODY" not in report
-    old_path, new_path = tmp_path / "old.json", tmp_path / "new.json"
-    old_path.write_text(baseline.model_dump_json(), "utf-8")
-    new_path.write_text(new.model_dump_json(), "utf-8")
+    assert "not in posting SECRET" not in report
+    old_path = tmp_path / "old.json"
+    new_path = tmp_path / "new.json"
+    old_path.write_text(baseline.model_dump_json(), encoding="utf-8")
+    new_path.write_text(new.model_dump_json(), encoding="utf-8")
     assert tool.main(["compare", str(old_path), str(new_path)]) == 0
     assert capsys.readouterr().out == report
-    new.run_id = "other"
-    new_path.write_text(new.model_dump_json(), "utf-8")
-    assert tool.main(["compare", str(old_path), str(new_path)]) == 2
-    assert "different run ids" in capsys.readouterr().err
-    new.run_id = "selected"
-    new.postings[0].job_id = 99
-    with pytest.raises(ValueError, match="different job sets"):
+    new.postings[0].content_hash = "different"
+    with pytest.raises(ValueError, match="content checkpoints"):
         tool.compare(baseline, new)
 
 
-def test_malformed_comparison_is_sanitized(
-    tool: ModuleType,
-    tmp_path: Path,
-    capsys: pytest.CaptureFixture[str],
+def test_v1_and_malformed_recordings_are_rejected_safely(
+    tool: ModuleType, tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    path = tmp_path / "bad.json"
-    path.write_text(json.dumps({"secret": "sk-secret-provider-key"}), "utf-8")
-    assert tool.main(["compare", str(path), str(path)]) == 2
-    assert "sk-secret" not in capsys.readouterr().err
+    v1 = tmp_path / "v1.json"
+    v2 = tmp_path / "facts.json"
+    bad = tmp_path / "bad.json"
+    v1.write_text(
+        json.dumps({"policy_version": "v1", "secret": "sk-secret"}), encoding="utf-8"
+    )
+    v2.write_text(
+        json.dumps({"recording_version": 2, "secret": "sk-secret"}), encoding="utf-8"
+    )
+    bad.write_text(
+        json.dumps({"recording_version": 3, "secret": "sk-secret"}), encoding="utf-8"
+    )
+    for older in (v1, v2):
+        assert tool.main(["compare", str(older), str(bad)]) == 2
+        error = capsys.readouterr().err
+        assert "predate the one-shot contract" in error
+        assert "sk-secret" not in error
+    assert tool.main(["compare", str(bad), str(bad)]) == 2
+    error = capsys.readouterr().err
+    assert "invalid recording format" in error
+    assert "sk-secret" not in error

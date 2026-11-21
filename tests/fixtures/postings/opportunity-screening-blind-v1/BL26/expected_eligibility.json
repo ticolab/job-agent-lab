@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "case_id": "BL26",
+  "reviewed": true,
+  "decision": "unknown",
+  "must_cite": [
+    "Hybrid working model"
+  ],
+  "rationale": "Hybrid working model with no place stated; Vancouver HQ is company context.",
+  "partition": "blind",
+  "source_content_sha256": "2cc397d2e91c899f080928a2f87fb1100c130fc3df856bd7ec2e727882fd5109",
+  "provenance": {
+    "company": "Appnovation",
+    "title": "Sr. Full-Stack Developer, AI Design-to-Dev",
+    "source_url": "https://job-boards.greenhouse.io/appnovation/jobs/8435267002",
+    "captured_at_utc": "2026-11-21T15:48:51.943158+00:00",
+    "capture_method": "main_content"
+  },
+  "review_provenance": {
+    "proposed_by": "Claude (no GPT model involved)",
+    "proposed_date_utc": "2026-11-21",
+    "operator": "user",
+    "approval_source": "user conversation",
+    "approval_recorded_date_utc": "2026-11-21",
+    "basis": "Operator approved all 51 proposed labels and evidence obligations from REVIEW.md before any model call."
+  }
+}
