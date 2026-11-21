@@ -63,6 +63,36 @@ schedule, skill fit, or vacancy (see `docs/GEOGRAPHIC_ELIGIBILITY_REVIEW.md`).
 - The prompt has six synthetic examples. None of their text occurs in any
   evaluation posting, and a test enforces that.
 
+## Release gates
+
+A candidate is evaluated with five replays per posting, in three stages: a
+development set it may be tuned on, a held-out set read only after the
+candidate is frozen, and a fresh blind set that was never seen. Automated gates:
+
+- 100% schema-valid and structurally consistent answers;
+- grounding of at least 99% of answers (see the amendment below);
+- 100% recall of the reviewed critical evidence, measured over accepted answers;
+- decision macro F1 of at least 0.90, and decision-plus-evidence agreement of
+  at least 0.90;
+- zero false eligibles and zero wrongful ineligibles;
+- every safety-critical case unanimous across replays, and at least 90% of all
+  cases unanimous;
+- every divergent reason reviewed by the operator.
+
+The blind set must hold at least 10 postings of each label, labelled before any
+model call. A frozen candidate is the only thing the held-out and blind runs
+accept: the freeze record names the model, effort, contract version, prompt
+hash, and gate policy.
+
+**Gate amendment (gate policy 2, 2026-11-21, recorded before the freeze).**
+Grounding was lowered from 100% to at least 99%, and critical evidence recall
+now counts only accepted answers. A misquoted excerpt is rejected and retried,
+never stored, so a rare misquote costs a retry rather than a wrong decision, and
+counting the same call again as an evidence miss counted it twice. Every
+decision, safety, schema, structural, stability, and manual-review gate is
+unchanged. The amendment came after seeing the development near-miss, so the
+held-out and blind runs, not the development cases, carry the release evidence.
+
 ## Evidence
 
 All runs used five replays per posting. **Gate policy 2** was an operator
@@ -168,7 +198,6 @@ uv run job-pipeline show --job 42                   # decision, evidence, contra
 | Pipeline, persistence, CLI | `src/job_pipeline/` |
 | Defaults | `src/job_pipeline/settings.py` (`ELIGIBILITY_MODEL`, `ELIGIBILITY_REASONING_EFFORT`, `DEFAULT_MODEL`) |
 | Policy review | `docs/GEOGRAPHIC_ELIGIBILITY_REVIEW.md` |
-| Plan, gates, and gate amendment | `docs/SYS_2028_PLAN.md` |
 | Development and held-out corpus | `tests/fixtures/postings/opportunity-screening-v2/` |
 | Blind corpus | `tests/fixtures/postings/opportunity-screening-blind-v1/` |
 | Evaluator | `scripts/evaluate_leaf.py` (`--reasoning-effort`, `--partition blind`) |
