@@ -311,7 +311,7 @@ grounding rejected (grounding 0.992, critical evidence recall 0.993), and becaus
 the five RAI02 reasons still awaited operator disposition.
 
 Gate policy 2 (operator amendment, 2026-11-21, recorded in
-`spike/SYS_2028_PLAN.md` before any freeze): grounding must reach at least 99% of
+`docs/SYS_2028_PLAN.md` before any freeze): grounding must reach at least 99% of
 calls rather than 100%, and critical evidence recall counts only grounded calls. A
 misquote is rejected and retried in production, never stored. The amendment came
 after seeing the near-miss above, so exposed-regression and blind results, not the

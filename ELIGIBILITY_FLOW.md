@@ -4,7 +4,7 @@ This document describes how job-posting eligibility works today, what the
 evaluation showed, what was released and why, and what remains to be done.
 "Eligible" means *retain the posting for follow-up* by one candidate who stays
 based in Costa Rica. It is not a judgment on payroll, work authorization, visa,
-schedule, skill fit, or vacancy (see `GEOGRAPHIC_ELIGIBILITY_REVIEW.md`).
+schedule, skill fit, or vacancy (see `docs/GEOGRAPHIC_ELIGIBILITY_REVIEW.md`).
 
 ## Status at a glance
 
@@ -167,8 +167,8 @@ uv run job-pipeline show --job 42                   # decision, evidence, contra
 | Prompt, schema, grounding | `src/job_eligibility/` |
 | Pipeline, persistence, CLI | `src/job_pipeline/` |
 | Defaults | `src/job_pipeline/settings.py` (`ELIGIBILITY_MODEL`, `ELIGIBILITY_REASONING_EFFORT`, `DEFAULT_MODEL`) |
-| Policy review | `GEOGRAPHIC_ELIGIBILITY_REVIEW.md` |
-| Plan, gates, and gate amendment | `spike/SYS_2028_PLAN.md` |
+| Policy review | `docs/GEOGRAPHIC_ELIGIBILITY_REVIEW.md` |
+| Plan, gates, and gate amendment | `docs/SYS_2028_PLAN.md` |
 | Development and held-out corpus | `tests/fixtures/postings/opportunity-screening-v2/` |
 | Blind corpus | `tests/fixtures/postings/opportunity-screening-blind-v1/` |
 | Evaluator | `scripts/evaluate_leaf.py` (`--reasoning-effort`, `--partition blind`) |

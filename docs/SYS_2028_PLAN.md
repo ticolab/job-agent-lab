@@ -23,7 +23,7 @@ Reliably determine whether a person who remains based in Costa Rica can pursue a
 | R1 | Replace SYS-2027 immediately rather than running it as a long-term challenger. | Explicit | User decision |
 | R2 | Use one `gpt-4.1-mini` call that reads the complete posting and returns the final decision. | Explicit | User decision |
 | R3 | Output exactly `decision`, `reason`, `supporting_evidence`, and `conflicting_evidence`. | Explicit | User decision |
-| R4 | Keep the production objective as opportunity retention for a person remaining in Costa Rica, not legal hiring confirmation. | Explicit | `GEOGRAPHIC_ELIGIBILITY_REVIEW.md:3-10` |
+| R4 | Keep the production objective as opportunity retention for a person remaining in Costa Rica, not legal hiring confirmation. | Explicit | `docs/GEOGRAPHIC_ELIGIBILITY_REVIEW.md:3-10` |
 | R5 | Embed detailed policy guidance and six anonymized reviewed development examples in the prompt. | Explicit | User decision |
 | R6 | Authorized example patterns are remote permission, foreign-only location, foreign base/authorization, concrete conflict, ambiguous geography/arrangement, and timezone-only/missing geography. | Explicit | User decision |
 | R7 | Examples must omit case IDs, company names, titles, source URLs, and full postings. | Implicit | Avoid memorization and fixture leakage |
@@ -259,7 +259,7 @@ For the fresh blind corpus, retain at least 90% decision agreement plus all zero
 - Files:
   - `tests/fixtures/postings/opportunity-screening-v2/**`
   - `tests/unit/test_opportunity_screening_v2_fixtures.py`
-  - `GEOGRAPHIC_ELIGIBILITY_REVIEW.md`
+  - `docs/GEOGRAPHIC_ELIGIBILITY_REVIEW.md`
 - Changes:
   - [ ] Snapshot current corpus and manifest hashes for audit before deletion.
   - [ ] Delete all 24 `expected_facts.json` files.
