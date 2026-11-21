@@ -28,7 +28,6 @@ from job_discovery.persistence import models as discovery_models
 from job_discovery.persistence.engine import create_engine, create_session_factory
 from job_eligibility import (
     ELIGIBILITY_PROMPT_HASH,
-    ELIGIBILITY_VERSION,
     EligibilityResponse,
 )
 from job_extractor import ExtractionResponse
@@ -195,7 +194,6 @@ def test_dispatcher_and_policy_flags_use_real_parser() -> None:
         ).SUBCOMMANDS
     } == {
         "preview",
-        "run",
         "eligibility",
         "extraction",
         "reprocess",
@@ -449,8 +447,6 @@ async def _seed_audit(path: Path) -> tuple[async_sessionmaker[AsyncSession], int
             trigger="scheduled",
             reason=None,
             model="test",
-            policy_version="policy",
-            extractor_version="extractor",
             started_at=datetime(2026, 1, 1),
         )
     async with factory() as session:
@@ -484,7 +480,6 @@ async def _seed_audit(path: Path) -> tuple[async_sessionmaker[AsyncSession], int
                 "eligible",
                 "Costa Rica api_key=top-secret " + "L" * 250 + ".",
                 json.dumps(["y" * 400 + " SECRET FULL POSTING TEXT"]),
-                ELIGIBILITY_VERSION,
                 json.dumps(["Costa Rica token=alternative-secret " + "R" * 250]),
                 ELIGIBILITY_PROMPT_HASH,
             ),
@@ -496,7 +491,7 @@ async def _seed_audit(path: Path) -> tuple[async_sessionmaker[AsyncSession], int
             job_id=job_id,
             attempt_id=attempt_id,
             content_id=content_id,
-            result=results_repo.ResultInput("extractor", 1, '{"title":"Engineer"}'),
+            result=results_repo.ResultInput(1, '{"title":"Engineer"}'),
             accepted_at=datetime(2026, 1, 1),
         )
     async with factory() as session:
@@ -531,7 +526,6 @@ def test_show_prints_audit_metadata_without_posting_text(
     assert "Attempts" in output
     assert "supporting_evidence:" in output
     assert "conflicting_evidence:" in output
-    assert "contract: current" in output
     assert f"prompt_hash: {ELIGIBILITY_PROMPT_HASH}" in output
     assert '"title": "Engineer"' in output
     assert "SECRET FULL POSTING TEXT" not in output
@@ -1309,31 +1303,6 @@ def test_reprocess_requires_reason_and_company_for_status() -> None:
 
 
 @pytest.mark.parametrize(
-    "extras",
-    [
-        [],
-        ["--all"],
-        ["-c", "acme", "--dry-run"],
-        ["--bogus"],
-        ["--help"],
-        ["--limit", "bad"],
-    ],
-)
-def test_retired_run_accepts_any_arguments_and_opens_nothing(
-    tmp_path: Path,
-    capsys: pytest.CaptureFixture[str],
-    extras: list[str],
-) -> None:
-    path = tmp_path / "never-created.db"
-    with pytest.raises(SystemExit) as exc:
-        main(["run", *extras, "--database", str(path)])
-    assert exc.value.code == 2
-    assert not path.exists()
-    error = capsys.readouterr().err
-    assert "job-pipeline eligibility" in error and "job-pipeline extraction" in error
-
-
-@pytest.mark.parametrize(
     "argv",
     [
         ["extraction", "--http-concurrency", "5"],
@@ -1747,7 +1716,4 @@ def test_preview_stage_sections_limit_company_and_merged_alias(
     assert "ready for extraction   1" in output
     assert output.count("retry due              1") >= 2
     assert output.count("retry waiting          1") >= 2
-    assert output.count(f"eligibility contract   {ELIGIBILITY_VERSION}") == 1
-    # The ready job's alias was dropped from the snapshot, but the contract
-    # audit is company-scoped: it still has no current-contract decision.
-    assert output.count("ready, stale contract  1") == 1
+    assert "contract" not in output

@@ -6,7 +6,6 @@
   "partition": "development",
   "source_content_sha256": "ac469025bf1665383faf604ebd25bfe23b4c61064fb0c30ec9fe438dd89503b8",
   "decision": "ineligible",
-  "eligibility_version": "opportunity-oneshot-v2",
   "prompt_example": null,
   "missing_information": false,
   "obligations": [

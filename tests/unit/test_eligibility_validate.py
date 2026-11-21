@@ -1,4 +1,4 @@
-"""Structural validation and normalized-exact grounding for one-shot verdicts."""
+"""Structural validation and word-level grounding for one-shot verdicts."""
 
 from __future__ import annotations
 
@@ -10,19 +10,18 @@ import pytest
 
 from job_eligibility import (
     ELIGIBILITY_PROMPT_HASH,
-    ELIGIBILITY_VERSION,
     MISSING_INFORMATION_REASON,
     EligibilityResponse,
     EligibilityValidationError,
     UngroundedEvidenceError,
     collect_grounding_misses,
+    contains_words,
     is_missing_information,
-    normalize,
+    locate,
     occurs_in,
     structural_errors,
     validate,
 )
-from job_pipeline.content.text import normalize as pipeline_normalize
 
 POSTING = (
     "Senior Engineer\n"
@@ -31,6 +30,9 @@ POSTING = (
     "Benefits · Fully remote.\n"
     "Candidates must reside in Querétaro, Mexico."
 )
+
+# The posting's own characters, including its non-breaking space.
+LOCATION_LINE = POSTING.splitlines()[1]
 
 
 def _response(
@@ -53,29 +55,31 @@ def _response(
     )
 
 
-def test_normalize_contract_agrees_with_pipeline_before_casefolding() -> None:
-    assert normalize("  CAFÉ\n\tRole  ") == "café\nrole"
-    for sample in ("  CAFÉ\n\tRole  ", "Remote   in Costa Rica", "A\n\n\nB"):
-        assert normalize(sample) == pipeline_normalize(sample).casefold()
-
-
 @pytest.mark.parametrize(
-    "quote",
+    ("quote", "stored"),
     [
-        "Location: Remote – Latin America",
-        "location:  REMOTE - latin america",
-        "Location: Remote — Latin America",
-        "Hybrid CO",
-        "Hybrid\nCO",
-        "Benefits | Fully remote.",
-        "reside in Quere\u0301taro, Mexico",
+        ("Location: Remote – Latin America", LOCATION_LINE),
+        ("location:  REMOTE - latin america", LOCATION_LINE),
+        ("Location: Remote — Latin America.", LOCATION_LINE),
+        ('"Location: Remote – Latin America"', LOCATION_LINE),
+        ("Hybrid CO", "Hybrid\nCO"),
+        ("- Hybrid\n- CO", "Hybrid\nCO"),
+        ("Benefits | Fully remote", "Benefits · Fully remote"),
+        ("reside in Quere\u0301taro, Mexico", "reside in Querétaro, Mexico"),
+        # A sentence cut short and closed with an invented period.
+        ("Candidates must reside in Querétaro.", "Candidates must reside in Querétaro"),
     ],
 )
-def test_layout_whitespace_case_dash_and_unicode_variants_ground(quote: str) -> None:
+def test_case_punctuation_layout_and_unicode_variants_ground(
+    quote: str, stored: str
+) -> None:
     assert occurs_in(quote, POSTING)
+    start, end = locate(quote, POSTING) or (0, 0)
+    assert POSTING[start:end] == stored
     response = _response(supporting=[quote])
     assert collect_grounding_misses(response, POSTING) == []
-    assert validate(response, POSTING).supporting_evidence == (quote,)
+    # The verdict keeps the posting's own characters, not the model's copy.
+    assert validate(response, POSTING).supporting_evidence == (stored,)
 
 
 @pytest.mark.parametrize(
@@ -83,13 +87,18 @@ def test_layout_whitespace_case_dash_and_unicode_variants_ground(quote: str) -> 
     [
         "The posting allows remote work in Latin America.",
         "Latin America – Remote",
+        # Words stitched from separate passages.
         "Location: Remote – Latin America. Fully remote.",
-        '"Location: Remote – Latin America"',
         "Candidates must reside in Queretaro, Mexico.",
         "Remote in Costa Rica",
+        # A partial word is not a word.
+        "ocation: Remote",
+        "Remote – Latin Americ",
+        # Punctuation alone names nothing.
+        "– · .",
     ],
 )
-def test_paraphrase_reordering_combination_wrappers_and_spelling_fail(
+def test_paraphrase_reordering_stitching_spelling_and_partial_words_fail(
     quote: str,
 ) -> None:
     assert not occurs_in(quote, POSTING)
@@ -97,6 +106,14 @@ def test_paraphrase_reordering_combination_wrappers_and_spelling_fail(
         validate(_response(supporting=[quote]), POSTING)
     assert exc_info.value.quote == quote
     assert str(exc_info.value) == "ungrounded evidence"
+
+
+def test_contains_words_matches_whole_word_runs_only() -> None:
+    assert contains_words("This is a Remote-USA role,", "remote usa")
+    assert contains_words("Fully remote", "Fully remote.")
+    assert not contains_words("Fully remotely", "Fully remote")
+    assert not contains_words("remote in the USA", "remote USA")
+    assert not contains_words("anything", "...")
 
 
 def test_grounding_misses_cover_both_buckets_with_safe_diagnostics() -> None:
@@ -162,18 +179,18 @@ def test_missing_information_unknown_is_the_only_empty_evidence_form() -> None:
         validate(with_evidence, POSTING)
 
 
-def test_duplicates_and_cross_bucket_overlap_are_rejected_after_normalization() -> None:
-    duplicate = _response(
-        supporting=["Fully remote.", "FULLY  remote."],
-    )
-    assert structural_errors(duplicate) == (
-        "$.supporting_evidence[1] duplicates an earlier excerpt",
+def test_repeats_merge_within_a_bucket_and_cross_bucket_overlap_is_rejected() -> None:
+    repeated = _response(supporting=["Fully remote.", "FULLY  remote", "Hybrid CO"])
+    assert structural_errors(repeated) == ()
+    assert validate(repeated, POSTING).supporting_evidence == (
+        "Fully remote",
+        "Hybrid\nCO",
     )
     overlap = _response(
         decision="unknown",
         reason="The statements conflict.",
         supporting=["Hybrid\nCO"],
-        conflicting=["Hybrid CO"],
+        conflicting=["Hybrid CO."],
     )
     assert structural_errors(overlap) == (
         "$.conflicting_evidence[0] appears in both evidence buckets",
@@ -182,7 +199,7 @@ def test_duplicates_and_cross_bucket_overlap_are_rejected_after_normalization() 
         validate(overlap, POSTING)
 
 
-def test_unknown_conflict_keeps_both_buckets_and_contract_identity() -> None:
+def test_unknown_conflict_keeps_both_buckets_and_the_prompt_hash() -> None:
     response = _response(
         decision="unknown",
         reason="A hybrid CO header conflicts with fully remote work.",
@@ -192,8 +209,7 @@ def test_unknown_conflict_keeps_both_buckets_and_contract_identity() -> None:
     verdict = validate(response, POSTING)
     assert verdict.decision == "unknown"
     assert verdict.supporting_evidence == ("Hybrid\nCO",)
-    assert verdict.conflicting_evidence == ("Fully remote.",)
-    assert verdict.eligibility_version == ELIGIBILITY_VERSION
+    assert verdict.conflicting_evidence == ("Fully remote",)
     assert verdict.prompt_hash == ELIGIBILITY_PROMPT_HASH
     assert verdict.grounded is True
 

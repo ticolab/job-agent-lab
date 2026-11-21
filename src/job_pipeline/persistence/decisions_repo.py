@@ -1,26 +1,22 @@
 """Current and historical eligibility decisions.
 
-A one-shot decision stores the model's reason, supporting evidence (in the
-legacy-named ``evidence_json`` column), conflicting evidence, the contract
-version, and the prompt hash. Legacy rows keep a null prompt hash and null
-conflicting evidence; they are auditable but never compatible for reuse or
-extraction under the one-shot contract.
+A decision stores the model's reason, supporting and conflicting evidence, and
+the automatic fingerprint of the prompt that produced it. A stored decision is
+reused only for the same posting text and the same prompt fingerprint.
 """
 
 from __future__ import annotations
 
 import json
-from collections.abc import Collection
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import Select, func, or_, select, update
+from sqlalchemy import Select, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from job_discovery.persistence.timestamps import as_naive_utc
 from job_eligibility import (
     ELIGIBILITY_PROMPT_HASH,
-    ELIGIBILITY_VERSION,
     MAX_EVIDENCE_ITEMS,
     EligibilityVerdict,
 )
@@ -45,10 +41,9 @@ _TRANSITIONS = {
 class DecisionInput:
     decision: str
     reason: str
-    evidence_json: str
-    policy_version: str
-    conflicting_evidence_json: str | None = None
-    prompt_hash: str | None = None
+    supporting_evidence_json: str
+    conflicting_evidence_json: str
+    prompt_hash: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -59,20 +54,11 @@ class DecisionRecord:
     content_id: int
     decision: str
     reason: str
-    evidence_json: str
-    policy_version: str
+    supporting_evidence_json: str
+    conflicting_evidence_json: str
+    prompt_hash: str
     is_current: bool
     decided_at: datetime
-    conflicting_evidence_json: str | None = None
-    prompt_hash: str | None = None
-
-    @property
-    def is_current_contract(self) -> bool:
-        """Whether the row was decided under this binary's one-shot contract."""
-        return (
-            self.policy_version == ELIGIBILITY_VERSION
-            and self.prompt_hash == ELIGIBILITY_PROMPT_HASH
-        )
 
 
 def _evidence_json(values: tuple[str, ...]) -> str:
@@ -84,9 +70,8 @@ def from_verdict(verdict: EligibilityVerdict) -> DecisionInput:
     return DecisionInput(
         decision=verdict.decision,
         reason=verdict.reason,
-        evidence_json=_evidence_json(verdict.supporting_evidence),
+        supporting_evidence_json=_evidence_json(verdict.supporting_evidence),
         conflicting_evidence_json=_evidence_json(verdict.conflicting_evidence),
-        policy_version=verdict.eligibility_version,
         prompt_hash=verdict.prompt_hash,
     )
 
@@ -109,21 +94,11 @@ def _validate_input_shape(decision: DecisionInput) -> None:
         raise CheckpointError("decision must be eligible, ineligible, or unknown")
     if not decision.reason.strip():
         raise CheckpointError("decision reason must not be blank")
-    if (decision.prompt_hash is None) != (decision.conflicting_evidence_json is None):
-        raise CheckpointError(
-            "prompt hash and conflicting evidence must be supplied together"
-        )
-    supporting = evidence_list(decision.evidence_json, name="supporting evidence")
-    if decision.prompt_hash is None:
-        if decision.policy_version == ELIGIBILITY_VERSION:
-            raise CheckpointError("one-shot decisions require a prompt hash")
-        return
-    if (
-        decision.policy_version != ELIGIBILITY_VERSION
-        or decision.prompt_hash != ELIGIBILITY_PROMPT_HASH
-    ):
-        raise CheckpointError("decision uses an incompatible eligibility contract")
-    assert decision.conflicting_evidence_json is not None
+    if not decision.prompt_hash.strip():
+        raise CheckpointError("decision prompt hash must not be blank")
+    supporting = evidence_list(
+        decision.supporting_evidence_json, name="supporting evidence"
+    )
     conflicting = evidence_list(
         decision.conflicting_evidence_json, name="conflicting evidence"
     )
@@ -141,12 +116,11 @@ def _record(decision: JobDecision) -> DecisionRecord:
         content_id=decision.content_id,
         decision=decision.decision,
         reason=decision.reason,
-        evidence_json=decision.evidence_json,
-        policy_version=decision.policy_version,
-        is_current=decision.is_current,
-        decided_at=decision.decided_at,
+        supporting_evidence_json=decision.supporting_evidence_json,
         conflicting_evidence_json=decision.conflicting_evidence_json,
         prompt_hash=decision.prompt_hash,
+        is_current=decision.is_current,
+        decided_at=decision.decided_at,
     )
 
 
@@ -192,9 +166,8 @@ async def _insert_current(
         content_id=content_id,
         decision=decision.decision,
         reason=decision.reason,
-        evidence_json=decision.evidence_json,
+        supporting_evidence_json=decision.supporting_evidence_json,
         conflicting_evidence_json=decision.conflicting_evidence_json,
-        policy_version=decision.policy_version,
         prompt_hash=decision.prompt_hash,
         is_current=True,
         decided_at=as_naive_utc(decided_at),
@@ -209,7 +182,6 @@ def _compatible_current(job_id: int, content_id: int) -> Select[tuple[JobDecisio
     return select(JobDecision).where(
         JobDecision.job_id == job_id,
         JobDecision.content_id == content_id,
-        JobDecision.policy_version == ELIGIBILITY_VERSION,
         JobDecision.prompt_hash == ELIGIBILITY_PROMPT_HASH,
         JobDecision.is_current.is_(True),
     )
@@ -218,7 +190,7 @@ def _compatible_current(job_id: int, content_id: int) -> Select[tuple[JobDecisio
 async def current_compatible(
     session: AsyncSession, *, job_id: int, content_id: int
 ) -> DecisionRecord | None:
-    """The current decision on *content_id*, only if made under this contract."""
+    """The current decision on *content_id*, only if this prompt produced it."""
     result = await session.execute(_compatible_current(job_id, content_id))
     row = result.scalar_one_or_none()
     return _record(row) if row is not None else None
@@ -238,17 +210,13 @@ async def finalize_eligibility(
     """Persist or reuse one decision and end the attempt in one transaction.
 
     *decision* is a new grounded verdict, or ``None`` to reuse the current
-    decision already recorded for this content under the same contract version
-    and prompt hash. The job transition, lease release, decision row, and
+    decision already recorded for this content under the same prompt
+    fingerprint. The job transition, lease release, decision row, and
     attempt finish commit together. Returns ``(decision_id, decision)``, or
     ``None`` when the attempt no longer owns the job.
     """
     if decision is not None:
         _validate_input_shape(decision)
-        if decision.prompt_hash is None:
-            raise CheckpointError(
-                "eligibility finalization requires a one-shot verdict"
-            )
     moment = as_naive_utc(decided_at)
     async with session.begin():
         # A lease-guarded no-op write takes SQLite's write lock first, so no
@@ -272,14 +240,10 @@ async def finalize_eligibility(
                 JobAttempt.id == attempt_id,
                 JobAttempt.job_id == job_id,
                 JobAttempt.finished_at.is_(None),
-                JobAttempt.policy_version == ELIGIBILITY_VERSION,
-                JobAttempt.eligibility_prompt_hash == ELIGIBILITY_PROMPT_HASH,
             )
         )
         if identity.scalar_one_or_none() is None:
-            raise CheckpointError(
-                "eligibility attempt is finished or uses another contract identity"
-            )
+            raise CheckpointError("eligibility attempt is already finished")
         if decision is None:
             reused = await session.execute(_compatible_current(job_id, content_id))
             row = reused.scalar_one_or_none()
@@ -332,36 +296,6 @@ async def finalize_eligibility(
             finished_at=moment,
         )
     return decision_id, outcome
-
-
-async def count_stale_ready(
-    session: AsyncSession, company_slugs: Collection[str]
-) -> int:
-    """Ready jobs whose current decision was not made under this contract.
-
-    Extraction refuses these with ``missing_checkpoint``; an operator clears
-    them with ``reprocess --from-phase eligibility`` before activation.
-    """
-    if not company_slugs:
-        return 0
-    result = await session.execute(
-        select(func.count(Job.id))
-        .outerjoin(
-            JobDecision,
-            (JobDecision.job_id == Job.id) & JobDecision.is_current.is_(True),
-        )
-        .where(
-            Job.company_slug.in_(tuple(company_slugs)),
-            Job.status == "ready_for_extraction",
-            or_(
-                JobDecision.id.is_(None),
-                JobDecision.policy_version != ELIGIBILITY_VERSION,
-                JobDecision.prompt_hash.is_(None),
-                JobDecision.prompt_hash != ELIGIBILITY_PROMPT_HASH,
-            ),
-        )
-    )
-    return int(result.scalar_one())
 
 
 async def accept(

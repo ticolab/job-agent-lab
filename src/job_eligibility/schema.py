@@ -11,7 +11,7 @@ two accepted response shapes are enforced by ``validate.structural_errors``:
   conflicting excerpts.
 
 ``EligibilityVerdict`` is the frozen result after structural validation and
-normalized-exact grounding; only it crosses into persistence.
+word-level grounding; only it crosses into persistence.
 """
 
 from __future__ import annotations
@@ -102,6 +102,5 @@ class EligibilityVerdict(BaseModel):
     reason: str
     supporting_evidence: tuple[str, ...]
     conflicting_evidence: tuple[str, ...]
-    eligibility_version: str
     prompt_hash: str
     grounded: Literal[True]

@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from job_extractor.prompt import PROMPT_CLAUSES, SYSTEM_PROMPT, build_messages
-from job_extractor.version import EXTRACTOR_VERSION, PROMPT_HASH
+from job_extractor.version import PROMPT_HASH
 
 EXPECTED_PROMPT_HASH = (
     "773352b069022592587829b4d620c7130ad93b60e13648826ba40ff90100998e"
@@ -56,8 +56,7 @@ def test_build_messages_wraps_untrusted_posting_exactly() -> None:
     ]
 
 
-def test_prompt_hash_is_pinned_to_version() -> None:
-    assert EXTRACTOR_VERSION == "2026.10.1"
+def test_prompt_hash_is_pinned() -> None:
     assert PROMPT_HASH == EXPECTED_PROMPT_HASH, (
-        "prompt or schema changed: bump EXTRACTOR_VERSION and update the golden"
+        "prompt or schema changed: update the golden hash"
     )

@@ -32,7 +32,6 @@ async def save_accepted_results(
             "company_slug": job.company_slug,
             "url_key": job.url_key,
             "accepted_at": accepted.accepted_at.isoformat(),
-            "extractor_version": accepted.extractor_version,
             "schema_version": accepted.schema_version,
             "result": payload,
         }

@@ -1,8 +1,8 @@
 """Verify that persisted evidence excerpts occur in their stored posting text.
 
-Decision rows are checked bucket by bucket (supporting evidence in
-``evidence_json``, conflicting evidence in ``conflicting_evidence_json``) with
-the eligibility leaf's normalized-exact grounding. Extraction results are
+Decision rows are checked bucket by bucket (``supporting_evidence_json`` and
+``conflicting_evidence_json``) with the eligibility leaf's word-level
+grounding. Extraction results are
 checked with the extractor's whitespace and case normalization. A miss reports
 its location, a SHA-256 digest, and a character count, never the excerpt or
 posting text itself. The database is opened read-only.
@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from job_discovery.settings import DATABASE_PATH
-from job_eligibility import grounding_text
+from job_eligibility import occurs_in
 
 SourceKind = Literal["decision", "result"]
 
@@ -75,9 +75,7 @@ def _quote_lists(value: Any, path: str = "$") -> Iterator[tuple[str, str]]:
             yield from _quote_lists(child, f"{path}[{index}]")
 
 
-def _bucket(raw: str | None, name: str) -> Iterator[tuple[str, str]]:
-    if raw is None:
-        return
+def _bucket(raw: str, name: str) -> Iterator[tuple[str, str]]:
     values = json.loads(raw)
     if not isinstance(values, list):
         raise ValueError(f"{name} must be a JSON array")
@@ -88,15 +86,10 @@ def _bucket(raw: str | None, name: str) -> Iterator[tuple[str, str]]:
 
 
 def _decision_misses(connection: sqlite3.Connection) -> list[GroundingMiss]:
-    columns = {row[1] for row in connection.execute("PRAGMA table_info(job_decisions)")}
-    conflicting = (
-        "source.conflicting_evidence_json"
-        if "conflicting_evidence_json" in columns
-        else "NULL"
-    )
-    query = f"""
+    query = """
         SELECT source.id, source.job_id, source.content_id,
-               source.evidence_json, {conflicting}, content.text
+               source.supporting_evidence_json,
+               source.conflicting_evidence_json, content.text
         FROM job_decisions AS source
         JOIN job_contents AS content ON content.id = source.content_id
         ORDER BY source.id
@@ -106,7 +99,6 @@ def _decision_misses(connection: sqlite3.Connection) -> list[GroundingMiss]:
         query
     ):
         row = (row_id, job_id, content_id)
-        posting = grounding_text(text)
         for name, raw in (
             ("supporting_evidence", supporting),
             ("conflicting_evidence", opposing),
@@ -117,8 +109,7 @@ def _decision_misses(connection: sqlite3.Connection) -> list[GroundingMiss]:
                 misses.append(_miss("decision", row, "$", f"invalid payload: {exc}"))
                 continue
             for path, quote in quotes:
-                normalized = grounding_text(quote)
-                if not normalized or normalized not in posting:
+                if not occurs_in(quote, text):
                     misses.append(_miss("decision", row, path, _safe_detail(quote)))
     return misses
 

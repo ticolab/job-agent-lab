@@ -118,7 +118,6 @@ def response(overrides: dict[str, Any] | None = None) -> ExtractionResponse:
 
 def test_validate_returns_frozen_versioned_normalized_result() -> None:
     result = validate(response(), POSTING)
-    assert result.extractor_version == "2026.10.1"
     assert result.schema_version == 1
     assert [item.canonical for item in result.technologies_normalized] == [
         "Python",

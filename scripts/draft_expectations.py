@@ -25,7 +25,11 @@ from typing import Any, Literal
 
 from pydantic import ValidationError
 
-from job_eligibility import ELIGIBILITY_VERSION, MAX_EVIDENCE_CHARACTERS, occurs_in
+from job_eligibility import (
+    ELIGIBILITY_PROMPT_HASH,
+    MAX_EVIDENCE_CHARACTERS,
+    occurs_in,
+)
 from job_extractor import PROMPT_HASH as EXTRACTOR_PROMPT_HASH
 from job_extractor import ExtractionResponse, JobResult
 from job_extractor import build_messages as extractor_messages
@@ -58,7 +62,6 @@ _EVIDENCE_KEYS = {
     "partition",
     "source_content_sha256",
     "decision",
-    "eligibility_version",
     "prompt_example",
     "missing_information",
     "obligations",
@@ -451,7 +454,6 @@ def _obligation_draft(directory: Path, content: bytes) -> dict[str, Any]:
         "partition": expected["partition"],
         "source_content_sha256": _sha256(content),
         "decision": decision,
-        "eligibility_version": ELIGIBILITY_VERSION,
         "prompt_example": None,
         "missing_information": False,
         "obligations": obligations,
@@ -500,7 +502,6 @@ def _validate_reviewed_obligations(
         or payload.get("partition") != expected["partition"]
         or payload.get("source_content_sha256") != _sha256(content)
         or payload.get("decision") != expected["decision"]
-        or payload.get("eligibility_version") != ELIGIBILITY_VERSION
         or not isinstance(payload.get("missing_information"), bool)
         or not (
             payload.get("prompt_example") is None
@@ -617,7 +618,9 @@ async def _draft(args: argparse.Namespace) -> int:
         for directory in directories:
             relative = _relative_case(directory, corpus).as_posix()
             statuses[relative] = _draft_eligibility(directory, output_root, corpus)
-        contract: dict[str, object] = {"eligibility_version": ELIGIBILITY_VERSION}
+        contract: dict[str, object] = {
+            "eligibility_prompt_hash": ELIGIBILITY_PROMPT_HASH
+        }
         model: str | None = None
     else:
         recordings_root = _require_output_path(args.recordings_dir, "recording output")

@@ -7,13 +7,13 @@ import json
 from pathlib import Path
 from typing import Any
 
-from job_eligibility import ELIGIBILITY_VERSION, PROMPT_EXAMPLES, occurs_in
+from job_eligibility import PROMPT_EXAMPLES, occurs_in
 
 ROOT = Path(__file__).resolve().parents[2]
 BLIND = ROOT / "tests/fixtures/postings/opportunity-screening-blind-v1"
 DEVELOPMENT = ROOT / "tests/fixtures/postings/opportunity-screening-v2"
 EXPECTED_CORPUS_HASH = (
-    "75409e0b587a71f54b0405d106085ec402d661a3566161f5e2e6b241ed48bd3a"
+    "1ef10ae5ede8a8359ef265278e981b6e250d9db8d919f1e3c8a3dd5b1b2ec148"
 )
 
 
@@ -67,7 +67,6 @@ def test_every_case_is_reviewed_grounded_and_consistent() -> None:
             == digest
         )
         assert label["decision"] == evidence["decision"]
-        assert evidence["eligibility_version"] == ELIGIBILITY_VERSION
         assert evidence["prompt_example"] is None
         assert evidence["missing_information"] == (not evidence["obligations"])
         for obligation in evidence["obligations"]:

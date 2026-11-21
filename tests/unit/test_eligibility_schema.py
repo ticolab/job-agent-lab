@@ -9,7 +9,6 @@ import pytest
 from litellm.utils import type_to_response_format_param
 from pydantic import ValidationError
 
-import job_eligibility
 from job_eligibility import (
     MAX_EVIDENCE_CHARACTERS,
     MAX_EVIDENCE_ITEMS,
@@ -156,30 +155,14 @@ def test_reason_is_one_bounded_terminated_line(reason: str) -> None:
         EligibilityResponse.model_validate(_payload(reason=reason))
 
 
-def test_verdict_is_frozen_and_not_exported_as_model_contract() -> None:
+def test_verdict_is_frozen() -> None:
     verdict = EligibilityVerdict(
         decision="eligible",
         reason="Remote.",
         supporting_evidence=("Remote",),
         conflicting_evidence=(),
-        eligibility_version="v",
         prompt_hash="h",
         grounded=True,
     )
     with pytest.raises(ValidationError):
         verdict.decision = "unknown"  # type: ignore[misc]
-    obsolete = {
-        "EligibilityFactsResponse",
-        "FACTS_VERSION",
-        "FACTS_PROMPT_HASH",
-        "SCREENING_POLICY_VERSION",
-        "SCREENING_RULE_IDS",
-        "screen",
-        "validate_facts",
-        "build_facts_messages",
-        "COSTA_RICA_NAMES",
-        "LocationSignals",
-        "POLICY_VERSION",
-    }
-    assert obsolete.isdisjoint(job_eligibility.__all__)
-    assert all(not hasattr(job_eligibility, name) for name in obsolete)

@@ -16,13 +16,17 @@ regression-tested offline across the whole corpus in seconds.
 Only one of the seven discovery strategies drives an agent. The other six talk
 plain HTTP to the ATS or search platform backing the board.
 
-Three sibling packages process discovered postings. `job_eligibility` exposes a
-one-shot eligibility contract: one prompt, a strict four-field response
-(`decision`, `reason`, `supporting_evidence`, `conflicting_evidence`), structural
-validation, and normalized-exact evidence grounding. `job_extractor` validates
-structured job facts, while `job_pipeline` owns content acquisition, model calls,
-durable decisions, history, and orchestration. Extraction runs only for jobs
-whose current decision is eligible under the current eligibility contract.
+Three sibling packages process discovered postings. `job_eligibility` exposes the
+one-shot eligibility prompt, a strict four-field response (`decision`, `reason`,
+`supporting_evidence`, `conflicting_evidence`), structural validation, and
+word-level evidence grounding. `job_extractor` validates structured job facts,
+while `job_pipeline` owns content acquisition, model calls, durable decisions,
+history, and orchestration. Extraction runs only for jobs whose current decision
+is eligible.
+
+The project is pre-production and runs on one machine. Its data is disposable, so
+a design is replaced outright instead of kept compatible: there are no version
+tags, legacy columns, or upgrade paths.
 
 > Origin: extracted from the `tw-data` pipeline's `tools/agent_poc/` PoC (HNT-5).
 
@@ -152,23 +156,23 @@ uv run python scripts/verify_grounding.py
 uv run python scripts/replay_eligibility.py run --run RUN_ID --label BASELINE
 ```
 
-`job-pipeline run` is retired: any arguments exit 2 with a message naming
-`eligibility` and `extraction`, without opening a database.
-
 `eligibility` observes selected discovery URLs, acquires content, and makes one
-`gpt-4.1-mini` call that reads the complete posting and returns the decision, a
-one-line reason, supporting evidence, and conflicting evidence. Only the
-canonical missing-information `unknown` may cite no evidence; every other
-response needs at least one supporting excerpt. Every excerpt must occur in the
-posting under normalized-exact matching (Unicode, whitespace, case, dash, and
-approved layout separators normalize; paraphrases and reordered or combined text
-do not), and duplicates or excerpts placed in both buckets are rejected. The
-decision, reason, both evidence buckets, contract version, and prompt hash
-persist atomically with the attempt finish and job transition; an eligible
-decision finishes as `ready_for_extraction`, releases the lease, and gives
-extraction a fresh attempt budget. A decision is reused instead of calling the
-model only when it is current for the same content, contract version, and prompt
-hash.
+model call (`gpt-5.4-mini-2026-03-17` at medium reasoning effort by default) that
+reads the complete posting and returns the decision, a one-line reason,
+supporting evidence, and conflicting evidence. Only the canonical
+missing-information `unknown` may cite no evidence; every other response needs at
+least one supporting excerpt. An excerpt is accepted when its words occur in the
+posting as one unbroken run of whole words in the same order. Case, punctuation,
+symbols, and whitespace are ignored, so an added period or a dropped list dash
+does not reject a correct quote; paraphrases, reordered text, partial words, and
+text stitched from separate passages are rejected. An excerpt cited in both
+buckets is rejected, and repeats inside one bucket are merged. The stored evidence
+is the posting's own text for the matched span. The decision, reason, both
+evidence buckets, and the automatic prompt hash persist atomically with the
+attempt finish and job transition; an eligible decision finishes as
+`ready_for_extraction`, releases the lease, and gives extraction a fresh attempt
+budget. A decision is reused instead of calling the model only when it is current
+for the same content and prompt hash.
 
 Grounding proves that each quote exists, not that the model read it correctly.
 The model authors the semantic judgment; semantic quality is established by
@@ -184,15 +188,11 @@ available on `extraction` and `reprocess`, not `eligibility`.
 
 A ready job outside the snapshot stays ready until it reappears. Unobserved URLs
 are omitted by extraction. Missing current content, a missing or non-eligible
-current decision, a decision on different content, or an eligible decision made
-under an earlier eligibility contract fails immediately with `missing_checkpoint`,
-without a model call or retry. Clear stale-contract ready jobs with
-`reprocess --from-phase eligibility` before running extraction.
+current decision, or a decision on different content fails immediately with
+`missing_checkpoint`, without a model call or retry.
 
-`preview` reports eligibility work, extraction backlog, in-progress jobs, terminal
-dispositions, the current eligibility contract, and the number of ready jobs whose
-current decision predates it, with separate would-process counts capped by
-`--limit`. `--no-observe` reads a transactionally consistent SQLite online-backup
+`preview` reports eligibility work, extraction backlog, in-progress jobs, and
+terminal dispositions, with separate would-process counts capped by `--limit`. `--no-observe` reads a transactionally consistent SQLite online-backup
 snapshot without copying database or WAL files separately.
 
 ```bash
@@ -233,117 +233,27 @@ jobs outside the snapshot, but a subsequent ordinary extraction cannot; use
 `reprocess --from-phase extraction` for that case. `show` prints audit metadata
 and accepted results, including attempts in the current stage and each attempt's
 `run_stage`/`run_trigger`, never stored posting bodies. Decision reasons and every
-supporting and conflicting excerpt are redacted and truncated for display, and
-each decision is labeled `current`, `stale`, or `legacy` by contract. Extraction
-attempts record the contract version and prompt hash of the decision they
-consume, including legacy versions.
+supporting and conflicting excerpt are redacted and truncated for display.
 
 Live stage commands and `reprocess` load `.env` and preflight recognized provider
 credentials before observing, preparing, or claiming work. Missing credentials
-exit 2 without consuming work. Every new run records `stage=eligibility|extraction`
-and `trigger=scheduled|reprocess`. Migrated legacy runs
-retain `stage=combined`, with their trigger backfilled from attempt history. Audit
-and per-stage usage queries live in
+exit 2 without consuming work. Every run records `stage=eligibility|extraction`
+and `trigger=scheduled|reprocess`. Audit and per-stage usage queries live in
 `scripts/pipeline_queries.sql`.
 
-The eligibility contract is `opportunity-oneshot-v2`, embedding the
-operator-approved opportunity-screening-v2 policy and six synthetic examples
-written from the policy, whose text occurs in no corpus posting; extraction keeps
-its independent extractor version. Any semantic change
-to the policy, examples, response shape, structural rules, or grounding
-normalization bumps the contract version; the prompt hash changes with the
-prompt, input-wrapper, or schema bytes. Reuse, recordings, and evaluator replay
-require both. Because no durable facts exist, a policy change has no free
-re-screen: it requires model-backed eligibility reprocessing of every affected
-job. Decisions made under the retired verdict contract (`cr-2026.10.1`) keep a
-null prompt hash and are auditable but never reused or extracted.
+There are no version tags. The eligibility prompt hash is an automatic
+fingerprint of the prompt, input wrapper, and response schema: each decision
+stores it, a decision is reused only under the same hash, and evaluation
+recordings are tied to it. Changing the prompt, the grounding rules, or the model
+never blocks the pipeline or re-decides jobs on its own; use
+`reprocess --from-phase eligibility` for that. The prompt carries six synthetic
+examples whose text occurs in no evaluation posting, which
+`tests/unit/test_eligibility_prompt.py` enforces.
 
-The development evidence obligations were operator-reviewed on 2026-11-15, and the
-`opportunity-oneshot-v1` contract then failed the development gates in three
-five-replay `gpt-4.1-mini` evaluations (the original prompt and the two allowed
-revisions; see the SYS-2028 negative result below). `opportunity-oneshot-v2` fixes
-the measurement problem that result exposed, and every candidate model tried on it
-has also failed the development gates (see the v2 comparison below). No
-candidate is frozen, and no exposed-regression result, blind-corpus result, shadow
-review, or rollout exists.
-
-SYS-2028 negative result (development partition, final prompt hash
-`a0ab9788…eeb2`): schema validity, structural consistency, and primary grounding
-were 100%, primary false eligibles were 0, and all 18 primary cases were
-unanimous across replays. The gates still failed: wrongful ineligible calls
-(BAJ03 reads `Latin America (Mexico and Colombia preferred)` as a restriction),
-KAK02 called unknown, critical evidence recall 0.92, role agreement 0.83, and
-unmet manual reason review. Among the six prompt-example cases, GOL03 is
-ungrounded 5 of 5 because the model emits NUL characters for the `·` separator,
-OCE04 is called eligible 5 of 5, and NBS03 once. All three development unknown
-cases are prompt examples, so the primary score has no unknown ground truth and
-unknown behavior is measured only by the contaminated secondary score. Each
-five-replay run cost about $0.15. The first revision also quoted wording from two
-scored cases (BAJ03 and KAK02), contaminating them for the later runs.
-
-`opportunity-oneshot-v2` replaces the corpus-derived examples with six synthetic
-examples of the same patterns and rewrites every policy phrase that quoted a
-posting, so no development case is contaminated: all 24, including the three
-unknown cases, now count in the primary score, and the secondary score is empty.
-`tests/unit/test_eligibility_prompt.py` fails if any multi-word example line,
-excerpt, or quoted policy phrase occurs in a corpus posting. The development cases
-have still been read across three evaluation rounds, so development results are
-optimistic; the fresh blind corpus remains the release evidence.
-
-SYS-2028 v2 comparison (development partition, prompt hash `3c1afd4e…`, five
-replays each, scored after the KAK01 and OCE04 obligation fixes recorded in the
-manifest history): no candidate passed. `gpt-4.1-mini` (about $0.15 per run)
-reached macro F1 0.744 with 10 false eligibles (NBS03 and OCE04), GOL03
-ungrounded 4 of 5, and KAK02 unknown. `gpt-4.1` (about $0.76) had perfect schema,
-consistency, and grounding and all 24 cases unanimous, but called NBS03 eligible
-and KAK02 unknown 5 of 5 (macro F1 0.867). `gpt-5.4-mini-2026-03-17` without
-reasoning (about $0.30) reached macro F1 0.873 but called NBS03 eligible 5 of 5
-and was unstable on BAJ02. The same model with `--reasoning-effort low` (about
-$0.32) reached macro F1 0.946 with one false eligible (NBS03, 1 of 5) and decided
-BAJ02 and OCE04 correctly in every replay, but its evidence broke the structural
-rules: it cited one excerpt in both buckets (BAJ02 4 of 5, OCE04 1 of 5) and joined
-non-contiguous lines into one excerpt (KAK01 2 of 5), giving structural
-consistency 0.958 and grounding 0.942. With `--reasoning-effort medium` (about
-$0.36) it decided all 120 calls correctly (macro F1 0.998, no false eligibles, no
-wrongful ineligibles, every structural check passed), and failed only because one
-RAI02 replay misquoted `We don't expect you` as `You don't expect you`, which
-grounding rejected (grounding 0.992, critical evidence recall 0.993), and because
-the five RAI02 reasons still awaited operator disposition.
-
-Gate policy 2 (operator amendment, 2026-11-21, recorded in
-`docs/ELIGIBILITY_FLOW.md` before any freeze): grounding must reach at least 99% of
-calls rather than 100%, and critical evidence recall counts only grounded calls. A
-misquote is rejected and retried in production, never stored. The amendment came
-after seeing the near-miss above, so exposed-regression and blind results, not the
-development cases, decide release. Under gate policy 2 the medium-effort candidate
-passed the development gates once the operator accepted the five RAI02 reasons,
-and it was frozen (`output/sys2028/v2/freeze-g54mini-medium.json`).
-
-Exposed-regression report for that frozen candidate (8 held-out cases, five
-replays, about $0.13, report only, no tuning): schema, structure, and grounding
-100%, no false eligibles and no wrongful ineligibles, 38 of 40 decisions correct
-(macro F1 0.921). GOL04, labeled unknown because `Remote in Latin America`
-conflicts with `Work from anywhere in South America`, was called ineligible in 2
-of 5 replays, so that safety case was not unanimous. Evidence agreement was 0.625
-because these eight cases have no reviewed obligations and are scored against
-their full `must_cite` quotes: JOB04 correctly used the missing-information form,
-KAK04 cited a shorter exact prefix of the Austin sentence, and OCE03 cited the
-header lines separately. The operator accepted 16 of the 18 divergent reasons and
-rejected GOL04 replays 3 and 5, which let a perks line override the role header.
-
-Blind result for the frozen candidate (`opportunity-screening-blind-v1`: 51 fresh
-postings from 30 companies, 23 eligible, 11 ineligible, 17 unknown, labelled and
-approved before any model call; five replays, about $1.00): **the gates failed.**
-Schema validity 100%, no false eligibles, decision macro F1 0.951, critical
-evidence recall 0.996, and decision-plus-evidence agreement 0.929 passed; grounding
-0.965 (below 0.99), two wrongful ineligibles (BL04, a role listing several
-foreign remote countries plus Latin America), and four unstable safety cases
-(BL08, BL11, BL13, BL40) failed. Two labelling errors of mine (BL11, BL38 used the
-missing-information form although each posting has one geographic line) were
-corrected after the run with decisions unchanged, as the manifest history records.
-The operator released the candidate anyway on 2026-11-21 as the eligibility
-default and a starting point. `docs/ELIGIBILITY_FLOW.md` describes the current flow,
-its known weaknesses, and the next steps; shadow review has not run.
+The eligibility model was chosen by evaluation on 24 development postings, 8
+held-out postings, and a 51-posting blind set, five replays each.
+`docs/ELIGIBILITY_FLOW.md` has the results, the gates, the known weaknesses, and
+the next steps. It did not pass every blind gate and is used as a starting point.
 
 ### Operating discovery
 

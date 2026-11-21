@@ -28,7 +28,6 @@ from job_discovery.persistence import models as discovery_models
 from job_discovery.persistence.engine import create_engine, create_session_factory
 from job_eligibility import (
     ELIGIBILITY_PROMPT_HASH,
-    ELIGIBILITY_VERSION,
     EligibilityResponse,
 )
 from job_extractor import ExtractionResponse
@@ -671,7 +670,7 @@ async def _due_for_eligibility_again(
         )
 
 
-def test_eligibility_decision_persists_contract_identity_evidence_and_tokens(
+def test_eligibility_decision_persists_prompt_hash_evidence_and_tokens(
     tmp_path: Path,
 ) -> None:
     class ConflictCaller(EligibleCaller):
@@ -714,16 +713,13 @@ def test_eligibility_decision_persists_contract_identity_evidence_and_tokens(
             decision = await decisions_repo.current(session, 1)
             attempt = (await attempts_repo.history(session, 1))[-1]
         assert decision is not None
-        assert decision.is_current_contract
-        assert decision.policy_version == attempt.policy_version == ELIGIBILITY_VERSION
-        assert (
-            decision.prompt_hash
-            == attempt.eligibility_prompt_hash
-            == ELIGIBILITY_PROMPT_HASH
-        )
+        assert decision.prompt_hash == ELIGIBILITY_PROMPT_HASH
+        assert attempt.model == "configured-model"
         assert decision.reason == "The role is located in Costa Rica."
-        assert decision.evidence_json == '["Software Engineer in Costa Rica."]'
-        assert decision.conflicting_evidence_json == '["Python is required."]'
+        supporting = json.loads(decision.supporting_evidence_json)
+        assert supporting == ["Software Engineer in Costa Rica"]
+        # Stored evidence is the posting's own words, without the model's period.
+        assert decision.conflicting_evidence_json == '["Python is required"]'
         assert decision.attempt_id == attempt.id
         assert attempt.model == "configured-model"
         assert attempt.outcome == "ready_for_extraction"
@@ -774,17 +770,7 @@ def test_compatible_decision_reuse_skips_model_and_semaphore(tmp_path: Path) -> 
     run_async(scenario())
 
 
-@pytest.mark.parametrize(
-    "stale",
-    [
-        {"prompt_hash": "old-hash"},
-        {"policy_version": "opportunity-oneshot-v0"},
-        {"policy_version": "cr-2026.10.1", "prompt_hash": None},
-    ],
-)
-def test_incompatible_decision_contract_forces_model_call(
-    tmp_path: Path, stale: dict[str, object]
-) -> None:
+def test_decision_from_another_prompt_forces_a_model_call(tmp_path: Path) -> None:
     async def scenario() -> None:
         factory = await _database(tmp_path / "decision-incompatible.db")
         caller = EligibleCaller()
@@ -797,14 +783,11 @@ def test_incompatible_decision_contract_forces_model_call(
                 assert (
                     await process_job(1, deps=deps)
                 ).status == "ready_for_extraction"
-                values = dict(stale)
-                if values.get("prompt_hash", "") is None:
-                    values["conflicting_evidence_json"] = None
                 async with factory() as session, session.begin():
                     await session.execute(
                         update(models.JobDecision)
                         .where(models.JobDecision.job_id == 1)
-                        .values(**values)
+                        .values(prompt_hash="old-hash")
                     )
                 await _due_for_eligibility_again(factory, "run-2")
                 second = await process_job(1, deps=replace(deps, run_id="run-2"))
@@ -813,8 +796,9 @@ def test_incompatible_decision_contract_forces_model_call(
         async with factory() as session:
             history = await decisions_repo.history(session, 1)
         assert len(history) == 2
-        assert not history[0].is_current and not history[0].is_current_contract
-        assert history[-1].is_current and history[-1].is_current_contract
+        assert not history[0].is_current and history[0].prompt_hash == "old-hash"
+        assert history[-1].is_current
+        assert history[-1].prompt_hash == ELIGIBILITY_PROMPT_HASH
 
     run_async(scenario())
 
@@ -931,7 +915,7 @@ def test_missing_information_unknown_persists_empty_evidence(tmp_path: Path) -> 
             job = await jobs_repo.get(session, 1)
         assert decision is not None and decision.decision == "unknown"
         assert decision.reason == MISSING_INFORMATION_REASON
-        assert decision.evidence_json == "[]"
+        assert decision.supporting_evidence_json == "[]"
         assert decision.conflicting_evidence_json == "[]"
         assert job is not None and job.status == "unknown"
         assert job.next_phase == "eligibility"
@@ -1292,8 +1276,6 @@ def test_queue_wait_is_not_charged_against_the_job_timeout(
         "decision",
         "ineligible",
         "old_content",
-        "legacy_contract",
-        "stale_hash",
     ],
 )
 def test_missing_extraction_checkpoint_is_terminal_without_model_calls(
@@ -1314,19 +1296,6 @@ def test_missing_extraction_checkpoint_is_terminal_without_model_calls(
                     update(models.JobDecision).values(
                         is_current=missing != "decision", decision="ineligible"
                     )
-                )
-            if missing == "legacy_contract":
-                # A ready job admitted by the pre-one-shot verdict contract.
-                await session.execute(
-                    update(models.JobDecision).values(
-                        policy_version="cr-2026.10.1",
-                        prompt_hash=None,
-                        conflicting_evidence_json=None,
-                    )
-                )
-            if missing == "stale_hash":
-                await session.execute(
-                    update(models.JobDecision).values(prompt_hash="old-hash")
                 )
             if missing == "old_content":
                 old = await session.get(models.JobContent, job.current_content_id)
@@ -1373,14 +1342,6 @@ def test_missing_extraction_checkpoint_is_terminal_without_model_calls(
         assert current_job is not None and current_job.attempt_count == 1
         assert attempts[-1].error_category == "missing_checkpoint"
         assert attempts[-1].finished_at is not None
-        if missing in {"legacy_contract", "stale_hash"}:
-            assert outcome.error.message.startswith(
-                "eligible decision predates the current eligibility contract"
-            )
-            # The extraction attempt audits the contract that admitted the job.
-            assert attempts[-1].eligibility_prompt_hash == (
-                None if missing == "legacy_contract" else "old-hash"
-            )
 
     run_async(scenario())
 

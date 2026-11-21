@@ -20,7 +20,6 @@ from job_discovery.catalog import COMPANIES, find_company
 from job_discovery.domain.company import Company
 from job_discovery.persistence.engine import (
     database,
-    missing_columns,
     missing_tables,
     read_only_database,
 )
@@ -281,16 +280,6 @@ def _migrate_hint(path: Path | None) -> str:
     return f"{settings.DATABASE_ENV_VAR}={path} uv run alembic upgrade head"
 
 
-# Present tables are not enough: a database migrated only to an earlier
-# revision has every table but lacks the one-shot contract or reasoning-effort
-# columns.
-_REQUIRED_COLUMNS = {
-    "pipeline_runs": ("reasoning_effort",),
-    "job_attempts": ("eligibility_prompt_hash", "reasoning_effort"),
-    "job_decisions": ("prompt_hash", "conflicting_evidence_json"),
-}
-
-
 @asynccontextmanager
 async def open_database(
     args: argparse.Namespace,
@@ -304,13 +293,6 @@ async def open_database(
             fail(
                 f"Database schema is missing table(s): {', '.join(absent)}. "
                 f"Run '{_migrate_hint(path)}' first."
-            )
-        async with session_factory() as session:
-            absent_columns = await missing_columns(session, _REQUIRED_COLUMNS)
-        if absent_columns:
-            fail(
-                "Database schema is missing pipeline column(s): "
-                f"{', '.join(absent_columns)}. Run '{_migrate_hint(path)}' first."
             )
         yield session_factory
 
@@ -330,13 +312,6 @@ async def open_read_only_database(
             fail(
                 f"Database schema is missing table(s): {', '.join(absent)}. "
                 f"Run '{_migrate_hint(path)}' first."
-            )
-        async with session_factory() as session:
-            absent_columns = await missing_columns(session, _REQUIRED_COLUMNS)
-        if absent_columns:
-            fail(
-                "Database schema is missing pipeline column(s): "
-                f"{', '.join(absent_columns)}. Run '{_migrate_hint(path)}' first."
             )
         yield session_factory
 

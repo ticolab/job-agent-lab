@@ -16,7 +16,6 @@ import pytest
 
 from job_eligibility import (
     ELIGIBILITY_PROMPT_HASH,
-    ELIGIBILITY_VERSION,
     MISSING_INFORMATION_REASON,
     PROMPT_EXAMPLES,
     EligibilityResponse,
@@ -95,7 +94,6 @@ def _case(
                     "partition": partition,
                     "source_content_sha256": source_hash,
                     "decision": decision,
-                    "eligibility_version": ELIGIBILITY_VERSION,
                     "prompt_example": prompt_example,
                     "missing_information": False,
                     "obligations": (
@@ -237,7 +235,6 @@ def test_prompt_example_cases_follow_the_manifest_source(tmp_path: Path) -> None
 
     def manifest(source: str | None, mapping: dict[str, str]) -> None:
         section: dict[str, object] = {
-            "eligibility_version": ELIGIBILITY_VERSION,
             "patterns": mapping,
         }
         if source is not None:
@@ -456,11 +453,10 @@ def test_development_gates_fail_closed(
     assert divergent
 
 
-def test_gate_policy_two_tolerates_one_percent_ungrounded_calls(
+def test_grounding_gate_tolerates_one_percent_ungrounded_calls(
     tmp_path: Path,
 ) -> None:
     module = _load("evaluate_leaf_gate_policy_test", "evaluate_leaf.py")
-    assert module.GATE_POLICY_VERSION == 2
     assert module.MIN_GROUNDING_RATE == 0.99
     eligible, _, _ = _scored_cases(module, tmp_path)
     results = _evaluate(
@@ -553,7 +549,6 @@ def test_dispositions_must_match_contract_and_values(tmp_path: Path) -> None:
     payload = {
         "schema_version": 1,
         "model": "fake",
-        "eligibility_version": ELIGIBILITY_VERSION,
         "eligibility_prompt_hash": ELIGIBILITY_PROMPT_HASH,
         "dispositions": {"CASE01#1": {"disposition": "accepted", "note": "ok"}},
     }
@@ -581,10 +576,9 @@ def test_recording_key_covers_model_contract_case_source_and_replay(
     assert module._recording_key("model-b", case, 1) != first
     changed = type(case)(**{**case.__dict__, "source_hash": "0" * 64})
     assert module._recording_key("model-a", changed, 1) != first
-    for name in ("ELIGIBILITY_VERSION", "ELIGIBILITY_PROMPT_HASH"):
-        with monkeypatch.context() as patch:
-            patch.setattr(module, name, "changed")
-            assert module._recording_key("model-a", case, 1) != first
+    with monkeypatch.context() as patch:
+        patch.setattr(module, "ELIGIBILITY_PROMPT_HASH", "changed")
+        assert module._recording_key("model-a", case, 1) != first
 
 
 def test_recordings_include_schema_invalid_calls_and_never_overwrite(
@@ -652,7 +646,6 @@ def test_reasoning_effort_is_a_separate_recorded_candidate(
         json.dumps(
             {
                 "model": "model-a",
-                "eligibility_version": ELIGIBILITY_VERSION,
                 "eligibility_prompt_hash": ELIGIBILITY_PROMPT_HASH,
                 "case_id": "CASE01",
                 "source_hash": case.source_hash,
@@ -769,14 +762,6 @@ def test_freeze_record_guards_exposed_and_blind_runs(tmp_path: Path) -> None:
     path.write_text(
         json.dumps(
             {**module._freeze_payload("fake", 5, "0"), "eligibility_prompt_hash": "x"}
-        )
-    )
-    with pytest.raises(RuntimeError, match="does not match"):
-        module._require_freeze(path, "fake")
-    # A freeze written under an earlier gate policy does not unlock later runs.
-    path.write_text(
-        json.dumps(
-            {**module._freeze_payload("fake", 5, "0" * 64), "gate_policy_version": 1}
         )
     )
     with pytest.raises(RuntimeError, match="does not match"):
@@ -945,7 +930,6 @@ def test_eligibility_drafts_are_credential_free_external_and_no_overwrite(
     conflict = json.loads((output / "CONF01" / "expected_evidence.json").read_text())
     assert eligible["reviewed"] is False
     assert eligible["review_status"] == "pending_operator_review"
-    assert eligible["eligibility_version"] == ELIGIBILITY_VERSION
     assert [o["role"] for o in eligible["obligations"]] == ["supporting"]
     assert [o["role"] for o in conflict["obligations"]] == ["either", "either"]
     assert conflict["conflict_pairs"] == [["CONF01-E01", "CONF01-E02"]]

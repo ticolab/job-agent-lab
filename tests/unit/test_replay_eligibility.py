@@ -19,7 +19,6 @@ from sqlalchemy.orm import Session
 from job_discovery.persistence.models import Company
 from job_eligibility import (
     ELIGIBILITY_PROMPT_HASH,
-    ELIGIBILITY_VERSION,
     MISSING_INFORMATION_REASON,
     EligibilityResponse,
     build_messages,
@@ -135,9 +134,6 @@ def database(tmp_path: Path) -> Path:
                         run_id="selected",
                         trigger="scheduled",
                         model="fake",
-                        policy_version=ELIGIBILITY_VERSION,
-                        eligibility_prompt_hash=ELIGIBILITY_PROMPT_HASH,
-                        extractor_version="extractor",
                         started_at=now,
                     )
                 )
@@ -149,9 +145,8 @@ def database(tmp_path: Path) -> Path:
                     content_id=1,
                     decision="eligible",
                     reason="Accepted.",
-                    evidence_json='["Remote"]',
+                    supporting_evidence_json='["Remote"]',
                     conflicting_evidence_json="[]",
-                    policy_version=ELIGIBILITY_VERSION,
                     prompt_hash=ELIGIBILITY_PROMPT_HASH,
                     is_current=True,
                     decided_at=now,
@@ -202,9 +197,9 @@ def test_selection_and_one_shot_replay_is_safe(
     before = database.read_bytes()
     postings = tool.load_postings(database, "selected")
     assert [
-        (posting.job_id, posting.accepted_decision, posting.accepted_contract)
+        (posting.job_id, posting.accepted_decision, posting.accepted_prompt_hash)
         for posting in postings
-    ] == [(1, "eligible", ELIGIBILITY_VERSION), (2, None, None)]
+    ] == [(1, "eligible", ELIGIBILITY_PROMPT_HASH), (2, None, None)]
     raw = tmp_path / "baseline.raw"
     recording = run_async(
         tool.replay(
@@ -223,7 +218,6 @@ def test_selection_and_one_shot_replay_is_safe(
     )
     assert database.read_bytes() == before
     assert recording.recording_version == 3
-    assert recording.eligibility_version == ELIGIBILITY_VERSION
     assert recording.eligibility_prompt_hash == ELIGIBILITY_PROMPT_HASH
     grounded = recording.records[0]
     inconsistent = recording.records[3]
@@ -271,17 +265,15 @@ def test_uses_one_shot_prompt_and_schema(tool: ModuleType, database: Path) -> No
     assert caller.calls[0] == (build_messages(TEXT), EligibilityResponse)
 
 
-@pytest.mark.parametrize("name", ["ELIGIBILITY_VERSION", "ELIGIBILITY_PROMPT_HASH"])
-def test_call_artifact_identity_includes_contract_version_and_hash(
-    tool: ModuleType, database: Path, monkeypatch: pytest.MonkeyPatch, name: str
+def test_call_artifact_identity_includes_the_prompt_hash(
+    tool: ModuleType, database: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     posting = tool.load_postings(database, "selected")[0]
     current = tool._recording_key("fake", "selected", posting, 1)
     contract = tool._sidecar_contract(current, "fake", "selected", posting, 1)
-    assert contract["eligibility_version"] == ELIGIBILITY_VERSION
     assert contract["eligibility_prompt_hash"] == ELIGIBILITY_PROMPT_HASH
     assert contract["content_hash"] == posting.content_hash
-    monkeypatch.setattr(tool, name, "changed")
+    monkeypatch.setattr(tool, "ELIGIBILITY_PROMPT_HASH", "changed")
     assert tool._recording_key("fake", "selected", posting, 1) != current
 
 
@@ -341,11 +333,8 @@ def test_load_postings_is_bound_to_requested_run_history(
         )
         connection.execute(
             "INSERT INTO job_attempts "
-            "(id, job_id, run_id, trigger, model, policy_version, "
-            "eligibility_prompt_hash, extractor_version, started_at) "
-            "VALUES (10, 1, 'later', 'scheduled', 'fake', ?, ?, 'extractor', "
-            "'2026-01-02')",
-            (ELIGIBILITY_VERSION, ELIGIBILITY_PROMPT_HASH),
+            "(id, job_id, run_id, trigger, model, started_at) "
+            "VALUES (10, 1, 'later', 'scheduled', 'fake', '2026-01-02')"
         )
         connection.execute(
             "INSERT INTO job_contents "
@@ -359,16 +348,17 @@ def test_load_postings_is_bound_to_requested_run_history(
         connection.execute("UPDATE job_decisions SET is_current = 0 WHERE id = 1")
         connection.execute(
             "INSERT INTO job_decisions "
-            "(id, job_id, attempt_id, content_id, decision, reason, evidence_json, "
-            "policy_version, is_current, decided_at) VALUES "
-            "(10, 1, 10, 10, 'unknown', 'later', '[]', 'cr-2026.10.1', 1, "
+            "(id, job_id, attempt_id, content_id, decision, reason, "
+            "supporting_evidence_json, conflicting_evidence_json, prompt_hash, "
+            "is_current, decided_at) VALUES "
+            "(10, 1, 10, 10, 'unknown', 'later', '[]', '[]', 'later-hash', 1, "
             "'2026-01-02')",
         )
     postings = tool.load_postings(database, "selected")
     assert postings[0].content_id == 1
     assert postings[0].content_hash == "hash-1"
     assert postings[0].accepted_decision == "eligible"
-    assert postings[0].accepted_contract == ELIGIBILITY_VERSION
+    assert postings[0].accepted_prompt_hash == ELIGIBILITY_PROMPT_HASH
 
 
 @pytest.mark.parametrize("value", ["0", "nan", "inf"])
@@ -635,26 +625,21 @@ def test_compare_is_safe_and_checks_compatibility(
         tool.compare(baseline, new)
 
 
-def test_v1_and_malformed_recordings_are_rejected_safely(
+def test_unsupported_and_malformed_recordings_are_rejected_safely(
     tool: ModuleType, tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    v1 = tmp_path / "v1.json"
-    v2 = tmp_path / "facts.json"
+    other = tmp_path / "other.json"
     bad = tmp_path / "bad.json"
-    v1.write_text(
-        json.dumps({"policy_version": "v1", "secret": "sk-secret"}), encoding="utf-8"
-    )
-    v2.write_text(
+    other.write_text(
         json.dumps({"recording_version": 2, "secret": "sk-secret"}), encoding="utf-8"
     )
     bad.write_text(
         json.dumps({"recording_version": 3, "secret": "sk-secret"}), encoding="utf-8"
     )
-    for older in (v1, v2):
-        assert tool.main(["compare", str(older), str(bad)]) == 2
-        error = capsys.readouterr().err
-        assert "predate the one-shot contract" in error
-        assert "sk-secret" not in error
+    assert tool.main(["compare", str(other), str(bad)]) == 2
+    error = capsys.readouterr().err
+    assert "unsupported recording version" in error
+    assert "sk-secret" not in error
     assert tool.main(["compare", str(bad), str(bad)]) == 2
     error = capsys.readouterr().err
     assert "invalid recording format" in error

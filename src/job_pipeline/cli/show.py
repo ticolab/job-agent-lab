@@ -46,10 +46,8 @@ def _print_record(record: Any, *, omit: frozenset[str] = frozenset()) -> None:
             print(f"  {field.name}: {_value(getattr(record, field.name))}")
 
 
-def _safe_evidence(raw: str | None) -> list[str] | str | None:
+def _safe_evidence(raw: str) -> list[str] | str:
     """Decode one stored evidence bucket for display, redacting each excerpt."""
-    if raw is None:
-        return None
     try:
         values = json.loads(raw)
     except json.JSONDecodeError:
@@ -115,27 +113,27 @@ async def _run(args: argparse.Namespace) -> None:
     for decision in decisions:
         _print_record(
             decision,
-            omit=frozenset({"evidence_json", "conflicting_evidence_json", "reason"}),
+            omit=frozenset(
+                {"supporting_evidence_json", "conflicting_evidence_json", "reason"}
+            ),
         )
         print(f"  reason: {redact_message(decision.reason)}")
-        contract = (
-            "current"
-            if decision.is_current_contract
-            else "legacy"
-            if decision.prompt_hash is None
-            else "stale"
-        )
-        print(f"  contract: {contract}")
         print("  supporting_evidence:")
         print(
             json.dumps(
-                _safe_evidence(decision.evidence_json), indent=4, ensure_ascii=False
+                _safe_evidence(decision.supporting_evidence_json),
+                indent=4,
+                ensure_ascii=False,
             )
         )
-        conflicting = _safe_evidence(decision.conflicting_evidence_json)
-        if conflicting is not None:
-            print("  conflicting_evidence:")
-            print(json.dumps(conflicting, indent=4, ensure_ascii=False))
+        print("  conflicting_evidence:")
+        print(
+            json.dumps(
+                _safe_evidence(decision.conflicting_evidence_json),
+                indent=4,
+                ensure_ascii=False,
+            )
+        )
     print("Result history")
     if not results:
         print("  (none)")

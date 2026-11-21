@@ -149,26 +149,6 @@ def create_session_factory(engine: AsyncEngine) -> async_sessionmaker[AsyncSessi
     return async_sessionmaker(engine, expire_on_commit=False)
 
 
-async def missing_columns(
-    session: AsyncSession, required: dict[str, tuple[str, ...]]
-) -> tuple[str, ...]:
-    def _columns(connection: Any, table: str) -> set[str]:
-        return {column["name"] for column in inspect(connection).get_columns(table)}
-
-    connection = await session.connection()
-    missing: list[str] = []
-    for table, columns in required.items():
-
-        def _table_columns(sync_connection: Any, table_name: str = table) -> set[str]:
-            return _columns(sync_connection, table_name)
-
-        present = await connection.run_sync(_table_columns)
-        missing.extend(
-            f"{table}.{column}" for column in columns if column not in present
-        )
-    return tuple(missing)
-
-
 async def missing_tables(session: AsyncSession) -> tuple[str, ...]:
     """Names of the schema's tables that are absent from the database.
 

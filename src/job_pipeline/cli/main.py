@@ -7,7 +7,7 @@ import sys
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
-from job_pipeline.cli import eligibility, extraction, preview, reprocess, run, show
+from job_pipeline.cli import eligibility, extraction, preview, reprocess, show
 
 
 @dataclass(frozen=True, slots=True)
@@ -17,7 +17,6 @@ class Subcommand:
     description: str
     add_arguments: Callable[[argparse.ArgumentParser], None]
     execute: Callable[[argparse.Namespace], None]
-    passthrough: bool = False
 
 
 SUBCOMMANDS: tuple[Subcommand, ...] = (
@@ -27,14 +26,6 @@ SUBCOMMANDS: tuple[Subcommand, ...] = (
         preview.PREVIEW_DESCRIPTION,
         preview.add_arguments,
         preview.execute,
-    ),
-    Subcommand(
-        "run",
-        run.RUN_SUMMARY,
-        run.RUN_DESCRIPTION,
-        run.add_arguments,
-        run.execute,
-        passthrough=True,
     ),
     Subcommand(
         "eligibility",
@@ -79,7 +70,6 @@ def build_parser() -> argparse.ArgumentParser:
             command.name,
             help=command.summary,
             description=command.description,
-            add_help=not command.passthrough,
         )
         command.add_arguments(subparser)
     return parser
@@ -87,9 +77,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> None:
     parser = build_parser()
-    args, extras = parser.parse_known_args(argv)
-    if extras and not _BY_NAME[args.command].passthrough:
-        parser.error(f"unrecognized arguments: {' '.join(extras)}")
+    args = parser.parse_args(argv)
     try:
         _BY_NAME[args.command].execute(args)
     except KeyboardInterrupt:
