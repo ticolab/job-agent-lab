@@ -33,7 +33,9 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: '^tests/fixtures/acquisition/.*\.html$'
       - id: end-of-file-fixer
+        exclude: '^tests/fixtures/acquisition/.*\.html$'
       - id: check-merge-conflict
       - id: check-added-large-files
         args: [--maxkb=5000]

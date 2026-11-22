@@ -212,7 +212,7 @@ def test_overlapping_stages_use_separate_engines_and_disjoint_leases(
                 "fresh-hash",
             )
 
-        monkeypatch.setattr("job_pipeline.runner.worker.acquire", acquire)
+        monkeypatch.setattr("job_pipeline.runner.acquisition.acquire", acquire)
         async with database(path) as first, database(path) as second:
             track_engine(first.kw["bind"])
             track_engine(second.kw["bind"])

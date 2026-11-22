@@ -56,7 +56,7 @@ cp .env.example .env                 # then add your OPENAI_API_KEY
 `OPENAI_API_KEY` is required for live discovery agent runs and for pipeline
 `eligibility`, `extraction`, or `reprocess` commands that select an OpenAI model.
 Anthropic pipeline models require `ANTHROPIC_API_KEY`. Both stage dry runs,
-`preview`, `show`, tests, offline `ReplayCaller` and evaluator replay, API
+`integrate`, `preview`, `show`, tests, offline `ReplayCaller` and evaluator replay, API
 discovery strategies, and `pre_filter_urls` companies need no provider key.
 `scripts/evaluate_leaf.py --record` and `scripts/replay_eligibility.py run` need a
 provider key only when a required artifact is missing and a live call is needed.
@@ -140,6 +140,91 @@ to look when a count seems wrong:
 sqlite3 data/job-discovery.db 'select company_slug, url from job_urls order by company_slug'
 sqlite3 data/job-discovery.db 'select company_slug, status, url_count, error_message, started_at, finished_at from company_runs'
 ```
+
+### Reviewing posting acquisition
+
+`job-discovery integrate` validates listing-URL discovery; `job-pipeline integrate`
+captures one explicit posting through eligibility's shared acquisition service.
+It performs no model calls, credential loading, database work, or observation.
+The six pipeline subcommands are `integrate`, `preview`, `eligibility`,
+`extraction`, `reprocess`, and `show`.
+
+The separate `integrate-posting` skill accepts an existing catalog company name,
+uses Playwright to select a current posting from its board, and compares captured
+content with an independent browser-visible reference. No operator URL, context,
+or mandatory human approval is required; explicit overrides are honored and the
+skill defaults to `browser-fallback`. Complete discovery onboarding separately if
+needed; do not blindly use `sample_job_url` or consume `new-companies.json`.
+
+The skill lives in `.claude/skills/integrate-posting/` and
+`.tabnine/agent/skills/integrate-posting/`. Both copies must remain byte-identical,
+with tests protecting parity and separation from discovery onboarding.
+
+***Example: capture a selected posting.*** The skill supplies these CLI arguments
+from its Playwright selection; the target must be a public HTTP(S) URL and the
+output directory must not already exist.
+
+```bash
+uv run job-pipeline integrate -c "<handle>" --url "<public-http(s)-posting-url>" \
+  --output "output/acquisition/<new-case>" --context browser-fallback
+```
+
+Required flags are `-c/--company HANDLE`, `--url`, `--output`, and
+`--context {http-only,browser-fallback,forced-render}`. Optional flags are
+`--timeout-seconds N` (positive integer, default 180), repeatable `-v/--verbose`,
+and `-h/--help`. There are no model, database, approval, or overwrite flags.
+`-v` reports each completed acquisition invocation; `-vv` adds safe step/frame
+metadata. Terminal output never includes posting bodies or HTML.
+
+`http-only` has no browser. `browser-fallback` provisions a browser but first
+tries HTTP; only `empty_content` triggers a second, forced-rendered invocation,
+including another HTTP fetch. `forced-render` starts with that forced invocation;
+it still fetches HTTP and cannot bypass HTTP failures. Each invocation has its
+own timeout after acquiring slots; target-validation preflight is also timed.
+Parity requires equivalent browser availability and effective force state, not
+just the same company. `scripts/probe_posting.py` and `scripts/capture_posting.py`
+call the lower-level ladder directly, so they are diagnostics, not proof of
+production orchestration parity.
+
+Exit 0 means `pending_review`, not approval. Exit 1 distinguishes
+`startup_failed`, `acquisition_failed`, `secret_refusal`, and `publication_error`;
+invalid inputs and preflight destination conflicts exit 2. Ctrl-C prints
+`Interrupted.` and exits 130 without durable work to reap. An acquisition failure
+can publish metadata-only diagnostics when publication succeeds. Artifact refusal
+is not acquisition failure: secret-pattern detection or filesystem publication
+can refuse an otherwise successful acquisition.
+
+Successful bundles contain `page.html`, `content.txt`, `meta.json`, `review.json`,
+and `frame.html` only when selected. Publication scans all payloads for recognized
+secrets; this is refusal, not sanitization or a guarantee of secret-free HTML.
+It stages a complete bundle and uses a cooperative sibling `.<name>.lock`,
+refusing existing destinations (including empty directories and symlinks) rather
+than overwriting. After an uncatchable kill, recovery is manual: ensure no writer
+is running before removing an abandoned lock. Never auto-remove locks; hostile
+parent-directory mutation is outside this guarantee.
+
+The CLI's `pending_review` label remains capture-only; the skill continues to a
+final automated success or failure without requiring human review. It checks the
+title, location (or confirmed source absence), all original headings, and complete
+description passages against the browser reference. Order, heading placement, and
+formatting differences are nonblocking when all original content is present.
+
+Success requires a tracked snapshot under `tests/fixtures/acquisition/<slug>/<case>/`
+and passing integrity/replay tests. The harness accepts human-approved records or
+explicit automated validation with `human_approval=false`, a full `reference.json`,
+and required passages covering that reference in any order. GAP's live automated
+check preserved all original text and headings; accepted order differences and its
+snapshot are recorded at
+`tests/fixtures/acquisition/growth_acceleration_partners/senior_databricks_apps_full_stack_engineer/`.
+This is not human approval or company-wide coverage.
+
+`Company.job_posting_check` is catalog-only metadata with type
+`Literal["unchecked", "passed", "failed"]`, defaulting to `unchecked`. The skill
+sets `passed` only after complete comparison, snapshot, and tests, or `failed` for
+failed/inconclusive checks. It adds no database field or runtime gate and does not
+change `integrate-company`. Record schemas, digests, and frozen selection replay
+are documented in
+[ELIGIBILITY_FLOW.md](docs/ELIGIBILITY_FLOW.md#manual-acquisition-review).
 
 ### Daily processing workflow
 
@@ -304,7 +389,11 @@ Companies are integrated through the tracked `new-companies.json` queue plus an
 agent skill, not by editing the catalog directly. The skill reads from the queue,
 measures unfiltered ground truth, runs the live integration, captures the exact
 saved report path, machine-checks that report, captures a regression snapshot,
-gates the quality checks, and commits the result.
+gates the quality checks, and commits the result. `integrate-company` remains the
+original discovery-only workflow with unchanged completion criteria: it neither
+runs nor requires posting acquisition. The separate `integrate-posting` skill
+owns the acquisition review described above; listing counts and matcher snapshots
+do not establish that posting text is complete.
 
 `new-companies.json` is tracked in this repository;
 `new-companies.example.json` documents its schema. If the queue file is missing,

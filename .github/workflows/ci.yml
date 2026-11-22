@@ -217,12 +217,17 @@ jobs:
           print("every imported module is installed")
           EOF
       - name: Run all three console scripts
+        working-directory: ${{ runner.temp }}
+        env:
+          JOB_DISCOVERY_DB: ${{ runner.temp }}/integrate-help.db
         run: |
           job-discovery --help
           job-discovery integrate --help
           job-discovery scan --help
           job-agent-lab --help
           job-pipeline --help
+          env -u OPENAI_API_KEY -u ANTHROPIC_API_KEY job-pipeline integrate --help
+          test ! -e "$JOB_DISCOVERY_DB"
       - name: Migrate a fresh database up, down, and up again
         env:
           JOB_DISCOVERY_DB: ${{ runner.temp }}/smoke.db

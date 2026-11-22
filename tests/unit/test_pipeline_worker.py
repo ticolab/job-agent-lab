@@ -36,6 +36,7 @@ from job_pipeline.content.fetch import AddressResolver, FetchResult, fetch
 from job_pipeline.content.model import AcquisitionFailure
 from job_pipeline.llm import Completion, ModelCallError
 from job_pipeline.policy import PipelinePolicy
+from job_pipeline.runner import acquisition
 from job_pipeline.runner.worker import WorkerDeps, process_job
 from tests.unit.asyncio_harness import run_async, track_engine
 from tests.unit.test_pipeline_cli import _seed_audit
@@ -249,7 +250,6 @@ def test_framed_content_checkpoint_stage_separation_and_provenance(
     from job_pipeline.cli.main import main
     from job_pipeline.content.render import FrameCapture, RenderedPage
     from job_pipeline.persistence import contents_repo
-    from job_pipeline.runner import worker
 
     path = tmp_path / "framed.db"
     page_html = "<html><title>Software Engineer</title><main>Mexicali</main></html>"
@@ -295,7 +295,7 @@ def test_framed_content_checkpoint_stage_separation_and_provenance(
         )
 
     monkeypatch.setattr(ladder, "render_page", render_page)
-    monkeypatch.setattr(worker, "acquire", acquire)
+    monkeypatch.setattr(acquisition, "acquire", acquire)
     caplog.set_level(logging.DEBUG, logger="job_pipeline")
 
     async def scenario() -> None:
@@ -319,11 +319,11 @@ def test_framed_content_checkpoint_stage_separation_and_provenance(
                 async def empty(*args: object, **kwargs: object) -> AcquisitionFailure:
                     return AcquisitionFailure("empty_content", "too short")
 
-                monkeypatch.setattr(worker, "acquire", empty)
+                monkeypatch.setattr(acquisition, "acquire", empty)
                 assert (
                     await process_job(1, deps=replace(deps, browser=None))
                 ).status == "retry"
-                monkeypatch.setattr(worker, "acquire", acquire)
+                monkeypatch.setattr(acquisition, "acquire", acquire)
             with respx.mock(assert_all_called=True) as router:
                 router.get(COMPANY.sample_job_url).mock(
                     return_value=httpx.Response(200, text=page_html)
@@ -343,7 +343,7 @@ def test_framed_content_checkpoint_stage_separation_and_provenance(
             async def forbidden(*args: object, **kwargs: object) -> object:
                 pytest.fail("extraction acquired content")
 
-            monkeypatch.setattr(worker, "acquire", forbidden)
+            monkeypatch.setattr(acquisition, "acquire", forbidden)
             completed = await process_job(
                 1,
                 deps=replace(
@@ -367,6 +367,223 @@ def test_framed_content_checkpoint_stage_separation_and_provenance(
     assert "FRAME-DESCRIPTION" not in caplog.text
 
 
+@pytest.mark.parametrize(
+    "browser_available,force_rendered,first_category,expected_forces",
+    [
+        (False, False, None, [False]),
+        (True, False, None, [False]),
+        (False, False, "empty_content", [False]),
+        (False, True, "empty_content", [False]),
+        (True, False, "empty_content", [False, True]),
+        (True, True, None, [True]),
+        (True, True, "empty_content", [True]),
+        (True, False, "blocked", [False]),
+        (True, False, "not_found", [False]),
+        (True, False, "closed", [False]),
+        (True, False, "off_site_redirect", [False]),
+        (True, False, "transport", [False]),
+        (True, False, "server_error", [False]),
+        (True, False, "malformed", [False]),
+        (True, False, "timeout", [False]),
+        (True, True, "blocked", [True]),
+        (True, True, "not_found", [True]),
+        (True, True, "off_site_redirect", [True]),
+    ],
+)
+def test_acquisition_sequence_contract(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    browser_available: bool,
+    force_rendered: bool,
+    first_category: str | None,
+    expected_forces: list[bool],
+) -> None:
+    from job_discovery.settings import CaptureBrowser
+    from job_pipeline.content.model import (
+        AcquiredContent,
+        FailureCategory,
+        hash_content,
+    )
+    from job_pipeline.runner import worker
+
+    content = AcquiredContent(
+        text=POSTING_TEXT,
+        title="Software Engineer",
+        resolved_url=COMPANY.sample_job_url,
+        http_status=200,
+        method="main_content",
+        requisition_id=None,
+        jsonld=None,
+        retrieved_at=datetime(2026, 1, 1, tzinfo=UTC),
+        content_hash=hash_content(POSTING_TEXT),
+    )
+    first = (
+        content
+        if first_category is None
+        else AcquisitionFailure(cast(FailureCategory, first_category), "test failure")
+    )
+    calls: list[tuple[CaptureBrowser | None, bool]] = []
+    browser = cast(CaptureBrowser, object()) if browser_available else None
+
+    async def acquire(
+        url: str,
+        *,
+        company: Company,
+        http: httpx.AsyncClient,
+        browser: CaptureBrowser | None,
+        force_rendered: bool,
+    ) -> AcquiredContent | AcquisitionFailure:
+        assert url == COMPANY.sample_job_url
+        assert company is COMPANY
+        assert not http.is_closed
+        calls.append((browser, force_rendered))
+        return first if len(calls) == 1 else content
+
+    monkeypatch.setattr(acquisition, "acquire", acquire)
+
+    async def scenario() -> None:
+        factory = await _database(tmp_path / "acquisition-sequence.db")
+        async with httpx.AsyncClient() as client:
+            deps = WorkerDeps(
+                session_factory=factory,
+                stage="eligibility",
+                http_client=client,
+                browser=browser,
+                caller=EligibleCaller(),
+                policy=PipelinePolicy(model="test"),
+                run_id="run-1",
+                trigger="scheduled",
+                reason=None,
+                companies={COMPANY.slug: COMPANY},
+            )
+            result = await worker._acquire_content(
+                deps, COMPANY, COMPANY.sample_job_url, 1, force_rendered=force_rendered
+            )
+            assert result is (content if len(expected_forces) == 2 else first)
+            assert calls == [
+                (browser if forced else None, forced) for forced in expected_forces
+            ]
+            assert not deps.http_semaphore.locked()
+            assert not deps.browser_semaphore.locked()
+            assert all(not slot.locked() for slot in deps.per_host_semaphores.values())
+
+    run_async(scenario())
+
+
+@pytest.mark.parametrize("force_rendered", [False, True])
+def test_acquisition_cancellation_releases_slots(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    force_rendered: bool,
+) -> None:
+    from job_discovery.settings import CaptureBrowser
+    from job_pipeline.runner import worker
+
+    async def scenario() -> None:
+        entered = asyncio.Event()
+        cancelled = asyncio.Event()
+
+        async def acquire(*args: object, **kwargs: object) -> AcquisitionFailure:
+            entered.set()
+            try:
+                await asyncio.Event().wait()
+            finally:
+                cancelled.set()
+            raise AssertionError("unreachable")
+
+        monkeypatch.setattr(acquisition, "acquire", acquire)
+        factory = await _database(tmp_path / "acquisition-cancellation.db")
+        async with httpx.AsyncClient() as client:
+            deps = WorkerDeps(
+                session_factory=factory,
+                stage="eligibility",
+                http_client=client,
+                browser=cast(CaptureBrowser, object()),
+                caller=EligibleCaller(),
+                policy=PipelinePolicy(model="test", per_host_concurrency=1),
+                run_id="run-1",
+                trigger="scheduled",
+                reason=None,
+                companies={COMPANY.slug: COMPANY},
+            )
+            task = asyncio.create_task(
+                worker._acquire_content(
+                    deps,
+                    COMPANY,
+                    COMPANY.sample_job_url,
+                    1,
+                    force_rendered=force_rendered,
+                )
+            )
+            try:
+                await asyncio.wait_for(entered.wait(), timeout=2)
+                assert deps.http_semaphore.locked()
+                assert deps.browser_semaphore.locked() is force_rendered
+                assert all(slot.locked() for slot in deps.per_host_semaphores.values())
+            finally:
+                task.cancel()
+                with pytest.raises(asyncio.CancelledError):
+                    await task
+            assert cancelled.is_set()
+            assert not deps.http_semaphore.locked()
+            assert not deps.browser_semaphore.locked()
+            assert all(not slot.locked() for slot in deps.per_host_semaphores.values())
+
+    run_async(scenario())
+
+
+def test_acquisition_fallback_has_separate_timeout_budgets(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from collections.abc import Awaitable
+
+    from job_discovery.settings import CaptureBrowser
+    from job_pipeline.runner import worker
+
+    calls: list[bool] = []
+    budgets: list[float] = []
+
+    async def acquire(*args: object, **kwargs: object) -> AcquisitionFailure:
+        calls.append(cast(bool, kwargs["force_rendered"]))
+        return AcquisitionFailure("empty_content", "test failure")
+
+    monkeypatch.setattr(acquisition, "acquire", acquire)
+
+    async def scenario() -> None:
+        factory = await _database(tmp_path / "acquisition-budgets.db")
+        async with httpx.AsyncClient() as client:
+            deps = WorkerDeps(
+                session_factory=factory,
+                stage="eligibility",
+                http_client=client,
+                browser=cast(CaptureBrowser, object()),
+                caller=EligibleCaller(),
+                policy=PipelinePolicy(model="test", job_timeout=7),
+                run_id="run-1",
+                trigger="scheduled",
+                reason=None,
+                companies={COMPANY.slug: COMPANY},
+            )
+
+            async def timed[T](step: Awaitable[T], *, timeout: float) -> T:
+                assert deps.http_semaphore.locked()
+                assert deps.browser_semaphore.locked() is bool(calls)
+                budgets.append(timeout)
+                return await step
+
+            monkeypatch.setattr(acquisition, "wait_for", timed)
+            result = await worker._acquire_content(
+                deps, COMPANY, COMPANY.sample_job_url, 1, force_rendered=False
+            )
+            assert isinstance(result, AcquisitionFailure)
+            assert result.category == "empty_content"
+
+    run_async(scenario())
+    assert calls == [False, True]
+    assert budgets == [7, 7]
+
+
 @pytest.mark.parametrize("force_rendered", [False, True])
 def test_acquisition_timeout_logs_once_after_slot_wait(
     tmp_path: Path,
@@ -385,7 +602,7 @@ def test_acquisition_timeout_logs_once_after_slot_wait(
         await asyncio.Event().wait()
         raise AssertionError("unreachable")
 
-    monkeypatch.setattr(worker, "acquire", hang)
+    monkeypatch.setattr(acquisition, "acquire", hang)
 
     async def scenario() -> None:
         factory = await _database(tmp_path / "acquisition-timeout.db")
@@ -513,7 +730,7 @@ def test_worker_errors_and_recovery_warning_never_emit_exception_payload(
     async def broken_release(*args: object, **kwargs: object) -> object:
         raise RuntimeError(payload)
 
-    monkeypatch.setattr(worker, "acquire", broken_acquire)
+    monkeypatch.setattr(acquisition, "acquire", broken_acquire)
     if not record_failure:
         monkeypatch.setattr(worker, "_release", broken_release)
 
@@ -982,7 +1199,7 @@ def test_cancellation_is_left_open_for_reaper(
         async def cancel(*args: object, **kwargs: object) -> object:
             raise asyncio.CancelledError
 
-        monkeypatch.setattr("job_pipeline.runner.worker.acquire", cancel)
+        monkeypatch.setattr("job_pipeline.runner.acquisition.acquire", cancel)
         async with httpx.AsyncClient() as client:
             deps = WorkerDeps(
                 session_factory=factory,
@@ -1216,7 +1433,7 @@ def test_queue_wait_is_not_charged_against_the_job_timeout(
             await asyncio.sleep(step_seconds)
             return await real_acquire(*args, **kwargs)  # type: ignore[arg-type]
 
-        monkeypatch.setattr("job_pipeline.runner.worker.acquire", slow_acquire)
+        monkeypatch.setattr("job_pipeline.runner.acquisition.acquire", slow_acquire)
         policy = PipelinePolicy(model="test", job_timeout=step_seconds + 0.3)
         first_html = (
             "<html><main><h1>Engineer</h1><p>" + "Canada " * 100 + "</p></main></html>"
@@ -1394,7 +1611,7 @@ def test_retry_budgets_and_backoff_restart_at_stage_boundary(
                 "hash",
             )
 
-        monkeypatch.setattr("job_pipeline.runner.worker.acquire", acquire)
+        monkeypatch.setattr("job_pipeline.runner.acquisition.acquire", acquire)
         async with httpx.AsyncClient() as client:
             deps = WorkerDeps(
                 session_factory=factory,

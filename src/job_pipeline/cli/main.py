@@ -7,7 +7,14 @@ import sys
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
-from job_pipeline.cli import eligibility, extraction, preview, reprocess, show
+from job_pipeline.cli import (
+    eligibility,
+    extraction,
+    integrate,
+    preview,
+    reprocess,
+    show,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -20,6 +27,13 @@ class Subcommand:
 
 
 SUBCOMMANDS: tuple[Subcommand, ...] = (
+    Subcommand(
+        "integrate",
+        integrate.INTEGRATE_SUMMARY,
+        integrate.INTEGRATE_DESCRIPTION,
+        integrate.add_arguments,
+        integrate.execute,
+    ),
     Subcommand(
         "preview",
         preview.PREVIEW_SUMMARY,
@@ -81,12 +95,12 @@ def main(argv: Sequence[str] | None = None) -> None:
     try:
         _BY_NAME[args.command].execute(args)
     except KeyboardInterrupt:
-        # The run was cancelled and unwound; jobs left in progress are
-        # released to retry by the next run's reaper.
-        print(
-            "Interrupted. In-progress jobs will be reaped by the next run.",
-            file=sys.stderr,
+        message = (
+            "Interrupted."
+            if args.command == "integrate"
+            else "Interrupted. In-progress jobs will be reaped by the next run."
         )
+        print(message, file=sys.stderr)
         raise SystemExit(130) from None
 
 

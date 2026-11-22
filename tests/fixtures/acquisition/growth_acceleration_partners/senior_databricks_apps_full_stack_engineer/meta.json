@@ -1,0 +1,41 @@
+{
+  "attempts": [
+    {
+      "category": null,
+      "elapsed_s": 0.6133743750106078,
+      "force_rendered": false,
+      "frames": [],
+      "frames_found": 0,
+      "http_status": 200,
+      "method": "jsonld",
+      "selected_frame": null,
+      "status": "success",
+      "steps": [
+        {
+          "elapsed_s": 0.593756125002983,
+          "has_jsonld": true,
+          "http_status": 200,
+          "page_chars": 6944,
+          "step": "http"
+        }
+      ]
+    }
+  ],
+  "captured_at": "2026-11-22T01:10:45.886278+00:00",
+  "company_slug": "growth_acceleration_partners",
+  "content_hash": "e16f98ae41943ffecfd0e1fbdce27fb8f0efa6269bdec8e1fca210aba17ca06d",
+  "context": "browser-fallback",
+  "failure_category": null,
+  "file_digests": {
+    "content.txt": "129f25a07dc6235e917d76d87145d119c475e2fe3fad664bdad686369ab239ec",
+    "page.html": "11fb274ae52c10f01109323740f4917e34d873f500c8765a97b7e8c8ca0d597c"
+  },
+  "frame": false,
+  "http_status": 200,
+  "method": "jsonld",
+  "resolved_url": "https://careers.wearegap.com/jobs/8658329-senior-databricks-apps-full-stack-engineer",
+  "retrieved_at": "2026-11-22T01:10:45.749637+00:00",
+  "source_url": "https://careers.wearegap.com/jobs/8658329-senior-databricks-apps-full-stack-engineer",
+  "status": "success",
+  "title": "Senior Databricks Apps Full-Stack Engineer"
+}

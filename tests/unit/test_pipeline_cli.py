@@ -193,6 +193,7 @@ def test_dispatcher_and_policy_flags_use_real_parser() -> None:
             "job_pipeline.cli.main", fromlist=["SUBCOMMANDS"]
         ).SUBCOMMANDS
     } == {
+        "integrate",
         "preview",
         "eligibility",
         "extraction",
@@ -1503,7 +1504,7 @@ def test_historical_reprocess_stops_then_requires_explicit_extraction(
             "new-hash",
         )
 
-    monkeypatch.setattr("job_pipeline.runner.worker.acquire", acquire)
+    monkeypatch.setattr("job_pipeline.runner.acquisition.acquire", acquire)
     base = [
         "reprocess",
         "--job",
