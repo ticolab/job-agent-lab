@@ -158,7 +158,7 @@ Case-specific judgments to keep in mind:
    postings from 50 companies, about 12% could not be fetched (off-site
    redirects, blocks, timeouts, and not-found pages), and about 14% returned a
    page that was not a real posting (a block page or "this job has been
-   filled"). Details and fixes: `ISSUE_FETCHING_LOSSES.md`.
+   filled").
 4. **Policy edges that may surprise.**
    - "Remote (PST/MST)" is eligible, because a time zone is a schedule.
    - A foreign city that appears only in a title is unknown, not ineligible.
