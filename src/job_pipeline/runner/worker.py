@@ -9,9 +9,7 @@ import re
 from collections.abc import Awaitable, Mapping
 from dataclasses import dataclass, field
 from datetime import datetime
-from time import monotonic
 from typing import Literal, cast
-from urllib.parse import urlsplit
 
 import httpx
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -37,7 +35,6 @@ from job_extractor import (
 from job_extractor import (
     validate as validate_extraction,
 )
-from job_pipeline.content.ladder import acquire
 from job_pipeline.content.model import AcquiredContent, AcquisitionFailure
 from job_pipeline.identity import fingerprint
 from job_pipeline.llm import StructuredCaller
@@ -55,6 +52,7 @@ from job_pipeline.policy import (
     classify_failure,
     next_state,
 )
+from job_pipeline.runner import acquisition
 from job_pipeline.runner.diagnostics import redact_message, redact_url
 
 SessionFactory = async_sessionmaker[AsyncSession]
@@ -146,15 +144,6 @@ class _Progress:
 async def _job(deps: WorkerDeps, job_id: int) -> jobs_repo.JobRecord | None:
     async with deps.session_factory() as session:
         return await jobs_repo.get(session, job_id)
-
-
-async def _host_semaphore(deps: WorkerDeps, host: str) -> asyncio.Semaphore:
-    async with deps.per_host_lock:
-        semaphore = deps.per_host_semaphores.get(host)
-        if semaphore is None:
-            semaphore = asyncio.Semaphore(deps.policy.per_host_concurrency)
-            deps.per_host_semaphores[host] = semaphore
-        return semaphore
 
 
 async def _timed[T](deps: WorkerDeps, step: Awaitable[T]) -> T:
@@ -282,53 +271,33 @@ async def _acquire_content(
     if deps.http_client is None:
         raise RuntimeError("eligibility requires an HTTP client")
 
-    http_client = deps.http_client
-
-    async def acquire_logged(
-        *, browser: CaptureBrowser | None, force_rendered: bool
-    ) -> AcquiredContent | AcquisitionFailure:
-        started = monotonic()
-        try:
-            result = await _timed(
-                deps,
-                acquire(
-                    url,
-                    company=company,
-                    http=http_client,
-                    browser=browser,
-                    force_rendered=force_rendered,
-                ),
-            )
-        except TimeoutError:
-            result = AcquisitionFailure(
-                "timeout", "acquisition timed out", resolved_url=url
-            )
+    def log_attempt(attempt: acquisition.AcquisitionAttempt) -> None:
         _log_acquisition(
             deps,
             job_id,
             company,
             url,
-            result,
-            force_rendered=force_rendered,
-            elapsed_s=monotonic() - started,
+            attempt.result,
+            force_rendered=attempt.force_rendered,
+            elapsed_s=attempt.elapsed_s,
         )
-        return result
 
-    host = urlsplit(url).hostname or ""
-    host_semaphore = await _host_semaphore(deps, host)
-    if force_rendered and deps.browser is not None:
-        async with deps.http_semaphore, host_semaphore, deps.browser_semaphore:
-            return await acquire_logged(browser=deps.browser, force_rendered=True)
-    async with deps.http_semaphore, host_semaphore:
-        acquired = await acquire_logged(browser=None, force_rendered=False)
-    if (
-        isinstance(acquired, AcquisitionFailure)
-        and acquired.category == "empty_content"
-        and deps.browser is not None
-    ):
-        async with deps.http_semaphore, host_semaphore, deps.browser_semaphore:
-            return await acquire_logged(browser=deps.browser, force_rendered=True)
-    return acquired
+    return await acquisition.acquire_posting(
+        url,
+        company=company,
+        resources=acquisition.AcquisitionResources(
+            http_client=deps.http_client,
+            browser=deps.browser,
+            http_semaphore=deps.http_semaphore,
+            browser_semaphore=deps.browser_semaphore,
+            per_host_semaphores=deps.per_host_semaphores,
+            per_host_lock=deps.per_host_lock,
+            per_host_concurrency=deps.policy.per_host_concurrency,
+        ),
+        timeout_seconds=deps.policy.job_timeout,
+        force_rendered=force_rendered,
+        on_attempt=log_attempt,
+    )
 
 
 async def _skipped(

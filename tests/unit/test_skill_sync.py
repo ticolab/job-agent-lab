@@ -108,3 +108,22 @@ class TestSkillCopies:
             "deliberate difference to SKILL_ADAPTATIONS:\n"
             + _unified_diff(adapted, tabnine)
         )
+
+
+def test_posting_skill_copies_are_identical() -> None:
+    claude = CLAUDE_SKILL.parent / "integrate-posting"
+    tabnine = TABNINE_SKILL.parent / "integrate-posting"
+    assert (claude / SKILL_FILE).is_file()
+    assert (tabnine / SKILL_FILE).is_file()
+    files = _relative_files(claude)
+    assert files == _relative_files(tabnine)
+    for relative in files:
+        assert (claude / relative).read_bytes() == (tabnine / relative).read_bytes()
+
+
+def test_discovery_skill_does_not_require_posting_acquisition() -> None:
+    for root in (CLAUDE_SKILL, TABNINE_SKILL):
+        text = (root / SKILL_FILE).read_text(encoding="utf-8")
+        assert "job-pipeline integrate" not in text
+        assert "integrate-posting" not in text
+        assert "posting-acquisition checkpoint" not in text

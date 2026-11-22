@@ -1,0 +1,212 @@
+{
+  "source": "independent Playwright visible DOM; no JSON-LD or acquired content used",
+  "selected_url": "https://careers.wearegap.com/jobs/8658329-senior-databricks-apps-full-stack-engineer",
+  "resolved_url": "https://careers.wearegap.com/jobs/8658329-senior-databricks-apps-full-stack-engineer",
+  "observation_started_at": "2026-11-22T01:10:41.155037+00:00",
+  "observation_finished_at": "2026-11-22T01:10:42.672641+00:00",
+  "selection_attempts": [
+    {
+      "attempt": 1,
+      "outcome": "hidden duplicate anchor caused wait timeout; no capture attempted"
+    },
+    {
+      "attempt": 2,
+      "outcome": "visible listing link verified; first hidden duplicate caused timeout; no capture attempted"
+    },
+    {
+      "attempt": 3,
+      "outcome": "visible listing link followed successfully during selector reconnaissance; no capture attempted"
+    },
+    {
+      "attempt": 4,
+      "board_url": "https://careers.wearegap.com/jobs",
+      "observed_at": "2026-11-22T01:10:37.878395+00:00",
+      "visible_link": {
+        "url": "https://careers.wearegap.com/jobs/8658329-senior-databricks-apps-full-stack-engineer",
+        "title": "Senior Databricks Apps Full-Stack Engineer"
+      },
+      "outcome": "selected explicit operator-approved URL from visible live catalog listing"
+    }
+  ],
+  "stability_reads": [
+    {
+      "observed_at": "2026-11-22T01:10:41.163335+00:00",
+      "sha256": "b2b0acfff73006b9e9257b5115be6abb772fdfaf2812eb162984dd04a65283b4"
+    },
+    {
+      "observed_at": "2026-11-22T01:10:42.672598+00:00",
+      "sha256": "b2b0acfff73006b9e9257b5115be6abb772fdfaf2812eb162984dd04a65283b4"
+    }
+  ],
+  "snapshot": {
+    "title": "Senior Databricks Apps Full-Stack Engineer",
+    "cover_text": "DEVELOPMENT · LATAM, USA · HYBRID\nSenior Databricks Apps Full-Stack Engineer\nApply for this job",
+    "details_text": "Department\nDevelopment\nRole\nSenior Software Engineer\nLocations\nLatam, USA\nRemote status\nHybrid\nEmployment type\nFull-time\nMain Technology\nPython and React",
+    "description": "WHAT WE DO\n\nFounded in 2007, Growth Acceleration Partners (GAP) is a consulting and technology services company. We consult, design, build and modernize revenue-generating software and data engineering solutions for clients. With modernization services and AI tools, we help businesses achieve a competitive advantage through technology. GAP’s remote, integrated engineering teams use end-to-end solutions to innovate and align with your business goals. We have 600+ English-speaking engineers based in Latin America and approximately 20 U.S.-based engineers. With some of the highest customer satisfaction scores in the industry, GAP’s focus is customer and employee success.\n\nGAP is a woman-owned company headquartered in Austin Texas. We are a values-based company focused on growing our people by investing in education, onsite English classes and training in the latest technologies, including AI, data analytics and machine learning. Our goal is to provide solutions for our customers that help them achieve critical business outcomes, while enabling our GAPSters and our communities to attain long-term success.\n\n\nSummary\n\nWe are looking for a Senior Full-Stack Developer with hands-on experience building and deploying applications using Databricks Apps. The ideal candidate has strong expertise in React, TypeScript, Python, and API development, along with practical experience integrating applications with Databricks and SQL. In this role, you will develop and enhance business-facing applications, support existing solutions, and collaborate directly with Product Owners and business stakeholders to translate business needs into effective technical solutions.\n\nEducation\n\nBachelor’s Degree in Computer Science, Data Engineering, Software Engineering, Information Systems, or a related technical field.\n\nProfessional Experience\n\n5+ years of professional experience in Full-Stack application development, with demonstrated expertise in both frontend and backend technologies.\n\nHands-on experience developing production applications using React and TypeScript.\n\nExperience developing backend services and integrating APIs using Python, preferably with FastAPI.\n\nPractical experience working with Databricks and SQL, particularly integrating data platforms into business-facing applications.\n\nHands-on experience building and deploying applications using Databricks Apps.\n\nExperience building, maintaining, and supporting applications in cloud-based environments.\n\nExperience troubleshooting and enhancing existing applications and working with established codebases.\n\nExperience working directly with Product Owners, business stakeholders, or clients to gather requirements and deliver application solutions.\n\nKey Responsibilities\n\nDevelop, maintain, and enhance business-facing applications within the Databricks ecosystem.\n\nSupport and expand the functionality of existing Databricks Apps, ensuring application reliability, usability, and performance.\n\nDesign and build interactive frontend components and user interfaces using React and TypeScript.\n\nDevelop backend services, APIs, and application integrations using Python and frameworks such as FastAPI.\n\nIntegrate frontend and backend components with Databricks, SQL, and relevant data sources.\n\nDevelop interactive data visualizations using Apache ECharts or similar visualization libraries.\n\nTroubleshoot application issues, identify root causes, and implement effective solutions.\n\nCollaborate directly with Product Owners, business stakeholders, and senior business leaders to gather requirements and translate business needs into technical solutions.\n\nIterate on application functionality based on stakeholder feedback and evolving business requirements.\n\nTake ownership of existing applications and gradually assume responsibilities currently managed by other technical team members.\n\nCollaborate with citizen developers and provide technical guidance and support as the organization's application development capabilities expand.\n\nRequired Technical Skills\n\nStrong experience in several of the following areas:\n\nDatabricks Apps: Hands-on experience building, developing, and deploying applications using Databricks Apps.\n\nFrontend Development: React and TypeScript, including developing interactive, responsive, and user-friendly business applications.\n\nFull-Stack Development: Ability to develop and integrate frontend and backend components, with experience delivering end-to-end application solutions.\n\nBackend Development & APIs: Python, API development, and frameworks such as FastAPI.\n\nDatabricks & SQL: Practical experience working with Databricks and SQL, particularly integrating data and services into business-facing applications.\n\nApplication Development: Experience building, debugging, maintaining, and enhancing production applications.\n\nBusiness Requirements & Integration: Ability to understand business requirements and translate them into functional application features.\n\nNice to Have\n\nExperience with Apache ECharts or similar data visualization libraries.\n\nFamiliarity with Databricks AI services, such as Model Serving, Mosaic AI Agents, Vector Search, or Genie Spaces.\n\nExperience working with cloud-based application architectures and Azure services.\n\nExposure to financial data, financial analytics, or enterprise business applications.\n\nExperience supporting citizen development initiatives or applications built by business users.\n\nFamiliarity with application observability, logging, monitoring, and troubleshooting tools.\n\nSoft Skills\n\nAdvanced English proficiency (written and verbal).\n\nExcellent communication skills, with the ability to interact directly with business stakeholders, Product Owners, and senior executives, including SVPs.\n\nAbility to understand business needs and translate them into practical technical solutions.\n\nStrong problem-solving and troubleshooting capabilities.\n\nComfortable working in a collaborative environment and adapting to evolving business requirements.\n\nAbility to present technical concepts and explain solutions to both technical and non-technical audiences.\n\nAt Growth Acceleration Partners, we're an equal opportunity employer committed to building a diverse and inclusive team. We value everyone's unique background, and we provide equal opportunities regardless of race, color, creed, religion, sexual orientation, gender identity, age, national origin, disability, marital status, veteran status or any other personal right protected by law. We foster a culture of belonging and strive to provide a welcoming environment where everyone feels safe to contribute and grow.",
+    "visible_text_nodes": [
+      "\n    ",
+      "WHAT WE DO",
+      "Founded in 2007, Growth Acceleration Partners (GAP) is a consulting and technology services company. We consult, design, build and modernize revenue-generating software and data engineering solutions for clients. With modernization services and AI tools, we help businesses achieve a competitive advantage through technology. GAP’s remote, integrated engineering teams use end-to-end solutions to innovate and align with your business goals. We have 600+ English-speaking engineers based in Latin America and approximately 20 U.S.-based engineers. With some of the highest customer satisfaction scores in the industry, GAP’s focus is customer and employee success.",
+      "GAP is a woman-owned company headquartered in Austin Texas. We are a values-based company focused on growing our people by investing in education, onsite English classes and training in the latest technologies, including AI, data analytics and machine learning. Our goal is to provide solutions for our customers that help them achieve critical business outcomes, while enabling our GAPSters and our communities to attain long-term success.",
+      "Summary",
+      "We are looking for a Senior Full-Stack Developer with hands-on experience building and deploying applications using Databricks Apps. The ideal candidate has strong expertise in React, TypeScript, Python, and API development, along with practical experience integrating applications with Databricks and SQL. In this role, you will develop and enhance business-facing applications, support existing solutions, and collaborate directly with Product Owners and business stakeholders to translate business needs into effective technical solutions.",
+      "Education",
+      "Bachelor’s Degree in Computer Science, Data Engineering, Software Engineering, Information Systems, or a related technical field.",
+      "Professional Experience",
+      "5+ years of professional experience in Full-Stack application development, with demonstrated expertise in both frontend and backend technologies.",
+      "Hands-on experience developing production applications using React and TypeScript.",
+      "Experience developing backend services and integrating APIs using Python, preferably with FastAPI.",
+      "Practical experience working with Databricks and SQL, particularly integrating data platforms into business-facing applications.",
+      "Hands-on experience building and deploying applications using Databricks Apps.",
+      "Experience building, maintaining, and supporting applications in cloud-based environments.",
+      "Experience troubleshooting and enhancing existing applications and working with established codebases.",
+      "Experience working directly with Product Owners, business stakeholders, or clients to gather requirements and deliver application solutions.",
+      "Key Responsibilities",
+      "Develop, maintain, and enhance business-facing applications within the Databricks ecosystem.",
+      "Support and expand the functionality of existing Databricks Apps, ensuring application reliability, usability, and performance.",
+      "Design and build interactive frontend components and user interfaces using React and TypeScript.",
+      "Develop backend services, APIs, and application integrations using Python and frameworks such as FastAPI.",
+      "Integrate frontend and backend components with Databricks, SQL, and relevant data sources.",
+      "Develop interactive data visualizations using Apache ECharts or similar visualization libraries.",
+      "Troubleshoot application issues, identify root causes, and implement effective solutions.",
+      "Collaborate directly with Product Owners, business stakeholders, and senior business leaders to gather requirements and translate business needs into technical solutions.",
+      "Iterate on application functionality based on stakeholder feedback and evolving business requirements.",
+      "Take ownership of existing applications and gradually assume responsibilities currently managed by other technical team members.",
+      "Collaborate with citizen developers and provide technical guidance and support as the organization's application development capabilities expand.",
+      "Required Technical Skills",
+      "Strong experience in several of the following areas:",
+      "Databricks Apps:",
+      " Hands-on experience building, developing, and deploying applications using Databricks Apps.",
+      "Frontend Development:",
+      " React and TypeScript, including developing interactive, responsive, and user-friendly business applications.",
+      "Full-Stack Development:",
+      " Ability to develop and integrate frontend and backend components, with experience delivering end-to-end application solutions.",
+      "Backend Development & APIs:",
+      " Python, API development, and frameworks such as FastAPI.",
+      "Databricks & SQL:",
+      " Practical experience working with Databricks and SQL, particularly integrating data and services into business-facing applications.",
+      "Application Development:",
+      " Experience building, debugging, maintaining, and enhancing production applications.",
+      "Business Requirements & Integration:",
+      " Ability to understand business requirements and translate them into functional application features.",
+      "Nice to Have",
+      "Experience with Apache ECharts or similar data visualization libraries.",
+      "Familiarity with Databricks AI services, such as Model Serving, Mosaic AI Agents, Vector Search, or Genie Spaces.",
+      "Experience working with cloud-based application architectures and Azure services.",
+      "Exposure to financial data, financial analytics, or enterprise business applications.",
+      "Experience supporting citizen development initiatives or applications built by business users.",
+      "Familiarity with application observability, logging, monitoring, and troubleshooting tools.",
+      "Soft Skills",
+      "Advanced English proficiency (written and verbal).",
+      "Excellent communication skills, with the ability to interact directly with business stakeholders, Product Owners, and senior executives, including SVPs.",
+      "Ability to understand business needs and translate them into practical technical solutions.",
+      "Strong problem-solving and troubleshooting capabilities.",
+      "Comfortable working in a collaborative environment and adapting to evolving business requirements.",
+      "Ability to present technical concepts and explain solutions to both technical and non-technical audiences.",
+      "At Growth Acceleration Partners, we're an equal opportunity employer committed to building a diverse and inclusive team. We value everyone's unique background, and we provide equal opportunities regardless of race, color, creed, religion, sexual orientation, gender identity, age, national origin, disability, marital status, veteran status or any other personal right protected by law. We foster a culture of belonging and strive to provide a welcoming environment where everyone feels safe to contribute and grow.",
+      "\n  "
+    ],
+    "blocks": [
+      {
+        "tag": "P",
+        "text": "WHAT WE DO"
+      },
+      {
+        "tag": "P",
+        "text": "Founded in 2007, Growth Acceleration Partners (GAP) is a consulting and technology services company. We consult, design, build and modernize revenue-generating software and data engineering solutions for clients. With modernization services and AI tools, we help businesses achieve a competitive advantage through technology. GAP’s remote, integrated engineering teams use end-to-end solutions to innovate and align with your business goals. We have 600+ English-speaking engineers based in Latin America and approximately 20 U.S.-based engineers. With some of the highest customer satisfaction scores in the industry, GAP’s focus is customer and employee success."
+      },
+      {
+        "tag": "P",
+        "text": "GAP is a woman-owned company headquartered in Austin Texas. We are a values-based company focused on growing our people by investing in education, onsite English classes and training in the latest technologies, including AI, data analytics and machine learning. Our goal is to provide solutions for our customers that help them achieve critical business outcomes, while enabling our GAPSters and our communities to attain long-term success."
+      },
+      {
+        "tag": "H4",
+        "text": "\nSummary"
+      },
+      {
+        "tag": "P",
+        "text": "We are looking for a Senior Full-Stack Developer with hands-on experience building and deploying applications using Databricks Apps. The ideal candidate has strong expertise in React, TypeScript, Python, and API development, along with practical experience integrating applications with Databricks and SQL. In this role, you will develop and enhance business-facing applications, support existing solutions, and collaborate directly with Product Owners and business stakeholders to translate business needs into effective technical solutions."
+      },
+      {
+        "tag": "H4",
+        "text": "Education"
+      },
+      {
+        "tag": "UL",
+        "text": "Bachelor’s Degree in Computer Science, Data Engineering, Software Engineering, Information Systems, or a related technical field."
+      },
+      {
+        "tag": "H4",
+        "text": "Professional Experience"
+      },
+      {
+        "tag": "UL",
+        "text": "5+ years of professional experience in Full-Stack application development, with demonstrated expertise in both frontend and backend technologies.\n\nHands-on experience developing production applications using React and TypeScript.\n\nExperience developing backend services and integrating APIs using Python, preferably with FastAPI.\n\nPractical experience working with Databricks and SQL, particularly integrating data platforms into business-facing applications.\n\nHands-on experience building and deploying applications using Databricks Apps.\n\nExperience building, maintaining, and supporting applications in cloud-based environments.\n\nExperience troubleshooting and enhancing existing applications and working with established codebases.\n\nExperience working directly with Product Owners, business stakeholders, or clients to gather requirements and deliver application solutions."
+      },
+      {
+        "tag": "H4",
+        "text": "Key Responsibilities"
+      },
+      {
+        "tag": "UL",
+        "text": "Develop, maintain, and enhance business-facing applications within the Databricks ecosystem.\n\nSupport and expand the functionality of existing Databricks Apps, ensuring application reliability, usability, and performance.\n\nDesign and build interactive frontend components and user interfaces using React and TypeScript.\n\nDevelop backend services, APIs, and application integrations using Python and frameworks such as FastAPI.\n\nIntegrate frontend and backend components with Databricks, SQL, and relevant data sources.\n\nDevelop interactive data visualizations using Apache ECharts or similar visualization libraries.\n\nTroubleshoot application issues, identify root causes, and implement effective solutions.\n\nCollaborate directly with Product Owners, business stakeholders, and senior business leaders to gather requirements and translate business needs into technical solutions.\n\nIterate on application functionality based on stakeholder feedback and evolving business requirements.\n\nTake ownership of existing applications and gradually assume responsibilities currently managed by other technical team members.\n\nCollaborate with citizen developers and provide technical guidance and support as the organization's application development capabilities expand."
+      },
+      {
+        "tag": "H4",
+        "text": "Required Technical Skills"
+      },
+      {
+        "tag": "P",
+        "text": "Strong experience in several of the following areas:"
+      },
+      {
+        "tag": "UL",
+        "text": "Databricks Apps: Hands-on experience building, developing, and deploying applications using Databricks Apps.\n\nFrontend Development: React and TypeScript, including developing interactive, responsive, and user-friendly business applications.\n\nFull-Stack Development: Ability to develop and integrate frontend and backend components, with experience delivering end-to-end application solutions.\n\nBackend Development & APIs: Python, API development, and frameworks such as FastAPI.\n\nDatabricks & SQL: Practical experience working with Databricks and SQL, particularly integrating data and services into business-facing applications.\n\nApplication Development: Experience building, debugging, maintaining, and enhancing production applications.\n\nBusiness Requirements & Integration: Ability to understand business requirements and translate them into functional application features."
+      },
+      {
+        "tag": "H4",
+        "text": "Nice to Have"
+      },
+      {
+        "tag": "UL",
+        "text": "Experience with Apache ECharts or similar data visualization libraries.\n\nFamiliarity with Databricks AI services, such as Model Serving, Mosaic AI Agents, Vector Search, or Genie Spaces.\n\nExperience working with cloud-based application architectures and Azure services.\n\nExposure to financial data, financial analytics, or enterprise business applications.\n\nExperience supporting citizen development initiatives or applications built by business users.\n\nFamiliarity with application observability, logging, monitoring, and troubleshooting tools."
+      },
+      {
+        "tag": "H4",
+        "text": "Soft Skills"
+      },
+      {
+        "tag": "UL",
+        "text": "Advanced English proficiency (written and verbal).\n\nExcellent communication skills, with the ability to interact directly with business stakeholders, Product Owners, and senior executives, including SVPs.\n\nAbility to understand business needs and translate them into practical technical solutions.\n\nStrong problem-solving and troubleshooting capabilities.\n\nComfortable working in a collaborative environment and adapting to evolving business requirements.\n\nAbility to present technical concepts and explain solutions to both technical and non-technical audiences."
+      },
+      {
+        "tag": "P",
+        "text": ""
+      },
+      {
+        "tag": "P",
+        "text": "At Growth Acceleration Partners, we're an equal opportunity employer committed to building a diverse and inclusive team. We value everyone's unique background, and we provide equal opportunities regardless of race, color, creed, religion, sexual orientation, gender identity, age, national origin, disability, marital status, veteran status or any other personal right protected by law. We foster a culture of belonging and strive to provide a welcoming environment where everyone feels safe to contribute and grow."
+      }
+    ],
+    "apply_visible": true,
+    "scope": {
+      "title": "main#main-content section.block-cover h1",
+      "description": "main#main-content section.company-links .prose",
+      "location": "visible cover location and immediately following posting metadata section",
+      "excluded": "navigation, cookie banners, related roles, application forms, footer"
+    },
+    "frame_count": 0
+  },
+  "post_capture_stability_reads": [
+    {
+      "observed_at": "2026-11-22T01:10:46.221292+00:00",
+      "sha256": "b2b0acfff73006b9e9257b5115be6abb772fdfaf2812eb162984dd04a65283b4"
+    },
+    {
+      "observed_at": "2026-11-22T01:10:47.730155+00:00",
+      "sha256": "b2b0acfff73006b9e9257b5115be6abb772fdfaf2812eb162984dd04a65283b4"
+    }
+  ],
+  "unchanged_after_capture": true,
+  "comparison_finished_at": "2026-11-22T01:10:47.730182+00:00"
+}

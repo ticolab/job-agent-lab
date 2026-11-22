@@ -39,8 +39,34 @@ class TestCompanySchema:
             sample_job_url="https://example.com/jobs/1",
         )
         assert c.aliases == ()
+        assert c.job_posting_check == "unchecked"
         assert c.link_rule == LinkRule()
         assert c.link_rule.path_prefix is None
+
+    @pytest.mark.parametrize("status", ["unchecked", "passed", "failed"])
+    def test_job_posting_check_accepts_supported_values(self, status: str) -> None:
+        company = Company.model_validate(
+            {
+                "name": "Example",
+                "job_board_url": "https://example.com/careers",
+                "sample_job_url": "https://example.com/jobs/1",
+                "job_posting_check": status,
+            }
+        )
+        assert company.job_posting_check == status
+        assert company.model_dump()["job_posting_check"] == status
+
+    @pytest.mark.parametrize("status", ["approved", "not_checked", "", None, True])
+    def test_job_posting_check_rejects_unsupported_values(self, status: object) -> None:
+        with pytest.raises(ValidationError):
+            Company.model_validate(
+                {
+                    "name": "Example",
+                    "job_board_url": "https://example.com/careers",
+                    "sample_job_url": "https://example.com/jobs/1",
+                    "job_posting_check": status,
+                }
+            )
 
     def test_missing_name_raises(self) -> None:
         with pytest.raises(ValidationError):

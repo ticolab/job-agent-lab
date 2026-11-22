@@ -32,6 +32,7 @@ from job_discovery.domain.company import (
 COMPANIES: list[Company] = [
     Company(
         name="Growth Acceleration Partners",
+        job_posting_check="passed",
         aliases=("gap", "wearegap"),
         job_board_url="https://careers.wearegap.com/jobs",
         sample_job_url="https://careers.wearegap.com/jobs/7540236-senior-python-aws-software-engineer",

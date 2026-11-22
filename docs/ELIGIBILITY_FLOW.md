@@ -185,6 +185,124 @@ uv run job-pipeline show --job 42                   # decision, evidence, model,
 - **Unknown jobs.** `unknown` is terminal. Review them with `show` and reprocess
   them when the policy or model improves.
 
+## Manual acquisition review
+
+The separate `integrate-posting` skill accepts an existing catalog company name,
+uses Playwright to select a current posting, captures it with
+`job-pipeline integrate`, and automatically compares it with independent
+browser-visible content.
+No operator URL, context, or mandatory human approval is required. Honor explicit
+overrides; otherwise use `browser-fallback`. Do not blindly use `sample_job_url`
+or consume `new-companies.json` for acquisition.
+
+`integrate-company` remains the original discovery-only workflow: it neither runs
+nor requires acquisition, and its definition of done is unchanged. Complete
+separate discovery onboarding first if the company is not in the catalog.
+
+The `.claude/skills/integrate-posting/` and
+`.tabnine/agent/skills/integrate-posting/` copies must remain byte-identical, with
+tests protecting parity and the discovery-only boundary of `integrate-company`.
+
+[README.md](../README.md#reviewing-posting-acquisition)
+records the exact flags, contexts, exit codes, no-clobber publication, and manual
+lock recovery. The command shares production acquisition orchestration under an
+equivalent context, not durable retries or browser-provisioning policy. Probe and
+capture scripts remain lower-level diagnostics, not production-parity evidence.
+GAP has been checked live by automated browser comparison: all original text and
+headings were present, with order differences accepted as nonblocking. Its tracked
+snapshot is
+`tests/fixtures/acquisition/growth_acceleration_partners/senior_databricks_apps_full_stack_engineer/`.
+This is automated evidence, not human approval or company-wide coverage.
+
+### Review record
+
+Successful CLI publication still creates a pending `review.json` with null checks,
+reviewer, review date, and source-location disposition. Exit 0 and `pending_review`
+mean capture only, not the skill's final outcome. The skill leaves that template
+untouched and records its final automated success or failure in `validation.json`;
+separate human-approved records remain supported, not mandatory. A missing
+location is acceptable only when browser inspection confirms it is absent at source;
+do not infer one from the company or listing board.
+
+Automated snapshots include independent browser-visible title, full description,
+job details, location disposition, observation times, and URLs in `reference.json`.
+`validation.json` records `status="success"`,
+`validation_type="automated_browser_comparison"`, `human_approval=false`,
+`completeness_criterion="full_reference_passages_unicode_nfkc_whitespace_any_order"`,
+true title/description/location/capture-integrity checks, empty omissions, and
+hash-bound capture/reference evidence. Required excerpts come from the complete
+reference via `tests.unit.acquisition_harness.reference_excerpts`, not a few samples.
+Every original heading and substantive passage must be present after Unicode NFKC
+and whitespace normalization; passages match independently in any order. Heading
+placement, section order, and formatting alone do not fail completeness.
+
+The skill requires a tracked snapshot and passing integrity/replay tests before
+setting `Company.job_posting_check="passed"`; failed or inconclusive checks use
+`failed`. This catalog-only field is `Literal["unchecked", "passed", "failed"]`
+with default `unchecked`, not a runtime gate or database field.
+
+For separate human-approved records, the review harness consumes JSON booleans
+for `checks.title` and `checks.description` (both must be `true`), and for
+`checks.location` and
+`location_absent_at_source` (at least one must be `true`). Do not enter strings
+such as `"pass"` or `"true"`, despite the capture template's Python type annotation.
+`omissions`, `required_excerpts`, and `forbidden_excerpts` are arrays of nonempty
+strings; the arrays may be empty except `required_excerpts`. Excerpts are literal,
+case-sensitive substring assertions, not eligibility's word-level grounding.
+
+The human supplies a nonempty `reviewer`, an ISO-format `review_date` (for example
+`2026-11-21`), and `status: "approved"` only after review. Other recognized status
+strings are `"pending"`, `"rejected"`, and `"blocked"`; none counts as approval.
+Record meaningful required passages, forbidden contamination when applicable,
+and any accepted omissions rather than manufacturing a clean review.
+
+`content_hash` in metadata and review must match the production normalized-text
+hash. SHA-256 `meta.json.file_digests` binds exact bytes of `page.html`,
+`content.txt` (including its trailing newline), and `frame.html` when `frame` is
+`true`. `review.json.file_digests` binds those same files plus `meta.json` itself;
+it does not hash `review.json`. Automated `validation.json.file_digests` additionally
+binds `reference.json`, and its `content_hash` must match metadata and captured text.
+Preserve these values and captured bytes when promoting a validated bundle to
+`tests/fixtures/acquisition/<slug>/<case>/`. Changed capture bytes require renewed
+human review or automated comparison, as applicable, and correct digest linkage,
+not merely updated hashes to silence a test. A failed acquisition's metadata-only
+report is not a passing fixture.
+
+### Frozen selection replay
+
+Run the review and replay checks without credentials or live network access:
+
+```bash
+uv run --group test pytest tests/unit/test_acquisition_reviews.py tests/unit/test_acquisition_replay.py
+```
+
+The harness discovers bundles beneath the acquisition fixture root and supports
+both human-approved `review.json` records and successful automated
+`validation.json` records with a complete `reference.json`. Automated validation
+must explicitly retain `human_approval=false`; it never invents reviewer identities.
+Each bundle's `meta.json` supplies expected success status, nonempty title and
+method, integer HTTP status, boolean frame flag, context, and hashes. There is no
+separate replay manifest or hand-maintained version field.
+
+Replay reconstructs selection from parent HTML and the optional selected frame,
+using the resolved URL (source URL fallback). Replay requires timezone-aware
+`retrieved_at` and `captured_at`, ordered and normalized to UTC, to bound the
+capture interval within one UTC day. Only then does it freeze
+`job_pipeline.content.jsonld.datetime` to that day's date for expiry evaluation.
+`retrieved_at` precedes selection; it is not itself the actual evaluation date.
+Uncertain cross-midnight captures fail replay and must be recaptured. This is a
+replay-evidence constraint, not a production behavior change.
+It asserts exact title, method, HTTP status, text including the saved newline,
+and content hash, alongside review digests and excerpt assertions.
+
+This is offline selection replay, not full HTTP history, competing-frame,
+hydration, browser-navigation, or live-site replay. Those mechanics have separate
+browser/service tests. Synthetic harness cases are not live evidence or human
+approval. Passing company fixtures may carry either genuine human approval or
+explicit automated browser validation; failed or inconclusive captures remain
+outside the passing corpus. Posting validation does not change discovery
+completion criteria or gate ordinary runtime processing.
+
 ## Next steps
 
 1. **Fetching.** Recover the postings lost to off-site redirects and blocks, and

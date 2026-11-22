@@ -668,6 +668,7 @@ class Company(BaseModel):
     aliases: tuple[str, ...] = ()
     job_board_url: str
     sample_job_url: str
+    job_posting_check: Literal["unchecked", "passed", "failed"] = "unchecked"
     link_rule: LinkRule = LinkRule()
     strategy: StrategyName = "dom"
     paginate: bool = False

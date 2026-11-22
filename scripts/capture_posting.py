@@ -6,7 +6,6 @@ import argparse
 import asyncio
 import json
 import os
-import re
 import shutil
 import tempfile
 from collections.abc import Sequence
@@ -23,19 +22,7 @@ from job_pipeline.content import AcquisitionFailure
 from job_pipeline.content.fetch import FetchResult
 from job_pipeline.content.ladder import acquire
 from job_pipeline.identity import url_key
-
-_SECRET_PATTERNS = (
-    re.compile(
-        r"(?i)(?:access[_-]?token|api[_-]?key|client[_-]?secret|password)\s*[=:]\s*[^\s\"'&<>]+"
-    ),
-    re.compile(
-        r"(?i)(?:[?&](?:token|access_token|api_key|key|secret)=)(?!REDACTED(?:[&#]|$))[^&#\s\"'<>]+"
-    ),
-    re.compile(
-        r"(?i)(?:authorization\s*[=:]\s*(?:bearer|basic)\s+)[A-Za-z0-9._~+/-]+=*"
-    ),
-    re.compile(r"(?i)(?:set-cookie|cookie)\s*:"),
-)
+from job_pipeline.runner.capture import secret_findings
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -59,12 +46,7 @@ def _sanitized_url(url: str) -> str:
 
 
 def _secret_findings(*values: str) -> list[str]:
-    findings: list[str] = []
-    for value in values:
-        for pattern in _SECRET_PATTERNS:
-            if pattern.search(value):
-                findings.append(pattern.pattern)
-    return findings
+    return secret_findings(*values)
 
 
 def _atomic_fixture(

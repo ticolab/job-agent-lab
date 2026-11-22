@@ -660,7 +660,7 @@ def test_concurrent_mixed_stages_commit_matching_counts(
                 f"hash-{url}",
             )
 
-        monkeypatch.setattr("job_pipeline.runner.worker.acquire", acquire)
+        monkeypatch.setattr("job_pipeline.runner.acquisition.acquire", acquire)
         engine = track_engine(create_engine(path))
         second = create_session_factory(engine)
         assert factory.kw["bind"] is not second.kw["bind"]
@@ -796,7 +796,7 @@ def test_concurrent_duplicates_finish_merge_without_touching_canonical(
             call = cast(Callable[..., Awaitable[bool]], real_finish)
             return await call(session, attempt_id, **kwargs)
 
-        monkeypatch.setattr("job_pipeline.runner.worker.acquire", acquire)
+        monkeypatch.setattr("job_pipeline.runner.acquisition.acquire", acquire)
         monkeypatch.setattr(jobs_repo, "merge_duplicate", inspect_merge)
         monkeypatch.setattr(attempts_repo, "finish", forbid_duplicate_finish)
         caller = CanonicalCaller()
